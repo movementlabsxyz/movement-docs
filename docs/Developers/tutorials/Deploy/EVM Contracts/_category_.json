@@ -1,0 +1,8 @@
+{
+  "label": "EVM Contracts",
+  "position": 1,
+  "link": {
+    "type": "generated-index",
+    "description": "Deployment Tutorials for EVM"
+  }
+}
