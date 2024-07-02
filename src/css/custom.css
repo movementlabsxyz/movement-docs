@@ -83,7 +83,7 @@
   flex-wrap: wrap;
 }
 
-.card {
+.custom_card {
   background-color: var(--ifm-background-color);
   border: 1px solid var(--ifm-color-primary);
   border-radius: 0.5rem;
@@ -102,7 +102,7 @@
   text-align: center;
 }
 
-.card:hover {
+.custom_card:hover {
   background-color: var(--ifm-color-primary-light);
   border-color: var(--ifm-color-primary-dark);
 }
