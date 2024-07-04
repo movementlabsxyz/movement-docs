@@ -14,7 +14,7 @@ You may see Sui devnet referred to as m2. Note that this is a legacy devnet and 
 
 ## Requirements
 
-Make sure to have [Sui CLI](/) installed.
+Make sure to have [Sui CLI](https://docs.sui.io/guides/developer/getting-started/sui-install) installed.
 
 ## Initialize your Environment
 
