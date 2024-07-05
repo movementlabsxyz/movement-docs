@@ -8,17 +8,17 @@ import { themes as prismThemes } from "prism-react-renderer";
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "Movement Labs | Movement",
-  tagline: "Movement Labs is building a network of Move-based blockchains.",
+  title: "Movement Network | Movement",
+  tagline: "Movement Network is building a network of Move-based blockchains.",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
-  url: "https://docs.movementlabs.xyz",
+  url: "https://docs.movementnetwork.xyz",
   // Set the /<baseUrl>/ pathname under which your site is served
   baseUrl: "/",
 
   // GitHub pages deployment config.
-  organizationName: "movementlabs", // Usually your GitHub org/user name.
+  organizationName: "movementnetwork", // Usually your GitHub org/user name.
   projectName: "docs", // Usually your repo name.
 
   onBrokenLinks: "warn",
@@ -42,14 +42,14 @@ const config = {
           routeBasePath: "/",
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: "https://github.com/movementlabs/docs/tree/main/",
+          editUrl: "https://github.com/movementlabsxyz/docusaurus-docs-refresh",
         },
-        blog: {
-          showReadingTime: true,
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl: "https://github.com/movementlabs/docs/tree/main/",
-        },
+        // blog: {
+        //   showReadingTime: true,
+        //   // Please change this to your repo.
+        //   // Remove this to remove the "edit this page" links.
+        //   editUrl: "https://github.com/movementlabs/docs/tree/main/",
+        // },
         theme: {
           customCss: "./src/css/custom.css",
         },
@@ -75,7 +75,6 @@ const config = {
             position: 'left',
             label: 'Docs',
           },
-          { to: "/blog", label: "Blog", position: "left" },
           {
             href: "https://github.com/movementlabs/docs",
             label: "GitHub",
@@ -99,10 +98,6 @@ const config = {
             title: "Community",
             items: [
               {
-                label: "Stack Overflow",
-                href: "https://stackoverflow.com/questions/tagged/movementlabs",
-              },
-              {
                 label: "Discord",
                 href: "https://discord.gg/movementlabsxyz",
               },
@@ -115,10 +110,6 @@ const config = {
           {
             title: "More",
             items: [
-              {
-                label: "Blog",
-                to: "/blog",
-              },
               {
                 label: "GitHub",
                 href: "https://github.com/movementlabs/docs",

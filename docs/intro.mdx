@@ -1,42 +1,32 @@
 ---
 id: intro
 sidebar_position: 1
-title: Movement Labs Docs
+title: Movement Network
 slug: /
 ---
 
 import Link from '@docusaurus/Link';
 import React from 'react';
+import DocCardList from '@theme/DocCardList';
 
-<div className="intro-container">
-  <div className="header-container">
-    <h1 className="header-title">Movement Labs Docs</h1>
-    <img src="/img/logo.svg" alt="Movement Labs Logo" className="header-logo" />
-  </div>
+<DocCardList items={[
+  {type: 'link', label: 'Learn about Movement', href: 'Introduction/what-is-the-movement-network', description: "Learn more about the Network"},
+  {type: 'link', label: 'Developers', href: '/category/developers', description: "All Developer Documentation"},
+]} />
 
-  <div className="intro-section">
-    <div className="cards-container">
-      <Link className="custom_card" to="/docs/learn-about-movement">Learn about Movement</Link>
-      <Link className="custom_card" to="/docs/developers">Developers</Link>
-      <Link className="custom_card" to="/docs/validators">Validators</Link>
-    </div>
-  </div>
+<h2>Where are you building?</h2>
 
-  <div className="intro-section">
-    <h2>Where are you building?</h2>
-    <div className="cards-container">
-      <Link className="custom_card" to="/docs/building/aptos-move">Building on Aptos Move</Link>
-      <Link className="custom_card" to="/docs/building/evm">Building on EVM</Link>
-      <Link className="custom_card" to="/docs/building/sui-move">Building on Sui Move</Link>
-    </div>
-  </div>
+<DocCardList items={[
+  {type: 'link', label: 'Building on Aptos Move', href: '/Developers/tutorials/Deploy/aptosmodule', description: "For Developers from the Aptos Ecosystem"},
+  {type: 'link', label: 'Building on Sui Move', href: '/Developers/tutorials/Deploy/suimodule', description: "For Developers from the Sui Ecosystem"},
+  {type: 'link', label: 'Building on EVM', href: '/category/evm-contracts', description: "For Developers from the EVM Ecosystem"},
+]} />
+  
+<h2>More Resources</h2>
 
-  <div className="intro-section">
-    <h2>More Resources</h2>
-    <div className="cards-container">
-      <Link className="custom_card" to="/docs/movement-sdk">Movement SDK</Link>
-      <Link className="custom_card" to="/docs/explorer">Explorer</Link>
-      <Link className="custom_card" to="/docs/faucet">Faucet</Link>
-    </div>
-  </div>
-</div>
+<DocCardList items={[
+  {type: 'link', label: 'Validators', href: '/category/Validators', description: "Get Started as a Validator"},
+  {type: 'link', label: 'Faucets', href: '/Introduction/faucet', description: "Get Testnet Tokens"},
+  {type: 'link', label: 'Explorers', href: '/Introduction/explorers', description: "Use our Block Explorers"},
+  {type: 'link', label: 'Movement SDK', href: '/Introduction/what-is-movement-sdk', description: "Learn more about the Movement SDK"},
+]} />
