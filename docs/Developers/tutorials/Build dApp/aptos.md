@@ -14,10 +14,10 @@ View an example of the finished dApp [here](https://github.com/movementlabsxyz/o
 
 ## Initialize your Environment 
 
-Initialize your Aptos profile for your package development and add M1 as a custom network. M1 is our current blockchain that supports Aptos deployments.
+Initialize your Aptos profile for your package development and add Movement network testnet as a custom network.
 
 ```bash
-aptos init --network custom --rest-url https://aptos.testnet.movementlabs.xyz
+aptos init --network custom --rest-url https://aptos.testnet.movementlabs.xyz --faucet-url https://faucet.testnet.suzuka.movementlabs.xyz/
 ```
 
 ## Setup 
@@ -92,47 +92,12 @@ module onchain_bio_addr::onchain_bio {
 
 Next, let's deploy to testnet!
 
-## Deploying the Module to Movement's Testnetwork
+## Deploying the Module to Movement Network Testnetwork
 
-First, from within the move directory, initialize your Movement Aptos configuration:
+Compile the module:
 
 ```bash
-aptos init
-```
-
-When propted to choose a network, enter custom.
-
-Then enter the following REST endpoint:
-
-```
-https://aptos.testnet.suzuka.movementlabs.xyz/v1
-```
-
-And the same URL for faucet endpoint.
-
-When asked for a private key, press Enter to generate a new keypair.
-
-Upon successful initialization, you'll see the success message (with your own account instead of the one below):
-
-```json
-No key given, generating key...
-Account 0x39883cbc29500a8bf79911ea1469e1c3b58104547a88fb0fbdf17470f80b2a91 doesn't exist, creating it and funding it with 100000000 Octas
-Account 0x39883cbc29500a8bf79911ea1469e1c3b58104547a88fb0fbdf17470f80b2a91 funded successfully
-
----
-Aptos CLI is now set up for account 0x39883cbc29500a8bf79911ea1469e1c3b58104547a88fb0fbdf17470f80b2a91 as profile default!  Run `aptos --help` for more information about commands
-{
-  "Result": "Success"
-}
-```
-
-Now your move directory will contain a hidden .aptos folder containing a config.yaml file. You can view the contents of that file to see your private and public keys.
-
-In the the line under [addresses] in Move.toml, add your account address:
-
-
-```json
-onchain_bio_addr = "<your-account-address>"
+aptos move compile
 ```
 
 After compiling, you'll see a result message formatted like this:
@@ -171,7 +136,7 @@ You'll get a result formatted like this, with values associated with your transa
 }
 ```
 
-Congratulations! Your module is now deployed.
+Congratulations! Your module is now published.
 
 Let's shift over to the frontend.
 
