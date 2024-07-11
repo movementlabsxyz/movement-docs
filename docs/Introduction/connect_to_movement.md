@@ -50,7 +50,7 @@ With [Metamask](https://metamask.io/)
 
 - Network Name: `Move-EVM`
 - Devnet Network RPC: `https://mevm.devnet.m1.movementlabs.xyz`
-- Network ID: `336`
+- Network ID: `30730`
 - Network Currency: `MOVE`
 - Explorer: `TBD`
 
