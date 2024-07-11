@@ -6,43 +6,42 @@
 
 /* You can override the default Infima variables here. */
 :root {
-  --ifm-background-color: #EDEAE6; /* Blockchain Burlap */
-  --ifm-color-primary: #B39400; /* Darkest shade of Defi Dandelion */
-  --ifm-color-primary-dark: #CCA700; /* Darker shade of Defi Dandelion */
-  --ifm-color-primary-darker: #E6B800; /* Slightly darker shade of Defi Dandelion */
-  --ifm-color-primary-darkest: #FFDA34; /* Defi Dandelion */
-  --ifm-color-primary-light: #FFE266; /* Lighter shade of Defi Dandelion */
-  --ifm-color-primary-lighter: #FFEB99; /* Lighter shade of Defi Dandelion */
-  --ifm-color-primary-lightest: #FFF3CC; /* Lightest shade of Defi Dandelion */
+  --ifm-background-color: #EDEAE6; 
+  --ifm-color-primary: #B39400; 
+  --ifm-color-primary-dark: #CCA700; 
+  --ifm-color-primary-darker: #E6B800; 
+  --ifm-color-primary-darkest: #FFDA34; 
+  --ifm-color-primary-light: #FFE266; 
+  --ifm-color-primary-lighter: #FFEB99; 
+  --ifm-color-primary-lightest: #FFF3CC; 
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
-  --ifm-color-primary: #FFDA34; /* Defi Dandelion */
+  --ifm-color-primary: #FFDA34;
   --ifm-color-primary-dark: #E6B800; 
   --ifm-color-primary-darker: #CCA700; 
   --ifm-color-primary-darkest: #B39400; 
   --ifm-color-primary-light: #FFE266; 
   --ifm-color-primary-lighter: #FFEB99; 
   --ifm-color-primary-lightest: #FFF3CC; 
-  --ifm-background-color: #000000; /* Keeping dark mode background as black */
+  --ifm-background-color: #000000; 
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
 
 @media (max-width: 997px) {
   .navbar__toggle {
     order: 1;
-    margin-left: auto; /* Push the toggle button to the right */
+    margin-left: auto; 
   }
 
   .navbar__brand {
-    order: 0; /* Ensure the brand/logo stays on the left */
+    order: 0; 
   }
 
   .navbar__items {
-    order: 2; /* Ensure the navbar items (links) stay in the middle */
+    order: 2; 
   }
 
   .navbar__inner {
@@ -50,14 +49,74 @@
     align-items: center;
   }
 
-  /* Ensure the sidebar takes the full width */
   .menu__list-container {
-    width: 100%; /* Ensure the container takes the full width */
-    margin: 0; /* Remove any default margins */
-    padding: 0; /* Remove any default padding */
+    width: 100%; 
+    margin: 0; 
+    padding: 0;
   }
 
   .menu__list {
-    width: 100%; /* Ensure the menu list takes the full width */
+    width: 100%; 
+  }
+}
+
+/* front page css */
+.intro-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; 
+  width: 100%;
+  padding: 1rem 2rem;
+}
+
+.intro-section {
+  width: 100%;
+  max-width: 1200px;
+  margin: 2rem auto;
+
+}
+
+.cards-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem; 
+  flex-wrap: wrap;
+}
+
+.custom_card {
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 0.5rem;
+  padding: 0.5rem; 
+  width: calc(32% - 1rem); 
+  min-height: 100px; 
+  text-decoration: none;
+  color: var(--ifm-color-primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.1rem; 
+  transition: background-color 0.3s, border-color 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  text-align: center;
+}
+
+.custom_card:hover {
+  border-color: var(--ifm-color-primary);
+}
+
+.header-container {
+  display: none; 
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .cards-container {
+    flex-direction: column;
+  }
+
+  .card {
+    width: 100%; 
+    min-height: 150px; 
   }
 }

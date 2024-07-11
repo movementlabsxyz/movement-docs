@@ -1,0 +1,32 @@
+---
+id: intro
+sidebar_position: 1
+title: Movement Network
+slug: /
+---
+
+import Link from '@docusaurus/Link';
+import React from 'react';
+import DocCardList from '@theme/DocCardList';
+
+<DocCardList items={[
+  {type: 'link', label: 'Learn about Movement', href: 'Introduction/what-is-the-movement-network', description: "Learn more about the Network"},
+  {type: 'link', label: 'Developers', href: '/category/developers', description: "All Developer Documentation"},
+]} />
+
+<h2>Where are you building?</h2>
+
+<DocCardList items={[
+  {type: 'link', label: 'Building on Aptos Move', href: '/Developers/tutorials/Deploy/aptosmodule', description: "For Developers from the Aptos Ecosystem"},
+  {type: 'link', label: 'Building on Sui Move', href: '/Developers/tutorials/Deploy/suimodule', description: "For Developers from the Sui Ecosystem"},
+  {type: 'link', label: 'Building on EVM', href: '/category/evm-contracts', description: "For Developers from the EVM Ecosystem"},
+]} />
+  
+<h2>More Resources</h2>
+
+<DocCardList items={[
+  {type: 'link', label: 'Validators', href: '/category/Validators', description: "Get Started as a Validator"},
+  {type: 'link', label: 'Faucets', href: '/Introduction/faucet', description: "Get Testnet Tokens"},
+  {type: 'link', label: 'Explorers', href: '/Introduction/explorers', description: "Use our Block Explorers"},
+  {type: 'link', label: 'Movement SDK', href: '/Introduction/what-is-movement-sdk', description: "Learn more about the Movement SDK"},
+]} />
