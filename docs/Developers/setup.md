@@ -31,7 +31,7 @@ Refer to our documentation on [Faucets](/Introduction/faucet) to get started bui
 
 ## Learning Move 
 
-If you are new to Movement, head to [Learning Resources](/), [Hack Movement](/), a crash course on developing for Movement, or [Move Language](/) to learn about the basics.
+If you are new to Movement, head to [Learning Resources](/), [Hack Movement](/), a crash course on developing for Movement, or [Move Language](https://aptos.dev/en/build/smart-contracts/book) to learn about the basics.
 
 ## Tutorials
 

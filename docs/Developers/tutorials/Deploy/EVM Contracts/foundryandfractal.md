@@ -11,7 +11,7 @@ This tutorial will walk you through deploying a Solidity smart contract on M1 us
 
 ### What is Foundry?
 
-Foundry is a powerful smart contract development toolchain for Ethereum Virtual Machines.
+Foundry is a powerful Solidity smart contract development toolchain for Ethereum Virtual Machines.
 
 ### What is Fractal?
 
@@ -32,7 +32,7 @@ Fund an EVM wallet address with some MOVE tokens using our [faucet](/Introductio
 |-------------------|---------------------------------------------------|
 | Network Name      | mevm                                              |
 | Network RPC       | [https://mevm.devnet.m1.movementlabs.xyz](https://mevm.devnet.m1.movementlabs.xyz) |
-| Network ID        | 336                                               |
+| Network ID        | 30730                                               |
 | Network Currency  | MOVE                                              |
 
 2. Ensure you have switched your Wallet network to the network added above, i.e., move-evm.

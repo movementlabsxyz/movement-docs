@@ -5,7 +5,7 @@ title: Hardhat and Fractal
 
 # Deploying Solidity Contracts on Movement using Hardhat and Fractal
 
-This tutorial will walk you through deploying a Solidity smart contract on M1 using Fractal Transpiler and Hardhat.
+This tutorial will walk you through deploying a Solidity smart contract on Movement and Hardhat.
 
 ## Our toolkit
 
@@ -31,7 +31,7 @@ Fund an EVM wallet address with some MOVE tokens using our [faucet](/Introductio
 |-------------------|---------------------------------------------------|
 | Network Name      | mevm                                              |
 | Network RPC       | [https://mevm.devnet.m1.movementlabs.xyz](https://mevm.devnet.m1.movementlabs.xyz) |
-| Network ID        | 336                                               |
+| Network ID        | 30730                                               |
 | Network Currency  | MOVE                                              |
 
 2. Ensure you have switched your Wallet network to the network added above, i.e., move-evm.
