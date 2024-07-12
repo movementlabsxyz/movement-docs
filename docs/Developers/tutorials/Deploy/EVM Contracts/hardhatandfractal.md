@@ -100,7 +100,7 @@ module.exports = {
     m1: {
       url: "https://mevm.devnet.m1.movementlabs.xyz",
       accounts: [process.env.PRIVATE_KEY],
-      chainId: 336
+      chainId: 30730
     }
   },
   solidity: {
