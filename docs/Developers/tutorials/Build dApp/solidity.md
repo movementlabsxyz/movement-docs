@@ -160,7 +160,7 @@ export type ScaffoldConfig = {
 };
 
 export const mevm = {
-  id: 336,
+  id: 30730,
   name: "M1 MEVM",
   network: "mevm",
   nativeCurrency: { name: "Move", symbol: "MOVE", decimals: 18 },

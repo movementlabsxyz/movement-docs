@@ -65,7 +65,7 @@ const config = {
       navbar: {
         title: "Movement",
         logo: {
-          alt: "Movement Labs Logo",
+          alt: "Movement Network Logo",
           src: "img/logo.svg",
         },
         items: [
@@ -117,7 +117,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} Movement Labs.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Movement Foundation.`,
       },
       prism: {
         theme: prismThemes.github,
