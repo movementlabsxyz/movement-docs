@@ -42,7 +42,7 @@ const config = {
           routeBasePath: "/",
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl: "https://github.com/movementlabsxyz/docusaurus-docs-refresh",
+          editUrl: "https://github.com/movementlabsxyz/movement-docs/blob/main",
         },
         // blog: {
         //   showReadingTime: true,
@@ -76,7 +76,7 @@ const config = {
             label: 'Docs',
           },
           {
-            href: "https://github.com/movementlabs/docs",
+            href: "https://github.com/movementlabsxyz/movement-docs",
             label: "GitHub",
             position: "right",
           },
