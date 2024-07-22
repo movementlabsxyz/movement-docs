@@ -160,21 +160,21 @@ export type ScaffoldConfig = {
 };
 
 export const mevm = {
-  id: 30730,
+  id: 30732,
   name: "M1 MEVM",
   network: "mevm",
   nativeCurrency: { name: "Move", symbol: "MOVE", decimals: 18 },
   rpcUrls: {
     default: {
-      http: ["https://mevm.devnet.m1.movementlabs.xyz"],
+      http: ["https://mevm.testnet.imola.movementlabs.xyz"],
     },
     public: {
-      http: ["https://mevm.devnet.m1.movementlabs.xyz"],
+      http: ["https://mevm.testnet.imola.movementlabs.xyz"],
     },
   },
   blockExplorers: {
-    etherscan: { name: "Arbiscan", url: "https://explorer.mevm.devnet.m1.movementlabs.xyz" },
-    default: { name: "Arbiscan", url: "https://explorer.mevm.devnet.m1.movementlabs.xyz" },
+    etherscan: { name: "Arbiscan", url: "https://explorer.testnet.imola.movementlabs.xyz" },
+    default: { name: "Arbiscan", url: "https://explorer.testnet.imola.movementlabs.xyz" },
   },
   contracts: {
     multicall3: {

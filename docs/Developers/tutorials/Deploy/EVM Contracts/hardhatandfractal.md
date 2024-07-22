@@ -30,8 +30,8 @@ Fund an EVM wallet address with some MOVE tokens using our [faucet](/Introductio
 | Property          | Value                                             |
 |-------------------|---------------------------------------------------|
 | Network Name      | mevm                                              |
-| Network RPC       | [https://mevm.devnet.m1.movementlabs.xyz](https://mevm.devnet.m1.movementlabs.xyz) |
-| Network ID        | 30730                                               |
+| Network RPC       | [https://mevm.testnet.imola.movementlabs.xyz](https://mevm.testnet.imola.movementlabs.xyz) |
+| Network ID        | 30732                                               |
 | Network Currency  | MOVE                                              |
 
 2. Ensure you have switched your Wallet network to the network added above, i.e., move-evm.
@@ -98,9 +98,9 @@ module.exports = {
     hardhat: {
     },
     m1: {
-      url: "https://mevm.devnet.m1.movementlabs.xyz",
+      url: "https://mevm.testnet.imola.movementlabs.xyz",
       accounts: [process.env.PRIVATE_KEY],
-      chainId: 30730
+      chainId: 30732
     }
   },
   solidity: {

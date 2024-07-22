@@ -8,6 +8,12 @@ Instruction for how to download and create a Web3 wallet for Movement and other 
 
 If you would like to connect via CLI, refer to Movement CLI. Refer to Using Aptos CLI and Using Sui CLI if you are experienced with the respective ecosystems.
 
+We currently have three environments for connecting to the Movement network:
+
+- Suzuka Testnet (supports Aptos)
+- Imola Testnet (supports EVM)
+- Legacy Devnet (supports SUI)
+
 ## What is a Web3 Wallet?
 
 A Web3 wallet facilitates blockchain interactions by managing your private and public keys, allowing for digital asset transactions and balance tracking. It's crucial to safeguard your private key; losing it means losing access to your funds. Always obtain your wallet from official or trusted sources.
@@ -22,9 +28,9 @@ Language: `aptos`, `sui`, `mevm`
 
 ## Aptos
 
-:::tip
+:::info
 
-Aptos Move is currently available on the Movement Testnetwork
+Aptos Move is currently available on the Movement Suzuka Testnetwork
 
 :::
 
@@ -42,23 +48,29 @@ Move-EVM (MEVM) is our framework enabled by Fractal our EVM transpiler for runni
 
 :::info
 
-MEVM is currently accessible from our legacy devnet, check back for updates here in the future.
+MEVM is currently accessible from our Imola Testnetwork which is our EVM enabled environment
 
 :::
 
 With [Metamask](https://metamask.io/)
 
 - Network Name: `Move-EVM`
-- Devnet Network RPC: `https://mevm.devnet.m1.movementlabs.xyz`
-- Network ID: `30730`
+- Devnet Network RPC: `https://mevm.testnet.imola.movementlabs.xyz`
+- Network ID: `30732`
 - Network Currency: `MOVE`
-- Explorer: `TBD`
+- Explorer: `https://explorer.testnet.imola.movementlabs.xyz`
 
 ![add to metamask](./imgs/addmetamask.png)
 
 ## Sui 
 
 Sui Move can be used with our legacy devnet. Wallets that support Sui with custom RPCs should be able to connect to this devnet. 
+
+:::info
+
+The SUI environment is currently experimental and available on our legacy devnet. 
+
+:::
 
 With [Ethos](https://ethoswallet.xyz/)
 
