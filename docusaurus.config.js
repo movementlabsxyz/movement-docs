@@ -5,6 +5,7 @@
 // See: https://docusaurus.io/docs/api/docusaurus-config
 
 import { themes as prismThemes } from "prism-react-renderer";
+import 'dotenv/config';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -59,7 +60,23 @@ const config = {
 
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
+    
     ({
+      algolia: {
+        // The application ID provided by Algolia
+        appId: process.env.ALGOLIA_APPID,
+  
+        // Public API key: it is safe to commit it
+        apiKey: process.env.ALGOLIA_APIKEY,
+  
+        indexName: 'movementnetwork',
+  
+        // Optional: Algolia search parameters
+        searchParameters: {},
+  
+        // Optional: path for search page that enabled by default (`false` to disable it)
+        searchPagePath: 'search',
+      },
       // Replace with your project's social card
       image: "img/movementlabs-social-card.png",
       navbar: {
