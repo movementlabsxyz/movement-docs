@@ -64,10 +64,10 @@ const config = {
     ({
       algolia: {
         // The application ID provided by Algolia
-        appId: process.env.ALGOLIA_APPID,
+        appId: process.env.ALGOLIA_APPID || "",
   
         // Public API key: it is safe to commit it
-        apiKey: process.env.ALGOLIA_APIKEY,
+        apiKey: process.env.ALGOLIA_APIKEY || "",
   
         indexName: 'movementnetwork',
   
