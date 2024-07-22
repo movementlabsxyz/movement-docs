@@ -14,9 +14,19 @@ MOVE refers to the native token across our networks. At the moment they are dist
 
 ## How to Get Move
 
-If you have an Aptos Compatible wallet the easiest way of getting MOVE is via this faucet UI: https://mizu.testnet.suzuka.movementlabs.xyz/
+### Aptos 
 
-If you are building with EVM or SUI, the easiest way to get MOVE is via our legacy faucet UI: https://faucet.movementlabs.xyz/
+Faucet UI: https://mizu.testnet.suzuka.movementlabs.xyz/
+
+
+### EVM
+
+Faucet UI: https://faucet.testnet.imola.movementlabs.xyz/
+
+### Sui
+
+Legacy UI: https://faucet.movementlabs.xyz/
+
 
 For developers: You can also use our CLI for additional functionalities.
 
@@ -24,27 +34,26 @@ For developers: You can also use our CLI for additional functionalities.
 
 ### Aptos 
 
-Testnetwork 
+Suzuka Testnetwork 
 
 ``https://faucet.testnet.suzuka.movementlabs.xyz/``
 
 ```bash
 
-curl -X GET "https://faucet.testnet.suzuka.movementlabs.xyz/mint" \
--H "Content-Type: application/json" \
--d '{"address":"<aptos-address>"}'
+curl -XPOST 'https://faucet.testnet.suzuka.movementlabs.xyz/mint?amount=10000&address=<address>'
 
 ```
 
+
 ### MEVM 
 
-Devnet
+Imola Testnetwork
 
-`https://mevm.devnet.m1.movementlabs.xyz`
+`https://mevm.testnet.imola.movementlabs.xyz`
 
 ```bash
 
-curl -X POST "https://mevm.devnet.m1.movementlabs.xyz" \
+curl -X POST "https://mevm.testnet.imola.movementlabs.xyz" \
 -H "Content-Type: application/json" \
 -d '{
   "jsonrpc": "2.0",

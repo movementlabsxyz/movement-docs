@@ -31,8 +31,8 @@ Fund an EVM wallet address with some MOVE tokens using our [faucet](/Introductio
 | Property          | Value                                             |
 |-------------------|---------------------------------------------------|
 | Network Name      | mevm                                              |
-| Network RPC       | [https://mevm.devnet.m1.movementlabs.xyz](https://mevm.devnet.m1.movementlabs.xyz) |
-| Network ID        | 30730                                               |
+| Network RPC       | [https://mevm.testnet.imola.movementlabs.xyz](https://mevm.testnet.imola.movementlabs.xyz) |
+| Network ID        | 30732                                               |
 | Network Currency  | MOVE                                              |
 
 2. Ensure you have switched your Wallet network to the network added above, i.e., move-evm.
@@ -118,7 +118,7 @@ This will deploy the contract available at src/Counter.sol. You can tinker with 
 To deploy your contract, run the following command:
 
 ```bash
-forge script CounterScript --broadcast --chain-id 336 --rpc-url https://mevm.devnet.m1.movementlabs.xyz/v1 --legacy
+forge script CounterScript --broadcast --chain-id 30732 --rpc-url https://mevm.testnet.imola.movementlabs.xyz --legacy
 ```
 
 After running it, you should see a similar message in your console:
@@ -135,9 +135,9 @@ Block: 27547820
 Paid: 0.002988132 ETH (106719 gas * 28 gwei)
 
 
-Transactions saved to: /home/user/test/broadcast/Counter.s.sol/336/run-latest.json
+Transactions saved to: /home/user/test/broadcast/Counter.s.sol/30732/run-latest.json
 
-Sensitive values saved to: /home/user/test/cache/Counter.s.sol/336/run-latest.json
+Sensitive values saved to: /home/user/test/cache/Counter.s.sol/30732/run-latest.json
 
 
 
@@ -146,9 +146,9 @@ Sensitive values saved to: /home/user/test/cache/Counter.s.sol/336/run-latest.js
 ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
 Total Paid: 0.002988132 ETH (106719 gas * avg 28 gwei)
 
-Transactions saved to: /home/user/test/broadcast/Counter.s.sol/336/run-latest.json
+Transactions saved to: /home/user/test/broadcast/Counter.s.sol/30732/run-latest.json
 
-Sensitive values saved to: /home/user/test/cache/Counter.s.sol/336/run-latest.json
+Sensitive values saved to: /home/user/test/cache/Counter.s.sol/30732/run-latest.json
 ```
 
 Success! You have successfully deployed your contract using Foundry. You should now be able to interact with the contract provided by the message above.
@@ -189,7 +189,7 @@ Make sure to replace `<counterAddress>` with the address of your deployed contra
 Now, all you have to do is run the following command:
 
 ```bash
-forge script InteractScript --broadcast --chain-id 336 --rpc-url https://mevm.devnet.m1.movementlabs.xyz
+forge script InteractScript --broadcast --chain-id 30732 --rpc-url https://mevm.testnet.imola.movementlabs.xyz
 ```
 
 If you are successful, you should see the following message: 
