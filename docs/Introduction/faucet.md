@@ -25,8 +25,7 @@ Faucet UI: https://faucet.testnet.imola.movementlabs.xyz/
 
 ### Sui
 
-Legacy UI: https://faucet.movementlabs.xyz/
-
+Faucet UI: https://faucet.testnet.imola.movementlabs.xyz/
 
 For developers: You can also use our CLI for additional functionalities.
 
@@ -68,10 +67,10 @@ curl -X POST "https://mevm.testnet.imola.movementlabs.xyz" \
 
 Devnet 
 
-`https://sui.devnet.m2.movementlabs.xyz/faucet`
+`https://faucet.sui.imola.testnet.movementlabs.xyz`
 
 ```bash
-curl --location --request POST 'https://sui.devnet.m2.movementlabs.xyz/faucet' \
+curl --location --request POST 'https://faucet.sui.imola.testnet.movementlabs.xyz' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "FixedAmountRequest": {

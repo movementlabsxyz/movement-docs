@@ -68,13 +68,13 @@ Sui Move can be used with our legacy devnet. Wallets that support Sui with custo
 
 :::info
 
-The SUI environment is currently experimental and available on our legacy devnet. 
+The Sui environment is currently accessible from the Sui Imola Testnetwork  
 
 :::
 
 With [Ethos](https://ethoswallet.xyz/)
 
-Custom RPC URL: `https://sui.devnet.m2.movementlabs.xyz:443`
+Custom RPC URL: `https://sui.imola.testnet.movementlabs.xyz`
 
 ![add to ethos](./imgs/addethos.png)
 
