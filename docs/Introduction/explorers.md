@@ -4,21 +4,17 @@ sidebar_position: 6
 
 # Explorers
 
-The Block Explorers are listed below for our testnetwork and devnetworks. 
+The Block Explorers are listed below for each testnetwork environment
 
 
-### Aptos 
-
-Testnetwork 
+### Aptos  
 
 https://blue.explorer.movementlabs.xyz/
 
 
 ### Sui
 
-Devnet 
-
-https://explorer.sui.devnet.m2.movementlabs.xyz/
+https://explore.sui.imola.testnet.movementlabs.xyz/
 
 
 
