@@ -25,7 +25,10 @@ The Indexer API also allows the development of customised processors.
 
 ## Running the Transaction Streaming Service
 
-The following guides from Aptos are provided: [Aptos Documentation](https://aptos.dev/en/build/indexer/txn-stream/local-development)
+The following guides from Aptos are provided: [Aptos Documentation](https://aptos.dev/en/build/indexer/txn-stream/local-development)##
+
+## Indexing Suzuka - Status Quo
+At present the Suzuka full node creates the `data_service` which allows teams to connect to this gRPC stream directly on port `30734` with the Indexer API and short cutting the need of the TSS.
 
 ## Indexing Suzuka - Future Plans
 
