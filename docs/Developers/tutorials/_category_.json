@@ -1,6 +1,10 @@
 {
   "label": "Tutorials",
+<<<<<<< Updated upstream
   "position": 3,
+=======
+  "position": 6,
+>>>>>>> Stashed changes
   "collapsed": false,
   "link": {
     "description": "Tutorials for building on Movement",

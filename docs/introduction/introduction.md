@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# What is the Movement Network?
+# Introduction
 
 Movement Labs is building a network of Move-based blockchains. Our flagship products are the Movement Network and the M1 shared sequencer. 
 
