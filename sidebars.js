@@ -10,8 +10,8 @@ const sidebars = {
     'Developers/getstarted',
     'Developers/networkEndpoints',
     'Developers/faq',
-    'Developers/indexing',
-    'Developers/oracles',
+    'developers/indexing',
+    'developers/oracles',
     {
       type: 'category',
       label: 'Tutorials',
