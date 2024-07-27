@@ -100,7 +100,7 @@ First, from within the move directory, initialize your Movement Aptos configurat
 aptos init
 ```
 
-When propted to choose a network, enter custom.
+When prompted to choose a network, enter custom.
 
 Then enter the following REST endpoint:
 
