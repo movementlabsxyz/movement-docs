@@ -25,7 +25,7 @@ The MEVM environment is currently accessible through the Imola Testnet.
 
 If you're building with Solidity check out our section for [Ethereum Developers](/category/evm-contracts).
 
-Get all of the neccasary [endpoints](/developers/networkEndpoints#evm-environment) to start building.
+Get all of the necessary [endpoints](/developers/networkEndpoints#evm-environment) to start building.
 
 ## Sui
 
@@ -33,7 +33,7 @@ The Sui environment is currently accessible through the sui Imola Testnet.
 
 If you're building with Sui Move check out our section for [Sui Developers](/developers/tutorials/Deploy/suimodule)
 
-Get all of the neccasary [endpoints](/developers/networkEndpoints#sui-environment) to start building.
+Get all of the necessary [endpoints](/developers/networkEndpoints#sui-environment) to start building.
 
 ## Faucet 
 
