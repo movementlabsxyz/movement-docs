@@ -1,11 +1,6 @@
 // @ts-check
-// `@type` JSDoc annotations allow editor autocompletion and type checking
-// (when paired with `@ts-check`).
-// There are various equivalent ways to declare your Docusaurus config.
-// See: https://docusaurus.io/docs/api/docusaurus-config
-
 import { themes as prismThemes } from "prism-react-renderer";
-import 'dotenv/config';
+import "dotenv/config";
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -39,20 +34,14 @@ const config = {
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
         docs: {
-          sidebarPath: "./sidebars.js",
+          sidebarPath: require.resolve('./sidebars.js'),
           routeBasePath: "/",
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl: "https://github.com/movementlabsxyz/movement-docs/blob/main",
         },
-        // blog: {
-        //   showReadingTime: true,
-        //   // Please change this to your repo.
-        //   // Remove this to remove the "edit this page" links.
-        //   editUrl: "https://github.com/movementlabs/docs/tree/main/",
-        // },
         theme: {
-          customCss: "./src/css/custom.css",
+          customCss: require.resolve('./src/css/custom.css'),
         },
       }),
     ],
@@ -60,22 +49,21 @@ const config = {
 
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
-    
     ({
       algolia: {
         // The application ID provided by Algolia
-        appId: process.env.ALGOLIA_APPID || "",
-  
+        appId: process.env.ALGOLIA_APPID || "xyz",
+
         // Public API key: it is safe to commit it
-        apiKey: process.env.ALGOLIA_APIKEY || "",
-  
-        indexName: 'movementnetwork',
-  
+        apiKey: process.env.ALGOLIA_APIKEY || "xyz",
+
+        indexName: "movementnetwork",
+
         // Optional: Algolia search parameters
         searchParameters: {},
-  
+
         // Optional: path for search page that enabled by default (`false` to disable it)
-        searchPagePath: 'search',
+        searchPagePath: "search",
       },
       // Replace with your project's social card
       image: "img/movementlabs-social-card.png",
@@ -87,10 +75,21 @@ const config = {
         },
         items: [
           {
-            type: 'docSidebar',
-            sidebarId: 'tutorialSidebar',
+            type: "docSidebar",
+            sidebarId: "tutorialSidebar",
+            position: "left",
+            label: "Learn",
+          },
+          {
+            type: "docSidebar",
+            sidebarId: "developersSidebar",
+            position: "left",
+            label: "Build",
+          },
+          {
+            type: 'search',
             position: 'left',
-            label: 'Docs',
+            className: "searchBar_nav",
           },
           {
             href: "https://github.com/movementlabsxyz/movement-docs",
@@ -107,7 +106,7 @@ const config = {
             items: [
               {
                 label: "Tutorial",
-                to: "/docs/intro",
+                to: "/docs/general/intro",
               },
             ],
           },

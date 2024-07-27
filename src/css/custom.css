@@ -119,4 +119,9 @@
     width: 100%; 
     min-height: 150px; 
   }
+
+}
+
+.searchBar_nav {
+  position: static !important;
 }
