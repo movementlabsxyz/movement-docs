@@ -8,7 +8,7 @@ In this guide for Solidity developers, you'll learn how easy it is to create an 
 
 ## Requirements
 
-Make sure to have to have [Foundry](https://getfoundry.sh/) installed. If using Hardhat, have in mind that you will need to add custom chains.
+Make sure to have [Foundry](https://getfoundry.sh/) installed. If using Hardhat, have in mind that you will need to add custom chains.
 
 ## Setup
 
@@ -196,7 +196,7 @@ const scaffoldConfig = {
 export default scaffoldConfig;
 ```
 
-Sweet, you are pretty much setup. Now you can run the following to run your dApp:
+Sweet, you are pretty much setup. Now you can run the following command to start your dApp:
 
 ``` bash
 yarn start
