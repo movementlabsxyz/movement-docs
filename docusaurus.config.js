@@ -145,6 +145,10 @@ const config = {
         respectPrefersColorScheme: false,
       },
     }),
+  
+    clientModules:[
+      require.resolve("./src/js/keyboard-shortcuts.js")
+    ]
 };
 
 export default config;
