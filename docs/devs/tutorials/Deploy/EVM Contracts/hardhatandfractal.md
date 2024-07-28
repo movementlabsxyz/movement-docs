@@ -23,7 +23,7 @@ Before you begin this tutorial, you'll need to install [Hardhat](https://hardhat
 
 ## Fund your wallet with MOVE tokens
 
-Fund an EVM wallet address with some MOVE tokens using our [faucet](/Introduction/faucet). Another method to get get MOVE is to bridge from M1 to your EVM wallet using our [bridge](https://evm-bridge.devnet.m1.movementlabs.xyz/#/Faucet). To connect to our testnet and check if you have received the MOVE tokens, you can take the following steps:
+Fund an EVM wallet address with some MOVE tokens using our [faucet](/Introduction/faucet). Another method to get MOVE is to bridge from M1 to your EVM wallet using our [bridge](https://evm-bridge.devnet.m1.movementlabs.xyz/#/Faucet). To connect to our testnet and check if you have received the MOVE tokens, you can take the following steps:
 
 1. Add the move-evm network to your EVM-compatible wallet.
 
@@ -123,7 +123,7 @@ module.exports = {
 
 ## Write your Solidity Smart Contract
 
-Here we we will be introducing minimal changes to our contracts to make your life easier. There is nothing intrisic here that is specific to our devnet. You can write your contracts as you would normally do.
+Here we we will be introducing minimal changes to our contracts to make your life easier. There is nothing intrinsic here that is specific to our devnet. You can write your contracts as you would normally do.
 
 Under `contracts/` open the file `Lock.sol`. This is the Smart Contract that you will be deploying to M1. You can replace the contents of this file with your own contract.
 

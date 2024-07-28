@@ -24,7 +24,7 @@ Before you begin this tutorial, you'll need to [Install Foundry](https://book.ge
 
 ## Fund your wallet with MOVE tokens
 
-Fund an EVM wallet address with some MOVE tokens using our [faucet](/general/UsingMovement/faucet). Another method to get get MOVE is to bridge from M1 to your EVM wallet using our [bridge](https://evm-bridge.devnet.m1.movementlabs.xyz/#/Faucet). To connect to our testnet and check if you have received the MOVE tokens, you can take the following steps:
+Fund an EVM wallet address with some MOVE tokens using our [faucet](/general/UsingMovement/faucet). Another method to get MOVE is to bridge from M1 to your EVM wallet using our [bridge](https://evm-bridge.devnet.m1.movementlabs.xyz/#/Faucet). To connect to our testnet and check if you have received the MOVE tokens, you can take the following steps:
 
 1. Add the move-evm network to your EVM-compatible wallet.
 
@@ -73,7 +73,7 @@ Add your private key to the .env file. You can obtain your private key from your
 
 ## Write your Solidity contract
 
-Here we we will be introducing minimal changes to our contracts to make your life easier. There is nothing intrisic here that is specific to our devnet. You can write your contracts as you would normally do.
+Here we we will be introducing minimal changes to our contracts to make your life easier. There is nothing intrinsic here that is specific to our devnet. You can write your contracts as you would normally do.
 
 Under `src/` open the file `Counter.sol`. This is the Smart Contract that you will be deploying to M1. You can replace the contents of this file with your own contract.
 

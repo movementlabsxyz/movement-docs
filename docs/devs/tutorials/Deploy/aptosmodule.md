@@ -8,7 +8,7 @@ sidebar_position: 1
 
 ## Requirements
 
-Make sure to have [Aptos CLI](/) installed.
+Make sure to have the [Aptos CLI](/) installed.
 
 ## Initialize your Environment
 
@@ -156,7 +156,7 @@ If your test has passed, you can now publish your module to the testnet.
 aptos move publish --named-addresses hello_blockchain=default
 ```
 
-Make sure to accept the transaction in the prompt. You can now check the status of your transaction using the movement CLI.
+Make sure to accept the transaction in the prompt. You can now check the status of your transaction using the Movement CLI.
 
 Afterwards, you can run the module on the testnet. You are going to set the message to "hello!".
 
