@@ -81,4 +81,4 @@ Custom RPC URL: `https://sui.imola.testnet.movementlabs.xyz`
 
 ## How to Get Testnet Tokens?
 
-To experiment with testnet tokens on the Movement Network, refer to our [Faucet](/Introduction/faucet) guide. This guide provides a straightforward process for acquiring testnet tokens to test transactions without real-world risks.
+To experiment with testnet tokens on the Movement Network, refer to our [Faucet](/general/UsingMovement/faucet) guide. This guide provides a straightforward process for acquiring testnet tokens to test transactions without real-world risks.

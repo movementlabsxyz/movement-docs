@@ -106,7 +106,7 @@ const config = {
             items: [
               {
                 label: "Tutorial",
-                to: "/docs/general/intro",
+                to: "/category/tutorials",
               },
             ],
           },
@@ -128,7 +128,7 @@ const config = {
             items: [
               {
                 label: "GitHub",
-                href: "https://github.com/movementlabs/docs",
+                href: "https://github.com/movementlabsxyz/movement-docs",
               },
             ],
           },

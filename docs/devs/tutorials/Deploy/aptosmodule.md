@@ -28,7 +28,7 @@ aptos move init --name hello_blockchain
 
 ```
 
-If you generated your project using the [movemntdev/movement-hack template](https://github.com/movementlabsxyz/movement-hack-temp), you should have a project with the following structure.
+If you generated your project using the [movementdev/movement-hack template](https://github.com/movementlabsxyz/movement-hack-temp), you should have a project with the following structure.
 
 ```
 .gitignore
