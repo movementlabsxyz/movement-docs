@@ -21,11 +21,11 @@ Faucet UI: https://mizu.testnet.suzuka.movementlabs.xyz/
 
 ### EVM
 
-Faucet UI: https://faucet.testnet.imola.movementlabs.xyz/
+Faucet UI: https://faucet.devnet.imola.movementlabs.xyz
 
 ### Sui
 
-Faucet UI: https://faucet.testnet.imola.movementlabs.xyz/
+Faucet UI: https://faucet.devnet.imola.movementlabs.xyz
 
 For developers: You can also use our CLI for additional functionalities.
 
@@ -48,11 +48,11 @@ curl -XPOST 'https://faucet.testnet.suzuka.movementlabs.xyz/mint?amount=10000&ad
 
 Imola Testnetwork
 
-`https://mevm.testnet.imola.movementlabs.xyz`
+`https://mevm.devnet.imola.movementlabs.xyz`
 
 ```bash
 
-curl -X POST "https://mevm.testnet.imola.movementlabs.xyz" \
+curl -X POST "https://mevm.devnet.imola.movementlabs.xyz" \
 -H "Content-Type: application/json" \
 -d '{
   "jsonrpc": "2.0",
@@ -67,10 +67,10 @@ curl -X POST "https://mevm.testnet.imola.movementlabs.xyz" \
 
 Devnet 
 
-`https://faucet.sui.imola.testnet.movementlabs.xyz`
+`https://faucet.devnet.baku.movementlabs.xyz`
 
 ```bash
-curl --location --request POST 'https://faucet.sui.imola.testnet.movementlabs.xyz' \
+curl --location --request POST 'https://faucet.devnet.baku.movementlabs.xyz' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "FixedAmountRequest": {

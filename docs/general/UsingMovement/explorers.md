@@ -14,13 +14,13 @@ https://blue.explorer.movementlabs.xyz/
 
 ### Sui
 
-https://explore.sui.imola.testnet.movementlabs.xyz/
+https://explorer.devnet.baku.movementlabs.xyz/
 
 
 
 ### MEVM 
 
-https://explorer.testnet.imola.movementlabs.xyz
+https://explorer.devnet.imola.movementlabs.xyz
 
 
 
