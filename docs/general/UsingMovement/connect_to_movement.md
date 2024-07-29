@@ -48,17 +48,17 @@ Move-EVM (MEVM) is our framework enabled by Fractal our EVM transpiler for runni
 
 :::info
 
-MEVM is currently accessible from our Imola Testnetwork which is our EVM enabled environment
+MEVM is currently accessible from our Imola Devnet which is our EVM enabled environment
 
 :::
 
 With [Metamask](https://metamask.io/)
 
 - Network Name: `Move-EVM`
-- Devnet Network RPC: `https://mevm.testnet.imola.movementlabs.xyz`
+- Devnet Network RPC: `https://mevm.devnet.imola.movementlabs.xyz`
 - Network ID: `30732`
 - Network Currency: `MOVE`
-- Explorer: `https://explorer.testnet.imola.movementlabs.xyz`
+- Explorer: `https://explorer.devnet.imola.movementlabs.xyz`
 
 ![add to metamask](./imgs/addmetamask.png)
 
@@ -68,13 +68,13 @@ Sui Move can be used with our legacy devnet. Wallets that support Sui with custo
 
 :::info
 
-The Sui environment is currently accessible from the Sui Imola Testnetwork  
+The Sui environment is currently accessible from the Baku Devnet
 
 :::
 
 With [Ethos](https://ethoswallet.xyz/)
 
-Custom RPC URL: `https://sui.imola.testnet.movementlabs.xyz`
+Custom RPC URL: `https://devnet.baku.movementlabs.xyz`
 
 ![add to ethos](./imgs/addethos.png)
 
