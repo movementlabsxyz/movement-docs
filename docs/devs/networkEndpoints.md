@@ -18,23 +18,23 @@ The Aptos Environment is currently accessible through the Suzuka Testnet.
 
 ## EVM Environment
 
-The MEVM environment is currently accessible through the Imola Testnet. 
+The MEVM environment is currently accessible through the Imola Devnet. 
 
 | Service          | URL                                                                    |
 |------------------|------------------------------------------------------------------------|
-| RPC              | [https://mevm.testnet.imola.movementlabs.xyz](https://mevm.testnet.imola.movementlabs.xyz)     |
-| Faucet UI        | [https://mizu.testnet.suzuka.movementlabs.xyz/](https://mizu.testnet.suzuka.movementlabs.xyz/)         |
+| RPC              | [https://mevm.devnet.imola.movementlabs.xyz](https://mevm.devnet.imola.movementlabs.xyz)     |
+| Faucet UI        | [https://faucet.devnet.imola.movementlabs.xyz](https://faucet.devnet.imola.movementlabs.xyz)         |
 | Chain ID         | 30732                                                                  |
-| Explorer         | [https://explorer.testnet.imola.movementlabs.xyz](https://explorer.testnet.imola.movementlabs.xyz)     |
-| Indexer          | [https://aptos.testnet.imola.movementlabs.xyz/indexer](https://aptos.testnet.imola.movementlabs.xyz/indexer) |
+| Explorer         | [https://explorer.devnet.imola.movementlabs.xyz](https://explorer.devnet.imola.movementlabs.xyz)     |
+| Indexer          | [https://aptos.devnet.imola.movementlabs.xyz/indexer/v1/graphql](https://aptos.devnet.imola.movementlabs.xyz/indexer/v1/graphql) |
 
 
 ## Sui Environment
 
-The Sui environment is currently accessible through the sui Imola Testnet. 
+The Sui environment is currently accessible through the Baku Devnet. 
 
 | Service          | URL                                                                    |
 |------------------|------------------------------------------------------------------------|
-| RPC              | [https://sui.imola.testnet.movementlabs.xyz](https://sui.imola.testnet.movementlabs.xyz)     |
-| Faucet UI        | [https://mizu.testnet.suzuka.movementlabs.xyz/](https://mizu.testnet.suzuka.movementlabs.xyz/)         |
-| Explorer         | [https://explore.sui.imola.testnet.movementlabs.xyz/](https://explore.sui.imola.testnet.movementlabs.xyz/)     |
+| RPC              | [https://devnet.baku.movementlabs.xyz](https://devnet.baku.movementlabs.xyz)     |
+| Faucet UI        | [https://faucet.devnet.imola.movementlabs.xyz](https://faucet.devnet.imola.movementlabs.xyz)         |
+| Explorer         | [https://explorer.devnet.baku.movementlabs.xyz](https://explorer.devnet.baku.movementlabs.xyz)     |
