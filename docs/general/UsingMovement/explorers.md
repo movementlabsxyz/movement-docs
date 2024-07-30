@@ -9,7 +9,7 @@ The Block Explorers are listed below for each testnetwork environment
 
 ### Aptos  
 
-https://blue.explorer.movementlabs.xyz/
+https://explorer.movementnetwork.xyz/?network=testnet
 
 
 ### Sui
