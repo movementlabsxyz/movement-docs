@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Aptos Move dApp
 
-In this guide, we will learn how to build an end-to-end "onchain bio" dApp. We'll start with the the Move contract. Then we'll build a React frontend and let wallets connect and register a bio.
+In this guide, we will learn how to build an end-to-end "onchain bio" dApp. We'll start with the  Move contract. Then we'll build a React frontend and let wallets connect and register a bio.
 
 ## Requirements
 
@@ -74,7 +74,7 @@ module onchain_bio_addr::onchain_bio {
   }
 
   public entry fun register(account: &signer, name: String, bio: String) acquires Bio {
-    // Check if an Bio already exists for the account
+    // Check if a Bio already exists for the account
     if (exists<Bio>(signer::address_of(account))) {
       // Remove the existing Bio
       let _old_Bio = move_from<Bio>(signer::address_of(account));
@@ -128,7 +128,7 @@ Aptos CLI is now set up for account 0x39883cbc29500a8bf79911ea1469e1c3b58104547a
 
 Now your move directory will contain a hidden .aptos folder containing a config.yaml file. You can view the contents of that file to see your private and public keys.
 
-In the the line under [addresses] in Move.toml, add your account address:
+In the line under [addresses] in Move.toml, add your account address:
 
 
 ```json
