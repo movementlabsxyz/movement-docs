@@ -16,20 +16,20 @@ MOVE refers to the native token across our networks. At the moment they are dist
 
 ### Aptos 
 
-Faucet UI: https://mizu.testnet.suzuka.movementlabs.xyz/
+Faucet UI: https://faucet.movementlabs.xyz/?network=aptos
 
 
 ### EVM
 
-Faucet UI: https://faucet.devnet.imola.movementlabs.xyz
+Faucet UI: https://faucet.movementlabs.xyz/?network=mevm
 
 ### Sui
 
-Faucet UI: https://faucet.devnet.imola.movementlabs.xyz
+Faucet UI: https://faucet.movementlabs.xyz/?network=sui
 
 For developers: You can also use our CLI for additional functionalities.
 
-## Faucet API URLS
+<!-- ## Faucet API URLS
 
 ### Aptos 
 
@@ -78,4 +78,4 @@ curl --location --request POST 'https://faucet.devnet.baku.movementlabs.xyz' \
     }
 }
 
-```
+``` -->
