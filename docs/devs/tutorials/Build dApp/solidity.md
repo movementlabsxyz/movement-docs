@@ -12,7 +12,7 @@ Make sure to have [Foundry](https://getfoundry.sh/) installed. If using Hardhat,
 
 ## Setup
 
-We will bootstrap our dapp the following with the command provided by Scaffold-ETH.
+We will bootstrap our dApp the following with the command provided by Scaffold-ETH.
 
 ```bash
 npx create-eth@latest
