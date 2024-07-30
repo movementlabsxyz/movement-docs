@@ -13,7 +13,7 @@ The Aptos Environment is currently accessible through the Suzuka Testnet.
 | RPC              | [https://aptos.testnet.suzuka.movementlabs.xyz/v1](https://aptos.testnet.suzuka.movementlabs.xyz/v1)     |
 | Faucet UI        | [https://faucet.movementlabs.xyz/?network=aptos](https://faucet.movementlabs.xyz/?network=aptos)         |
 | Faucet endpoint  | [https://faucet.testnet.suzuka.movementlabs.xyz/](https://faucet.testnet.suzuka.movementlabs.xyz/)     |
-| Explorer         | [https://blue.explorer.movementlabs.xyz/?network=testnet](https://blue.explorer.movementlabs.xyz/?network=testnet) |
+| Explorer         | [https://explorer.movementnetwork.xyz/?network=testnet](https://explorer.movementnetwork.xyz/?network=testnet) |
 
 
 ## EVM Environment
