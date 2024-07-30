@@ -12,6 +12,12 @@ Let’s start by installing a wallet. We recommend using Razor and Nightly, whic
 
 Install the Chrome extension for Razor from this [link](https://chromewebstore.google.com/detail/razor-wallet/fdcnegogpncmfejlfnffnofpngdiejii) and Nightly [here](https://chromewebstore.google.com/detail/nightly/fiikommddbeccaoicoejoniammnalkfa).
 
+:::tip
+
+Skip the setup and get more information about our [network endpoints here](/devs/networkEndpoints).
+
+:::
+
 Make sure to pin your wallet in the extension tab on the top right
 
 ![](./imgs/image1.png)
