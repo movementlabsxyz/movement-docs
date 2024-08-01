@@ -12,7 +12,7 @@ It will support Aptos Move, Sui Move, and also our embedded EVM interpreter MEVM
 
 ## Why Move?
 
-Move is a safe and secure programming language designed by Facebook for smart contracts that emphasizes ownership and safety. Assets in Move are represented as resources. Owing to Move's strong ownership model and explicit resource abilities, Move simplifies the development of safe smart contracts for common blockchain tasks such as transfer ownership of assets, minting, and destroying. 
+Move is a safe and secure programming language designed by Facebook for smart contracts that emphasize ownership and safety. Assets in Move are represented as resources. Owing to Move's strong ownership model and explicit resource abilities, Move simplifies the development of safe smart contracts for common blockchain tasks such as transferring ownership of assets, minting, and destroying. 
 
 The chart below compares common non-Move runtimes against Aptos and Sui Move runtimes, underscoring the different models and benefits of Move.
 
