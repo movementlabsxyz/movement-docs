@@ -166,10 +166,10 @@ export const mevm = {
   nativeCurrency: { name: "Move", symbol: "MOVE", decimals: 18 },
   rpcUrls: {
     default: {
-      http: ["https://mevm.testnet.imola.movementlabs.xyz"],
+      http: ["https://mevm.devnet.imola.movementlabs.xyz"],
     },
     public: {
-      http: ["https://mevm.testnet.imola.movementlabs.xyz"],
+      http: ["https://mevm.devnet.imola.movementlabs.xyz"],
     },
   },
   blockExplorers: {

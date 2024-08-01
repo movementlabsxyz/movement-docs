@@ -31,7 +31,7 @@ Fund an EVM wallet address with some MOVE tokens using our [faucet](/general/Usi
 | Property          | Value                                             |
 |-------------------|---------------------------------------------------|
 | Network Name      | mevm                                              |
-| Network RPC       | [https://mevm.testnet.imola.movementlabs.xyz](https://mevm.testnet.imola.movementlabs.xyz) |
+| Network RPC       | [https://mevm.devnet.imola.movementlabs.xyz](https://mevm.devnet.imola.movementlabs.xyz) |
 | Network ID        | 30732                                               |
 | Network Currency  | MOVE                                              |
 
@@ -118,7 +118,7 @@ This will deploy the contract available at src/Counter.sol. You can tinker with 
 To deploy your contract, run the following command:
 
 ```bash
-forge script CounterScript --broadcast --chain-id 30732 --rpc-url https://mevm.testnet.imola.movementlabs.xyz --legacy
+forge script CounterScript --broadcast --chain-id 30732 --rpc-url https://mevm.devnet.imola.movementlabs.xyz --legacy
 ```
 
 After running it, you should see a similar message in your console:
@@ -189,7 +189,7 @@ Make sure to replace `<counterAddress>` with the address of your deployed contra
 Now, all you have to do is run the following command:
 
 ```bash
-forge script InteractScript --broadcast --chain-id 30732 --rpc-url https://mevm.testnet.imola.movementlabs.xyz
+forge script InteractScript --broadcast --chain-id 30732 --rpc-url https://mevm.devnet.imola.movementlabs.xyz
 ```
 
 If you are successful, you should see the following message: 
