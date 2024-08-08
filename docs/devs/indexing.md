@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # Indexers
 
-There are three main components to indexing with the Movement Network. We first have the Suzuka full node which provides a gRPC stream of transactions. The gRPC stream of transactions are consumed by the Transaction Streaming Service which includes the following components:
+There are three main components to indexing with the Movement Network. We first have the Suzuka full node which provides a gRPC stream of transactions. The gRPC stream of transactions is consumed by the Transaction Streaming Service which includes the following components:
 
 - [**Cache Worker**](https://github.com/aptos-labs/aptos-core/tree/main/ecosystem/indexer-grpc/indexer-grpc-cache-worker): Pulls transactions from the node and stores them in Redis.  
   
@@ -14,7 +14,7 @@ There are three main components to indexing with the Movement Network. We first 
 - [**Indexer API**](https://github.com/aptos-labs/aptos-indexer-processors): Consumes the data-service providing a GraphQL API to dApps and other clients wishing to query the network.  
 
 
-The Indexer API also allows the development of customised processors.
+The Indexer API also allows the development of customized processors.
 
 ## Running the Transaction Streaming Service
 
