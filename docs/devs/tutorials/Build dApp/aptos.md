@@ -17,7 +17,7 @@ View an example of the finished dApp [here](https://github.com/movementlabsxyz/o
 Initialize your Aptos profile for your package development and add Movement as a custom network. Movement is our current blockchain that supports Aptos deployments.
 
 ```bash
-aptos init --network custom --rest-url https://aptos.testnet.movementlabs.xyz
+aptos init --network custom --rest-url https://aptos.testnet.suzuka.movementlabs.xyz/v1
 ```
 
 ## Setup 
