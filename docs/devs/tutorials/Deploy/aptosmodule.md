@@ -8,7 +8,7 @@ sidebar_position: 1
 
 ## Requirements
 
-Make sure to have the [Aptos CLI]((https://aptos.dev/tools/aptos-cli/install-cli/)) installed.
+Make sure to have the [Aptos CLI](https://aptos.dev/tools/aptos-cli/install-cli/) installed.
 
 ## Initialize your Environment
 
