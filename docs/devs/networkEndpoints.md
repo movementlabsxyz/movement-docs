@@ -38,6 +38,7 @@ The MEVM environment is currently accessible through the Imola Devnet.
 | Chain ID         | 30732                                                                  |
 | Explorer         | [https://explorer.devnet.imola.movementlabs.xyz](https://explorer.devnet.imola.movementlabs.xyz)     |
 | Indexer          | [https://aptos.devnet.imola.movementlabs.xyz/indexer/v1/graphql](https://aptos.devnet.imola.movementlabs.xyz/indexer/v1/graphql) |
+| Subgraph RPC     | [https://mevm2.devnet.imola.movementlabs.xyz/](https://mevm2.devnet.imola.movementlabs.xyz/)     |
 
 
 ## Sui Environment
