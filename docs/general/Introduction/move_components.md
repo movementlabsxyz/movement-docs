@@ -42,7 +42,7 @@ The Move Rollup framework provides a blueprint for creating Move-based rollups. 
 - **Bridge Contracts**: Facilitates asset deposits and withdrawals between L1 and the rollup.
 - **Sequencer**: Orders transactions.
 - **Data Availability Service**: Ensures transaction data accessibility to the settlement mechanism.
-- **Settlement Mechanism**: Verifies transaction execution correctness through various methods (e.g., zk-proofs, optimistic rollups, staked rollups).
+- **Settlement Mechanism**: Verifies transaction execution correctness through various methods (e.g., zk-proofs, optimistic rollups, fast finality settlement rollups).
 
 :::info
 The modularity of the Move Rollup framework allows developers to select different data availability solutions, settlement mechanisms, and sequencing options, customizing their rollups to best fit their application's needs.
