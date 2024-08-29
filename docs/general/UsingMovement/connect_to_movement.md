@@ -14,7 +14,7 @@ Install the Chrome extension for Razor from this [link](https://chromewebstore.g
 
 :::tip
 
-Skip the setup and get more information about our [network endpoints here](/devs/networkEndpoints).
+Skip the setup and get more information about our [network endpoints here](https://github.com/movementlabsxyz/movement-docs/blob/8d13b2a706d4301f14b6846839b46b1d9037cba5/docs/devs/networkEndpoints.md?plain=1#L4).
 
 :::
 
