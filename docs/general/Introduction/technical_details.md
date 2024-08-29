@@ -14,7 +14,7 @@ The Move Executor is a core component of the Movement-SDK, supporting both MoveV
 
 ## Staked Settlement Module
 
-The Staked Settlement Module is designed to provide fast finality for transactions within the Move Rollups network. By utilizing a network of attesters who stake assets to validate state transitions, this module ensures high economic security and reduces latency. Validators stake assets and attest to the correctness of state transitions, combining the security benefits of staking with the efficiency of rapid transaction finality.
+The Staked Settlement Module is designed to provide fast finality settlement for transactions within the Move Rollups network. By utilizing a network of attesters who stake assets to validate state transitions, this module ensures high economic security and reduces latency. Validators stake assets and attest to the correctness of state transitions, combining the security benefits of staking with the efficiency of rapid transaction finality.
 
 <!-- ![Staked Rollups](./images/staked_rollups.png) -->
 
@@ -27,7 +27,7 @@ The Staked Settlement Module is designed to provide fast finality for transactio
 ### Comparison with Other Rollups
 
 - Staked rollups do not require expensive proof generation equipment, unlike zk-rollups.
-- Staked rollups provide significantly reduced latency compared to both optimistic and zk-rollups, with finality in seconds.
+- Staked rollups provide significantly reduced latency compared to both optimistic and zk-rollups, with finality settlement in seconds.
 - Fast finality is crucial for interoperability and atomic cross-rollup transactions, making staked rollups an ideal solution for many applications.
 
 ## Decentralized Shared Sequencer (M1)
