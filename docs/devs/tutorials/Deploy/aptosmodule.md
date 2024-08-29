@@ -106,10 +106,10 @@ module hello_blockchain::message {
     }
 }
 
-```
+
 
 You will also need to add the following to `Move.toml`.
-
+```toml
 [package]
 name = "hello_blockchain"
 version = "0.0.1"
