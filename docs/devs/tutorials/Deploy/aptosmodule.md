@@ -10,6 +10,7 @@ sidebar_position: 1
 
 Ensure you have the [Aptos CLI](https://aptos.dev/tools/aptos-cli/install-cli/) installed.
 
+
 ## Initialize Your Environment
 
 1. **Initialize your Aptos profile** for package development and add Movement as a custom network:

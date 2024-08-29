@@ -82,7 +82,7 @@ Create an .env file
 touch .env
 ```
 
-Add your private key to the .env file. You can obtain your private key from your EVM wallet that you funded with MOV. For example, if you are using MetaMask, you can find your private key under Settings > Advanced > Export Private Key. Make sure to keep your private key safe and never share it with anyone.
+Add your private key to the .env file. You can obtain your private key from your EVM wallet that you funded with MOVE. For example, if you are using MetaMask, you can find your private key by clicking the three vertical dots next to the account you want to export. Account details > Show private key > Enter your password > Confirm > Hold to reveal Private Key. Make sure to keep your private key safe and never share it with anyone.
 
 `PRIVATE_KEY=<your private key>`
 
