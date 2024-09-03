@@ -10,6 +10,7 @@ sidebar_position: 1
 
 Ensure you have the [Aptos CLI](https://aptos.dev/tools/aptos-cli/install-cli/) installed.
 
+
 ## Initialize Your Environment
 
 1. **Initialize your Aptos profile** for package development and add Movement as a custom network:
@@ -105,10 +106,10 @@ module hello_blockchain::message {
     }
 }
 
-```
+
 
 You will also need to add the following to `Move.toml`.
-
+```toml
 [package]
 name = "hello_blockchain"
 version = "0.0.1"
