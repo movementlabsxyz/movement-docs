@@ -2,6 +2,7 @@
 import { themes as prismThemes } from "prism-react-renderer";
 import "dotenv/config";
 
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: "Movement Network | Movement",
@@ -27,7 +28,27 @@ const config = {
     defaultLocale: "en",
     locales: ["en"],
   },
+  plugins: [
+    [
+      "docusaurus-plugin-openapi-docs",
+      {
+        id: "api",
+        docsPluginId: "classic",
+        config: {
+          aptosnode: {
+            specPath: "apispec/node.yaml",
+            outputDir: "docs/api/node",
+            sidebarOptions: {
+              groupPathsBy: "tag",
+                categoryLinkSource: "tag",
+            },
+          },
+        },
+      },
+    ],
+  ],
 
+  themes: ["docusaurus-theme-openapi-docs"],
   presets: [
     [
       "classic",
@@ -35,6 +56,7 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
+          docItemComponent: "@theme/ApiItem",
           routeBasePath: "/",
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
@@ -85,6 +107,12 @@ const config = {
             sidebarId: "developersSidebar",
             position: "left",
             label: "Build",
+          },
+          {
+            type: "docSidebar",
+            sidebarId: "apiSidebar",
+            position: "left",
+            label: "API",
           },
           {
             type: 'search',
