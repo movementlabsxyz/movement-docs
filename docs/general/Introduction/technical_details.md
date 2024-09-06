@@ -21,7 +21,7 @@ The Staked Settlement Module is designed to provide fast finality settlement for
 ### Security Mechanism
 
 - **Ethereum Settlement**: Validators stake assets to provide economic security, ensuring significant financial interest in network integrity.
-- **zk and Optimistic Rollups**: zk-rollups offer security through validity proofs, while optimistic rollups rely on challenge periods for dispute resolution. Both methods have higher latency and computational costs.
+- **ZK and Optimistic Rollups**: zk-rollups offer security through validity proofs, while optimistic rollups rely on challenge periods for dispute resolution. Both methods have higher latency and computational costs.
 - **Staked Rollups**: Offer fast finality and high economic security without extensive proof generation or challenge periods, reducing latency and improving user experience compared to zk and optimistic rollups.
 
 ### Comparison with Other Rollups
