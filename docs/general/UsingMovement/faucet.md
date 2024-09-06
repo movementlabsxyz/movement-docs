@@ -19,7 +19,7 @@ MOVE refers to the native token across our networks. At the moment they are dist
 Faucet UI: https://faucet.movementlabs.xyz/?network=aptos
 
 
-### EVM
+### MEVM
 
 Faucet UI: https://faucet.movementlabs.xyz/?network=mevm
 
