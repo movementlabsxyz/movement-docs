@@ -28,7 +28,7 @@ movement init --skip-faucet
 
 :::info
 
-Due to current network load, we have restricted the faucet API to only accept requests from a Web UI. You mus include the `--skip-faucet` flag. The CLI cannot fund the account immediately, so it will not create an account for you automatically.
+Due to current network load, we have restricted the faucet API to only accept requests from a Web UI. You must include the `--skip-faucet` flag. The CLI cannot fund the account immediately, so it will not create an account for you automatically.
 
 :::
 
