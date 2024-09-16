@@ -4,46 +4,91 @@ sidebar_position: 1
 
 # Getting Started
 
-There are currently three environments for connecting to the Movement Network. Deciding which environment to connect to is as simple as understanding: what language are you developing in? There are environments for Aptos, EVM, and Sui. 
+Welcome to the Movement Network! This guide will help you start building on our blockchain quickly and efficiently. Whether you're a developer familiar with Aptos, EVM (Ethereum Virtual Machine), or Sui ecosystems, we've got you covered.
 
-The fastest way to start building on Movement is by interacting with our Testnetwork, if you already know your way around any of these ecosystems refer to our [Network Endpoints](/devs/networkEndpoints)
+## Choose Your Environment
 
-## Aptos
+The Movement Network currently supports three development environments:
 
-The Aptos Environment is currently accessible through the Suzuka Testnet.
+1. **Aptos Environment** (Suzuka Testnet)
+2. **MEVM Environment** (Imola Testnet)
+3. **Sui Environment** (Sui Imola Testnet)
 
-If you're building with Aptos move refer to [Install Aptos CLI](https://aptos.dev/en/build/cli#-install-the-aptos-cli) to get started. 
+Select the environment that aligns with your preferred programming language or ecosystem.
 
-Get all of the necessary [endpoints](/devs/networkEndpoints#aptos-environment) to start building.
+## Testnet Startup
 
-Get started with our [Aptos Tutorials](/devs/tutorials/Deploy/aptosmodule).
+If you are new to the ecosystem check out the [Your First Move Module](/devs/firstmove) guide which will guide you through the process of building your very first Move Module or Contract. 
 
+## Aptos Environment
 
-## MEVM
+### Get Started
 
-The MEVM environment is currently accessible through the Imola Testnet.
+1. **Set Up Your Development Environment**
 
-If you're building with Solidity check out our section for [Ethereum Developers](/category/evm-contracts).
+   - **Option 1:** Install the [Movement CLI](/devs/movementcli) to scaffold your project effortlessly.
+   - **Option 2:** If you're already familiar with Aptos, you can continue using the [Aptos CLI](https://aptos.dev/en/build/cli#-install-the-aptos-cli).
 
-Get all of the necessary [endpoints](/devs/networkEndpoints#evm-environment) to start building.
+2. **Access Network Endpoints**
 
-## Sui
+   - Obtain the necessary endpoints from our [Network Endpoints](/devs/networkEndpoints#aptos-environment) section to connect to the **Suzuka Testnet**.
 
-The Sui environment is currently accessible through the sui Imola Testnet.
+3. **Learn and Build**
 
-If you're building with Sui Move check out our section for [Sui Developers](/devs/tutorials/Deploy/suimodule)
+   - Dive into our [Aptos Tutorials](/devs/tutorials/Deploy/aptosmodule) to start deploying your first modules.
 
-Get all of the necessary [endpoints](/devs/networkEndpoints#sui-environment) to start building.
+## MEVM Environment
 
-## Faucet 
+### Get Started
 
-Refer to our documentation on [Faucets](/general/UsingMovement/faucet) to get started building with testnet tokens.
+1. **Set Up Your Development Environment**
 
-## Learning Move 
+   - Visit our section for [Ethereum Developers](/category/evm-contracts) for tools and resources tailored to Solidity development.
 
-If you are new to Movement, head to [Hack Movement](https://hack.movementlabs.xyz/), a crash course on developing for Movement, or [Move Language](https://aptos.dev/en/build/smart-contracts/book) to learn about the basics.
+2. **Access Network Endpoints**
 
-## Tutorials
+   - Get the necessary endpoints from our [Network Endpoints](/devs/networkEndpoints#evm-environment) section to connect to the **Imola Testnet**.
 
-We have a few [tutorials](/category/tutorials) available for you to try things out! Head to Tutorials and start hacking.
+3. **Learn and Build**
 
+   - Utilize your favorite Solidity tools to start building and deploying smart contracts.
+
+## Sui Environment
+
+### Get Started
+
+1. **Set Up Your Development Environment**
+
+   - Explore our section for [Sui Developers](/devs/tutorials/Deploy/suimodule) for guidance on setting up your Sui Move environment.
+
+2. **Access Network Endpoints**
+
+   - Retrieve the necessary endpoints from our [Network Endpoints](/devs/networkEndpoints#sui-environment) section to connect to the **Sui Imola Testnet**.
+
+3. **Learn and Build**
+
+   - Begin with our Sui tutorials to deploy your first modules and interact with the network.
+
+## Obtain Testnet Tokens
+
+Before deploying contracts or performing transactions, you'll need testnet tokens:
+
+- Visit our [Faucets](/general/UsingMovement/faucet) page to request tokens for your chosen environment.
+
+## Learn Move
+
+New to the Move programming language? Start learning here:
+
+- **[Hack Movement](https://hack.movementlabs.xyz/):** A crash course on developing for the Movement Network.
+- **[Move Language Book](https://aptos.dev/en/build/smart-contracts/book):** Comprehensive guide to understanding the basics of Move.
+
+## Tutorials and Resources
+
+Ready to expand your skills?
+
+- **[Tutorials](/category/tutorials):** Explore various tutorials to deepen your understanding and start hacking on the Movement Network.
+- **[Community Support:](http://discord.gg/movementlabsxyz)** Join our discord and engage in discussions with our developer community for support and updates.
+
+---
+
+By following this guide, you should have a clear path to start developing on the Movement Network using the environment that best suits your expertise. Happy building!
