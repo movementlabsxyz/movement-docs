@@ -21,7 +21,7 @@ Make sure to have [Sui CLI](https://docs.sui.io/guides/developer/getting-started
 Initialize your Sui profile for your package development and add M2 as a custom network. M2 is our current blockchain that supports Sui deployments.
 
 ```bash
-sui client new-env --rpc https://sui.devnet.m2.movementlabs.xyz:443 --alias m2
+sui client new-env --rpc https://devnet.baku.movementlabs.xyz:443 --alias m2
 ```
 
 Now switch to the M2 environment: 
@@ -80,10 +80,6 @@ module hello_world::hello_world {
         id: UID,
         text: string::String
     }
-    
-    public fun signature() : address {
-        @<address>
-    }
 
     public fun mint(ctx: &mut TxContext) {
         let object = HelloWorldObject {
@@ -92,9 +88,13 @@ module hello_world::hello_world {
         };
         transfer::public_transfer(object, tx_context::sender(ctx));
     }
-
 }
-
+```
+Change the edition from "2024.beta" to "legacy" if build has errors
+```toml
+[package]
+name = "hello_world"
+edition = "legacy" # edition = "legacy" to use legacy (pre-2024) Move
 ```
 
 After building your project, you can deploy it to the devnet:
