@@ -30,6 +30,44 @@ Welcome to the Movement Network! This guide will help you start building on our 
        <Tabs queryString="current-os">
 <!-- START:>>> MacOs >>> -->
             <TabItem value="macos" label="MacOs">
+            <Title>Option 1: Install Movement CLI via build from source (Linux/MacOS)</Title>
+                :::info
+                - Prerequisites:
+                    - Install [Rust Programming Language](https://www.rust-lang.org/tools/install)
+                    - [Git](https://git-scm.com/downloads)
+                    - [Cmake](https://cmake.org/download/)
+                    - [LLVM](https://releases.llvm.org/)
+                    - [libssl-dev](https://packages.ubuntu.com/jammy/libssl-dev) and [libclang-dev](https://packages.ubuntu.com/jammy/libclang-dev)
+                :::
+            - Step 1: Clone the Aptos-core repo & go into the newly created directory
+              ```bash title="Terminal"
+              git clone https://github.com/movementlabsxyz/aptos-core.git && cd aptos-core
+              ```
+            <details>
+                <summary>Install all prerequites using automatic script</summary>
+                - Step 1: Using the Automatic Script to install prerequisites:
+                  ```bash title="Terminal"
+                  ./scripts/dev_setup.sh
+                  ```
+                - Step 2: Update your current shell environment:
+                  ```bash title="Terminal"
+                  source ~/.cargo/env
+                  ```
+                - Step 3: Ensure you have `cargo` installed by following this commands:
+                  ```bash title="Terminal"
+                  cargo --version
+                  ```
+            </details>
+            - Step 2: Build the Aptos CLI tool:
+              ```bash title="Terminal"
+              cargo build -p movement
+              ```
+              > The binary will be available at `target/debug/movement`
+            - Step 3: Move this executable to a place in your path
+              ```
+              sudo cp target/debug/movement /opt/homebrew/bin/
+              ```
+            <Title>Option 2: Install CLI via homebrew (Linux/MacOS)</Title>
             - Ensure you have `homebrew` installed
             - If not, you need to install through [Homebrew](https://brew.sh) or you can install it on terminal:
             ```bash title="Install Homebrew"
@@ -52,27 +90,8 @@ Welcome to the Movement Network! This guide will help you start building on our 
             :::warning
             Note: If you are using an ARM architecture, you will have to install using the steps here:
             :::
-            ### Option 1: Install via Python Script
-                For Linux, the easiest way to install the Aptos CLI tool is via Python script.
-            - Step 1: Ensure you have Python 3.6+ or install on [python.org](https://python.org)
-            - Step 2: Please enter one of the commands from the list below in the terminal to install Aptos CLI: [Option 2](#option-2-install-aptos-cli-via-build-from-source)
-              ```bash
-              curl -fsSL "https://aptos.dev/scripts/install_cli.py" | python3
-              ```
-              or install by wget:
-              ```bash
-              wget -qO- "https://aptos.dev/scripts/install_cli.py" | python3
-              ```
-            - Step 3: Verify Aptos CLI is installed
-              ```bash
-              aptos help
-              ```
-            :::tip
-            If you would like to update the Aptos CLI to the latest version, you can run `aptos update`.
-            :::
-   <!-- END:<<< Linux Option 1 - Install CLI <<< -->
-   <!-- START:>>> Linux Option 2 - Install CLI >>> -->
-            ### Option 2: Install Aptos CLI via build from source (Linux/MacOS)
+            <Title>Option 1: Install Movement CLI via build from source (Linux/MacOS)</Title>
+
                 :::info
                 - Prerequisites:
                     - Install [Rust Programming Language](https://www.rust-lang.org/tools/install)
@@ -83,9 +102,8 @@ Welcome to the Movement Network! This guide will help you start building on our 
                 :::
             - Step 1: Clone the Aptos-core repo & go into the newly created directory
               ```bash title="Terminal"
-              git clone https://github.com/aptos-labs/aptos-core.git && cd aptos-core
+              git clone https://github.com/movementlabsxyz/aptos-core.git && cd aptos-core
               ```
-
             <details>
                 <summary>Install all prerequites using automatic script</summary>
                 - Step 1: Using the Automatic Script to install prerequisites:
@@ -103,13 +121,34 @@ Welcome to the Movement Network! This guide will help you start building on our 
             </details>
             - Step 2: Build the Aptos CLI tool:
               ```bash title="Terminal"
-              cargo build --package aptos --profile cli
+              cargo build -p movement
               ```
-              > The binary will be available at `target/cli/aptos`
+              > The binary will be available at `target/debug/movement`
             - Step 3: Move this executable to a place in your path
               ```
               sudo cp target/cli/aptos /usr/local/bin
               ```
+   <!-- END:<<< Linux Option 1 - Install CLI <<< -->
+---
+   <!-- START:>>> Linux Option 2 - Install CLI >>> -->
+            <Title>Option 2: Install via Python Script</Title>
+                For Linux, the easiest way to install the Aptos CLI tool is via Python script.
+            - Step 1: Ensure you have Python 3.6+ or install on [python.org](https://python.org)
+            - Step 2: Please enter one of the commands from the list below in the terminal to install Aptos CLI: [Option 2](#option-2-install-aptos-cli-via-build-from-source)
+              ```bash
+              curl -fsSL "https://aptos.dev/scripts/install_cli.py" | python3
+              ```
+              or install by wget:
+              ```bash
+              wget -qO- "https://aptos.dev/scripts/install_cli.py" | python3
+              ```
+            - Step 3: Verify Aptos CLI is installed
+              ```bash
+              aptos help
+              ```
+            :::tip
+            If you would like to update the Aptos CLI to the latest version, you can run `aptos update`.
+            :::
             </TabItem>
    <!-- END:<<< Linux Option 2 - Install CLI <<< -->
    <!-- START:>>> Windows - Install CLI >>> -->
