@@ -1,5 +1,6 @@
 // @ts-check
 import { themes as prismThemes } from "prism-react-renderer";
+import tailwindPlugin from './plugins/tailwind-config.cjs';
 import "dotenv/config";
 
 
@@ -29,6 +30,7 @@ const config = {
     locales: ["en"],
   },
   plugins: [
+    tailwindPlugin,
     [
       "docusaurus-plugin-openapi-docs",
       {
