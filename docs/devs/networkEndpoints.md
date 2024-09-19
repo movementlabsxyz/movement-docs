@@ -14,6 +14,8 @@ The Aptos Environment is currently accessible through the Suzuka Testnet.
 | Faucet UI        | [https://faucet.movementlabs.xyz/?network=aptos](https://faucet.movementlabs.xyz/?network=aptos)         |
 | Faucet endpoint  | [https://faucet.testnet.suzuka.movementlabs.xyz/](https://faucet.testnet.suzuka.movementlabs.xyz/)     |
 | Explorer         | [https://explorer.movementnetwork.xyz/?network=testnet](https://explorer.movementnetwork.xyz/?network=testnet) |
+| Indexer API Explorer              | [https://indexer.testnet.suzuka.movementlabs.xyz/console/api/api-explorer](https://indexer.testnet.suzuka.movementlabs.xyz/console/api/api-explorer)     |
+| Indexer GraphQl Endpoint        | [https://indexer.testnet.suzuka.movementlabs.xyz/v1/graphql](https://indexer.testnet.suzuka.movementlabs.xyz/v1/graphql)         |
 
 ## Aptos Devnet Environment
 
