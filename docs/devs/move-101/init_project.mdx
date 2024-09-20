@@ -1,0 +1,159 @@
+---
+title: Initialize Move Project
+description: How to initilize a move project & configuration movement environment
+sidebar_position: 1
+---
+
+import Divider from '@site/src/components/Divider'
+import Tabs from '@theme/Tabs'
+import TabItem from '@theme/TabItem';
+
+# Install Movement CLI
+:::note
+- Ensure you have [Installed Movement CLI](/devs/getstarted.md#)
+- If you want to learn more about the Move Programming Language in depth, you should visit [this link](https://hack.movementlabs.xyz).
+:::
+
+## Step 1: Initialize the Movement Environment
+Open your command prompt or terminal and navigate to the directory where you want to create your project. Then, initialize the CLI with the following command:
+<Tabs groupId="system">
+    <TabItem value="movement" label="Movement CLI" default>
+        ```bash title="Terminal"
+        movement init --skip-faucet --network custom --rest-url https://aptos.testnet.suzuka.movementlabs.xyz/v1
+        ```
+        :::info
+        Due to current network load, we have restricted the faucet API to only accept requests from a Web UI. You must include the `--skip-faucet` flag. The CLI cannot fund the account immediately, so it will not create an account for you automatically.
+        :::
+
+        ### CLI Prompts
+        #### 1. Choose Network
+        > You'll be prompted to select a network:
+        ```bash title="Enter to choose default network"
+        Choose network from [devnet, testnet, local, custom | defaults to devnet]:
+        ```
+
+        #### 2. Enter Private Key
+        > You'll be asked to enter your private key
+        ```bash title="Enter to generate a new one"
+        Enter your private key as a hex literal (0x...) [Current: Redacted | No input: Generate new key (or keep one if present)]
+        ```
+        - If you have an existing private key, enter it now.
+        - If not, simply press **Enter** to generate a new one.
+        #### 3. Initialization Success
+        > After completing the prompts, you should see a message like:
+        ```
+        Movement CLI is now set up for account 0xYOUR_ACCOUNT_ADDRESS as profile default!
+See the account here: https://explorer.movementlabs.xyz/account/0xYOUR_ACCOUNT_ADDRESS?network=testnet
+Run `movement --help` for more information about commands
+{
+  "Result": "Success"
+}
+        ```
+    </TabItem>
+    <TabItem value="aptos" label="Aptos CLI" default>
+        ```bash title="Terminal"
+        aptos init --skip-faucet --network custom --rest-url https://aptos.testnet.suzuka.movementlabs.xyz/v1
+        ```
+
+        :::info
+        Due to current network load, we have restricted the faucet API to only accept requests from a Web UI. You must include the `--skip-faucet` flag. The CLI cannot fund the account immediately, so it will not create an account for you automatically.
+        :::
+
+        ### CLI Prompts
+        #### 1. Enter Private Key
+        > You'll be asked to enter your private key
+        ```bash title="Enter to generate a new one"
+        Enter your private key as a hex literal (0x...) [Current: Redacted | No input: Generate new key (or keep one if present)]
+        ```
+        - If you have an existing private key, enter it now.
+        - If not, simply press **Enter** to generate a new one.
+        #### 2. Initialization Success
+        > After completing the prompts, you should see a message like:
+        ```
+        Aptos CLI is now set up for account 0xYOUR_ACCOUNT_ADRESS as profile default!
+ See the account here: https://explorer.aptoslabs.com/account/0xYOUR_ACCOUNT_ADRESS?network=custom
+ Run `aptos --help` for more information about commands
+{
+  "Result": "Success"
+}
+        ```
+<Divider/>
+
+    </TabItem>
+</Tabs>
+---
+## Step 2: Scaffold the Move Project
+> Now, let's set up the structure for your Move module.
+### Initialize the Move Project
+<Tabs groupId="system">
+    <TabItem value="movement" label="Movement CLI" default>
+        ```bash title="Run the floowing command on Terminal"
+        movement move init --name hello_blockchain
+        ```
+        ```bash title="Folders and files for your Move project"
+        ├── .movement            // Configuration file for your Move project.
+           ├── config.yaml
+        ├── Move.toml         // Configuration file for your Move project.
+        ├── scripts           // Directory for transaction scripts (optional).
+        ├── sources           // Directory where you'll write your Move modules.
+        └── tests             // Directory for writing unit tests.
+        ```
+    </TabItem>
+    <TabItem value="aptos" label="Aptos CLI">
+        ```bash title="Run the floowing command on Terminal"
+        aptos move init --name hello_blockchain
+        ```
+        ```bash title="Folders and files for your Move project"
+        ├── .aptos            // Directory for your Move Environment.
+        │   └── config.yaml   // Environemtn Configuration file for your move project
+        ├── Move.toml         // Configuration file for your Move project.
+        ├── scripts           // Directory for transaction scripts (optional).
+        ├── sources           // Directory where you'll write your Move modules.
+        └── tests             // Directory for writing unit tests.
+        ```
+    </TabItem>
+</Tabs>
+---
+## Step 3: Fund Your Account
+> Before deploying contracts, you'll need testnet tokens.
+  1. Copy Your Account Address
+     - Make note of your account address from the initialization success message or inside the `./aptos/config.yaml` file
+     ```yaml showLineNumbers
+     ---
+     profiles:
+       default:
+         network: Testnet/Custom/Devnet/Mainnet
+         private_key: "YOUR_PRIVATE_KEY"
+         public_key: "YOUR_PUBLIC_KEY"
+         account: YOUR_ACCOUNT_ADDRESS
+         rest_url: "https://aptos.testnet.suzuka.movementlabs.xyz/v1/"
+         faucet_url: "https://faucet.testnet.suzuka.movementlabs.xyz/" (optional)
+     ```
+  2. Visit the Faucet & Request tokens
+    - Go to the [Movement Labs Web Faucet](https://faucet.movementlabs.xyz/?network=aptos) to fund your account
+  3. Check your tokens
+     <Tabs groupId="system">
+        <TabItem value="movement" label="Movement CLI" default>
+            ```bash
+            movement account balance --account ${YOUR_PUBLIC_KEY}
+            ```
+        </TabItem>
+        <TabItem value="aptos" label="Aptos CLI">
+            ```bash
+            aptos account balance --account ${YOUR_PUBLIC_KEY}
+            ```
+        </TabItem>
+     </Tabs>
+     ```json showLineNumbers
+     {
+       "Result": [
+         {
+           "asset_type": "coin",
+           "coin_type": "0x1::aptos_coin::AptosCoin",
+           "balance": 999999700
+         }
+       ]
+     }
+     ```
+
+> This is how you initialize a project on Movement through the Movement CLI or Aptos CLI. In the following sections, we will work together to implement contracts, create resources, and modules in the clearest way possible.
