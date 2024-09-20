@@ -1,6 +1,7 @@
 ---
 sidebar_position: 1
 ---
+
 import Tabs from '@theme/Tabs'
 import TabItem from '@theme/TabItem';
 import InstallIcon from '../assets/terminal.svg'
@@ -25,7 +26,7 @@ Welcome to the Movement Network! This guide will help you start building on our 
 <Tabs>
 <!-- START:>>> Aptos Environment >>> -->
     <TabItem value="aptos" label="Aptos Environment (Suzuka Testnet)" default>
-       <Title icon={<InstallIcon />} textSize="2xl"> Install the Aptos CLI</Title>
+       <Title icon={<InstallIcon />} textSize="2xl"> Install the Movement CLI</Title>
        <Divider />
        <Tabs queryString="current-os">
 <!-- START:>>> MacOs >>> -->
@@ -119,19 +120,24 @@ Welcome to the Movement Network! This guide will help you start building on our 
                   cargo --version
                   ```
             </details>
-            - Step 2: Build the Aptos CLI tool:
+            - Step 2: Build the Movement CLI tool:
               ```bash title="Terminal"
               cargo build -p movement
               ```
               > The binary will be available at `target/debug/movement`
             - Step 3: Move this executable to a place in your path
               ```
-              sudo cp target/cli/aptos /usr/local/bin
+              sudo cp target/debug/movement /usr/local/bin
               ```
    <!-- END:<<< Linux Option 1 - Install CLI <<< -->
 ---
+            <Title>Option 2: Install Aptos CLI ( If you familar with Aptos )</Title>
+            <Divider/>
+            - Aptos CLI: [Installation Guide](https://aptos.dev/en/build/cli#-install-the-aptos-cli)
+
    <!-- START:>>> Linux Option 2 - Install CLI >>> -->
-            <Title>Option 2: Install via Python Script</Title>
+            <Title>Option 3: Install via Python Script</Title>
+            <Divider/>
                 For Linux, the easiest way to install the Aptos CLI tool is via Python script.
             - Step 1: Ensure you have Python 3.6+ or install on [python.org](https://python.org)
             - Step 2: Please enter one of the commands from the list below in the terminal to install Aptos CLI: [Option 2](#option-2-install-aptos-cli-via-build-from-source)
@@ -164,7 +170,7 @@ Welcome to the Movement Network! This guide will help you start building on our 
             :::
             - Step 1: Clone the Aptos-core repo & go into the newly created directory
               ```bash title="Terminal"
-              git clone https://github.com/aptos-labs/aptos-core.git && cd aptos-core
+              git clone https://github.com/movementlabsxyz/aptos-core.git && cd aptos-core
               ```
 
             <details>
@@ -177,9 +183,9 @@ Welcome to the Movement Network! This guide will help you start building on our 
             </details>
             - Step 2: Build the Aptos CLI tool:
               ```bash title="Terminal"
-              cargo build --package aptos --profile cli
+              cargo build -p movement
               ```
-              > The binary will be available at `target\cli\aptos.exe`
+              > The binary will be available at `target\debug\movement.exe`
             - Step 3: (Optional) Move this executable to a place in your PATH
             </TabItem>
    <!-- END:<<< Windows - Install CLI <<< -->
