@@ -140,7 +140,7 @@ Welcome to the Movement Network! This guide will help you start building on our 
             <Divider/>
                 For Linux, the easiest way to install the Aptos CLI tool is via Python script.
             - Step 1: Ensure you have Python 3.6+ or install on [python.org](https://python.org)
-            - Step 2: Please enter one of the commands from the list below in the terminal to install Aptos CLI: [Option 2](#option-2-install-aptos-cli-via-build-from-source)
+            - Step 2: Please enter one of the commands from the list below in the terminal to install Aptos CLI
               ```bash
               curl -fsSL "https://aptos.dev/scripts/install_cli.py" | python3
               ```
