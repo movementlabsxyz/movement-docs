@@ -278,6 +278,10 @@ npx hardhat run scripts/withdraw.js --network m1
 If you are succesful, you should see the following message:
 
 ```
+Lock address: <lockAddress>
+Deployer address: <yourAddress>
+Current balance of <yourAddress> is <xValue> ETH
+Withdrawn <xValue> ETH from <lockAddress> to <yourAddress>
 Balance after withdrawal of <yourAddress> is <xValue> ETH
 sum of previous balance and withdrawn value: <xValue>
 ```
