@@ -12,11 +12,6 @@ The Block Explorers are listed below for each testnetwork environment
 https://explorer.movementnetwork.xyz/?network=testnet
 
 
-### Sui
-
-https://explorer.devnet.baku.movementlabs.xyz/
-
-
 
 ### MEVM 
 

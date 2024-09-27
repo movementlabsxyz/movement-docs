@@ -117,10 +117,10 @@ contract PythExample {
 
 This snippet includes the instantiation of the `IPyth` interface, updates the price feeds, and fetches the current price for a given price feed ID. You can customize the `updatePriceAndFetch` function as needed for your application.
 
-## Aptos & Sui Move
+## Aptos Move
 
 
-The Pyth smart contract is deployed on both Aptos and Sui Move on the Movement chain on these addresses:
+The Pyth smart contracts are deployed on the Movement Network on these addresses:
 
 | Named Address | Testnet Value                                                                                                  | Devnet Value                                                                                                  |
 |---------------|----------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
