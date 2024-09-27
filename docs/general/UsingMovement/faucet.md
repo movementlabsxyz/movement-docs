@@ -23,11 +23,7 @@ Faucet UI: https://faucet.movementlabs.xyz/?network=aptos
 
 Faucet UI: https://faucet.movementlabs.xyz/?network=mevm
 
-### Sui
 
-Faucet UI: https://faucet.movementlabs.xyz/?network=sui
-
-For developers: You can also use our CLI for additional functionalities.
 
 <!-- ## Faucet API URLS
 
@@ -62,20 +58,5 @@ curl -X POST "https://mevm.devnet.imola.movementlabs.xyz" \
 }'
 
 ```
-
-### Sui
-
-Devnet 
-
-`https://faucet.devnet.baku.movementlabs.xyz`
-
-```bash
-curl --location --request POST 'https://faucet.devnet.baku.movementlabs.xyz' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "FixedAmountRequest": {
-        "recipient": "<sui-address>"
-    }
-}
 
 ``` -->
