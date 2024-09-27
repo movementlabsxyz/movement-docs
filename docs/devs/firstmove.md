@@ -402,4 +402,3 @@ In this tutorial, you've:
 We're excited to see you continue on journey into the Move language!
 
 **Happy coding!**
-
