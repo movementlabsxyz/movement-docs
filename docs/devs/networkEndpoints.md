@@ -60,7 +60,6 @@ Additional Public EVM Endpoints
 |------------------|------------------------------------------------------------------------|
 | RPC              | [https://mevm2.devnet.imola.movementnetwork.xyz ](https://mevm2.devnet.imola.movementnetwork.xyz)     |
 | RPC       | [https://mevm4.devnet.imola.movementnetwork.xyz](https://mevm4.devnet.imola.movementnetwork.xyz)         |
-| Chain ID         | 30732                                                                  |
 
 
 :::info
