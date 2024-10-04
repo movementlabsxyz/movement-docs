@@ -4,18 +4,30 @@ sidebar_position: 4
 
 # Network Endpoints
 
+:::info
+
+This page contains public endpoints that may at times be subject to rate limits. 
+
+:::
+
 ## Aptos Environment
 
 The Aptos Environment is currently accessible through the Suzuka Testnet. 
 
 | Service          | URL                                                                    |
 |------------------|------------------------------------------------------------------------|
-| RPC              | [https://aptos.testnet.suzuka.movementlabs.xyz/v1](https://aptos.testnet.suzuka.movementlabs.xyz/v1)     |
-| Faucet UI        | [https://faucet.movementlabs.xyz/?network=aptos](https://faucet.movementlabs.xyz/?network=aptos)         |
-| Faucet endpoint  | [https://faucet.testnet.suzuka.movementlabs.xyz/](https://faucet.testnet.suzuka.movementlabs.xyz/)     |
+| RPC              | [https://testnet.suzuka.movementnetwork.xyz/v1](https://testnet.suzuka.movementnetwork.xyz/v1)     |
+| Faucet UI        | [https://faucet.movementnetwork.xyz/?network=aptos](https://faucet.movementlabs.xyz/?network=aptos)         |
+| Faucet endpoint  | [Authorized Access only Please use Web UI Faucet](https://faucet.testnet.suzuka.movementlabs.xyz/)     |
 | Explorer         | [https://explorer.movementnetwork.xyz/?network=testnet](https://explorer.movementnetwork.xyz/?network=testnet) |
-| Indexer API Explorer              | [https://indexer.testnet.suzuka.movementlabs.xyz/console/api/api-explorer](https://indexer.testnet.suzuka.movementlabs.xyz/console/api/api-explorer)     |
+| Indexer API Explorer              | [https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.testnet.suzuka.movementnetwork.xyz%2Fv1%2Fgraphql](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.testnet.suzuka.movementnetwork.xyz%2Fv1%2Fgraphql)     |
 | Indexer GraphQl Endpoint        | [https://indexer.testnet.suzuka.movementlabs.xyz/v1/graphql](https://indexer.testnet.suzuka.movementlabs.xyz/v1/graphql)         |
+
+:::info
+
+Indexer currently requires an authorization token which is being provided to a limited number of teams. We are working to make this available for regular use very soon. 
+
+:::
 
 ## Aptos Devnet Environment
 
@@ -35,12 +47,21 @@ The MEVM environment is currently accessible through the Imola Devnet.
 
 | Service          | URL                                                                    |
 |------------------|------------------------------------------------------------------------|
-| RPC              | [https://mevm.devnet.imola.movementlabs.xyz](https://mevm.devnet.imola.movementlabs.xyz)     |
-| Faucet UI        | [https://faucet.movementlabs.xyz/?network=mevm](https://faucet.movementlabs.xyz/?network=mevm)         |
+| RPC              | [https://mevm.devnet.imola.movementnetwork.xyz ](https://mevm.devnet.imola.movementnetwork.xyz )     |
+| Faucet UI        | [https://faucet.movementnetwork.xyz/?network=mevm](https://faucet.movementlabs.xyz/?network=mevm)         |
 | Chain ID         | 30732                                                                  |
-| Explorer         | [https://explorer.devnet.imola.movementlabs.xyz](https://explorer.devnet.imola.movementlabs.xyz)     |
+| Explorer         | [https://explorer.devnet.imola.movementnetwork.xyz](https://explorer.devnet.imola.movementnetwork.xyz)     |
 | Indexer          | [https://aptos.devnet.imola.movementlabs.xyz/indexer/v1/graphql](https://aptos.devnet.imola.movementlabs.xyz/indexer/v1/graphql) |
 | Subgraph RPC     | [https://mevm2.devnet.imola.movementlabs.xyz/](https://mevm2.devnet.imola.movementlabs.xyz/)     |
+
+Additional Public EVM Endpoints
+
+| Service          | URL                                                                    |
+|------------------|------------------------------------------------------------------------|
+| RPC              | [https://mevm2.devnet.imola.movementnetwork.xyz ](https://mevm2.devnet.imola.movementnetwork.xyz)     |
+| RPC       | [https://mevm4.devnet.imola.movementnetwork.xyz](https://mevm4.devnet.imola.movementnetwork.xyz)         |
+| Chain ID         | 30732                                                                  |
+
 
 :::info
 
