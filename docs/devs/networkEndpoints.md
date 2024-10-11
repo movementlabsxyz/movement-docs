@@ -16,8 +16,8 @@ The Movement Testnetwork with Aptos Move
 
 | Service          | URL                                                                    |
 |------------------|------------------------------------------------------------------------|
-| RPC              | [https://aptos.testnet.movementlabs.xyz/v1](https://aptos.testnet.movementlabs.xyz/v1)     |
-| Faucet endpoint  | [https://faucet.testnet.movementlabs.xyz](https://faucet.testnet.movementlabs.xyz)     |
+| RPC              | [https://testnet.movementnetwork.xyz/v1](https://testnet.movementnetwork.xyz/v1)     |
+| Faucet endpoint  | [https://faucet.testnet.movementlabs.xyz](https://faucet.testnet.movementnetwork.xyz)     |
 | Explorer         | [https://explorer.movementlabs.xyz/ ](https://explorer.movementlabs.xyz/ ) |
 
 
