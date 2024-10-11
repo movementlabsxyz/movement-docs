@@ -10,9 +10,20 @@ This page contains public endpoints that may at times be subject to rate limits.
 
 :::
 
-## Aptos Environment
+## Movement Testnet: Aptos Environment
 
-The Aptos Environment is currently accessible through the Suzuka Testnet. 
+The Movement Testnetwork with Aptos Move
+
+| Service          | URL                                                                    |
+|------------------|------------------------------------------------------------------------|
+| RPC              | [https://testnet.movementnetwork.xyz/v1](https://testnet.movementnetwork.xyz/v1)     |
+| Faucet endpoint  | [https://faucet.testnet.movementnetwork.xyz](https://faucet.testnet.movementnetwork.xyz)     |
+| Explorer         | [https://explorer.movementlabs.xyz/ ](https://explorer.movementlabs.xyz/ ) |
+
+
+## Suzuka Testnet: Aptos Environment Environment
+
+Legacy Testnetwork with Aptos Move. 
 
 | Service          | URL                                                                    |
 |------------------|------------------------------------------------------------------------|
