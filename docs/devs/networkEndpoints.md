@@ -10,18 +10,8 @@ This page contains public endpoints that may at times be subject to rate limits.
 
 :::
 
-## Movement Testnet: Aptos Environment
 
-The Movement Testnetwork with Aptos Move
-
-| Service          | URL                                                                    |
-|------------------|------------------------------------------------------------------------|
-| RPC              | [https://testnet.movementnetwork.xyz/v1](https://testnet.movementnetwork.xyz/v1)     |
-| Faucet endpoint  | [https://faucet.testnet.movementnetwork.xyz](https://faucet.testnet.movementnetwork.xyz)     |
-| Explorer         | [https://explorer.movementlabs.xyz/ ](https://explorer.movementlabs.xyz/ ) |
-
-
-## Suzuka Testnet: Aptos Environment Environment
+## Movement Suzuka Testnet: Aptos Environment Environment
 
 Legacy Testnetwork with Aptos Move. 
 
@@ -31,14 +21,25 @@ Legacy Testnetwork with Aptos Move.
 | Faucet UI        | [https://faucet.movementnetwork.xyz/?network=aptos](https://faucet.movementlabs.xyz/?network=aptos)         |
 | Faucet endpoint  | [Authorized Access only Please use Web UI Faucet](https://faucet.testnet.suzuka.movementlabs.xyz/)     |
 | Explorer         | [https://explorer.movementnetwork.xyz/?network=testnet](https://explorer.movementnetwork.xyz/?network=testnet) |
-| Indexer API Explorer              | [https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.testnet.suzuka.movementnetwork.xyz%2Fv1%2Fgraphql](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.testnet.suzuka.movementnetwork.xyz%2Fv1%2Fgraphql)     |
-| Indexer GraphQl Endpoint        | [https://indexer.testnet.suzuka.movementlabs.xyz/v1/graphql](https://indexer.testnet.suzuka.movementlabs.xyz/v1/graphql)         |
 
-:::info
+<br />
 
-Indexer currently requires an authorization token which is being provided to a limited number of teams. We are working to make this available for regular use very soon. 
+:::warning
+
+The Movement Beta Testnet below is currently designated for infrastructure partners to start testing deployments. Please be aware that the Movement Testnet may undergo state resets at this time. If you’re building a dApp, we recommend using the Suzuka Testnet above for a more stable environment.   
 
 :::
+
+
+## Movement Beta Testnet: Aptos Environment
+
+The Movement Testnetwork with Aptos Move
+
+| Service          | URL                                                                    |
+|------------------|------------------------------------------------------------------------|
+| RPC              | [https://testnet.movementnetwork.xyz/v1](https://testnet.movementnetwork.xyz/v1)     |
+| Faucet endpoint  | [https://faucet.testnet.movementnetwork.xyz](https://faucet.testnet.movementnetwork.xyz)     |
+| Explorer         | [https://explorer.movementlabs.xyz/ ](https://explorer.movementlabs.xyz/ ) |
 
 ## Aptos Devnet Environment
 
