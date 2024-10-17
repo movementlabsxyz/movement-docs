@@ -11,7 +11,7 @@ This page contains public endpoints that may at times be subject to rate limits.
 :::
 
 
-## Movement Suzuka Testnet: Aptos Environment Environment
+## Movement Suzuka Testnet: Aptos Environment
 
 Legacy Testnetwork with Aptos Move. 
 
@@ -24,14 +24,14 @@ Legacy Testnetwork with Aptos Move.
 
 <br />
 
+
+## Movement Bardock Testnet: Aptos Environment
+
 :::warning
 
-The Movement Beta Testnet below is currently designated for infrastructure partners to start testing deployments. Please be aware that the Movement Testnet may undergo state resets at this time. If you’re building a dApp, we recommend using the Suzuka Testnet above for a more stable environment.   
+The Movement Bardock Testnet is intended for infrastructure and validator design partners to begin testing deployments. Please note that the Bardock Testnet may experience state resets during this phase. If you’re developing a dApp, we recommend using the more stable Suzuka Testnet.  
 
 :::
-
-
-## Movement Beta Testnet: Aptos Environment
 
 The Movement Testnetwork with Aptos Move
 
@@ -40,6 +40,24 @@ The Movement Testnetwork with Aptos Move
 | RPC              | [https://testnet.movementnetwork.xyz/v1](https://testnet.movementnetwork.xyz/v1)     |
 | Faucet endpoint  | [https://faucet.testnet.movementnetwork.xyz](https://faucet.testnet.movementnetwork.xyz)     |
 | Explorer         | [https://explorer.movementlabs.xyz/ ](https://explorer.movementlabs.xyz/ ) |
+
+
+## Movement Porto Testnet: Aptos Load Testing Environment
+
+:::warning
+
+The Movement Porto Testnet is designated for load testing to evaluate the network’s performance under stress. For dApp development, we advise using the Suzuka Testnet for a more stable testing environment. 
+
+:::
+
+| Service          | URL                                                                    |
+|------------------|------------------------------------------------------------------------|
+| RPC              | [https://aptos.testnet.porto.movementlabs.xyz/v1](https://aptos.testnet.porto.movementlabs.xyz/v1)     |
+| Faucet endpoint  | [https://faucet.testnet.porto.movementnetwork.xyz/](https://faucet.testnet.porto.movementnetwork.xyz/)     |
+| Explorer         | [https://explorer.testnet.porto.movementnetwork.xyz/](https://explorer.testnet.porto.movementnetwork.xyz/) |
+| Faucet UI         | [https://mizu.testnet.porto.movementnetwork.xyz/](https://mizu.testnet.porto.movementnetwork.xyz/) |
+
+
 
 ## Aptos Devnet Environment
 
@@ -50,6 +68,7 @@ We often test updates on our Suzuka devnet before pushing to testnet, you can de
 | RPC              | [https://devnet.suzuka.movementnetwork.xyz/v1](https://devnet.suzuka.movementnetwork.xyz/v1)     |
 | Faucet endpoint  | [https://faucet.devnet.suzuka.movementnetwork.xyz/](https://faucet.devnet.suzuka.movementnetwork.xyz/)     |
 | Explorer         | [https://explorer.suzuka.movementnetwork.xyz/?network=devnet](https://explorer.suzuka.movementnetwork.xyz/?network=devnet) |
+
 
 
 
