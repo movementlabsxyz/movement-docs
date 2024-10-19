@@ -57,6 +57,16 @@ The Movement Porto Testnet is designated for load testing to evaluate the networ
 | Explorer         | [https://explorer.testnet.porto.movementnetwork.xyz/](https://explorer.testnet.porto.movementnetwork.xyz/) |
 | Faucet UI         | [https://mizu.testnet.porto.movementnetwork.xyz/](https://mizu.testnet.porto.movementnetwork.xyz/) |
 
+<details>
+  <summary>Explore dApps on Porto</summary>
+
+  Check out the dApps currently deployed on the Porto Testnet
+
+  - Razor Wallet
+  - Razor Dex - https://porto.razordex.xyz
+  - Interest Protocol - https://www.interest.xyz/
+  - MovePosition - https://super-movement-stable-testnet-porto.web.app/
+</details>
 
 
 ## Aptos Devnet Environment
