@@ -57,9 +57,12 @@ The Movement Testnetwork with Aptos Move
   Check out the dApps currently deployed on the Porto Testnet
 
   - Razor Wallet
+  - Nightly Wallet
   - Razor Dex - https://porto.razordex.xyz
   - Interest Protocol - https://www.interest.xyz/
   - MovePosition - https://super-movement-stable-testnet-porto.web.app/
+  - Echelon - https://echelon-movement-v2.vercel.app/markets
+
 </details>
 
 
