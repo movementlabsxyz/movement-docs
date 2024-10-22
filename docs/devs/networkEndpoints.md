@@ -62,6 +62,7 @@ The Movement Testnetwork with Aptos Move
   - Interest Protocol - https://www.interest.xyz/
   - MovePosition - https://super-movement-stable-testnet-porto.web.app/
   - Echelon - https://echelon-movement-v2.vercel.app/markets
+  - Yuzu - https://www.yuzudex.xyz/swap
 
 </details>
 
