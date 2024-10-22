@@ -44,12 +44,6 @@ The Movement Testnetwork with Aptos Move
 
 ## Movement Porto Testnet: Aptos Load Testing Environment
 
-:::warning
-
-The Movement Porto Testnet is designated for load testing to evaluate the network’s performance under stress. For dApp development, we advise using the Suzuka Testnet for a more stable testing environment. 
-
-:::
-
 | Service          | URL                                                                    |
 |------------------|------------------------------------------------------------------------|
 | RPC              | [https://aptos.testnet.porto.movementlabs.xyz/v1](https://aptos.testnet.porto.movementlabs.xyz/v1)     |
