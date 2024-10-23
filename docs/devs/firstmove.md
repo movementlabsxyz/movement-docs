@@ -42,14 +42,12 @@ Due to current network load, we have restricted the faucet API to only accept re
    Choose network from [devnet, testnet, local, custom | defaults to devnet]:
    ```
 
-   Type `testnet` and press **Enter**.
+   Type `custom` and press **Enter**.
 
+  You will be promted for the following details from our [Network EndPoints](/devs/networkEndpoints)
 
-   :::info
-
-    **Note for Aptos CLI Users:** Choose `custom` and configure the values found [here](/devs/networkEndpoints#aptos-environment).
-
-    :::
+  - RPC/Rest Endpoint: https://aptos.testnet.porto.movementlabs.xyz/v1
+  - Faucet Endpoint: https://faucet.testnet.porto.movementnetwork.xyz/
 
 2. **Enter Private Key**
 
@@ -75,7 +73,15 @@ Run `movement --help` for more information about commands
 }
 ```
 
+:::info
+
+Note that Porto Explorer is available here: https://explorer.testnet.porto.movementnetwork.xyz/?network=testnet
+
+:::
+
 ---
+
+
 
 ## Step 2: Fund Your Account
 
@@ -87,7 +93,7 @@ Before deploying contracts, you'll need testnet tokens.
 
 2. **Visit the Faucet**
 
-   Go to the [Movement Labs Web Faucet](https://faucet.movementlabs.xyz/?network=aptos) to fund your account.
+   Go to the [Movement Labs Web Faucet](https://mizu.testnet.porto.movementnetwork.xyz/) to fund your account.
 
 3. **Request Tokens**
 
@@ -114,8 +120,8 @@ profiles:
     private_key: "YOUR_PRIVATE_KEY"
     public_key: "YOUR_PUBLIC_KEY"
     account: "YOUR_ACCOUNT_ADDRESS"
-    rest_url: "https://aptos.testnet.suzuka.movementlabs.xyz/v1/"
-    faucet_url: "https://faucet.testnet.suzuka.movementlabs.xyz/"
+    rest_url: "https://aptos.testnet.porto.movementlabs.xyz/v1/"
+    faucet_url: "https://faucet.testnet.porto.movementlabs.xyz/"
 ```
 
 :::warning

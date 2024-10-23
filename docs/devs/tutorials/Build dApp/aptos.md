@@ -17,7 +17,7 @@ View an example of the finished dApp [here](https://github.com/movementlabsxyz/o
 Initialize your Aptos profile for your package development and add Movement as a custom network. Movement is our current blockchain that supports Aptos deployments.
 
 ```bash
-aptos init --network custom --rest-url https://aptos.testnet.suzuka.movementlabs.xyz/v1
+aptos init --network custom --rest-url https://aptos.testnet.porto.movementlabs.xyz/v1
 ```
 
 ## Setup 
@@ -105,7 +105,7 @@ When prompted to choose a network, enter custom.
 Then enter the following REST endpoint:
 
 ```
-https://aptos.testnet.suzuka.movementlabs.xyz/v1
+https://aptos.testnet.porto.movementlabs.xyz/v1
 ```
 
 And the same URL for faucet endpoint.
