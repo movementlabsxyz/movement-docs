@@ -22,7 +22,7 @@ sidebar_position: 1
 
 ## Settlement
 
-The network uses the [Fast Finality Settlement Module](../Introduction/move_components.md#fast-finality-settlement-module) for transaction finality and starts with an optimistic approach in mind.
+The network uses the [Fast Finality Settlement Module](../Introduction/technical_details.md#fast-finality-settlement-module) for transaction finality and starts with an optimistic approach in mind.
 
 Initially - with the training wheels in place - a specialized node is responsible for updating the state on L1. [Validator nodes](./node_level_architecture.md#validator-node) check against the recorded state root to increase their security and reduce the risk of providing wrong state updates to users.
 
