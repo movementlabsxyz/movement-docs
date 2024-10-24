@@ -31,6 +31,7 @@ This page contains public endpoints that may at times be subject to rate limits.
   - MovePosition - https://super-movement-stable-testnet-porto.web.app/
   - Echelon - https://echelon-movement-v2.vercel.app/markets
   - Yuzu - https://www.yuzudex.xyz/swap
+  - Routex - https://porto.routex.io/
 
 </details>
 
