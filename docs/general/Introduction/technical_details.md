@@ -12,11 +12,12 @@ The Move Executor is a core component of the Movement-SDK, supporting both MoveV
 
 ![Move Executor](./images/executor.png)
 
-## Staked Settlement Module
+## Fast Finality Settlement Module
 
-The Staked Settlement Module is designed to provide fast finality settlement for transactions within the Move Rollups network. By utilizing a network of attesters who stake assets to validate state transitions, this module ensures high economic security and reduces latency. Validators stake assets and attest to the correctness of state transitions, combining the security benefits of staking with the efficiency of rapid transaction finality.
+The Fast Finality Settlement Module is designed to provide fast confirmations and settlement for transactions. By utilizing a network of validators who stake assets and attest to the correctness of state transitions, this module ensures crypto-econimic security and reduces latency. The validators combine the security benefits of staking with the efficiency of rapid transaction finality.
 
-<!-- ![Staked Rollups](./images/staked_rollups.png) -->
+The Fast Finality Settlement includes Postconfirmations, see [this blog](https://blog.movementlabs.xyz/article/postconfirmations-L2s-rollups-blockchain-movement) (on-L1) and L2-confirmations (off-L1).
+
 
 ### Security Mechanism
 

@@ -1,0 +1,9 @@
+{
+  "label": "What is the Testnet?",
+  "position": 3,
+  "collapsed": false,
+  "link": {
+    "description": "Learn about the Movement Testnet.",
+    "type": "generated-index"
+  }
+}
