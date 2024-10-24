@@ -8,17 +8,27 @@ sidebar_position: 2
 
 ## Node Types
 
+- where or why is this used
+- link to documentation
+
 ### Suzuka node
 
-Execution node?
+- where or why is this used
+- link to documentation
 
 ### Full node
 
+- where or why is this used
+- link to documentation
 
 ### DA Light node
 
+- where or why is this used
+- link to documentation
 - connection between Suzuka node and DA-Light node?
 - connection between full node and DA-Light node?
 
-### Light node XYT
+### Another Light node XYZ
 
+- where or why is this used
+- link to documentation
