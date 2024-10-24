@@ -6,7 +6,7 @@ sidebar_position: 1
 
 Movement Labs is building a network of Move-based blockchains. Our flagship products are the Movement Network and the M1 shared sequencer. 
 
-> ⚠️ Our [white paper](https://www.movementnetwork.xyz/whitepaper/movement-whitepaper_en.pdf), which goes into the details of our solutions, is a living document and will be updated as we make progress. It is considered the primary source of the vision.
+> ⚠️ This documentation provides a highl level intro to the vision. The [white paper](https://www.movementnetwork.xyz/whitepaper/movement-whitepaper_en.pdf) goes into more details on some of the presented solutions.
 
 Movement is a community-first blockchain providing the highest possible TPS through Move, instant finality, native day-zero access to mass liquidity, and modular customizations.
 
