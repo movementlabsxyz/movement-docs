@@ -10,6 +10,31 @@ This page contains public endpoints that may at times be subject to rate limits.
 
 :::
 
+## Movement Porto Testnet: Aptos Environment
+
+| Service          | URL                                                                    |
+|------------------|------------------------------------------------------------------------|
+| RPC              | [https://aptos.testnet.porto.movementlabs.xyz/v1](https://aptos.testnet.porto.movementlabs.xyz/v1)     |
+| Faucet endpoint  | [https://faucet.testnet.porto.movementnetwork.xyz/](https://faucet.testnet.porto.movementnetwork.xyz/)     |
+| Explorer         | [https://explorer.testnet.porto.movementnetwork.xyz/](https://explorer.testnet.porto.movementnetwork.xyz/) |
+| Faucet UI         | [https://mizu.testnet.porto.movementnetwork.xyz/](https://mizu.testnet.porto.movementnetwork.xyz/) |
+
+<details>
+  <summary>Explore dApps on Porto</summary>
+
+  Check out the dApps currently deployed on the Porto Testnet
+
+  - Razor Wallet
+  - Nightly Wallet
+  - Razor Dex - https://porto.razordex.xyz
+  - Interest Protocol - https://www.interest.xyz/
+  - MovePosition - https://super-movement-stable-testnet-porto.web.app/
+  - Echelon - https://echelon-movement-v2.vercel.app/markets
+  - Yuzu - https://www.yuzudex.xyz/swap
+  - Routex - https://porto.routex.io/
+
+</details>
+
 
 ## Movement Suzuka Testnet: Aptos Environment
 
@@ -40,31 +65,6 @@ The Movement Testnetwork with Aptos Move
 | RPC              | [https://testnet.movementnetwork.xyz/v1](https://testnet.movementnetwork.xyz/v1)     |
 | Faucet endpoint  | [https://faucet.testnet.movementnetwork.xyz](https://faucet.testnet.movementnetwork.xyz)     |
 | Explorer         | [https://explorer.movementlabs.xyz/ ](https://explorer.movementlabs.xyz/ ) |
-
-
-## Movement Porto Testnet: Aptos Load Testing Environment
-
-| Service          | URL                                                                    |
-|------------------|------------------------------------------------------------------------|
-| RPC              | [https://aptos.testnet.porto.movementlabs.xyz/v1](https://aptos.testnet.porto.movementlabs.xyz/v1)     |
-| Faucet endpoint  | [https://faucet.testnet.porto.movementnetwork.xyz/](https://faucet.testnet.porto.movementnetwork.xyz/)     |
-| Explorer         | [https://explorer.testnet.porto.movementnetwork.xyz/](https://explorer.testnet.porto.movementnetwork.xyz/) |
-| Faucet UI         | [https://mizu.testnet.porto.movementnetwork.xyz/](https://mizu.testnet.porto.movementnetwork.xyz/) |
-
-<details>
-  <summary>Explore dApps on Porto</summary>
-
-  Check out the dApps currently deployed on the Porto Testnet
-
-  - Razor Wallet
-  - Nightly Wallet
-  - Razor Dex - https://porto.razordex.xyz
-  - Interest Protocol - https://www.interest.xyz/
-  - MovePosition - https://super-movement-stable-testnet-porto.web.app/
-  - Echelon - https://echelon-movement-v2.vercel.app/markets
-  - Yuzu - https://www.yuzudex.xyz/swap
-
-</details>
 
 
 ## Aptos Devnet Environment

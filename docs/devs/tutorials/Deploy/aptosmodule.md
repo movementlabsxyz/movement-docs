@@ -16,8 +16,10 @@ Ensure you have the [Aptos CLI](https://aptos.dev/tools/aptos-cli/install-cli/) 
 1. **Initialize your Aptos profile** for package development and add Movement as a custom network:
 
     ```bash
-    aptos init --network custom --rest-url https://aptos.testnet.suzuka.movementlabs.xyz/v1
+    aptos init --network custom --rest-url https://aptos.testnet.porto.movementlabs.xyz/v1
     ```
+
+    You can find additional endpoints for our [Porto Testnet here](/devs/networkEndpoints). 
 
 2. **Initialize your Move project**:
 

@@ -13,7 +13,7 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
-  - url: https://testnet.suzuka.movementnetwork.xyz/v1
+  - url: https://testnet.porto.movementnetwork.xyz/v1
 tags:
   - name: Accounts
     description: Access to accounts, resources, and modules
