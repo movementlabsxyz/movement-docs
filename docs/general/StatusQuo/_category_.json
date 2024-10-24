@@ -1,0 +1,9 @@
+{
+  "label": "What is Suzuka Network?",
+  "position": 3,
+  "collapsed": false,
+  "link": {
+    "description": "Learn about the current implementation of Movement Labs products.",
+    "type": "generated-index"
+  }
+}
