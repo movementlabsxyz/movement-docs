@@ -31,7 +31,15 @@ As the training wheels get removed the network will move to a more decentralized
 
 ## Bridge
 
-!!! TODO How does the bridge work? Any links to documentation?
+!!! TODO How does the bridge work? 
+
+!!! What is being bridged?
+
+!!! By whom?
+
+!!! Links to documentation?
+
+!!! A diagram or a flowchart?
 
 !!! TODO link to relevant node-section in the network-level architecture
 
