@@ -4,19 +4,16 @@ sidebar_position: 1
 
 # High-level architecture
 
-!!! TODO A figure showing the high-level architecture of the network
+![Architecture](./images/architecture.png)
 
 ## Data Availability
 
-!!! TODO Celestia
-!!! TODO - how is this rate limited?
-!!! TODO - how is data made available?
-
-!!! TODO link to relevant node-section in the network-level architecture
+Celestia is used as the Data Availability (DA) layer.
 
 ## Sequencing
 
-!!! TODO Celestia provides the sequencing ?
+The M1 DA mempool provides basic fairness sequencing for transactions ingressed to a single node
+and then uses the underlying DA to sequence the fair blocks proposed by authorized nodes.
 
 !!! TODO link to relevant node-section in the network-level architecture
 
