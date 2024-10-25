@@ -18,6 +18,8 @@ This page contains public endpoints that may at times be subject to rate limits.
 | Faucet endpoint  | [https://faucet.testnet.porto.movementnetwork.xyz/](https://faucet.testnet.porto.movementnetwork.xyz/)     |
 | Explorer         | [https://explorer.testnet.porto.movementnetwork.xyz/](https://explorer.testnet.porto.movementnetwork.xyz/) |
 | Faucet UI         | [https://mizu.testnet.porto.movementnetwork.xyz/](https://mizu.testnet.porto.movementnetwork.xyz/) |
+| Indexer Explorer        | [Public Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql) |
+| Indexer Endpoint      | [https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql](https://mizu.testnet.porto.movementnetwork.xyz/) |
 
 <details>
   <summary>Explore dApps on Porto</summary>
