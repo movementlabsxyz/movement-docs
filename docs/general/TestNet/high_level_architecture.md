@@ -6,15 +6,15 @@ sidebar_position: 1
 
 ![Architecture](./images/architecture.png)
 
-!!! . The FFS should also inform the full node but the arrow goes one way only.
+!!! . The node also gets informed from FFS about the finality status, hence the arrow should also go back.
 
 !!! . where is the DA light node in this diagram? i assume the DA box is actually two boxes - one for the DA service and one for the DA light node.?
 
-!!! . so Maptos  is the full node + validator node ? 
+!!! . so Maptos  is the full node / validator node ?
 
 !!! . where is the follower node in this diagram?
 
-!!! . do we really send transactions 1-by-1 to the DA service? or do we send blobs of transactions? if blobs, where are they created?
+!!! . do we really send transactions 1-by-1 to the DA service? or do we send batches of transactions? if blobs, where are they created?
 
 ## Data Availability
 
