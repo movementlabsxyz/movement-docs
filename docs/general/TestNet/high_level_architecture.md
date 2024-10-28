@@ -27,15 +27,9 @@ Celestia is used as the Data Availability (DA) layer.
 
 ## Sequencing
 
-!!! is the DA service the only point of sequencing, or do full nodes already sequence transactions from their mempool? (and then send blobs of transactions to celestia)?
+In order to protect the DA layer from spam, only certain [full nodes](./node_level_architecture.md#full-node) receive authorization to sequence transactions in ordered transaction-batches (called pre-DA blocks). These full nodes provide basic sequencing for transactions ingressed from the users. The full node then sends the pre-DA block to the DA service using the [DA light node](node_level_architecture.md#da-light-node).
 
-The DA service provides basic fair sequencing for transactions ingressed to a single node. The DA service then sequences the fair blocks proposed by authorized nodes.
-
-!!! .  "ingressed to a single node". single node = full node? or light node? or celestia node?
-
-!!! . "sequences the fair blocks" - do you mean fair blobs or fair blocks? 
-
-!!! . if there is also some level of ordering at the full node level, this should also be mentioned here
+The DA service sequences the pre-DA blocks and provides the final ordering of transactions to the network in L2-blocks.
 
 ## Settlement
 
