@@ -275,7 +275,7 @@ Now, all you have to do is run the following command:
 npx hardhat run scripts/withdraw.js --network m1
 ```
 
-If you are succesful, you should see the following message:
+If you are successful, you should see the following message:
 
 ```
 Balance after withdrawal of <yourAddress> is <xValue> ETH
