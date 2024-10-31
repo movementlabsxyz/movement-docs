@@ -16,26 +16,10 @@ This page contains public endpoints that may at times be subject to rate limits.
 |------------------|------------------------------------------------------------------------|
 | RPC              | [https://aptos.testnet.porto.movementlabs.xyz/v1](https://aptos.testnet.porto.movementlabs.xyz/v1)     |
 | Faucet endpoint  | [https://faucet.testnet.porto.movementnetwork.xyz/](https://faucet.testnet.porto.movementnetwork.xyz/)     |
-| Explorer         | [https://explorer.testnet.porto.movementnetwork.xyz/](https://explorer.testnet.porto.movementnetwork.xyz/) |
+| Explorer         | [https://explorer.movementnetwork.xyz/](https://explorer.movementnetwork.xyz/) |
 | Faucet UI         | [https://mizu.testnet.porto.movementnetwork.xyz/](https://mizu.testnet.porto.movementnetwork.xyz/) |
 | Indexer Explorer        | [Public Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql) |
 | Indexer Endpoint      | [https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql](https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql) |
-
-<details>
-  <summary>Explore dApps on Porto</summary>
-
-  Check out the dApps currently deployed on the Porto Testnet
-
-  - Razor Wallet
-  - Nightly Wallet
-  - Razor Dex - https://porto.razordex.xyz
-  - Interest Protocol - https://www.interest.xyz/
-  - MovePosition - https://super-movement-stable-testnet-porto.web.app/
-  - Echelon - https://echelon-movement-v2.vercel.app/markets
-  - Yuzu - https://www.yuzudex.xyz/swap
-  - Routex - https://porto.routex.io/
-
-</details>
 
 
 ## Movement Suzuka Testnet: Aptos Environment
