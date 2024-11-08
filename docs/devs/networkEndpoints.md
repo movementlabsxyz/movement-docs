@@ -15,7 +15,7 @@ This page contains public endpoints that may at times be subject to rate limits.
 | Service          | URL                                                                    |
 |------------------|------------------------------------------------------------------------|
 | RPC              | [https://aptos.testnet.porto.movementlabs.xyz/v1](https://aptos.testnet.porto.movementlabs.xyz/v1)     |
-| Faucet endpoint  | [https://faucet.testnet.porto.movementnetwork.xyz/](https://faucet.testnet.porto.movementnetwork.xyz/)     |
+| Faucet endpoint  | [https://faucet.movementnetwork.xyz/](https://faucet.movementnetwork.xyz/)     |
 | Explorer         | [https://explorer.movementnetwork.xyz/](https://explorer.movementnetwork.xyz/) |
 | Faucet UI         | [https://mizu.testnet.porto.movementnetwork.xyz/](https://mizu.testnet.porto.movementnetwork.xyz/) |
 | Indexer Explorer        | [Public Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql) |
