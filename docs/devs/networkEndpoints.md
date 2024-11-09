@@ -99,7 +99,7 @@ Please note that the Sui Baku Devnet has been deprecated. We will share our road
 
 Here is the reformatted table with everything under "Sui Baku Devnet" removed:
 
-|  | Aptos Suzuka Testnet  | Aptos Suzuka Devnet | MEVEM Imola Devnet  |
+|  | Aptos Suzuka Testnet  | Aptos Suzuka Devnet | MEVM Imola Devnet  |
 | --- | --- | --- | --- |
 | Validators  | Movement Labs operated validators  | Permissionless + Movement Labs operated validators.  | NA |
 | Full Nodes  | Movement Labs operated nodes  | Permissionless + Movement Labs operated nodes  | Movement Labs operated nodes  |
