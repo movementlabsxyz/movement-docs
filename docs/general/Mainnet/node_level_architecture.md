@@ -11,13 +11,14 @@ sidebar_position: 2
 A full node provides the entire functionality of a Movement node:
 
 - ingresses transactions into a local mempool
-- forms proto-blocks from the transactions in the mempool and forwards them
+- forms batches from the transactions in the mempool and forwards them
   to the [DA light node](#da-light-node)
 - runs executions of blocks sequenced by the DA,
-  receiving them through the DA light node.
+  receiving them through the DA light node. The sequenced blocks provided by the DA are called protoBlocks.
 - provides views on the optimistic and settled (finalized) states via
   Aptos RPC API endpoints.
 - (in a future decentralized network) can operate as a [validator node](#validator-node) with a key from the trusted validator set.
+- creates the deterministic state transitions from the protoBlocks, and from which L2blocks are created.
 
 ### Validator node
 

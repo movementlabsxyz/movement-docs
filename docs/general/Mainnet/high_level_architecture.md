@@ -22,7 +22,6 @@ The DA service is used to store transaction data and make it available to the ne
 
 Celestia is used as the Data Availability (DA) layer.
 
-
 !!! . do nodes pay fees to celestia? or is how is this rate limited?
 
 ## Sequencing
@@ -37,7 +36,17 @@ The network uses the [Fast Finality Settlement Module](../Introduction/technical
 
 [Validator nodes](./node_level_architecture.md#validator-node) and [full nodes](./node_level_architecture.md#full-node) check against the [postconfirmed](../Introduction/technical_details.md#fast-finality-settlement-module) state root on L1 to increase their security and reduce the risk of providing wrong state updates to users. Initially - with the training wheels in place - a specialized node, called Core-Validator, is responsible for updating the state on L1.
 
-As the training wheels get removed the network will move to a more decentralized model where validators will be able to attest to the correctness of state transitions, and a supermajority of validators will be required to advance the state roots on L1.
+As the training wheels get removed the network will move to a decentralized model where validators will be able to attest to the correctness of state transitions, and a supermajority of validators will be required to advance the state roots on L1.
+
+## Fees
+
+Transaction fees are paid in the token of the L2 network. They are used to pay for the data availability, sequencing, execution and settlement services:
+
+```
+fee = data_availability_fee + sequencing_fee + execution_fee + settlement_fee
+```
+
+For more information on fees, see [this MIP](https://github.com/movementlabsxyz/MIP/pull/19).
 
 ## Bridge
 
