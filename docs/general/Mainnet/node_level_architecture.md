@@ -44,7 +44,7 @@ Follower Nodes help the Movement Network to scale by providing increased transac
 The DA light node is a standalone service which performs these categories of operations:
 
 1. Write: the light node forwards signed transaction-batches, which are submitted by authorized nodes, to the data availability layer.
-2. Read: the light node reads the blobs from the data availability layer and verifies them against its verification parameters, currently by verifying a trusted signature.
+2. Read: the light node reads the blobs from the data availability layer and verifies them against its verification parameters, currently by verifying a trusted signature. We call the set of transaction-batches (which are now ordered by the DA) a protoBlock.
 3. Parameter update (to be implemented): updates parameters of verification, blob data format, and the DA namespace.
 
 The DA light node provides access to these operation via a gRPC API.
