@@ -37,22 +37,3 @@ fee = data_availability_fee + sequencing_fee + execution_fee + settlement_fee
 ```
 
 For more information on fees, see [this MIP](https://github.com/movementlabsxyz/MIP/pull/19).
-
-## Bridge
-
-!!! . TODO How does the bridge work? 
-
-!!! . What is being bridged?
-
-!!! . By whom?
-
-!!! . Links to documentation?
-
-!!! . A diagram or a flowchart?
-
-!!! . TODO link to relevant node-section in the network-level architecture
-
-## User interaction
-
-!!! . TODO How do users interact with the network?
-!!! . TODO Can they get confirmation by querying the validators?
