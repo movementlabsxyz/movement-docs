@@ -8,17 +8,23 @@ sidebar_position: 2
 
 ### Full node
 
-A full node provides the entire functionality of a Movement node:
+A full node provides the core functionality of a Movement node:
 
-- ingresses transactions into a local mempool
-- forms batches from the transactions in the mempool and forwards them
+- Ingresses transactions into a local mempool
+- Forms batches from the transactions in the mempool and forwards them
   to the [DA light node](#da-light-node)
-- runs executions of blocks sequenced by the DA,
+- Runs executions of blocks sequenced by the Data Availability(DA),
   receiving them through the DA light node. The sequenced blocks provided by the DA are called protoBlocks.
-- provides views on the optimistic and settled (finalized) states via
-  Aptos RPC API endpoints.
-- (in a future decentralized network) can operate as a [validator node](#validator-node) with a key from the trusted validator set.
-- creates the deterministic state transitions from the protoBlocks, and from which L2blocks are created.
+- Provides views on the optimistic and settled (finalized) states via
+  Aptos REST API endpoints.
+- Creates the deterministic state transitions from the protoBlocks, and from which L2 blocks are created.
+- Both Fast Finality Settlement (FFS) and Data Availability (DA) writing are optional modules, and omitting them allows for two additional node configurations. 
+
+The node can be configured to operate in the following three modes:
+
+- Can operate as a [Validator Node](#validator-node) with a key from the trusted validator set.
+- Can operate as a [Follower_Node](#follower-node) which removes the requirement to write batches to the DA.
+- Can operate as an [Archival Node](#archival-node) which removes the requirement to write to DA and settle to layer with FFS.
 
 ### Validator node
 
@@ -33,7 +39,7 @@ Follower Nodes help the Movement Network to scale by providing increased transac
 
 [follower]: https://github.com/movementlabsxyz/movement/tree/main/docs/movement-node/run/manual/follower-node
 
-### DA Light node
+### DA light node
 
 The DA light node is a standalone service which performs these categories of operations:
 
@@ -49,6 +55,4 @@ The DA light node provides access to these operation via a gRPC API.
 
 ### Archival node
 
-An archival node is a read-only node that synchronizes with the network and provides a view on the chain state.
-
-!!! . with what node type does the archival node communicate to synchronize?
+An archival node is a read-only node that synchronizes with the DA network and provides a view on the chain state.
