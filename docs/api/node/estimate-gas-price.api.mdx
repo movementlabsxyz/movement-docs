@@ -1,0 +1,1657 @@
+---
+id: estimate-gas-price
+title: "Estimate gas price"
+description: "Gives an estimate of the gas unit price required to get a transaction on chain in a"
+sidebar_label: "Estimate gas price"
+hide_title: true
+hide_table_of_contents: true
+api: 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
+sidebar_class_name: "get api-method"
+info_path: api/node/movement-labs-node-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import Heading from "@theme/Heading";
+import OperationTabs from "@theme/OperationTabs";
+import TabItem from "@theme/TabItem";
+
+<Heading
+  as={"h1"}
+  className={"openapi__heading"}
+  children={"Estimate gas price"}
+>
+</Heading>
+
+<MethodEndpoint
+  method={"get"}
+  path={"/estimate_gas_price"}
+>
+  
+</MethodEndpoint>
+
+
+
+Gives an estimate of the gas unit price required to get a transaction on chain in a
+reasonable amount of time. The gas unit price is the amount that each transaction commits to
+pay for each unit of gas consumed in executing the transaction. The estimate is based on
+recent history: it gives the minimum gas that would have been required to get into recent
+blocks, for blocks that were full. (When blocks are not full, the estimate will match the
+minimum gas unit price.)
+
+The estimation is given in three values: de-prioritized (low), regular, and prioritized
+(aggressive). Using a more aggressive value increases the likelihood that the transaction
+will make it into the next block; more aggressive values are computed with a larger history
+and higher percentile statistics. More details are in AIP-34.
+
+<div>
+  <div>
+    <ApiTabs
+      label={undefined}
+      id={undefined}
+    >
+      <TabItem
+        label={"200"}
+        value={"200"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><details
+          style={{"textAlign":"left","marginBottom":"1rem"}}
+          className={"openapi-markdown__details"}
+          data-collapsed={true}
+          open={false}
+        >
+          <summary
+            style={{}}
+          >
+            <strong>
+              Response Headers
+            </strong>
+          </summary><ul
+            style={{"marginLeft":"1rem"}}
+          >
+            <li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-CHAIN-ID
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Chain ID of the current chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-LEDGER-VERSION
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Current ledger version of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-LEDGER-OLDEST-VERSION
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Oldest non-pruned ledger version of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-LEDGER-TIMESTAMPUSEC
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Current timestamp of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-EPOCH
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Current epoch of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-BLOCK-HEIGHT
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Current block height of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-OLDEST-BLOCK-HEIGHT
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Oldest non-pruned block height of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-GAS-USED
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  The cost of the call in terms of gas
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-CURSOR
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   string
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Cursor to be used for endpoints that support cursor-based
+                  pagination. Pass this to the `start` field of the endpoint
+                  on the next call to get the next page of results.
+                  
+                  
+                </div>
+              </div>
+            </li>
+          </ul>
+        </details><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"deprioritized_gas_estimate"}
+                        required={false}
+                        schemaName={"uint64"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"integer","format":"uint64","description":"The deprioritized estimate for the gas unit price"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"gas_estimate"}
+                        required={true}
+                        schemaName={"uint64"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"integer","format":"uint64","description":"The current estimate for the gas unit price"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"prioritized_gas_estimate"}
+                        required={false}
+                        schemaName={"uint64"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"integer","format":"uint64","description":"The prioritized estimate for the gas unit price"}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"deprioritized_gas_estimate\": 0,\n  \"gas_estimate\": 0,\n  \"prioritized_gas_estimate\": 0\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem><TabItem
+              label={"application/x-bcs"}
+              value={"application/x-bcs"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <li>
+                        <div
+                          style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem","paddingBottom":".5rem"}}
+                        >
+                          Array [
+                        </div>
+                      </li><div
+                        style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                      >
+                        
+                        
+                        integer
+                        
+                        
+                      </div><li>
+                        <div
+                          style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem"}}
+                        >
+                          ]
+                        </div>
+                      </li>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"[\n  0\n]"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem><TabItem
+        label={"400"}
+        value={"400"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><details
+          style={{"textAlign":"left","marginBottom":"1rem"}}
+          className={"openapi-markdown__details"}
+          data-collapsed={true}
+          open={false}
+        >
+          <summary
+            style={{}}
+          >
+            <strong>
+              Response Headers
+            </strong>
+          </summary><ul
+            style={{"marginLeft":"1rem"}}
+          >
+            <li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-CHAIN-ID
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Chain ID of the current chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-LEDGER-VERSION
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Current ledger version of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-LEDGER-OLDEST-VERSION
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Oldest non-pruned ledger version of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-LEDGER-TIMESTAMPUSEC
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Current timestamp of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-EPOCH
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Current epoch of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-BLOCK-HEIGHT
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Current block height of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-OLDEST-BLOCK-HEIGHT
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Oldest non-pruned block height of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-GAS-USED
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  The cost of the call in terms of gas
+                  
+                  
+                </div>
+              </div>
+            </li>
+          </ul>
+        </details><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"message"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"A message describing the error"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"error_code"}
+                        required={true}
+                        schemaName={"AptosErrorCode (string)"}
+                        qualifierMessage={"**Possible values:** [`account_not_found`, `resource_not_found`, `module_not_found`, `struct_field_not_found`, `version_not_found`, `transaction_not_found`, `table_item_not_found`, `block_not_found`, `state_value_not_found`, `version_pruned`, `block_pruned`, `invalid_input`, `invalid_transaction_update`, `sequence_number_too_old`, `vm_error`, `health_check_failed`, `mempool_is_full`, `internal_error`, `web_framework_error`, `bcs_not_supported`, `api_disabled`]"}
+                        schema={{"type":"string","description":"These codes provide more granular error information beyond just the HTTP\nstatus code of the response.","enum":["account_not_found","resource_not_found","module_not_found","struct_field_not_found","version_not_found","transaction_not_found","table_item_not_found","block_not_found","state_value_not_found","version_pruned","block_pruned","invalid_input","invalid_transaction_update","sequence_number_too_old","vm_error","health_check_failed","mempool_is_full","internal_error","web_framework_error","bcs_not_supported","api_disabled"],"title":"AptosErrorCode"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"vm_error_code"}
+                        required={false}
+                        schemaName={"uint64"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"integer","format":"uint64","description":"A code providing VM error details when submitting transactions to the VM"}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"message\": \"string\",\n  \"error_code\": \"account_not_found\",\n  \"vm_error_code\": 0\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem><TabItem
+        label={"403"}
+        value={"403"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><details
+          style={{"textAlign":"left","marginBottom":"1rem"}}
+          className={"openapi-markdown__details"}
+          data-collapsed={true}
+          open={false}
+        >
+          <summary
+            style={{}}
+          >
+            <strong>
+              Response Headers
+            </strong>
+          </summary><ul
+            style={{"marginLeft":"1rem"}}
+          >
+            <li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-CHAIN-ID
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Chain ID of the current chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-LEDGER-VERSION
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Current ledger version of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-LEDGER-OLDEST-VERSION
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Oldest non-pruned ledger version of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-LEDGER-TIMESTAMPUSEC
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Current timestamp of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-EPOCH
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Current epoch of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-BLOCK-HEIGHT
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Current block height of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-OLDEST-BLOCK-HEIGHT
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Oldest non-pruned block height of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-GAS-USED
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  The cost of the call in terms of gas
+                  
+                  
+                </div>
+              </div>
+            </li>
+          </ul>
+        </details><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"message"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"A message describing the error"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"error_code"}
+                        required={true}
+                        schemaName={"AptosErrorCode (string)"}
+                        qualifierMessage={"**Possible values:** [`account_not_found`, `resource_not_found`, `module_not_found`, `struct_field_not_found`, `version_not_found`, `transaction_not_found`, `table_item_not_found`, `block_not_found`, `state_value_not_found`, `version_pruned`, `block_pruned`, `invalid_input`, `invalid_transaction_update`, `sequence_number_too_old`, `vm_error`, `health_check_failed`, `mempool_is_full`, `internal_error`, `web_framework_error`, `bcs_not_supported`, `api_disabled`]"}
+                        schema={{"type":"string","description":"These codes provide more granular error information beyond just the HTTP\nstatus code of the response.","enum":["account_not_found","resource_not_found","module_not_found","struct_field_not_found","version_not_found","transaction_not_found","table_item_not_found","block_not_found","state_value_not_found","version_pruned","block_pruned","invalid_input","invalid_transaction_update","sequence_number_too_old","vm_error","health_check_failed","mempool_is_full","internal_error","web_framework_error","bcs_not_supported","api_disabled"],"title":"AptosErrorCode"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"vm_error_code"}
+                        required={false}
+                        schemaName={"uint64"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"integer","format":"uint64","description":"A code providing VM error details when submitting transactions to the VM"}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"message\": \"string\",\n  \"error_code\": \"account_not_found\",\n  \"vm_error_code\": 0\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem><TabItem
+        label={"500"}
+        value={"500"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><details
+          style={{"textAlign":"left","marginBottom":"1rem"}}
+          className={"openapi-markdown__details"}
+          data-collapsed={true}
+          open={false}
+        >
+          <summary
+            style={{}}
+          >
+            <strong>
+              Response Headers
+            </strong>
+          </summary><ul
+            style={{"marginLeft":"1rem"}}
+          >
+            <li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-CHAIN-ID
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Chain ID of the current chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-LEDGER-VERSION
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Current ledger version of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-LEDGER-OLDEST-VERSION
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Oldest non-pruned ledger version of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-LEDGER-TIMESTAMPUSEC
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Current timestamp of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-EPOCH
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Current epoch of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-BLOCK-HEIGHT
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Current block height of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-OLDEST-BLOCK-HEIGHT
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Oldest non-pruned block height of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-GAS-USED
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  The cost of the call in terms of gas
+                  
+                  
+                </div>
+              </div>
+            </li>
+          </ul>
+        </details><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"message"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"A message describing the error"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"error_code"}
+                        required={true}
+                        schemaName={"AptosErrorCode (string)"}
+                        qualifierMessage={"**Possible values:** [`account_not_found`, `resource_not_found`, `module_not_found`, `struct_field_not_found`, `version_not_found`, `transaction_not_found`, `table_item_not_found`, `block_not_found`, `state_value_not_found`, `version_pruned`, `block_pruned`, `invalid_input`, `invalid_transaction_update`, `sequence_number_too_old`, `vm_error`, `health_check_failed`, `mempool_is_full`, `internal_error`, `web_framework_error`, `bcs_not_supported`, `api_disabled`]"}
+                        schema={{"type":"string","description":"These codes provide more granular error information beyond just the HTTP\nstatus code of the response.","enum":["account_not_found","resource_not_found","module_not_found","struct_field_not_found","version_not_found","transaction_not_found","table_item_not_found","block_not_found","state_value_not_found","version_pruned","block_pruned","invalid_input","invalid_transaction_update","sequence_number_too_old","vm_error","health_check_failed","mempool_is_full","internal_error","web_framework_error","bcs_not_supported","api_disabled"],"title":"AptosErrorCode"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"vm_error_code"}
+                        required={false}
+                        schemaName={"uint64"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"integer","format":"uint64","description":"A code providing VM error details when submitting transactions to the VM"}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"message\": \"string\",\n  \"error_code\": \"account_not_found\",\n  \"vm_error_code\": 0\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem><TabItem
+        label={"503"}
+        value={"503"}
+      >
+        <div>
+          
+          
+          
+          
+          
+        </div><details
+          style={{"textAlign":"left","marginBottom":"1rem"}}
+          className={"openapi-markdown__details"}
+          data-collapsed={true}
+          open={false}
+        >
+          <summary
+            style={{}}
+          >
+            <strong>
+              Response Headers
+            </strong>
+          </summary><ul
+            style={{"marginLeft":"1rem"}}
+          >
+            <li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-CHAIN-ID
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Chain ID of the current chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-LEDGER-VERSION
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Current ledger version of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-LEDGER-OLDEST-VERSION
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Oldest non-pruned ledger version of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-LEDGER-TIMESTAMPUSEC
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Current timestamp of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-EPOCH
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Current epoch of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-BLOCK-HEIGHT
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Current block height of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-OLDEST-BLOCK-HEIGHT
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  Oldest non-pruned block height of the chain
+                  
+                  
+                </div>
+              </div>
+            </li><li
+              className={"schemaItem"}
+            >
+              <summary
+                style={{}}
+              >
+                <strong>
+                  X-APTOS-GAS-USED
+                </strong><span
+                  style={{"opacity":"0.6"}}
+                >
+                   integer
+                </span>
+              </summary><div>
+                <div
+                  style={{"marginTop":".5rem","marginBottom":".5rem"}}
+                >
+                  
+                  
+                  The cost of the call in terms of gas
+                  
+                  
+                </div>
+              </div>
+            </li>
+          </ul>
+        </details><div>
+          <MimeTabs
+            className={"openapi-tabs__mime"}
+            schemaType={"response"}
+          >
+            <TabItem
+              label={"application/json"}
+              value={"application/json"}
+            >
+              <SchemaTabs
+                className={"openapi-tabs__schema"}
+              >
+                <TabItem
+                  label={"Schema"}
+                  value={"Schema"}
+                >
+                  <details
+                    style={{}}
+                    className={"openapi-markdown__details response"}
+                    data-collapsed={false}
+                    open={true}
+                  >
+                    <summary
+                      style={{}}
+                      className={"openapi-markdown__details-summary-response"}
+                    >
+                      <strong>
+                        Schema
+                      </strong>
+                    </summary><div
+                      style={{"textAlign":"left","marginLeft":"1rem"}}
+                    >
+                      
+                    </div><ul
+                      style={{"marginLeft":"1rem"}}
+                    >
+                      <SchemaItem
+                        collapsible={false}
+                        name={"message"}
+                        required={true}
+                        schemaName={"string"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"string","description":"A message describing the error"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"error_code"}
+                        required={true}
+                        schemaName={"AptosErrorCode (string)"}
+                        qualifierMessage={"**Possible values:** [`account_not_found`, `resource_not_found`, `module_not_found`, `struct_field_not_found`, `version_not_found`, `transaction_not_found`, `table_item_not_found`, `block_not_found`, `state_value_not_found`, `version_pruned`, `block_pruned`, `invalid_input`, `invalid_transaction_update`, `sequence_number_too_old`, `vm_error`, `health_check_failed`, `mempool_is_full`, `internal_error`, `web_framework_error`, `bcs_not_supported`, `api_disabled`]"}
+                        schema={{"type":"string","description":"These codes provide more granular error information beyond just the HTTP\nstatus code of the response.","enum":["account_not_found","resource_not_found","module_not_found","struct_field_not_found","version_not_found","transaction_not_found","table_item_not_found","block_not_found","state_value_not_found","version_pruned","block_pruned","invalid_input","invalid_transaction_update","sequence_number_too_old","vm_error","health_check_failed","mempool_is_full","internal_error","web_framework_error","bcs_not_supported","api_disabled"],"title":"AptosErrorCode"}}
+                      >
+                        
+                      </SchemaItem><SchemaItem
+                        collapsible={false}
+                        name={"vm_error_code"}
+                        required={false}
+                        schemaName={"uint64"}
+                        qualifierMessage={undefined}
+                        schema={{"type":"integer","format":"uint64","description":"A code providing VM error details when submitting transactions to the VM"}}
+                      >
+                        
+                      </SchemaItem>
+                    </ul>
+                  </details>
+                </TabItem><TabItem
+                  label={"Example (from schema)"}
+                  value={"Example (from schema)"}
+                >
+                  <ResponseSamples
+                    responseExample={"{\n  \"message\": \"string\",\n  \"error_code\": \"account_not_found\",\n  \"vm_error_code\": 0\n}"}
+                    language={"json"}
+                  >
+                    
+                  </ResponseSamples>
+                </TabItem>
+              </SchemaTabs>
+            </TabItem>
+          </MimeTabs>
+        </div>
+      </TabItem>
+    </ApiTabs>
+  </div>
+</div>
+      
