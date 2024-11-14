@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Technical Details
 
-The Movement Network has three main components that enhance its performance, security, and interoperability: the Move Executor, the Staked Settlement Module, and the Decentralized Shared Sequencer (M1). Each of these components plays a crucial role in ensuring the operation of Move-based rollups.
+The Movement Network has three main components that enhance its performance, security, and interoperability: the Move Executor, the Staked Settlement Module, and the Decentralized Shared Sequencer. Each of these components plays a crucial role in ensuring the operation of Move-based rollups.
 
 ## Move Executor
 
@@ -31,12 +31,12 @@ The Fast Finality Settlement includes Postconfirmations, see [this blog](https:/
 - Staked rollups provide significantly reduced latency compared to both optimistic and zk-rollups, with finality settlement in seconds.
 - Fast finality is crucial for interoperability and atomic cross-rollup transactions, making staked rollups an ideal solution for many applications.
 
-## Decentralized Shared Sequencer (M1)
+## Decentralized Shared Sequencer
 
-The M1 sequencer is a decentralized and shared sequencing mechanism that enhances network robustness, fairness, and censorship resistance. By providing customizable transaction ordering, M1 supports cross-chain atomic swaps and pooled liquidity within the Move Arena ecosystem. This shared sequencer ensures fair and efficient transaction ordering across all participating rollups.
+This component is a decentralized and shared sequencing mechanism that enhances network robustness, fairness, and censorship resistance. By providing customizable transaction ordering, the sequencer supports cross-chain atomic swaps and pooled liquidity within the Move Arena ecosystem. This shared sequencer ensures fair and efficient transaction ordering across all participating rollups.
 
-<!-- ![M1 Shared Decentralized Sequencer](./images/shared_sequencer.png) -->
+<!-- ![Shared Decentralized Sequencer](./images/shared_sequencer.png) -->
 
 :::info
-The M1 sequencer not only improves network robustness but also facilitates cross-chain interoperability and pooled liquidity, allowing for seamless asset transfers and interactions across different rollups.
+The decentralized shared sequencer not only improves network robustness but also facilitates cross-chain interoperability and pooled liquidity, allowing for seamless asset transfers and interactions across different rollups.
 :::

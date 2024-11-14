@@ -13,7 +13,7 @@ The Move Stack is a collection of tools, components, and adapters that enable th
 ![Move Stack Components](./images/move_stack.png)
 
 The Move Stack's configurable components include:
-- **Sequencer**: Developers can opt for the default M1 decentralized shared sequencing service or choose a self-reliant sequencing mechanism.
+- **Sequencer**: Developers can opt for the default decentralized shared sequencing service or choose a self-reliant sequencing mechanism.
 - **Data Availability**: Supports various DA solutions, including Ethereum EIP-4844 blobs, 0G, Avail, Celestia, EigenDA, and Near.
 - **Settlement Mechanisms**: Offers options for optimistic (fraud proof), zk (validity proof) rollups, and staked (attestations) settlement mechanisms.
 
