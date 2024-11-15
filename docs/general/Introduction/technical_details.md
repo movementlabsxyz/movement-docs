@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Technical Details
 
-The Movement Network has three main components that enhance its performance, security, and interoperability: the Move Executor, the Staked Settlement Module, and the Decentralized Shared Sequencer (M1). Each of these components plays a crucial role in ensuring the operation of Move-based rollups.
+The Movement Network has three main components that enhance its performance, security, and interoperability: the Move Executor, the Staked Settlement Module, and the Decentralized Shared Sequencer. Each of these components plays a crucial role in ensuring the operation of Move-based rollups.
 
 ## Move Executor
 
@@ -12,11 +12,12 @@ The Move Executor is a core component of the Movement-SDK, supporting both MoveV
 
 ![Move Executor](./images/executor.png)
 
-## Staked Settlement Module
+## Fast Finality Settlement Module
 
-The Staked Settlement Module is designed to provide fast finality settlement for transactions within the Move Rollups network. By utilizing a network of attesters who stake assets to validate state transitions, this module ensures high economic security and reduces latency. Validators stake assets and attest to the correctness of state transitions, combining the security benefits of staking with the efficiency of rapid transaction finality.
+The Fast Finality Settlement Module is designed to provide fast confirmations and settlement for transactions. By utilizing a network of validators who stake assets and attest to the correctness of state transitions, this module ensures crypto-economic security and reduces latency. The validators combine the security benefits of staking with the efficiency of rapid transaction finality.
 
-<!-- ![Staked Rollups](./images/staked_rollups.png) -->
+The Fast Finality Settlement includes Postconfirmations, see [this blog](https://blog.movementlabs.xyz/article/postconfirmations-L2s-rollups-blockchain-movement) (on-L1) and L2-confirmations (off-L1).
+
 
 ### Security Mechanism
 
@@ -30,12 +31,12 @@ The Staked Settlement Module is designed to provide fast finality settlement for
 - Staked rollups provide significantly reduced latency compared to both optimistic and zk-rollups, with finality settlement in seconds.
 - Fast finality is crucial for interoperability and atomic cross-rollup transactions, making staked rollups an ideal solution for many applications.
 
-## Decentralized Shared Sequencer (M1)
+## Decentralized Shared Sequencer
 
-The M1 sequencer is a decentralized and shared sequencing mechanism that enhances network robustness, fairness, and censorship resistance. By providing customizable transaction ordering, M1 supports cross-chain atomic swaps and pooled liquidity within the Move Arena ecosystem. This shared sequencer ensures fair and efficient transaction ordering across all participating rollups.
+This component is a decentralized and shared sequencing mechanism that enhances network robustness, fairness, and censorship resistance. By providing customizable transaction ordering, the sequencer supports cross-chain atomic swaps and pooled liquidity within the Move Arena ecosystem. This shared sequencer ensures fair and efficient transaction ordering across all participating rollups.
 
-<!-- ![M1 Shared Decentralized Sequencer](./images/shared_sequencer.png) -->
+<!-- ![Shared Decentralized Sequencer](./images/shared_sequencer.png) -->
 
 :::info
-The M1 sequencer not only improves network robustness but also facilitates cross-chain interoperability and pooled liquidity, allowing for seamless asset transfers and interactions across different rollups.
+The decentralized shared sequencer not only improves network robustness but also facilitates cross-chain interoperability and pooled liquidity, allowing for seamless asset transfers and interactions across different rollups.
 :::

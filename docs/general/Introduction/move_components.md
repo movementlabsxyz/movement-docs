@@ -13,7 +13,7 @@ The Move Stack is a collection of tools, components, and adapters that enable th
 ![Move Stack Components](./images/move_stack.png)
 
 The Move Stack's configurable components include:
-- **Sequencer**: Developers can opt for the default M1 decentralized shared sequencing service or choose a self-reliant sequencing mechanism.
+- **Sequencer**: Developers can opt for the default decentralized shared sequencing service or choose a self-reliant sequencing mechanism.
 - **Data Availability**: Supports various DA solutions, including Ethereum EIP-4844 blobs, 0G, Avail, Celestia, EigenDA, and Near.
 - **Settlement Mechanisms**: Offers options for optimistic (fraud proof), zk (validity proof) rollups, and staked (attestations) settlement mechanisms.
 
@@ -33,9 +33,13 @@ The Move Arena supports the deployment of application-specific Move Rollups, pro
 
 ## Move Rollup Framework
 
-The Move Rollup framework provides a blueprint for creating Move-based rollups. It is a modular architecture where components can be configured to meet the specific needs of different applications. The framework includes key components such as the Move Executor, bridge contracts, a sequencer, a data availability service, and a settlement mechanism. This flexibility allows for the customization of rollups to optimize performance, cost, and security.
+The Move Rollup framework provides a blueprint for creating Move-based rollups. It is a modular architecture where components can be configured to meet the specific needs of different applications. The framework includes key components such as the Move Executor, bridge contracts and adaptors for sequencing, a data availability, and a settlement. This flexibility allows for the customization of rollups to optimize performance, cost, and security.
 
-![Move Rollup Architecture](./images/executor.png)
+![Move Rollup Architecture](./images/move_rollup.png)
+*Figure: The Move Rollup framework.*
+
+
+
 
 ### Key Components of the Move Rollup Framework
 - **Executor**: Processes transactions and generates new L2 blocks.

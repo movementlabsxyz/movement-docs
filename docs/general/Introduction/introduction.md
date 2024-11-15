@@ -4,11 +4,11 @@ sidebar_position: 1
 
 # Introduction
 
-Movement Labs is building a network of Move-based blockchains. Our flagship products are the Movement Network and the M1 shared sequencer. 
+Movement Labs is building a network of Move-based blockchains. Our flagship products is the Movement Network.
 
-Movement is a community-first blockchain providing the highest possible TPS through Move, instant finality, native day-zero access to mass liquidity, and modular customizations.
+Movement Network is a community-first blockchain providing the highest possible TPS through Move, instant finality, native day-zero access to mass liquidity, and modular customizations.
 
-It will support Aptos Move, Sui Move, and also our embedded EVM interpreter MEVM—empowering both Sui, Aptos, and EVM users to use the L2.
+> ⚠️ This documentation provides a high level intro to the vision. The [white paper](https://www.movementnetwork.xyz/whitepaper/movement-whitepaper_en.pdf) goes into more details on some of the presented solutions.
 
 ## Why Move?
 
