@@ -16,7 +16,11 @@ Celestia is used as the Data Availability (DA) layer.
 
 In order to protect the DA layer from spam, only certain [full nodes](./node_level_architecture.md#full-node) receive authorization to sequence transactions in ordered transaction-batches. These full nodes provide basic sequencing for transactions ingressed from the users. The full node then sends the transaction-batch to the DA service using the [DA light node](node_level_architecture.md#da-light-node).
 
-The DA service sequences the proto-blocks and provides the final ordering of transactions to the network in L2-blocks.
+The DA service sequences transaction batches (which have the form of data blobs). This results in proto-blocks, and where each proto-block may contain several transaction-batches. The proto-block is the final ordering step of transactions. Next stop: execution.
+
+## Execution
+
+The [full node](./node_level_architecture.md#full-node) receives proto-blocks via the [DA light node](node_level_architecture.md#da-light-node) and executes the transactions in the proto-blocks. The full node then creates L2 blocks from the proto-blocks, which contain additional information such as the new state root after applying the transactions.
 
 ## Settlement
 
