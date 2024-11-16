@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Introduction
 
-Movement Labs is building a network of Move-based blockchains. Our flagship products is the Movement Network.
+Movement Labs is building a network of Move-based blockchains. Our flagship product is the Movement Network.
 
 Movement Network is a community-first blockchain providing the highest possible TPS through Move, instant finality, native day-zero access to mass liquidity, and modular customizations.
 
