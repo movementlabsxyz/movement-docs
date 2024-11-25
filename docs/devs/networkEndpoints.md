@@ -105,4 +105,4 @@ Here is the reformatted table with everything under "Sui Baku Devnet" removed:
 | Full Nodes  | Movement Labs operated nodes  | Permissionless + Movement Labs operated nodes  | Movement Labs operated nodes  |
 | Data Durability | Data wipes will be announced ahead of time.  | Data can be wiped as part of the regular software updates. | Data could be wiped. |
 | Announcement Channel | [Discord](https://discord.com/channels/1101576619493167217/1259638014184001668)| [Discord](https://discord.com/channels/1101576619493167217/1259638353607917589) | [Discord](https://discord.com/channels/1101576619493167217/1259638433102561348) |
-| Network Uptime | Constant uptime. | Expect down time happens.  | Expect down time happens.  |
+| Network Uptime | Constant uptime. | Expect downtime happens.  | Expect downtime happens.  |
