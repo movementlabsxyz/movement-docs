@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Technical Details
 
-The Movement Network has three main components that enhance its performance, security, and interoperability: the Move Executor, the Staked Settlement Module, and the Decentralized Shared Sequencer. Each of these components plays a crucial role in ensuring the operation of Move-based rollups.
+The Movement Network has three main components that enhance its performance, security, and interoperability: the Move Executor, the Staked Settlement Module, and the Decentralized Shared Sequencer. Each of these components plays a crucial role in ensuring the operation of Move-based chains.
 
 ## Move Executor
 
@@ -22,21 +22,21 @@ The Fast Finality Settlement includes Postconfirmations, see [this blog](https:/
 ### Security Mechanism
 
 - **Ethereum Settlement**: Validators stake assets to provide economic security, ensuring significant financial interest in network integrity.
-- **zk and Optimistic Rollups**: zk-rollups offer security through validity proofs, while optimistic rollups rely on challenge periods for dispute resolution. Both methods have higher latency and computational costs.
-- **Staked Rollups**: Offer fast finality and high economic security without extensive proof generation or challenge periods, reducing latency and improving user experience compared to zk and optimistic rollups.
+- **ZK and Optimistic Rollups**: ZK-rollups offer security through validity proofs, while optimistic rollups rely on challenge periods for dispute resolution. Both methods have higher latency and computational costs.
+- **Fast-Finality Chains**: Offer fast-finality and high economic security without extensive proof generation or challenge periods, reducing latency and improving user experience compared to ZK and optimistic rollups.
 
-### Comparison with Other Rollups
+### Comparison with ZK and optimistic rollups
 
-- Staked rollups do not require expensive proof generation equipment, unlike zk-rollups.
-- Staked rollups provide significantly reduced latency compared to both optimistic and zk-rollups, with finality settlement in seconds.
-- Fast finality is crucial for interoperability and atomic cross-rollup transactions, making staked rollups an ideal solution for many applications.
+- Fast-Finality chains do not require expensive proof generation equipment, unlike ZK-rollups.
+- Fast-Finality chains provide significantly reduced latency compared to both optimistic and ZK-rollups, with finality settlement in seconds.
+- Fast finality is crucial for interoperability and atomic cross-chain transactions, making fast-finality chains an ideal solution for many applications.
 
 ## Decentralized Shared Sequencer
 
-This component is a decentralized and shared sequencing mechanism that enhances network robustness, fairness, and censorship resistance. By providing customizable transaction ordering, the sequencer supports cross-chain atomic swaps and pooled liquidity within the Move Arena ecosystem. This shared sequencer ensures fair and efficient transaction ordering across all participating rollups.
+This component is a decentralized and shared sequencing mechanism that enhances network robustness, fairness, and censorship resistance. By providing customizable transaction ordering, the sequencer supports cross-chain atomic swaps and pooled liquidity within the Move Arena ecosystem. This shared sequencer ensures fair and efficient transaction ordering across all participating chains.
 
 <!-- ![Shared Decentralized Sequencer](./images/shared_sequencer.png) -->
 
 :::info
-The decentralized shared sequencer not only improves network robustness but also facilitates cross-chain interoperability and pooled liquidity, allowing for seamless asset transfers and interactions across different rollups.
+The decentralized shared sequencer not only improves network robustness but also facilitates cross-chain interoperability and pooled liquidity, allowing for seamless asset transfers and interactions across different chains.
 :::
