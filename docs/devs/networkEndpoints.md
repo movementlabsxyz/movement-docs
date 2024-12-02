@@ -21,18 +21,6 @@ This page contains public endpoints that may at times be subject to rate limits.
 | Indexer Explorer        | [Public Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql) |
 | Indexer Endpoint      | [https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql](https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql) |
 
-
-## Movement Suzuka Testnet: Aptos Environment
-
-Legacy Testnetwork with Aptos Move. 
-
-| Service          | URL                                                                    |
-|------------------|------------------------------------------------------------------------|
-| RPC              | [https://testnet.suzuka.movementnetwork.xyz/v1](https://testnet.suzuka.movementnetwork.xyz/v1)     |
-| Faucet UI        | [https://faucet.movementnetwork.xyz/?network=aptos](https://faucet.movementlabs.xyz/?network=aptos)         |
-| Faucet endpoint  | [Authorized Access only Please use Web UI Faucet](https://faucet.testnet.suzuka.movementlabs.xyz/)     |
-| Explorer         | [https://explorer.movementnetwork.xyz/?network=testnet](https://explorer.movementnetwork.xyz/?network=testnet) |
-
 <br />
 
 
@@ -40,7 +28,7 @@ Legacy Testnetwork with Aptos Move.
 
 :::warning
 
-The Movement Bardock Testnet is intended for infrastructure and validator design partners to begin testing deployments. Please note that the Bardock Testnet may experience state resets during this phase. If you’re developing a dApp, we recommend using the more stable Suzuka Testnet.  
+The Movement Bardock Testnet is intended for infrastructure and validator design partners to begin testing deployments. Please note that the Bardock Testnet may experience state resets during this phase. If you’re developing a dApp, we recommend using the more stable Porto Testnet.  
 
 :::
 
@@ -51,6 +39,21 @@ The Movement Testnetwork with Aptos Move
 | RPC              | [https://aptos.testnet.bardock.movementlabs.xyz/v1](https://aptos.testnet.bardock.movementlabs.xyz/v1)     |
 | Faucet endpoint  | [https://faucet.testnet.movementnetwork.xyz](https://faucet.testnet.movementnetwork.xyz)     |
 | Explorer         | [https://explorer.movementlabs.xyz/ ](https://explorer.movementlabs.xyz/ ) |
+
+
+## Movement Mainnet: Aptos Environment
+
+:::warning
+
+The Movement Mainnet is currently in "Operater Mode". This means that we are currently onboarding node operators and other infrastructure providers to the network.   
+
+:::
+
+| Service          | URL                                                                    |
+|------------------|------------------------------------------------------------------------|
+| RPC              | [https://mainnet.movementnetwork.xyz/v1](https://mainnet.movementnetwork.xyz/v1)     |
+| Bridge           |   Coming Soon       |
+| Explorer         | [https://explorer.movementnetwork.xyz/?network=mainnet](https://explorer.movementnetwork.xyz/?network=mainnet) |
 
 
 ## Aptos Devnet Environment
