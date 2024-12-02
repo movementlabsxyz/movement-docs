@@ -81,6 +81,7 @@ The MEVM environment is currently accessible through the Imola Devnet.
 | Explorer         | [https://explorer.devnet.imola.movementnetwork.xyz](https://explorer.devnet.imola.movementnetwork.xyz)     |
 | Indexer          | [https://aptos.devnet.imola.movementlabs.xyz/indexer/v1/graphql](https://aptos.devnet.imola.movementlabs.xyz/indexer/v1/graphql) |
 | Subgraph RPC     | [https://mevm2.devnet.imola.movementlabs.xyz/](https://mevm2.devnet.imola.movementlabs.xyz/)     |
+| Multicall | [0x5005A743875A50F80C306d3A6cfAC1C000623658](https://explorer.devnet.imola.movementlabs.xyz/#/account/0x0000000000000000000000005005a743875a50f80c306d3a6cfac1c000623658/resources)
 
 Additional Public EVM Endpoints
 
