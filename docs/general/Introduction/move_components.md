@@ -31,17 +31,15 @@ Move Arena provides a framework to deploy and join the Move-based chains network
 The Move Arena supports the deployment of application-specific Move-based chains, providing cross-chain interoperability and shared liquidity. This setup enhances the efficiency and security of new chains by leveraging a decentralized sequencer and multi-asset staking.
 :::
 
-## Move-based chain Framework
+## Framework for Move-based chains
 
-The Move-based chain framework provides a blueprint for creating Move-based chains. It is a modular architecture where components can be configured to meet the specific needs of different applications. The framework includes key components such as the Move Executor, bridge contracts and adaptors for sequencing, a data availability, and a settlement. This flexibility allows for the customization of chains to optimize performance, cost, and security.
+The framework for Move-based chains provides a blueprint for creating Move-based chains. It is a modular architecture where components can be configured to meet the specific needs of different applications. The framework includes key components such as the Move Executor, bridge contracts and adaptors for sequencing, a data availability, and a settlement. This flexibility allows for the customization of chains to optimize performance, cost, and security.
 
 ![Move Chain Architecture](./images/move_chain.png)
 *Figure: The Move-based chain framework.*
 
+### Key Components of the framework for Move-based chains
 
-
-
-### Key Components of the Move-based chain Framework
 - **Executor**: Processes transactions and generates new L2 blocks.
 - **Bridge Contracts**: Facilitates asset deposits and withdrawals between L1 and the chain.
 - **Sequencer**: Orders transactions.
