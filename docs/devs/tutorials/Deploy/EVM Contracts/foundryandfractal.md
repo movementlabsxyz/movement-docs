@@ -15,7 +15,7 @@ Foundry is a powerful Solidity smart contract development toolchain for Ethereum
 
 ### What is Fractal?
 
-Fractal is Movement Labs' interpreter that allows any developer to deploy any Solidity smart contract on M1 a [Move language](https://move-language.github.io/move/) based Virtual Machine, effectively turning Solidity code into Move code, inheriting all of the security properties natively available to Move smart contracts.
+Fractal is Movement Labs' interpreter that allows any developer to deploy any Solidity smart contract on M1 a [Move language](https://move-language.github.io/move/) based Virtual Machine, effectively turning Solidity code into Move code, inheriting all the security properties natively available to Move smart contracts.
 
 ## Prerequisites 
 

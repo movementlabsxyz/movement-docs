@@ -15,7 +15,7 @@ Hardhat is a powerful Javascript smart contract development toolchain for Ethere
 
 ### What is Fractal?
 
-Fractal is Movement Labs' transpiler that allows any developer to deploy any Solidity smart contract on M1 a Move language based Virtual Machine, effectively turning Solidity code into Move code, inheriting all of the security properties natively available to Move smart contracts.
+Fractal is Movement Labs' transpiler that allows any developer to deploy any Solidity smart contract on M1 a Move language based Virtual Machine, effectively turning Solidity code into Move code, inheriting all the security properties natively available to Move smart contracts.
 
 ## Prerequisites
 
