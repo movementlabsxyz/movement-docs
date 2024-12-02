@@ -35,7 +35,7 @@ A validator node is a full node that is part of the trusted validator set, which
 The Movement [Follower Node][follower] is a node type introduced for RPC providers. A follower node
 performs most of the functions provided by the full node, except settlement of blocks.
 As such, it does not need access to a private key from the trusted validator set. 
-Follower Nodes help the Movement Network to scale by providing increased transaction ingress capacity and horizontal scaling for queries over chain state.
+Follower Nodes help the Movement Network to scale by providing increased transaction ingress capacity and horizontal scaling for queries over chain state. Learn to run and deploy a follower node [here](/devs/followerNode).
 
 [follower]: https://github.com/movementlabsxyz/movement/tree/main/docs/movement-node/run/manual/follower-node
 
