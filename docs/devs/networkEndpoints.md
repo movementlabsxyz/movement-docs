@@ -28,7 +28,7 @@ This page contains public endpoints that may at times be subject to rate limits.
 
 :::warning
 
-The Movement Bardock Testnet is intended for infrastructure and validator design partners to begin testing deployments. Please note that the Bardock Testnet may experience state resets during this phase. If you’re developing a dApp, we recommend using the more stable Suzuka Testnet.  
+The Movement Bardock Testnet is intended for infrastructure and validator design partners to begin testing deployments. Please note that the Bardock Testnet may experience state resets during this phase. If you’re developing a dApp, we recommend using the more stable Porto Testnet.  
 
 :::
 
