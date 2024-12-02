@@ -4,126 +4,72 @@ sidebar_position: 6
 
 # Oracles
 
-## MEVM
+This document explains how to use real-time data from [Pyth Network](https://www.pyth.network/) in modules on the Movement Porto testnet.
 
-This document explains how to use real-time Pyth data in EVM contracts on the Movement testnet. For an interactive playground to explore the methods supported by the Pyth contract, see the [EVM API reference](https://docs.pyth.network/evm).
+## Configuring the Move.toml file
 
-## Pyth Deployment on Movement Testnet
+Add the Pyth Contract to your project dependencies in the Move.toml file like so:
 
-The Pyth deployment address on the Movement testnet is: `0xA2aa501b19aff244D90cc15a4Cf739D2725B5729`
-
-## Install Pyth SDK
-
-Pyth provides a Solidity SDK to fetch prices from Pyth contracts. The SDK exposes the `IPyth` interface to interact with Pyth price feeds.
-
-### Truffle/Hardhat
-
-If you are using Truffle or Hardhat, simply install the NPM package:
-
-```sh
-npm install @pythnetwork/pyth-sdk-solidity
+```
+[dependencies]
+Pyth = { git = "https://github.com/pyth-network/pyth-crosschain.git", subdir = "target_chains/aptos/contracts", rev = "main" }
 ```
 
-### Foundry
+The named addresses of `pyth`, `wormhole`, and `deployer` must be defined at compile time. These addresses are used to interact with the Pyth contract on Movement.
 
-If you are using Foundry, you will need to create an NPM project if you don't already have one. From the root directory of your project, run:
+The Pyth smart contracts are deployed on the Movement Network on the following addresses:
 
-```sh
-npm init -y
-npm install @pythnetwork/pyth-sdk-solidity
-```
+| Name     | Address                                                            |
+|----------|--------------------------------------------------------------------|
+| pyth     | 0x9357e76fe965c9956a76181ee49f66d51b7f9c3800182a944ed96be86301e49f |
+| wormhole | 0x9236893d6444b208b7e0b3e8d4be4ace90b6d17817ab7d1584e46a33ef5c50c9 |
+| deployer | 0xa3ad2d9c8114b9a4fe97d45b7a9d3c731148d936b0f5dd396fc20a53a11a70da |
 
-Then add the following line to your `remappings.txt` file:
 
-```txt
-@pythnetwork/pyth-sdk-solidity/=node_modules/@pythnetwork/pyth-sdk-solidity
-```
+## Example Code
 
-## Write Contract Code
+The code snippet below provides an example module fetching the BTC/USD price from Pyth price feeds:
 
-The code snippet below provides a general template for what your contract code should look like:
-
-```solidity
-pragma solidity ^0.8.0;
-
-import "@pythnetwork/pyth-sdk-solidity/IPyth.sol";
-import "@pythnetwork/pyth-sdk-solidity/PythStructs.sol";
-
-contract PythExample {
-    IPyth public pyth;
-
-    /**
-     * @param pythContract The address of the Pyth contract on the Movement testnet
-     */
-    constructor(address pythContract) {
-        // The IPyth interface from pyth-sdk-solidity provides the methods to interact with the Pyth contract.
-        // Instantiate it with the Pyth contract address.
-        pyth = IPyth(pythContract);
-    }
-
-    /**
-     * This method is an example of how to interact with the Pyth contract.
-     * Fetch the priceUpdate and pass it to the Pyth contract to update the prices.
-     * Add the priceUpdate argument to any method on your contract that needs to read the Pyth price.
-     * See https://docs.pyth.network/price-feeds/fetch-price-updates for more information on how to fetch the priceUpdate.
-     *
-     * @param priceUpdate The encoded data to update the contract with the latest price
-     */
-    function updatePriceAndFetch(bytes[] calldata priceUpdate) public payable {
-        // Submit a priceUpdate to the Pyth contract to update the on-chain price.
-        // Updating the price requires paying the fee returned by getUpdateFee.
-        // WARNING: These lines are required to ensure the getPrice call below succeeds. If you remove them, transactions may fail with "0x19abf40e" error.
-        uint fee = pyth.getUpdateFee(priceUpdate);
-        pyth.updatePriceFeeds{ value: fee }(priceUpdate);
-
+```rust
+module example::example {
+    use pyth::pyth;
+    use pyth::price::Price;
+    use pyth::price_identifier;
+    use aptos_framework::coin;
+ 
+    // Add the pyth_price_update argument to any method on your contract that needs to read the Pyth price.
+    // See https://docs.pyth.network/price-feeds/fetch-price-updates for more information on how to fetch the pyth_price_update.
+    public fun get_btc_usd_price(user: &signer, pyth_price_update: vector<vector<u8>>): Price {
+ 
+        // First update the Pyth price feeds
+        let coins = coin::withdraw(user, pyth::get_update_fee(&pyth_price_update));
+        pyth::update_price_feeds(pyth_price_update, coins);
+ 
         // Read the current price from a price feed.
-        // Each price feed (e.g., ETH/USD) is identified by a price feed ID.
+        // Each price feed (e.g., BTC/USD) is identified by a price feed ID.
         // The complete list of feed IDs is available at https://pyth.network/developers/price-feed-ids
-        bytes32 priceFeedId = 0xff61491a931112ddf1bd8147cd1b641375f79f5825126d665480874634fd0ace; // ETH/USD
-        PythStructs.Price memory price = pyth.getPrice(priceFeedId);
-        
-        // Use the price as needed in your contract
-        // Example: emit an event with the price
-        emit PriceUpdated(price.price, price.conf);
+        // Note: Aptos uses the Pyth price feed ID without the `0x` prefix.
+        let btc_price_identifier = x"e62df6c8b4a85fe1a67db44dc12de5db330f7ac66b72dc658afedf0f4a415b43";
+        let btc_usd_price_id = price_identifier::from_byte_vec(btc_price_identifier);
+        pyth::get_price(btc_usd_price_id)
     }
-
-    // Event to emit the updated price
-    event PriceUpdated(int64 price, uint64 conf);
 }
 ```
+ 
+ The code snippet above does the following:
 
-### Instructions to Use
-
-1. **Install the Pyth SDK**:
-    - For Truffle/Hardhat:
-      ```sh
-      npm install @pythnetwork/pyth-sdk-solidity
-      ```
-    - For Foundry:
-      ```sh
-      npm init -y
-      npm install @pythnetwork/pyth-sdk-solidity
-      ```
-      Add to `remappings.txt`:
-      ```txt
-      @pythnetwork/pyth-sdk-solidity/=node_modules/@pythnetwork/pyth-sdk-solidity
-      ```
-
-2. **Deploy the Contract**:
-    - Ensure you pass the Pyth contract address on the Movement testnet (`0xA2aa501b19aff244D90cc15a4Cf739D2725B5729`) to the constructor when deploying.
-
-3. **Fetch and Update Prices**:
-    - Use the `updatePriceAndFetch` function to submit a price update and read the latest price from the Pyth contract.
-
-This snippet includes the instantiation of the `IPyth` interface, updates the price feeds, and fetches the current price for a given price feed ID. You can customize the `updatePriceAndFetch` function as needed for your application.
-
-## Aptos Move
+1. Call `pyth::get_update_fee` to get the fee required to update the Pyth price feeds.
+2. Call `pyth::update_price_feeds` and pass pyth_price_update to update the Pyth price feeds.
+3. Call `pyth::get_price to read` the current price, providing the price feed ID you wish to read.
 
 
-The Pyth smart contracts are deployed on the Movement Network on these addresses:
+## API Reference
 
-| Named Address | Testnet Value                                                                                                  | Devnet Value                                                                                                  |
-|---------------|----------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|
-| pyth          | 0x9357e76fe965c9956a76181ee49f66d51b7f9c3800182a944ed96be86301e49f                                              | 0x9357e76fe965c9956a76181ee49f66d51b7f9c3800182a944ed96be86301e49f                                              |
-| wormhole      | 0x9236893d6444b208b7e0b3e8d4be4ace90b6d17817ab7d1584e46a33ef5c50c9                                              | 0x9236893d6444b208b7e0b3e8d4be4ace90b6d17817ab7d1584e46a33ef5c50c9                                              |
-| deployer      | 0xa3ad2d9c8114b9a4fe97d45b7a9d3c731148d936b0f5dd396fc20a53a11a70da                                              | 0xa3ad2d9c8114b9a4fe97d45b7a9d3c731148d936b0f5dd396fc20a53a11a70da                                              |
+The [Aptos API reference](https://docs.pyth.network/price-feeds/api-reference/aptos) (Which is also compatible with Movement) lets you interactively explore the complete API of the Pyth contract.
+
+
+## Example Applications
+
+[Minimal on-chain contract](https://github.com/pyth-network/pyth-examples/blob/main/price_feeds/aptos/fetch_btc_price/sources/example.move), which updates and returns the BTC/USD price from Pyth price feeds.
+
+[Mint NFT](https://github.com/pyth-network/pyth-examples/tree/main/price_feeds/aptos/mint_nft), which uses Pyth price feeds to mint an NFT.

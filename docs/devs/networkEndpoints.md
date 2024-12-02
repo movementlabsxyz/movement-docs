@@ -49,7 +49,7 @@ The Movement Testnetwork with Aptos Move
 | Service          | URL                                                                    |
 |------------------|------------------------------------------------------------------------|
 | RPC              | [https://aptos.testnet.bardock.movementlabs.xyz/v1](https://aptos.testnet.bardock.movementlabs.xyz/v1)     |
-| Faucet endpoint  | [https://faucet.testnet.movementnetwork.xyz](https://faucet.testnet.movementnetwork.xyz)     |
+| Faucet endpoint  | [https://faucet.testnet.bardock.movementnetwork.xyz/](https://faucet.testnet.bardock.movementnetwork.xyz/)     |
 | Explorer         | [https://explorer.movementlabs.xyz/ ](https://explorer.movementlabs.xyz/ ) |
 
 
