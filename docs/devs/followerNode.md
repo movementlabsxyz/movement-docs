@@ -72,6 +72,20 @@ vars:
 
 ```
 
+You may need to add additional variables for the AWS SDK to properly authenticate. If you are running into server errors please add additional variables to the movement-full-follower.service.j2 file: 
+
+```yaml
+Environment="AWS_ACCESS_KEY_ID={{ aws_access_key_id }}"
+Environment="AWS_SECRET_ACCESS_KEY={{ aws_secret_access_key }}"
+```
+
+As well as to the movement-full-follower.yml file:
+
+```yaml
+    aws_access_key_id: "{{ aws_access_key_id }}"
+    aws_secret_access_key: "{{ aws_secret_access_key }}"
+```
+
 ### Fetching the Latest Container Revision
 
 ```bash
