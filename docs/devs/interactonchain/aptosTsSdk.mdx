@@ -1,0 +1,207 @@
+---
+sidebar_position: 1
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Aptos TypeScript SDK
+
+On the Movement Network, you are building with Aptos Move; this allows you to leverage the Aptos TypeScript SDK to interact with the chain.
+
+The guide below will walk you through the process of setting up the SDK and interacting with the chain. If you would like to reference specific functions on the SDK refer to the [reference documentation](https://aptos-labs.github.io/aptos-ts-sdk/) for the version of the SDK you are using.
+
+
+## Installation
+
+<Tabs>
+  <TabItem value="npm" label="npm" default>
+    ```bash
+    npm install @aptos-labs/aptos-ts-sdk
+    ```
+  </TabItem>
+  <TabItem value="pnpm" label="pnpm">
+    ```bash
+    pnpm add @aptos-labs/aptos-ts-sdk
+    ```
+  </TabItem>
+  <TabItem value="yarn" label="yarn">
+    ```bash
+    yarn add @aptos-labs/aptos-ts-sdk
+    ```
+  </TabItem>
+  <TabItem value="bun" label="bun">
+    ```bash
+    bun add @aptos-labs/aptos-ts-sdk
+    ```
+  </TabItem>
+</Tabs>
+
+## Imports
+
+To get started with the SDK, import the necessary components:
+
+```javascript
+const { Account, Aptos, AptosConfig, Network, Ed25519PrivateKey } = require("@aptos-labs/ts-sdk");
+```
+
+## Configuration
+
+Configure the SDK to connect to the Movement Porto Testnet (Please refer to [Network Endpoints](/devs/networkEndpoints) for more endpoints):
+
+```javascript
+const config = new AptosConfig({ 
+    network: Network.CUSTOM,
+    fullnode: 'https://aptos.testnet.porto.movementlabs.xyz/v1',
+    faucet: 'https://fund.testnet.porto.movementlabs.xyz/',
+});
+
+// Initialize the Aptos client
+const aptos = new Aptos(config);
+```
+
+## Interacting with the Chain
+
+### Account Setup
+
+```javascript
+// Create an account from a private key
+const privateKey = new Ed25519PrivateKey("YOUR_PRIVATE_KEY")
+const account = Account.fromPrivateKey({ privateKey })
+```
+
+### Reading Data
+
+```javascript
+// Example of reading data using view function
+const viewPayload = {
+    function: "0x1::message::get_message",
+    functionArguments: [accountAddress]
+};
+
+const result = await aptos.view({ payload: viewPayload });
+```
+
+### Sending Transactions
+
+```javascript
+// Build the transaction
+const transaction = await aptos.transaction.build.simple({
+    sender: accountAddress,
+    data: {
+        function: "0x1::message::set_message",
+        functionArguments: ["Hello Movement!"]
+    },
+});
+
+// Sign the transaction
+const signature = aptos.transaction.sign({ 
+    signer: account, 
+    transaction 
+});
+
+// Submit the transaction
+const committedTxn = await aptos.transaction.submit.simple({
+    transaction,
+    senderAuthenticator: signature,
+});
+
+// Wait for transaction completion
+const response = await aptos.waitForTransaction({ 
+    transactionHash: committedTxn.hash 
+});
+```
+
+:::tip
+Remember to replace `YOUR_PRIVATE_KEY` with your actual private key and never share or commit private keys to version control.
+:::
+
+## Example Code
+
+The Code below is based on the [Your First Move Contract tutorial](/devs/firstmove).
+
+```javascript
+const { Account, Aptos, AptosConfig, Network, Ed25519PrivateKey } = require("@aptos-labs/ts-sdk");
+
+// Define the custom network configuration
+const config = new AptosConfig({ 
+    network: Network.CUSTOM,
+    fullnode: 'https://aptos.testnet.porto.movementlabs.xyz/v1',
+    faucet: 'https://fund.testnet.porto.movementlabs.xyz/',
+});
+
+// Define the module address and functions
+const MODULE_ADDRESS = "";
+const SET_MESSAGE_FUNCTION = `${MODULE_ADDRESS}::message::set_message`;
+const GET_MESSAGE_FUNCTION = `${MODULE_ADDRESS}::message::get_message`;
+
+const PRIVATE_KEY = "YOUR_PRIVATE_KEY"; // Replace with your private key
+const MESSAGE = "gmove";
+
+const setMessage = async () => {
+  // Setup the client
+  const aptos = new Aptos(config);
+
+  // Create an account from the provided private key
+  console.log("creating")
+  const privateKey = new Ed25519PrivateKey(PRIVATE_KEY)
+  const account = Account.fromPrivateKey({ privateKey })
+  const accountAddress = account.accountAddress
+
+  console.log(`address: ${account.accountAddress}`)
+
+  console.log(`Using account: ${accountAddress}`);
+
+  // Build the transaction payload
+  const payload = {
+    function: SET_MESSAGE_FUNCTION,
+    type_arguments: [],
+    arguments: [MESSAGE],
+  };
+
+  console.log("\n=== Reading Message ===\n");
+  const viewPayload = {
+    function: GET_MESSAGE_FUNCTION,
+    functionArguments: [accountAddress]
+  }
+   try {
+     const message = await aptos.view({ payload: viewPayload });
+     console.log("Message:", message);
+   } catch (error) {
+     console.error("Error reading message:", error);
+   }
+
+  // Submit the transaction
+  console.log("\n=== Submitting Transaction ===\n");
+  const transaction = await aptos.transaction.build.simple({
+    sender: accountAddress,
+    data: {
+      function: SET_MESSAGE_FUNCTION,
+      functionArguments: [MESSAGE]
+    },
+  });
+
+  // Sign the transaction
+  const signature = aptos.transaction.sign({ signer: account, transaction });
+
+  // Submit the transaction to chain
+  const committedTxn = await aptos.transaction.submit.simple({
+    transaction,
+    senderAuthenticator: signature,
+  });
+
+  console.log(`Submitted transaction: ${committedTxn.hash}`);
+  const response = await aptos.waitForTransaction({ transactionHash: committedTxn.hash });
+  console.log({ response })
+  // Read the message after it has been set
+  console.log("\n=== Reading Message ===\n");
+
+  const newMessage = await aptos.view({ payload: viewPayload });
+
+  console.log("Message:", newMessage);
+};
+
+setMessage().catch((err) => {
+  console.error("Error setting message:", err);
+});
+```
