@@ -11,6 +11,7 @@ This page contains public endpoints that may at times be subject to rate limits.
 :::
 
 ## Movement Porto Testnet: Aptos Environment
+**Chain ID: 177**
 
 | Service          | URL                                                                    |
 |------------------|------------------------------------------------------------------------|
@@ -21,33 +22,29 @@ This page contains public endpoints that may at times be subject to rate limits.
 | Indexer Explorer        | [Public Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql) |
 | Indexer Endpoint      | [https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql](https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql) |
 
-<br />
+
+
 
 
 ## Movement Bardock Testnet: Aptos Environment
-
-:::warning
-
-The Movement Bardock Testnet is intended for infrastructure and validator design partners to begin testing deployments. Please note that the Bardock Testnet may experience state resets during this phase. If you’re developing a dApp, we recommend using the more stable Porto Testnet.  
-
-:::
-
-The Movement Testnetwork with Aptos Move
+**Chain ID: 250**
 
 | Service          | URL                                                                    |
 |------------------|------------------------------------------------------------------------|
-| RPC              | [https://aptos.testnet.bardock.movementlabs.xyz/v1](https://aptos.testnet.bardock.movementlabs.xyz/v1)     |
+| RPC              | [https://aptos.testnet.bardock.movementlabs.xyz/v1](https://aptos.testnet.bardock.movementlabs.xyz/v1)         |
 | Faucet endpoint  | [https://faucet.testnet.bardock.movementnetwork.xyz/](https://faucet.testnet.bardock.movementnetwork.xyz/)     |
 | Explorer         | [https://explorer.movementlabs.xyz/ ](https://explorer.movementlabs.xyz/ ) |
 
 
 ## Movement Mainnet: Aptos Environment
 
-:::warning
+:::info
 
-The Movement Mainnet is currently in "Operater Mode". This means that we are currently onboarding node operators and other infrastructure providers to the network.   
+The Movement Mainnet is currently in "Operator Mode". This means that we are currently onboarding node operators and other infrastructure providers to the network.   
 
 :::
+
+**Chain ID: 126**
 
 | Service          | URL                                                                    |
 |------------------|------------------------------------------------------------------------|
