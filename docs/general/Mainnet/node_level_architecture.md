@@ -23,7 +23,7 @@ A full node provides the core functionality of a Movement node:
 The node can be configured to operate in the following three modes:
 
 - Can operate as a [Validator Node](#validator-node) with a key from the trusted validator set.
-- Can operate as a [Follower_Node](#follower-node) which removes the requirement to write batches to the DA.
+- Can operate as a [Follower Node](#follower-node) which removes the requirement to write batches to the DA.
 - Can operate as an [Archival Node](#archival-node) which removes the requirement to write to DA and settle to Layer 1 with FFS.
 
 ### Validator node

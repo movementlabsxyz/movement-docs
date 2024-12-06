@@ -8,7 +8,7 @@ The easiest way to get Testnet MOVE
 
 :::info
 
-MOVE refers to the native token across our networks. At the moment they are distinct in nature and requires conversion and/or different faucets.
+MOVE refers to the native token across our networks. At the moment they are distinct in nature and require conversion and/or different faucets.
 
 :::
 
