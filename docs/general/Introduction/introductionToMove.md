@@ -1,8 +1,9 @@
 ---
 sidebar_position: 1
+description: Learn about Move, the programming language used on the Movement Network.
 ---
 
-# Introduction
+# Introduction to Move
 
 Movement Labs is building a network of Move-based blockchains. Our flagship products is the Movement Network.
 
