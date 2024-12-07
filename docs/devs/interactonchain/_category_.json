@@ -1,10 +1,6 @@
 {
     "label": "Interact Onchain",
     "position": 5,
-    "collapsed": false,
-    "link": {
-      "description": "Send Transactions and Interact with the Chain",
-      "type": "generated-index"
-    }
+    "collapsed": false
   }
   

@@ -1,8 +1,9 @@
 ---
 sidebar_position: 4
+description: Learn about Interoperability and Security on the Movement Network.
 ---
 
-# Interoperability and Security
+# Interoperability
 
 The Movement Network leverages mechanisms to ensure robust interoperability and high security across its ecosystem. Key components include the Shared Decentralized Sequencer and Multi-Asset Staking.
 

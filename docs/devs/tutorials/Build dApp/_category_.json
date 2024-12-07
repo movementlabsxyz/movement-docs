@@ -2,7 +2,5 @@
   "label": "Build dApp",
   "position": 2,
   "collapsed": false,
-  "link": {
-    "description": "Step by step build a dApp"
-  }
+  "description": "Learn how to build your dApp end to end."
 }

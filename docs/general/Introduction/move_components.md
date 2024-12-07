@@ -1,5 +1,6 @@
 ---
 sidebar_position: 3
+description: Learn about the Move components used on the Movement Network.
 ---
 
 # Movement Frameworks

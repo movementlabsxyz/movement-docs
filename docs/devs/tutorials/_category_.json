@@ -1,9 +1,5 @@
 {
   "label": "Tutorials",
   "position": 8,
-  "collapsed": false,
-  "link": {
-    "description": "Tutorials for building on Movement",
-    "type": "generated-index"
-  }
+  "collapsed": false
 }

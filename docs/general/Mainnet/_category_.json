@@ -1,9 +1,5 @@
 {
   "label": "What is the Mainnet?",
   "position": 3,
-  "collapsed": false,
-  "link": {
-    "description": "Learn about the Movement Network.",
-    "type": "generated-index"
-  }
+  "collapsed": false
 }
