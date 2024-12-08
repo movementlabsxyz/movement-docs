@@ -10,7 +10,7 @@ Welcome to your first journey in deploying a Move module (smart contract) on the
 
 Before we begin, ensure you have one of the following command-line interfaces (CLIs) installed:
 
-- **Movement CLI**: [Installation Guide](/devs/movementcli)
+- **Movement CLI**: [Installation Guide](/docs/devs/movementcli.mdx)
 - **Aptos CLI**: [Installation Guide](https://aptos.dev/en/build/cli#-install-the-aptos-cli)
 
 This tutorial uses the **Movement CLI**, but the commands are identical for the Aptos CLI—just replace `movement` with `aptos` in the commands. If you're using the Aptos CLI, you'll need to configure it for a custom network during the initialization process.
@@ -44,7 +44,7 @@ Due to current network load, we have restricted the faucet API to only accept re
 
    Type `custom` and press **Enter**.
 
-  You will be promted for the following details from our [Network EndPoints](/devs/networkEndpoints)
+  You will be promted for the following details from our [Network EndPoints](/docs/devs/networkEndpoints.md)
 
   - RPC/Rest Endpoint: https://aptos.testnet.porto.movementlabs.xyz/v1
   - Faucet Endpoint: https://faucet.testnet.porto.movementnetwork.xyz/
