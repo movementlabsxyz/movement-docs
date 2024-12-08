@@ -10,18 +10,17 @@ import KeyboardIcon from '../../../assets/keyboard.svg'
 import Divider from '@site/src/components/Divider'
 
 # DApp Builder
-
-Movement cung cấp cho các builders 2 network và mội trường lập trình dựa trên aptos move, hoặc solidity (move-evm). Bởi vỉ lý do đó bạn cũng có thể sử dụng được các wallet và tương tác với người dùng thông qua 2 network là evm (ví dụ như metamask), và aptos network (ví dụ như là Petra,...).
+Movement provides builders with 2 networks and development environments based on Aptos Move or Solidity (Move-EVM). For this reason, you can use wallets and interact with users through 2 networks: EVM (such as MetaMask) and Aptos network (such as Petra, etc.).
 
 # Aptos Move Provides
+With the Aptos network, you can use @aptos-labs/wallet-adapter-react to provide your dApp with a `Provider` and `Context` for connecting MoveVM wallets to your dapp.
 
-Với Aptos network bạn có thể sử dụng @aptos-labs/wallet-adapter-react để cung cấp cho dApp của bạn `Provider` và `Context` sử dụng cho việc connect MoveVM wallet tới dapp của bạn.
-
-Provides này sử sụng standard interface để sử dụng cho tất cả Movement Wallets, và nó cho phép các wallet mới sẽ dễ dàng được support.
+This Provider uses a standard interface for all Movement Wallets, making it easy for new wallets to be supported.
 
 ## Using the React `Provider` and `Context`
+In this example, I'll be using Next.js and TypeScript.
 
-Trong ví dụ này tôi sẽ sử dụng Next.js và typescript.
+Would you like me to provide the code example for implementing the Provider and Context in Next.js with TypeScript?
 
 ### Khởi tạo dự án Next.js
 <Tabs groupId="package-management">
