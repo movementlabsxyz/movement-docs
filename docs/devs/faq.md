@@ -12,7 +12,7 @@ Movement Labs makes the Move programming language accessible across the entire m
 
 ## Is Mainnet/Testnet/Devnet live?
 
-Currently we are live on testnet and the latest information on networks can be found [here](/devs/networkEndpoints).
+Currently we are live on testnet and the latest information on networks can be found [here](/docs/devs/networkEndpoints.md).
 
 ## Why are there three different endpoints for each language?
 
@@ -20,7 +20,7 @@ The Movement Network is a single L2 built with different environments. During ou
 
 ## How do I get started building?
 
-Our [getting started](/devs/getstarted) guide will help you through finding exactly what you need in order to start building on Movement.
+Our [getting started](/docs/devs/getstarted.md) guide will help you through finding exactly what you need in order to start building on Movement.
 
 ## How can I get help?
 
