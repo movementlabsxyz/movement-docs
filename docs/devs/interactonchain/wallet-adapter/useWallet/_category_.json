@@ -1,0 +1,9 @@
+{
+  "label" : "useWallet",
+  "position": 2,
+  "collapsed": false,
+  "link": {
+    "description": "useWallet functions",
+    "type": "generated-index"
+  }
+}

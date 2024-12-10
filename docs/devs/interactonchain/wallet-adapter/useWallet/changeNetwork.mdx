@@ -1,0 +1,220 @@
+---
+sidebar_position: 4
+id: changeNetworkSDK
+slug: /wallet-adapter/change-network-sdk
+---
+
+# Movement Labs Network Switcher
+
+## Overview
+This React component provides a user interface for switching between different Movement Labs networks (Porto Testnet, Bardock Testnet, and Suzuka Devnet) in an Aptos blockchain application.
+
+## Network Configurations
+```typescript
+const NETWORKS = {
+    PORTO: {
+        name: 'PORTO TESTNET',
+        fullnode: 'https://aptos.testnet.porto.movementlabs.xyz/v1',
+        faucet: 'https://fund.testnet.porto.movementlabs.xyz/'
+    },
+    BARDOCK: {
+        name: 'BARDOCK TESTNET',
+        fullnode: 'https://aptos.testnet.bardock.movementlabs.xyz/v1',
+        faucet: 'https://faucet.testnet.bardock.movementnetwork.xyz/'
+    },
+    SUZUKA: {
+        name: 'SUZUKA DEVNET',
+        fullnode: 'https://devnet.suzuka.movementnetwork.xyz/v1',
+        faucet: 'https://faucet.devnet.suzuka.movementnetwork.xyz/'
+    }
+};
+```
+
+### Available Networks:
+1. **Porto Testnet**: Primary testnet environment
+2. **Bardock Testnet**: Secondary testnet environment
+3. **Suzuka Devnet**: Development network environment
+
+## Component Breakdown
+
+### 1. Wallet Hook Integration
+```typescript
+const { network, changeNetwork, wallet } = useWallet();
+```
+- Uses Aptos wallet adapter
+- Provides current network information
+- Enables network switching functionality
+
+### 2. Network Switching Function
+```typescript
+const handleNetworkChange = (networkConfig) => {
+    const config = new AptosConfig({
+        network: Network.TESTNET,
+        fullnode: networkConfig.fullnode,
+        faucet: networkConfig.faucet
+    });
+    changeNetwork(config);
+};
+```
+- Creates new network configuration
+- Handles network switching process
+- Updates wallet connection
+
+### 3. UI Components
+
+#### Network Information Display
+```typescript
+<div className="network-info">
+    <p>Current Network: <strong>{network?.name ?? 'Not Connected'}</strong></p>
+    <p>Node URL: <strong>{network?.url ?? 'Not Available'}</strong></p>
+</div>
+```
+Shows:
+- Current network name
+- Current node URL
+
+#### Network Selection Interface
+```typescript
+<div className="network-options">
+    <label>
+        <input
+            type="radio"
+            value="PORTO"
+            checked={network?.url === NETWORKS.PORTO.fullnode}
+            onChange={() => handleNetworkChange(NETWORKS.PORTO)}
+        />
+        Porto Testnet
+    </label>
+    // Similar inputs for BARDOCK and SUZUKA
+</div>
+```
+- Radio button selection for each network
+- Automatic state management
+- Visual feedback for current selection
+
+## Features
+
+### 1. Network Status Display
+- Shows current network connection
+- Displays active node URL
+- Provides clear connection status
+
+### 2. Network Switching
+- Easy switching between networks
+- Radio button interface
+- Immediate feedback on selection
+
+### 3. Error Handling
+- Graceful handling of disconnected states
+- Clear feedback when network is unavailable
+
+## Usage Example
+
+```typescript
+// In your React application
+import ChangeNetwork from './components/ChangeNetwork';
+
+function App() {
+    return (
+        <div>
+            <ChangeNetwork />
+        </div>
+    );
+}
+```
+
+This component provides a streamlined solution for managing Movement Labs network connections in Aptos blockchain applications, with focus on user experience and reliable network switching functionality.
+
+
+## Full Code Example
+```typescript
+import { useWallet } from '@aptos-labs/wallet-adapter-react';
+import { Network, AptosConfig } from '@aptos-labs/ts-sdk';
+
+// Add this interface near the top of the file, after the imports
+interface NetworkConfig {
+  name: string;
+  fullnode: string;
+  faucet: string;
+}
+
+const ChangeNetwork = () => {
+  const { network, changeNetwork, wallet } = useWallet();
+
+  // Network configurations
+  const NETWORKS = {
+    PORTO: {
+      name: 'PORTO TESTNET',
+      fullnode: 'https://aptos.testnet.porto.movementlabs.xyz/v1',
+      faucet: 'https://fund.testnet.porto.movementlabs.xyz/'
+    },
+    BARDOCK: {
+      name: 'BARDOCK TESTNET',
+      fullnode: 'https://aptos.testnet.bardock.movementlabs.xyz/v1',
+      faucet: 'https://faucet.testnet.bardock.movementnetwork.xyz/'
+    },
+    SUZUKA: {
+      name: 'SUZUKA DEVNET',
+      fullnode: 'https://devnet.suzuka.movementnetwork.xyz/v1',
+      faucet: 'https://faucet.devnet.suzuka.movementnetwork.xyz/'
+    }
+  };
+
+  const handleNetworkChange = (networkConfig: NetworkConfig) => {
+    changeNetwork(Network.TESTNET);
+  };
+
+  return (
+    <div className="container">
+      <h3>Movement Labs Network Switcher</h3>
+
+      {/* Current Network Info */}
+      <div className="network-info">
+        <p>Current Network: <strong>{network?.name ?? 'Not Connected'}</strong></p>
+        <p>Node URL: <strong>{network?.url ?? 'Not Available'}</strong></p>
+      </div>
+
+      {/* Network Selection */}
+      <div className="network-selection">
+        <h4>Select Network:</h4>
+        <div className="network-options">
+          {/* Porto Testnet */}
+          <label>
+            <input
+              type="radio"
+              value="PORTO"
+              checked={network?.url === NETWORKS.PORTO.fullnode}
+              onChange={() => handleNetworkChange(NETWORKS.PORTO)}
+            />
+            Porto Testnet
+          </label>
+
+          {/* Bardock Testnet */}
+          <label>
+            <input
+              type="radio"
+              value="BARDOCK"
+              checked={network?.url === NETWORKS.BARDOCK.fullnode}
+              onChange={() => handleNetworkChange(NETWORKS.BARDOCK)}
+            />
+            Bardock Testnet
+          </label>
+
+          {/* Suzuka Devnet */}
+          <label>
+            <input
+              type="radio"
+              value="SUZUKA"
+              checked={network?.url === NETWORKS.SUZUKA.fullnode}
+              onChange={() => handleNetworkChange(NETWORKS.SUZUKA)}
+            />
+            Suzuka Devnet
+          </label>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ChangeNetwork;
+```

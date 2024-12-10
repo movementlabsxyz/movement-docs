@@ -1,0 +1,151 @@
+---
+sidebar_position: 1
+---
+
+# Wallet Connection
+
+This component demonstrates how to implement wallet connection functionality using the Aptos Wallet Adapter in a React application. It provides a simple interface for users to connect and disconnect their Aptos wallet.
+
+## Prerequisites
+
+- `@aptos-labs/wallet-adapter-react` package installed
+- A React application setup
+
+## Implementation
+
+The `WalletConnectDemo` component uses the `useWallet` hook from the Aptos Wallet Adapter to manage wallet connections. Here's how to implement it:
+
+1. First, import the necessary dependencies:
+
+```typescript
+import { WalletName, useWallet } from '@aptos-labs/wallet-adapter-react';
+```
+
+2. The component uses these key features from the `useWallet` hook:
+- `connect`: Function to establish a connection with the wallet
+- `disconnect`: Function to terminate the wallet connection
+- `account`: Contains the connected account information
+- `connected`: Boolean state indicating if a wallet is connected
+
+3. Key Functions:
+
+```typescript
+// Connect to wallet
+const handleConnect = async () => {
+  try {
+    await connect("Petra" as WalletName<"Petra">);
+    // You can replace "Petra" with any supported wallet name
+  } catch (error) {
+    console.error('Failed to connect to wallet:', error);
+  }
+};
+
+// Disconnect from wallet
+const handleDisconnect = async () => {
+  try {
+    await disconnect();
+  } catch (error) {
+    console.error('Failed to disconnect from wallet:', error);
+  }
+};
+```
+
+## Usage
+
+The component renders a simple UI that shows:
+- A "Connect Wallet" button when no wallet is connected
+- The connected wallet address and a "Disconnect" button when a wallet is connected
+
+To use this component in your application:
+
+```typescript
+import WalletConnectDemo from './components/WalletConnect';
+
+// In your React component:
+function App() {
+  return (
+    <div>
+      <WalletConnectDemo />
+    </div>
+  );
+}
+```
+
+## Important Notes
+
+1. Make sure your app is wrapped with the Aptos Wallet Provider:
+```typescript
+import { AptosWalletAdapterProvider } from '@aptos-labs/wallet-adapter-react';
+
+function App() {
+  return (
+    <AptosWalletAdapterProvider>
+      <WalletConnectDemo />
+    </AptosWalletAdapterProvider>
+  );
+}
+```
+
+2. You can modify the wallet name in `handleConnect` to connect to different wallets:
+   - "Petra"
+   - "Martian"
+   - "Pontem"
+   - Other supported Aptos wallets
+
+3. Error handling is implemented for both connection and disconnection operations to provide a better user experience.
+
+## Example Response
+
+When connected, the component will display the wallet address and a disconnect button. The address will be in the format:
+```
+Connected to: 0x123...abc
+```
+
+## FullCode
+```typescript title="src/components/WalletConnect.tsx"
+import React from 'react';
+import { WalletName, useWallet } from '@aptos-labs/wallet-adapter-react';
+
+const WalletConnectButton = () => {
+  const { connect, disconnect, account, connected } = useWallet();
+
+  const handleConnect = async () => {
+    try {
+      // Change below to the desired wallet name instead of "Petra"
+      await connect("Petra" as WalletName<"Petra">);
+      console.log('Connected to wallet:', account);
+    } catch (error) {
+      console.error('Failed to connect to wallet:', error);
+    }
+  };
+
+  const handleDisconnect = async () => {
+    try {
+      await disconnect();
+      console.log('Disconnected from wallet');
+    } catch (error) {
+      console.error('Failed to disconnect from wallet:', error);
+    }
+  };
+
+  return (
+    <div>
+      <h1>Aptos Wallet Connection</h1>
+      <div>
+        {connected ? (
+          <div>
+            <p>Connected to: {account?.address}</p>
+            <button onClick={handleDisconnect}>Disconnect</button>
+          </div>
+        ) : (
+          <button onClick={handleConnect}>Connect Wallet</button>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default WalletConnectButton;
+```
+
+This documentation provides a comprehensive guide for developers to understand and implement the wallet connection functionality in their Aptos dApps. Feel free to modify it based on your specific needs or tutorial context!

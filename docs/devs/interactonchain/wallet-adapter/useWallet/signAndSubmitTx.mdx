@@ -1,0 +1,159 @@
+---
+sidebar_position: 2
+---
+
+# Sign and Submit
+
+## Overview
+This React component implements a transaction signing and submission functionality for the Aptos blockchain. It provides a simple button interface that allows users to sign and submit transactions using their connected Aptos wallet.
+
+## Dependencies
+```typescript
+import React from 'react';
+import { useWallet } from '@aptos-labs/wallet-adapter-react';
+import { Aptos, AptosConfig, Network } from '@aptos-labs/ts-sdk';
+```
+- `@aptos-labs/wallet-adapter-react`: Provides wallet connection functionality
+- `@aptos-labs/ts-sdk`: Aptos blockchain SDK for interaction with the network
+
+## Configuration
+```typescript
+const config = new AptosConfig({
+  network: Network.TESTNET,
+  fullnode: 'https://aptos.testnet.porto.movementlabs.xyz/v1',
+  faucet: 'https://fund.testnet.porto.movementlabs.xyz/'
+})
+const aptos = new Aptos(config);
+```
+- Creates a new Aptos configuration instance
+- Connects to the Aptos mainnet network
+- Initializes the Aptos client with the configuration
+
+## Component Breakdown
+
+### 1. Hook Usage
+```typescript
+const { account, signAndSubmitTransaction } = useWallet();
+```
+- Uses the `useWallet` hook to get:
+  - `account`: Current connected wallet account
+  - `signAndSubmitTransaction`: Function to sign and submit transactions
+
+### 2. Transaction Handler
+```typescript
+const onSignAndSubmitTransaction = async () => {
+```
+This function handles:
+1. Account verification
+2. Transaction creation and submission
+3. Transaction confirmation
+
+#### Transaction Structure
+```typescript
+{
+  sender: account.address,
+  data: {
+    function: "<address_account>::<module_name>::<function>",
+    functionArguments: [account.address, 1],
+  }
+}
+```
+- `sender`: The address of the transaction sender
+- `function`: Calls the Aptos account transfer function
+- `functionArguments`: Array containing:
+  - Recipient address (in this case, sending to self)
+  - Amount to transfer (1 unit)
+
+### 3. Transaction Confirmation
+```typescript
+await aptos.waitForTransaction({ transactionHash: response.hash });
+```
+- Waits for transaction confirmation on the blockchain
+- Includes error handling for failed transactions
+
+### 4. UI Component
+```typescript
+return (
+  <button onClick={onSignAndSubmitTransaction}>
+    Sign and submit transaction
+  </button>
+);
+```
+- Renders a simple button
+- Triggers the transaction process when clicked
+
+## Usage Example
+```typescript
+import SignAndSubmit from './components/signAndSubmitTx';
+
+function App() {
+  return (
+    <div>
+      <SignAndSubmit />
+    </div>
+  );
+}
+```
+
+## Important Notes
+1. This component requires a connected Aptos wallet to function
+2. It's configured to work with Mainnet (production network)
+3. The current implementation sends 1 unit to the same address (self-transfer)
+4. Error handling is implemented for transaction confirmation
+5. The component should be used within a wallet provider context
+
+## Customization
+To modify the transaction:
+1. Change the `function` to call different smart contracts
+2. Modify `functionArguments` to pass different parameters
+3. Adjust the recipient address and amount as needed
+4. Consider adding loading states and success/error notifications
+
+## Security Considerations
+1. Always verify the connected account before transactions
+2. Implement proper error handling
+3. Consider adding transaction amount validation
+4. Add user confirmation for important transactions
+5. Implement proper loading states to prevent double submissions
+
+
+## Fullcode
+```typescript title="src/components/signAndSubmitTx.tsx"
+import React from 'react';
+import { useWallet } from '@aptos-labs/wallet-adapter-react';
+import { Aptos, AptosConfig, Network } from '@aptos-labs/ts-sdk';
+
+const config = new AptosConfig({ network: Network.MAINNET });
+const aptos = new Aptos(config);
+
+const SignAndSubmit = () => {
+  const { account, signAndSubmitTransaction } = useWallet();
+
+  const onSignAndSubmitTransaction = async () => {
+    if(account == null) {
+        throw new Error("Unable to find account to sign transaction")
+    }
+    const response = await signAndSubmitTransaction({
+      sender: account.address,
+      data: {
+        function: "0x1::aptos_account::transfer",
+        functionArguments: [account.address, 1],
+      },
+    });
+    // if you want to wait for transaction
+    try {
+      await aptos.waitForTransaction({ transactionHash: response.hash });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return (
+    <button onClick={onSignAndSubmitTransaction}>
+      Sign and submit transaction
+    </button>
+  );
+};
+
+export default SignAndSubmit;
+```
