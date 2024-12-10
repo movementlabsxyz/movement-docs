@@ -8,24 +8,29 @@ description: "Movement Network Documentation"
 
 import Link from '@docusaurus/Link';
 import React from 'react';
-import DocCardList from '@theme/DocCardList';
+import CustomDocCardList from '@site/src/components/CustomDocCardList';
 
-<DocCardList items={[
-  {type: 'link', label: 'Vision', href: '/category/vision-for-movement', description: "Learn more about Movement"},
-  {type: 'link', label: 'Mainnet', href: '/category/what-is-the-mainnet', description: "Learn more about the Movement Network"},
+# Getting Started
+
+Welcome to Movement! This documentation will help you understand the Movement ecosystem and how to interact with it.
+
+<CustomDocCardList items={[
+  {type: 'link', label: 'Vision', href: '/general/Introduction', description: "Learn more about Movement"},
+  {type: 'link', label: 'Mainnet', href: '/general/Mainnet', description: "Learn more about the Movement Network"},
   {type: 'link', label: 'Developers', href: '/devs/getstarted', description: "All Developer Documentation"},
 ]} />
 
-<h2>Where are you building?</h2>
+## Where are you building?
 
-<DocCardList items={[
-  {type: 'link', label: 'Building on Aptos Move', href: '/devs/tutorials/Deploy/aptosmodule', description: "For Developers from the Aptos Ecosystem"},
+<CustomDocCardList items={[
+  {type: 'link', label: 'Building on Aptos Move', href: '/devs/firstmove', description: "For Developers from the Aptos Ecosystem"},
   {type: 'link', label: 'Building on EVM', href: '/category/evm-contracts', description: "For Developers from the EVM Ecosystem"},
 ]} />
   
-<h2>More Resources</h2>
+## More Resources
 
-<DocCardList items={[
+<CustomDocCardList items={[
   {type: 'link', label: 'Faucets', href: '/general/UsingMovement/faucet', description: "Get Testnet Tokens"},
   {type: 'link', label: 'Explorers', href: '/general/UsingMovement/explorers', description: "Use our Block Explorers"},
 ]} />
+
