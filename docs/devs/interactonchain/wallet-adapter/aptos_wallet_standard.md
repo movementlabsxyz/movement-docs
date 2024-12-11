@@ -1,5 +1,6 @@
 ---
 sidebar_position: 5
+description: Maintain applications without wallet-specific modifications
 ---
 
 # Move-VM Wallet Standard

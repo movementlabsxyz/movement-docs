@@ -1,6 +1,7 @@
 ---
 sidebar_position: 3
 title: Browser Extension Wallets
+description: Implementing a wallet adapter plugin that allows dapps to interact with your browser extension wallet
 ---
 
 import Tabs from '@theme/Tabs';
@@ -10,8 +11,8 @@ import InstallIcon from '../../../assets/terminal.svg'
 
 # Movement Networks Wallet Adapter for Browser Extension Wallets
 
-## Overview
-This guide walks you through implementing a wallet adapter plugin that allows dapps to interact with your browser extension wallet on Move Networks. Using the AIP-62 Wallet standard, dapps can seamlessly connect to your wallet by updating their `move-wallet-adapter` package.
+This guide walks you through implementing a wallet adapter plugin that allows dapps to interact with your browser extension wallet on Move Networks.
+Using the AIP-62 Wallet standard, dapps can seamlessly connect to your wallet by updating their `move-wallet-adapter` package.
 
 ## Prerequisites
 Before starting, ensure you have:

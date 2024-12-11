@@ -4,6 +4,7 @@ title: "SDK Wallet Builders"
 ---
 
 # Wallet Adapter Plugin for SDK Wallets
+A wallet adapter plugin enables dapps to use your wallet
 
 ## 1. Overview
 ### 1.1. Purpose
