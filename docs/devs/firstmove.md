@@ -19,6 +19,8 @@ This tutorial uses the **Movement CLI**, but the commands are identical for the 
 
 ## Step 1: Initialize the CLI
 
+If you are using Aptos CLI - ensure that you are using version 3.5 or lower. You can replace all `movement` commands with `aptos` in the following steps.
+
 Open your command prompt or terminal and navigate to the directory where you want to create your project. Then, initialize the CLI with the following command:
 
 ```bash
