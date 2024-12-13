@@ -131,7 +131,7 @@ Welcome to the Movement Network! This guide will help you start building on our 
               ```
    <!-- END:<<< Linux Option 1 - Install CLI <<< -->
 ---
-            <Title>Option 2: Install Aptos CLI ( If you familar with Aptos )</Title>
+            <Title>Option 2: Install Aptos CLI ( If you familiar with Aptos )</Title>
             <Divider/>
             - Aptos CLI: [Installation Guide](https://aptos.dev/en/build/cli#-install-the-aptos-cli)
 
