@@ -17,5 +17,6 @@ https://explorer.movementnetwork.xyz/?network=testnet
 
 https://explorer.devnet.imola.movementlabs.xyz
 
-
+## OpenScan MVEM Blockchain Explorer
+https://move.openscan.ai
 
