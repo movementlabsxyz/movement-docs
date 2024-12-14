@@ -181,7 +181,7 @@ Open `hello_blockchain.move` in your preferred text editor and paste the followi
 module hello_blockchain::message {
     use std::error;
     use std::signer;
-    use std::string::{String, utf8};
+    use std::string::{String};
     use aptos_framework::account;
     use aptos_framework::event;
 
@@ -231,10 +231,10 @@ module hello_blockchain::message {
     public entry fun sender_can_set_message(account: signer) acquires MessageHolder {
         let addr = signer::address_of(&account);
         aptos_framework::account::create_account_for_test(addr);
-        set_message(account, utf8(b"Hello, Blockchain"));
+        set_message(account, std::string::utf8(b"Hello, Blockchain"));
 
         assert!(
-            get_message(addr) == utf8(b"Hello, Blockchain"),
+            get_message(addr) == std::string::utf8(b"Hello, Blockchain"),
             ENO_MESSAGE
         );
     }
