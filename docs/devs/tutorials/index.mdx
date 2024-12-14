@@ -9,4 +9,7 @@ import CustomDocCardList from '@site/src/components/CustomDocCardList';
 
 Learn how to build and deploy on Movement through our comprehensive tutorials.
 
-<CustomDocCardList /> 
+<CustomDocCardList items={[
+  {type: 'link', label: 'Build', href: '/devs/tutorials/build', description: "Learn how to build a dApp using Move"},
+  {type: 'link', label: 'Deploy', href: '/devs/tutorials/deploy', description: "Learn how to deploy your Move modules"},
+]} /> 
