@@ -4,7 +4,7 @@ sidebar_position: 8
 
 # Run a Follower Node
 
-This guide will help you set up and run a Movement follower node. The Bardock Testnet and Mainnet currently support this feature. Learn more about Node architecture [here](/general/Mainnet/node_level_architecture). For simplicity we have provided instruction for deploying using an Ansible script below. 
+This guide will help you set up and run a Movement follower node. The Bardock Testnet and Mainnet currently support this feature. Learn more about Node architecture [here](/general/Mainnet/node_level_architecture.md). For simplicity we have provided instruction for deploying using an Ansible script below. 
 
 ## Hardware Recommendations
 
@@ -196,7 +196,7 @@ This should install all dependencies needed to work on the Movement Follower Nod
 
 You can now either run the follower node natively or with our containers via the provided just commands.
 
-First create, an environment file for the follower node. The example below is for the Movement Testnet. Comments are made on how to change the environment file for other networks.
+First, create an environment file for the follower node. The example below is for the Movement Testnet. Comments are made on how to change the environment file for other networks.
 
 ```
 CONTAINER_REV=<latest-commit-hash>
