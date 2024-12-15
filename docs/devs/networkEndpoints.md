@@ -64,36 +64,11 @@ We often test updates on our Suzuka devnet before pushing to testnet, you can de
 | Explorer         | [https://explorer.suzuka.movementnetwork.xyz/?network=devnet](https://explorer.suzuka.movementnetwork.xyz/?network=devnet) |
 
 
-
-
-## EVM Environment
-
-The MEVM environment is currently accessible through the Imola Devnet. 
-
-| Service          | URL                                                                    |
-|------------------|------------------------------------------------------------------------|
-| RPC              | [https://mevm.devnet.imola.movementnetwork.xyz ](https://mevm.devnet.imola.movementnetwork.xyz )     |
-| Faucet UI        | [https://faucet.movementnetwork.xyz/?network=mevm](https://faucet.movementlabs.xyz/?network=mevm)         |
-| Chain ID         | 30732                                                                  |
-| Explorer         | [https://explorer.devnet.imola.movementnetwork.xyz](https://explorer.devnet.imola.movementnetwork.xyz)     |
-| Indexer          | [https://aptos.devnet.imola.movementlabs.xyz/indexer/v1/graphql](https://aptos.devnet.imola.movementlabs.xyz/indexer/v1/graphql) |
-| Subgraph RPC     | [https://mevm2.devnet.imola.movementlabs.xyz/](https://mevm2.devnet.imola.movementlabs.xyz/)     |
-| Multicall | [0x5005A743875A50F80C306d3A6cfAC1C000623658](https://explorer.devnet.imola.movementlabs.xyz/#/account/0x0000000000000000000000005005a743875a50f80c306d3a6cfac1c000623658/resources)
-
-Additional Public EVM Endpoints
-
-| Service          | URL                                                                    |
-|------------------|------------------------------------------------------------------------|
-| RPC              | [https://mevm2.devnet.imola.movementnetwork.xyz ](https://mevm2.devnet.imola.movementnetwork.xyz)     |
-| RPC       | [https://mevm4.devnet.imola.movementnetwork.xyz](https://mevm4.devnet.imola.movementnetwork.xyz)         |
-
-
 :::info
 
-Please note that the Sui Baku Devnet has been deprecated. We will share our roadmap compatibility at a later date
+Please note that the EVM Imola testnet and Sui Baku devnet have been deprecated. We will share our roadmap compatibility at a later date.
 
 :::
-
 
 
 ## Network Properties
