@@ -1,5 +1,6 @@
 ---
-sidebar_position: 1
+title: Build
+sidebar_position: 2
 ---
 
 # Aptos Move dApp
@@ -8,16 +9,18 @@ In this guide, we will learn how to build an end-to-end "onchain bio" dApp. We'l
 
 ## Requirements
 
-Make sure to have [Aptos CLI](https://aptos.dev/tools/aptos-cli/install-cli/) installed.
+Make sure to have [Movement CLI](/devs/movementcli) installed.
+
+If you are using Aptos CLI - ensure that you are using version 3.5 or lower.
 
 View an example of the finished dApp [here](https://github.com/movementlabsxyz/onchain-bio-dapp).
 
 ## Initialize your Environment 
 
-Initialize your Aptos profile for your package development and add Movement as a custom network. Movement is our current blockchain that supports Aptos deployments.
+Initialize your profile for your package development and add Movement as a custom network. Movement is our current blockchain that supports Aptos deployments.
 
 ```bash
-aptos init --network custom --rest-url https://aptos.testnet.porto.movementlabs.xyz/v1
+movement init
 ```
 
 ## Setup 
@@ -47,7 +50,7 @@ mkdir move && cd move
 Then create a move project, containing code for an onchain package:
 
 ```bash
-aptos move init --name my_todo_list
+movement move init --name my_todo_list
 ```
 
 Your file structure should now look like this:
@@ -94,21 +97,11 @@ Next, let's deploy to testnet!
 
 ## Deploying the Module to Movement's Testnetwork
 
-First, from within the move directory, initialize your Movement Aptos configuration:
+First, from within the move directory, initialize your Movement configuration:
 
 ```bash
-aptos init
+movement init
 ```
-
-When prompted to choose a network, enter custom.
-
-Then enter the following REST endpoint:
-
-```
-https://aptos.testnet.porto.movementlabs.xyz/v1
-```
-
-And the same URL for faucet endpoint.
 
 When asked for a private key, press Enter to generate a new keypair.
 
@@ -120,13 +113,13 @@ Account 0x39883cbc29500a8bf79911ea1469e1c3b58104547a88fb0fbdf17470f80b2a91 doesn
 Account 0x39883cbc29500a8bf79911ea1469e1c3b58104547a88fb0fbdf17470f80b2a91 funded successfully
 
 ---
-Aptos CLI is now set up for account 0x39883cbc29500a8bf79911ea1469e1c3b58104547a88fb0fbdf17470f80b2a91 as profile default!  Run `aptos --help` for more information about commands
+Movement CLI is now set up for account 0x39883cbc29500a8bf79911ea1469e1c3b58104547a88fb0fbdf17470f80b2a91 as profile default!  Run `movement --help` for more information about commands
 {
   "Result": "Success"
 }
 ```
 
-Now your move directory will contain a hidden .aptos folder containing a config.yaml file. You can view the contents of that file to see your private and public keys.
+Now your move directory will contain a hidden .movement folder containing a config.yaml file. You can view the contents of that file to see your private and public keys.
 
 In the line under [addresses] in Move.toml, add your account address:
 
@@ -147,8 +140,8 @@ After compiling, you'll see a result message formatted like this:
 
 Now you can publish the package:
 
-```
-movement aptos move publish
+```bash
+movement move publish
 ```
 
 After confirming that the price is okay, your transaction will be submitted to the blockchain.
@@ -225,7 +218,6 @@ This wraps our app in the `<AptosWalletAdapterProvider /> ` tag so we can connec
 Now replace your App.tsx code with the following:
 
 ```jsx
-
 import { WalletSelector } from "@aptos-labs/wallet-adapter-ant-design";
 import "@aptos-labs/wallet-adapter-ant-design/dist/index.css";
 import { useRef, useState, useEffect } from "react";
@@ -354,7 +346,6 @@ function App() {
 }
 
 export default App;
-
 ```
 
 Lastly replace the code in the `index.css`
@@ -419,11 +410,11 @@ Lastly replace the code in the `index.css`
     height: 200px;
     resize: vertical; 
   }
-  ```
+```
 
-  Your locally-running app should now look like this:
+Your locally-running app should now look like this:
 
-  ![app](./imgs/localapp.png)
+![app](./imgs/localapp.png)
 
 
 Feel free to style the app however you prefer.

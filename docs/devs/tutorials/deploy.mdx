@@ -1,0 +1,54 @@
+---
+title: Deploy
+sidebar_position: 3
+---
+
+# Deploy to Movement Network 
+
+🚀 If you already have a Move module written, you can deploy it to the Movement Network using the Movement CLI or Aptos CLI.
+
+For a full guide on how to install the CLI and get your development environment setup, please see our [First Move Module](/devs/firstmove) guide.
+
+## Check Config
+
+Ensure your `config.yaml` is configured to the correct network for the profile you are using. This can be found in the `.movement` directory at the root of your project.
+
+```
+---
+profiles:
+  default:
+    network: Custom
+    private_key: "0xYOUR_PRIVATE_KEY"
+    public_key: "0xYOUR_PRIVATE_KEY"
+    account: "account_address"
+    rest_url: "https://aptos.testnet.porto.movementlabs.xyz/v1"
+    faucet_url: "https://fund.testnet.porto.movementlabs.xyz/"
+```
+
+
+## Add Address to Move.Toml
+
+To make compiling, testing, and of course deploying your Move module easier, you can add your address to the `move.toml` file at the root of your Move project.
+
+```
+[addresses]
+default = "YOUR_ADDRESS"
+```
+
+## Deploy to Movement Network
+
+Run the following command to deploy your Move module to the Movement Network:
+
+```     
+movement move publish
+```
+
+You'll be prompted to confirm the transaction and spend a small amount of testnet tokens:
+
+```
+Do you want to submit this transaction? [Y/n]
+```
+
+Type `Y` and press **Enter**.
+
+> **Ensure you have sufficient testnet tokens from the faucet before proceeding.**
