@@ -16,7 +16,7 @@ This React component creates a user interface for signing and verifying messages
 
 ## How It Works
 
-### 1. Component Setup
+### 1️⃣ Component Setup
 ```typescript
 const { signMessage, signMessageAndVerify, connected, account } = useWallet();
 ```
@@ -24,7 +24,7 @@ const { signMessage, signMessageAndVerify, connected, account } = useWallet();
 - `connected`: Tells if wallet is connected
 - `account`: Contains wallet information
 
-### 2. State Management
+### 2️⃣ State Management
 ```typescript
 const [message, setMessage] = useState<string>('');
 const [nonce, setNonce] = useState<string>('');
@@ -39,7 +39,7 @@ Manages five different states:
 - `verificationResult`: Stores whether the message verification was successful
 - `error`: Stores any error messages
 
-### 3. Message Signing Function
+### 3️⃣ Message Signing Function
 ```typescript
 const handleSignMessage = async () => {
     setError(null);
@@ -55,7 +55,7 @@ const handleSignMessage = async () => {
 - Attempts to sign the message using the wallet
 - Stores the signed message or captures any errors
 
-### 4. Message Verification Function
+### 4️⃣ Message Verification Function
 ```typescript
 const handleVerifyMessage = async () => {
     setError(null);
@@ -71,7 +71,7 @@ const handleVerifyMessage = async () => {
 - Verifies the signed message
 - Stores the verification result or captures any errors
 
-### 5. User Interface
+### 5️⃣ User Interface
 The component renders different UI elements based on wallet connection status:
 
 If wallet is not connected:

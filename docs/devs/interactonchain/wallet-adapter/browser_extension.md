@@ -1,5 +1,5 @@
 ---
-sidebar_position: 3
+sidebar_position: 4
 title: Browser Extension Wallets
 description: Implementing a wallet adapter plugin that allows dapps to interact with your browser extension wallet
 ---

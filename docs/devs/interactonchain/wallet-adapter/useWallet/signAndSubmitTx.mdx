@@ -31,7 +31,7 @@ const aptos = new Aptos(config);
 
 ## Component Breakdown
 
-### 1. Hook Usage
+### 1️⃣ Hook Usage
 ```typescript
 const { account, signAndSubmitTransaction } = useWallet();
 ```
@@ -39,7 +39,7 @@ const { account, signAndSubmitTransaction } = useWallet();
   - `account`: Current connected wallet account
   - `signAndSubmitTransaction`: Function to sign and submit transactions
 
-### 2. Transaction Handler
+### 2️⃣ Transaction Handler
 ```typescript
 const onSignAndSubmitTransaction = async () => {
 ```
@@ -64,14 +64,14 @@ This function handles:
   - Recipient address (in this case, sending to self)
   - Amount to transfer (1 unit)
 
-### 3. Transaction Confirmation
+### 3️⃣ Transaction Confirmation
 ```typescript
 await aptos.waitForTransaction({ transactionHash: response.hash });
 ```
 - Waits for transaction confirmation on the blockchain
 - Includes error handling for failed transactions
 
-### 4. UI Component
+### 4️⃣ UI Component
 ```typescript
 return (
   <button onClick={onSignAndSubmitTransaction}>
@@ -101,21 +101,6 @@ function App() {
 3. The current implementation sends 1 unit to the same address (self-transfer)
 4. Error handling is implemented for transaction confirmation
 5. The component should be used within a wallet provider context
-
-## Customization
-To modify the transaction:
-1. Change the `function` to call different smart contracts
-2. Modify `functionArguments` to pass different parameters
-3. Adjust the recipient address and amount as needed
-4. Consider adding loading states and success/error notifications
-
-## Security Considerations
-1. Always verify the connected account before transactions
-2. Implement proper error handling
-3. Consider adding transaction amount validation
-4. Add user confirmation for important transactions
-5. Implement proper loading states to prevent double submissions
-
 
 ## Fullcode
 ```typescript title="src/components/signAndSubmitTx.tsx"

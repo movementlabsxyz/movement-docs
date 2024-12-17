@@ -17,19 +17,19 @@ This component demonstrates how to implement wallet connection functionality usi
 
 The `WalletConnectDemo` component uses the `useWallet` hook from the Aptos Wallet Adapter to manage wallet connections. Here's how to implement it:
 
-1. First, import the necessary dependencies:
+1️⃣ First, import the necessary dependencies:
 
 ```typescript
 import { WalletName, useWallet } from '@aptos-labs/wallet-adapter-react';
 ```
 
-2. The component uses these key features from the `useWallet` hook:
+2️⃣ The component uses these key features from the `useWallet` hook:
 - `connect`: Function to establish a connection with the wallet
 - `disconnect`: Function to terminate the wallet connection
 - `account`: Contains the connected account information
 - `connected`: Boolean state indicating if a wallet is connected
 
-3. Key Functions:
+3️⃣ Key Functions:
 
 ```typescript
 // Connect to wallet
@@ -75,7 +75,7 @@ function App() {
 
 ## Important Notes
 
-1. Make sure your app is wrapped with the Aptos Wallet Provider:
+1️⃣ Make sure your app is wrapped with the Aptos Wallet Provider:
 ```typescript
 import { AptosWalletAdapterProvider } from '@aptos-labs/wallet-adapter-react';
 
@@ -88,13 +88,13 @@ function App() {
 }
 ```
 
-2. You can modify the wallet name in `handleConnect` to connect to different wallets:
+2️⃣ You can modify the wallet name in `handleConnect` to connect to different wallets:
    - "Petra"
    - "Martian"
    - "Pontem"
    - Other supported Aptos wallets
 
-3. Error handling is implemented for both connection and disconnection operations to provide a better user experience.
+3️⃣ Error handling is implemented for both connection and disconnection operations to provide a better user experience.
 
 ## Example Response
 
