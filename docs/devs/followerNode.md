@@ -85,7 +85,7 @@ As well as to the movement-full-follower.yml file:
 
 Please use the revision below:
 
-```82e923e77ae9255b233d50b96377ae2b8dfa1828```
+```a209fa3324142445b779c878842b33fd54920f8e```
 
 Generally, you should be able to use the latest revision by running the following command:
 
