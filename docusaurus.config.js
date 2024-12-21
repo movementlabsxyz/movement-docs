@@ -125,6 +125,11 @@ const config = {
           className: "searchBar_nav",
         },
         {
+          href: "https://movementlabsxyz.github.io/MIP/",
+          label: "MIP",
+          position: "right",
+        },
+        {
           href: "https://forums.movementnetwork.xyz/",
           label: "Ask a Question",
           position: "right",
