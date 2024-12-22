@@ -1,5 +1,6 @@
 ---
 title: Aptos TypeScript SDK
+sidebar_position: 1
 description: Learn how to interact with Movement using the Aptos TypeScript SDK.
 ---
 
@@ -51,7 +52,7 @@ const { Account, Aptos, AptosConfig, Network, Ed25519PrivateKey } = require("@ap
 Configure the SDK to connect to the Movement Porto Testnet (Please refer to [Network Endpoints](/devs/networkEndpoints) for more endpoints):
 
 ```javascript
-const config = new AptosConfig({ 
+const config = new AptosConfig({
     network: Network.CUSTOM,
     fullnode: 'https://aptos.testnet.porto.movementlabs.xyz/v1',
     faucet: 'https://fund.testnet.porto.movementlabs.xyz/',
@@ -96,9 +97,9 @@ const transaction = await aptos.transaction.build.simple({
 });
 
 // Sign the transaction
-const signature = aptos.transaction.sign({ 
-    signer: account, 
-    transaction 
+const signature = aptos.transaction.sign({
+    signer: account,
+    transaction
 });
 
 // Submit the transaction
@@ -108,8 +109,8 @@ const committedTxn = await aptos.transaction.submit.simple({
 });
 
 // Wait for transaction completion
-const response = await aptos.waitForTransaction({ 
-    transactionHash: committedTxn.hash 
+const response = await aptos.waitForTransaction({
+    transactionHash: committedTxn.hash
 });
 ```
 
@@ -125,7 +126,7 @@ The Code below is based on the [Your First Move Contract tutorial](/devs/firstmo
 const { Account, Aptos, AptosConfig, Network, Ed25519PrivateKey } = require("@aptos-labs/ts-sdk");
 
 // Define the custom network configuration
-const config = new AptosConfig({ 
+const config = new AptosConfig({
     network: Network.CUSTOM,
     fullnode: 'https://aptos.testnet.porto.movementlabs.xyz/v1',
     faucet: 'https://fund.testnet.porto.movementlabs.xyz/',

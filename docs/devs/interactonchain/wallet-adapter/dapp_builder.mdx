@@ -1,0 +1,283 @@
+---
+title: DApp Builder
+sidebar_position: 1
+description: Connecting wallets to your dapp
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import Title from '@site/src/components/Title'
+import InstallIcon from '../../../assets/terminal.svg'
+import KeyboardIcon from '../../../assets/keyboard.svg'
+import Divider from '@site/src/components/Divider'
+
+# Overview
+Movement provides builders with 2 networks and development environments based on Aptos Move or Solidity (Move-EVM). For this reason, you can use wallets and interact with users through 2 networks: EVM (such as MetaMask) and Aptos network (such as Petra, etc.).
+
+# Aptos Move Provides
+With the Aptos network, you can use @aptos-labs/wallet-adapter-react to provide your dApp with a `Provider` and `Context` for connecting MoveVM wallets to your dapp.
+
+This Provider uses a standard interface for all Movement Wallets, making it easy for new wallets to be supported.
+
+## Using the React `Provider` and `Context`
+In this example, I'll be using Next.js and TypeScript.
+
+Would you like me to provide the code example for implementing the Provider and Context in Next.js with TypeScript?
+
+### Khởi tạo dự án Next.js
+<Tabs groupId="package-management">
+  <TabItem value="npm" label="npm" default>
+    <Title icon={<InstallIcon />} textSize="2xl">Initialize Next Project</Title>
+    ```bash
+    npm create next-app
+    ```
+  </TabItem>
+  <TabItem value="pnpm" label="pnpm">
+    <Title icon={<InstallIcon />} textSize="2xl">Initialize Next Project</Title>
+    ```bash
+    pnpm create next-app
+    ```
+  </TabItem>
+  <TabItem value="yarn" label="yarn">
+    <Title icon={<InstallIcon />} textSize="2xl">Initialize Next Project</Title>
+    ```bash
+    yarn create next-app
+    ```
+  </TabItem>
+  <TabItem value="bun" label="bun">
+    <Title icon={<InstallIcon />} textSize="2xl">Initialize Next Project</Title>
+    ```bash
+    bun create next-app
+    ```
+  </TabItem>
+</Tabs>
+
+### Install `@aptos-labs/wallet-adapter-react`
+<Tabs groupId="package-management">
+  <TabItem value="npm" label="npm" default>
+    <Title icon={<InstallIcon />} textSize="2xl">Install the Wallet Adapter</Title>
+    ```bash
+    npm install @aptos-labs/wallet-adapter-react @aptos-labs/ts-sdk
+    ```
+  </TabItem>
+  <TabItem value="pnpm" label="pnpm">
+    <Title icon={<InstallIcon />} textSize="2xl">Install the Wallet Adapter</Title>
+    ```bash
+    pnpm add @aptos-labs/wallet-adapter-react @aptos-labs/ts-sdk
+    ```
+  </TabItem>
+  <TabItem value="yarn" label="yarn">
+    <Title icon={<InstallIcon />} textSize="2xl">Install the Wallet Adapter</Title>
+    ```bash
+    yarn add @aptos-labs/wallet-adapter-react @aptos-labs/ts-sdk
+    ```
+  </TabItem>
+  <TabItem value="bun" label="bun">
+    <Title icon={<InstallIcon />} textSize="2xl">Install the Wallet Adapter</Title>
+    ```bash
+    bun add @aptos-labs/wallet-adapter-react @aptos-labs/ts-sdk
+    ```
+  </TabItem>
+</Tabs>
+
+### Install the plugins for wallets
+
+<details>
+<summary>Install the plugins plugins for any wallets</summary>
+#### Supported wallet packages
+
+Note: These are in alphabetical order, any new wallets must be in alphabetical order
+
+[AIP-62](https://github.com/aptos-foundation/AIPs/blob/main/aips/aip-62.md) standard compatible
+
+- [AptosConnect](https://aptosconnect.app/)
+- [Mizu](https://www.mizu.io/)
+- [MizuWallet](https://www.npmjs.com/package/@mizuwallet-sdk/aptos-wallet-adapter)
+- [Nightly](https://chromewebstore.google.com/detail/nightly/fiikommddbeccaoicoejoniammnalkfa)
+- [Petra](https://chromewebstore.google.com/detail/petra-aptos-wallet/ejjladinnckdgjemekebdpeokbikhfci?hl=en)
+- [Pontem](https://www.npmjs.com/package/@pontem/wallet-adapter-plugin)
+- T wallet
+
+Legacy standard compatible
+
+- [BitgetWallet](https://www.npmjs.com/package/@bitget-wallet/aptos-wallet-adapter)
+- [Fewcha](https://www.npmjs.com/package/fewcha-plugin-wallet-adapter)
+- [Martian](https://www.npmjs.com/package/@martianwallet/aptos-wallet-adapter)
+- [MSafe](https://www.npmjs.com/package/@msafe/aptos-wallet-adapter)
+- [OKX](https://www.npmjs.com/package/@okwallet/aptos-wallet-adapter)
+- [Trust](https://www.npmjs.com/package/@trustwallet/aptos-wallet-adapter)
+
+For wallets that have not updated to using the AIP-62 standard, their plugins must be installed and passed in to the Provider manually.
+```bash
+npm install @okwallet/aptos-wallet-adapter
+pnpm add @okwallet/aptos-wallet-adapter
+yarn add @okwallet/aptos-wallet-adapter
+bun add @okwallet/aptos-wallet-adapter
+```
+</details>
+
+<Tabs groupId="package-management">
+  <TabItem value="npm" label="npm" default>
+    <Title icon={<InstallIcon />} textSize="2xl">Install Wallet</Title>
+    ```bash
+    npm install @pontem/wallet-adapter-plugin
+    ```
+  </TabItem>
+  <TabItem value="pnpm" label="pnpm">
+    <Title icon={<InstallIcon />} textSize="2xl">Install Wallet</Title>
+    ```bash
+    pnpm add @pontem/wallet-adapter-plugin
+    ```
+  </TabItem>
+  <TabItem value="yarn" label="yarn">
+    <Title icon={<InstallIcon />} textSize="2xl">Install Wallet</Title>
+    ```bash
+    yarn add @pontem/wallet-adapter-plugin
+    ```
+  </TabItem>
+  <TabItem value="bun" label="bun">
+    <Title icon={<InstallIcon />} textSize="2xl">Install Wallet</Title>
+    ```bash
+    bun add @pontem/wallet-adapter-plugin
+    ```
+  </TabItem>
+</Tabs>
+
+### Implement Wallet Provider & Custom network
+Create a new files with name `provider/WalletProvider.tsx`, import the Aptos Wallet Adapter and any legacy wallet plugins & custom network to connect to the porto network or aptos devnet.
+```typescript title="src/provider/WalletProvider.tsx"
+import { AptosWalletAdapterProvider } from "@aptos-labs/wallet-adapter-react";
+import { PontemWallet } from '@pontem/wallet-adapter-plugin'
+import { PropsWithChildren } from "react";
+import { AptosConfig, Network } from "@aptos-labs/ts-sdk";
+
+export const WalletProvider = ({ children }: PropsWithChildren) => {
+  const wallets = [
+    new PontemWallet(),
+  ];
+  const config = new AptosConfig({
+    network: Network.TESTNET,
+    fullnode: 'https://aptos.testnet.porto.movementlabs.xyz/v1',
+    faucet: 'https://fund.testnet.porto.movementlabs.xyz/'
+  })
+
+  return (
+    <AptosWalletAdapterProvider
+      plugins={wallets}
+      autoConnect={true}
+      dappConfig={config}
+      onError={(error) => {
+        console.log("error", error);
+      }}
+    >
+      {children}
+    </AptosWalletAdapterProvider>
+  );
+};
+```
+
+<details>
+    <summary>All fields of AptosWalletAdapterProvider</summary>
+It is recommended to:
+
+Set autoConnect to true.
+Include plugins for any wallets that are using the legacy standard.
+| Field | Description | Example |
+| --- | --- | --- |
+| `autoConnect` | A prop indicates whether the dapp should auto connect with the most recently connected wallet on page reload. | `true` |
+| `optInWallets` | Limit the list of supported AIP-62 wallets to just the ones with names in optedInWallets.  | `['Petra']` |
+| `dappConfig` | Specify an alternate network to work on. This prop only works for wallets which are NOT chrome extensions. If set, this object must include the name of the network the app is connected to. The object may include a aptosConnectDappId. | `{ network: 'mainnet',   aptosConnectDappId: undefined }` |
+| `onError` | A callback function to fire when the adapter throws an error. | `(error) => { console.log("error", error); }` |
+| `plugins` | Any legacy standard wallet, i.e., a wallet that is not AIP-62 standard compatible, should be installed in this array. Check https://github.com/aptos-labs/aptos-wallet-adapter/blob/main/README.md#supported-wallet-packages for a list of legacy standard wallet plugins. | `[new LegacyWallet()]` |
+</details>
+
+### Import Provider to layout.tsx
+```typescript
+import type { Metadata } from "next";
+import localFont from "next/font/local";
+import "./globals.css";
+import { WalletProvider } from "@/provider";
+
+// ... {rest code}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <WalletProvider>
+          {children}
+        </WalletProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+
+### Edit `src/app/page.tsx` & import `useWallet` to access data from the `Provider`
+```typescript title="src/app/page.tsx"
+'use client'
+
+
+import {useWallet} from '@aptos-labs/wallet-adapter-react'
+
+export default function Home() {
+  const { account, connected, wallet, changeNetwork } = useWallet();
+
+  return (
+    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+    {account && account.address}
+    </div>
+  );
+}
+```
+
+Trong useWallet chúng ta còn có những function khác như trong interface được định nghĩa ở đây, chúng ta sẽ đi sâu vào việc triển khai nó sau.
+```typescript
+export interface WalletContextState {
+  connected: boolean;
+  isLoading: boolean;
+  account: AccountInfo | null;
+  network: NetworkInfo | null;
+  connect(walletName: WalletName): void;
+  disconnect(): void;
+  wallet: WalletInfo | null;
+  wallets?: ReadonlyArray<Wallet | AptosStandardSupportedWallet>;
+  signAndSubmitTransaction(transaction: InputTransactionData): Promise<any>;
+  signTransaction(
+    transactionOrPayload: AnyRawTransaction | Types.TransactionPayload,
+    asFeePayer?: boolean,
+    options?: InputGenerateTransactionOptions
+  ): Promise<AccountAuthenticator>;
+  submitTransaction(
+    transaction: InputSubmitTransactionData
+  ): Promise<PendingTransactionResponse>;
+  signMessage(message: SignMessagePayload): Promise<SignMessageResponse>;
+  signMessageAndVerify(message: SignMessagePayload): Promise<boolean>;
+  changeNetwork(network: Network): Promise<AptosChangeNetworkOutput>;
+}
+```
+
+<details>
+<summary>Details all function of useWallet()</summary>
+### Functions
+
+*See [`WalletCore.ts`](https://github.com/aptos-labs/aptos-wallet-adapter/blob/main/packages/wallet-adapter-core/src/WalletCore.ts) in [`wallet-adapter-core`](https://github.com/aptos-labs/aptos-wallet-adapter/tree/main/packages/wallet-adapter-core) for where these functions are implemented.*
+
+| Function | Signature | Description |
+| --- | --- | --- |
+| `connect` | `connect(walletName: WalletName): void` | Connects to the specified wallet by its name. |
+| `disconnect` | `disconnect(): void` | Disconnects the currently connected wallet. |
+| `signTransaction` | `signTransaction(transactionOrPayload: AnyRawTransaction \| Types.TransactionPayload, asFeePayer?: boolean, options?: InputGenerateTransactionOptions): Promise<AccountAuthenticator>` | Signs a transaction with optional parameters for fee payment. |
+| `submitTransaction` | `submitTransaction(transaction: InputSubmitTransactionData): Promise<PendingTransactionResponse>` | Submits a transaction with the provided transaction data. |
+| `signAndSubmitTransaction` | `signAndSubmitTransaction(transaction: InputTransactionData): Promise<any>` | Signs and submits a transaction with the given input data. |
+| `signMessage` | `signMessage(message: SignMessagePayload): Promise<SignMessageResponse>` | Signs a message and returns the signature and other response info. |
+| `signMessageAndVerify` | `signMessageAndVerify(message: SignMessagePayload): Promise<boolean>` | Signs a message and verifies the signer. |
+| `changeNetwork` | `changeNetwork(network: Network): Promise<AptosChangeNetworkOutput>` | Requests a change in the connected network. This is not supported by all wallets. |
+</details>

@@ -1,6 +1,5 @@
 {
-  "label" : "Wallet Adapter",
+  "label" : "useWallet",
   "position": 2,
   "collapsed": false
 }
-
