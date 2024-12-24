@@ -16,12 +16,16 @@ MOVE refers to the native token across our networks. At the moment they are dist
 
 ### Aptos 
 
+**Requirement:** Connect your wallet to receive MOVE.
+
 Faucet UI: https://faucet.movementlabs.xyz/?network=aptos
 
 Faucet Telegram Bot: https://t.me/MovefaucetBot
 
 
 ### EVM
+
+**Requirement:** Enter your EVM wallet address to get MOVE.
 
 Faucet UI: https://faucet.movementlabs.xyz/?network=mevm
 
