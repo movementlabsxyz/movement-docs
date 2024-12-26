@@ -1,14 +1,12 @@
 ---
-title: Move-VM Wallet Standard
-sidebar_position: 6
+title: Aptos Wallet Standard
+sidebar_position: 3
 description: Maintain applications without wallet-specific modifications
 ---
 
-# A Developer's Guide to Seamless Integration
+# Aptos Wallet Standard
 
-## Introduction: Building Bridges Between Wallets and dApps
-
-Imagine a world where every online store only accepted one type of credit card. Frustrating, right? That's the kind of problem we're solving in the blockchain world. This tutorial will guide you through the MoveVM Wallet Standard, a crucial set of guidelines that ensures different crypto wallets can seamlessly interact with decentralized applications (dApps) on the MoveVM blockchain.
+The Movement Network uses the Aptos flavor of Move, which includes Aptos wallets. 
 
 **Why is this important?**
 
@@ -263,6 +261,4 @@ Imagine you lose your house keys. You wouldn't just keep using the same locks, r
 *   **Enhanced Security:** Regularly rotating your keys reduces the risk of unauthorized access if a key is compromised.
 *   **Account Recovery:** In some scenarios, key rotation can be used as a mechanism for account recovery.
 
-## Conclusion: Towards a Seamless Aptos Ecosystem
 
-The Aptos Wallet Standard is a vital step toward creating a user-friendly and developer-friendly Aptos ecosystem. By establishing clear guidelines for wallet development and dApp integration, we're paving the way for a future where users can seamlessly interact with the Aptos blockchain using their preferred wallets, and developers can focus on building innovative dApps without worrying about compatibility issues. As the Aptos ecosystem continues to grow and evolve, these standards will play a crucial role in ensuring its long-term success. Stay tuned for further updates and get ready to build the future of decentralized applications on Move!
