@@ -1,0 +1,31 @@
+---
+title: Rust SDK
+sidebar_position: 4
+description: Learn how to interact with Movement using the Aptos Rust SDK.
+---
+
+# Aptos Rust SDK
+
+Aptos provides an official lightly supported Rust SDK in the Aptos-core GitHub repository. To use the Rust SDK, add the following dependency and patches on the git repo directly in your Cargo.toml, like this:
+
+```toml
+[dependencies]
+aptos-sdk = { git = "https://github.com/aptos-labs/aptos-core", branch = "devnet" }
+ 
+[patch.crates-io]
+merlin = { git = "https://github.com/aptos-labs/merlin" }
+x25519-dalek = { git = "https://github.com/aptos-labs/x25519-dalek", branch = "zeroize_v1" }
+```
+
+You must also create a `.cargo/config.toml` file with this content:
+
+```toml
+[build]
+rustflags = ["--cfg", "tokio_unstable"]
+```
+
+## Usage
+
+Full example availables [here](https://github.com/aptos-labs/aptos-core/blob/main/sdk/examples/transfer-coin.rs).
+
+Network endpoints should be replaced with the appropriate [Movement endpoints](/devs/networkEndpoints).

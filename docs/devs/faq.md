@@ -8,7 +8,7 @@ Frequently asked questions about working with Movement as a developer.
 
 ## What is Movement Labs?
 
-Movement Labs makes the Move programming language accessible across the entire modular blockchain ecosystem. By bringing the Move Virtual Machine (MoveVM) to Ethereum through its innovative MEVM (Move + EVM) Layer 2, Movement Labs is creating a secure, scalable, developer-friendly blockchain infrastructure combining the best aspects of modular and monolithic architectures.
+Movement Labs makes the Move programming language accessible across the entire modular blockchain ecosystem. By bringing the Move Virtual Machine to Ethereum through its innovative Move Layer 2, Movement Labs is creating a secure, scalable, developer-friendly blockchain infrastructure combining the best aspects of modular and monolithic architectures.
 
 ## Is Mainnet/Testnet/Devnet live?
 
