@@ -17,9 +17,6 @@ https://explorer.movementnetwork.xyz/?network=testnet
 
 
 
-### MEVM 
-
-https://explorer.devnet.imola.movementlabs.xyz
 
 
 
