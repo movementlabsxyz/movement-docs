@@ -1,6 +1,6 @@
-# Contributing to Developer Portal
+# Contributing to Movement Documentation
 
-We love your input! We want to make contributing to the Developer Portal as easy and transparent as possible, whether it's:
+We love your input! We want to make contributing to the Movement Docs as easy and transparent as possible, whether it's:
 
 - Reporting a bug
 - Discussing the current state of the code
