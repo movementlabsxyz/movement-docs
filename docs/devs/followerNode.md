@@ -21,13 +21,8 @@ This guide will help you set up and run a Movement follower node. The Bardock Te
 
 git clone https://github.com/movementlabsxyz/movement
 cd movement
-git checkout l-monninger/mcr-admin-attestations
 
 ```
-
-:::info
-Note: There may be some updates in the branch listed above; make sure to pull the latest version of this branch if returning to this at a later time
-:::
 
 ### Configuration
 
@@ -88,6 +83,12 @@ As well as to the movement-full-follower.yml file:
 
 ### Fetching the Latest Container Revision
 
+Please use the revision below:
+
+```a209fa3324142445b779c878842b33fd54920f8e```
+
+Generally, you should be able to use the latest revision by running the following command:
+
 ```bash
 
 CONTAINER_REV=$(git rev-parse HEAD)
@@ -95,9 +96,6 @@ echo "CONTAINER_REV=${CONTAINER_REV}"
 
 ```
 
-For Mainnet, please use the revision below:
-
-```82e923e77ae9255b233d50b96377ae2b8dfa1828```
 
 ### Sample Deployment Scripts
 
