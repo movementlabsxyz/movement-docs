@@ -9,7 +9,7 @@ The Movement Network leverages mechanisms to ensure robust interoperability and 
 
 ## Shared Decentralized Sequencer
 
-This component provides a decentralized and shared sequencing mechanism, enhancing network robustness, fairness, and censorship resistance. It supports cross-chain atomic swaps and pooled liquidity within the Move Arena ecosystem. This shared sequencer is a crucial component of the Move Arena, ensuring that all participating chains can achieve fair and efficient transaction ordering.
+This component provides a decentralized and shared sequencing mechanism, enhancing network robustness, fairness, and censorship resistance. It supports cross-chain atomic transactions and pooled liquidity within the Movement Network ecosystem. This shared sequencer is a crucial component of the Movement Network, ensuring that all participating chains can achieve fair and efficient transaction ordering.
 
 <!-- ![Shared Decentralized Sequencer](./images/shared_sequencer.png) -->
 
