@@ -10,7 +10,7 @@ This page contains public endpoints that may at times be subject to rate limits.
 
 :::
 
-## Movement Porto Testnet: Aptos Environment
+## Movement Porto Testnet
 **Chain ID: 177**
 
 | Service          | URL                                                                    |
@@ -26,7 +26,7 @@ This page contains public endpoints that may at times be subject to rate limits.
 
 
 
-## Movement Bardock Testnet: Aptos Environment
+## Movement Bardock Testnet
 **Chain ID: 250**
 
 | Service          | URL                                                                    |
@@ -36,7 +36,7 @@ This page contains public endpoints that may at times be subject to rate limits.
 | Explorer         | [https://explorer.movementlabs.xyz/ ](https://explorer.movementlabs.xyz/ ) |
 
 
-## Movement Developer Mainnet: Aptos Environment
+## Movement Developer Mainnet
 
 :::info
 
@@ -53,7 +53,7 @@ The Movement Mainnet is currently in "Operator Mode". This means that we are cur
 | Explorer         | [https://explorer.movementnetwork.xyz/?network=mainnet](https://explorer.movementnetwork.xyz/?network=mainnet) |
 
 
-## Aptos Devnet Environment
+## Suzuka Devnet
 
 We often test updates on our Suzuka devnet before pushing to testnet, you can deploy your modules and test on our devnet with the details below.
 
@@ -66,7 +66,7 @@ We often test updates on our Suzuka devnet before pushing to testnet, you can de
 
 ## Network Properties
 
-|  | Aptos Testnet  | Aptos Devnet |
+|  | Testnet  | Devnet |
 | --- | --- | --- |
 | Validators  | Movement Labs operated validators  | Movement Labs operated validators.  |
 | Full Nodes  | Permissionless + Movement Labs operated nodes  | Movement Labs operated nodes  |

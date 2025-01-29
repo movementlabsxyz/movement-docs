@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Your First Move Contract
 
-Welcome to your first journey in deploying a Move module (smart contract) on the Movement Labs Testnet. In the Move programming language, smart contracts are referred to as **modules**. This guide will walk you through each step, ensuring a smooth experience from setup to deployment.
+Welcome to your first journey in deploying a Move module (smart contract) on the Movement Testnet. In the Move programming language, smart contracts are referred to as **modules**. This guide will walk you through each step, ensuring a smooth experience from setup to deployment.
 
 ## Prerequisites
 
