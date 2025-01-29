@@ -38,9 +38,9 @@ The Movement Network supports the deployment of application-specific Move-based 
 The Move Stack Chain framework provides a blueprint for creating Move-based chains. It is a modular architecture where components can be configured to meet the specific needs of different applications. The framework includes key components such as the Move Executor, bridge contracts and adaptors for sequencing, a data availability, and a settlement. This flexibility allows for the customization of chains to optimize performance, cost, and security.
 
 ![Move Chain Architecture](./images/move_chain.png)
-*Figure: The Move-based chain framework.*
+*Figure: The Move Stack Chain framework.*
 
-### Key Components of the framework for Move-based chains
+### Key Components of the Move Stack Chain framework
 
 - **Executor**: Processes transactions and generates new L2 blocks.
 - **Bridge Contracts**: Facilitates asset deposits and withdrawals between L1 and the chain.
