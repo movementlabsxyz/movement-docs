@@ -14,19 +14,20 @@ The Move Stack is a collection of tools, components, and adapters that enable th
 ![Move Stack Components](./images/move_stack.png)
 
 The Move Stack's configurable components include:
+
 - **Sequencer**: Developers can opt for the default decentralized shared sequencing service or choose a self-reliant sequencing mechanism.
 - **Data Availability**: Supports various DA solutions, including Ethereum EIP-4844 blobs, 0G, Avail, Celestia, EigenDA, and Near.
 - **Settlement Mechanisms**: Offers options for optimistic (fraud proof), ZK (validity proof) and staked (attestations) settlement mechanisms.
 
 :::info
-The Move Stack promotes standardization across critical infrastructure components, including wallet software, developer APIs, and block explorers. This standardization enhances interoperability and significantly improves the developer and user experience across the Move Arena ecosystem.
+The Move Stack promotes standardization across critical infrastructure components, including wallet software, developer APIs, and block explorers. This standardization enhances interoperability and significantly improves the developer and user experience across the Movement Network ecosystem.
 :::
 
 ## Movement Network
 
 Movement Network provides a framework to deploy and join the Move-based chains network. It offers benefits such as Fast Finality Settlement, interoperability, and shared economic security. This framework supports a network of application-specific chains, enhancing interoperability and shared liquidity. It allows the deployment of specialized chains tailored to different use cases, such as DeFi, gaming, and supply chain applications.
 
-![Move Arena Infrastructure](./images/mvmt_network.png)
+![Movement Network Infrastructure](./images/mvmt_network.png)
 
 :::info
 The Movement Network supports the deployment of application-specific Move-based chains, providing cross-chain interoperability and shared liquidity. This setup enhances the efficiency and security of new chains by leveraging a decentralized sequencer and multi-asset staking.
