@@ -40,7 +40,7 @@ This page contains public endpoints that may at times be subject to rate limits.
 
 :::info
 
-The Movement Mainnet is currently in Developer Mainnet mode. We are selecting developers to deploy on Movement.
+The Movement Mainnet is currently in Developer Mainnet mode. We are onboarding a select group of developers to deploy on Movement.
 
 :::
 
