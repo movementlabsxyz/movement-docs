@@ -10,7 +10,7 @@ This page contains public endpoints that may at times be subject to rate limits.
 
 :::
 
-## Movement Porto Testnet: Aptos Environment
+## Movement Porto Testnet
 **Chain ID: 177**
 
 | Service          | URL                                                                    |
@@ -26,7 +26,7 @@ This page contains public endpoints that may at times be subject to rate limits.
 
 
 
-## Movement Bardock Testnet: Aptos Environment
+## Movement Bardock Testnet
 **Chain ID: 250**
 
 | Service          | URL                                                                    |
@@ -36,11 +36,11 @@ This page contains public endpoints that may at times be subject to rate limits.
 | Explorer         | [https://explorer.movementlabs.xyz/ ](https://explorer.movementlabs.xyz/ ) |
 
 
-## Movement Mainnet: Aptos Environment
+## Movement Developer Mainnet
 
 :::info
 
-The Movement Mainnet is currently in "Operator Mode". This means that we are currently onboarding node operators and other infrastructure providers to the network.   
+The Movement Mainnet is currently in Developer Mainnet mode. We are onboarding a select group of developers to deploy on Movement.
 
 :::
 
@@ -53,7 +53,7 @@ The Movement Mainnet is currently in "Operator Mode". This means that we are cur
 | Explorer         | [https://explorer.movementnetwork.xyz/?network=mainnet](https://explorer.movementnetwork.xyz/?network=mainnet) |
 
 
-## Aptos Devnet Environment
+## Suzuka Devnet
 
 We often test updates on our Suzuka devnet before pushing to testnet, you can deploy your modules and test on our devnet with the details below.
 
@@ -64,21 +64,12 @@ We often test updates on our Suzuka devnet before pushing to testnet, you can de
 | Explorer         | [https://explorer.suzuka.movementnetwork.xyz/?network=devnet](https://explorer.suzuka.movementnetwork.xyz/?network=devnet) |
 
 
-:::info
-
-Please note that the EVM Imola testnet and Sui Baku devnet have been deprecated. We will share our roadmap compatibility at a later date.
-
-:::
-
-
 ## Network Properties
 
-Here is the reformatted table with everything under "Sui Baku Devnet" removed:
-
-|  | Aptos Suzuka Testnet  | Aptos Suzuka Devnet | MEVEM Imola Devnet  |
-| --- | --- | --- | --- |
-| Validators  | Movement Labs operated validators  | Permissionless + Movement Labs operated validators.  | NA |
-| Full Nodes  | Movement Labs operated nodes  | Permissionless + Movement Labs operated nodes  | Movement Labs operated nodes  |
-| Data Durability | Data wipes will be announced ahead of time.  | Data can be wiped as part of the regular software updates. | Data could be wiped. |
-| Announcement Channel | [Discord](https://discord.com/channels/1101576619493167217/1259638014184001668)| [Discord](https://discord.com/channels/1101576619493167217/1259638353607917589) | [Discord](https://discord.com/channels/1101576619493167217/1259638433102561348) |
-| Network Uptime | Constant uptime. | Expect down time happens.  | Expect down time happens.  |
+|  | Testnet  | Devnet |
+| --- | --- | --- |
+| Validators  | Movement Labs operated validators  | Movement Labs operated validators.  |
+| Full Nodes  | Permissionless + Movement Labs operated nodes  | Movement Labs operated nodes  |
+| Data Durability | Data wipes will be announced ahead of time.  | Data can be wiped as part of the regular software updates. |
+| Announcement Channel | [Discord](https://discord.com/channels/1101576619493167217/1259638014184001668)| [Discord](https://discord.com/channels/1101576619493167217/1259638353607917589) |
+| Network Uptime | Constant uptime. | Expect down time happens.  |
