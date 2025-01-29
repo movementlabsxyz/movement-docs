@@ -5,9 +5,9 @@ description: Learn about Move, the programming language used on the Movement Net
 
 # Introduction to Move
 
-Movement Labs is building a network of Move-based blockchains. Our flagship products is the Movement Network.
+Movement Labs is building a network of Move-based blockchains. Our flagship products is the Movement Mainnet.
 
-Movement Network is a community-first blockchain providing the highest possible TPS through Move, instant finality, native day-zero access to mass liquidity, and modular customizations.
+Movement Mainnet is a community-first blockchain providing the highest possible TPS through Move, fast finality, native day-zero access to mass liquidity, and modular customizations.
 
 > ⚠️ This documentation provides a high level intro to the vision. The [white paper](https://www.movementnetwork.xyz/whitepaper/movement-whitepaper_en.pdf) goes into more details on some of the presented solutions.
 
