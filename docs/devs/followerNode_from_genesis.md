@@ -144,6 +144,17 @@ ansible-playbook --inventory ec2-18-144-5-233.us-west-1.compute.amazonaws.com, \
 
 ```
 
+#### After installation
+
+If the service doesn't start, often it's because the config.json file hasn't been created correctly.
+
+To solve the issue replace the provided [config.json](config.json) in the $HOME/.movement folder and start the service with the command:
+
+```bash
+systemctl start movement-full-follower.service 
+
+```
+
 ### Verify Deployment
 
 - Connect to your instance (in the above example I ssh into my instance)
