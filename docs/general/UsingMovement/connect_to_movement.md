@@ -8,9 +8,12 @@ sidebar_position: 1
 
 This guide will show you how to use blockchains on the movement network. Everything from setting up the wallet to connecting to the chain, getting testnet tokens from the faucet, and using the explorer will be covered in this guide.
 
-Let’s start by installing a wallet. We recommend using Razor and Nightly, which work on Chrome, Brave, Opera, Edge, and other Chromium-based browsers.
+Let’s start by installing a wallet. We recommend using OKX Wallet, Razor, and Nightly, which work on Chrome, Brave, Opera, Edge, and other Chromium-based browsers.
 
-Install the Chrome extension for Razor from this [link](https://chromewebstore.google.com/detail/razor-wallet/fdcnegogpncmfejlfnffnofpngdiejii) and Nightly [here](https://chromewebstore.google.com/detail/nightly/fiikommddbeccaoicoejoniammnalkfa).
+Install the Chrome extensions here:
+- [OKX Wallet](https://chromewebstore.google.com/detail/okx-wallet/mcohilncbfahbmgdjkbpemcciiolgcge)
+-  [Razor](https://chromewebstore.google.com/detail/razor-wallet/fdcnegogpncmfejlfnffnofpngdiejii)
+-  [Nightly](https://chromewebstore.google.com/detail/nightly/fiikommddbeccaoicoejoniammnalkfa)
 
 :::tip
 
@@ -25,6 +28,44 @@ Make sure to pin your wallet in the extension tab on the top right
 ## Wallet Setup
 
  Follow the instructions to set up the wallet. 
+
+ ### OKX Wallet
+
+**Step 1: Welcome to OKX Wallet**
+
+1. Open the OKX Wallet extension.
+2. You will be greeted with the welcome screen.
+3. Click on the “Start” button.
+
+![](./imgs/okx1.png)
+
+**Step 2: Create Wallet**
+
+1. The next screen will present you with the "Create Wallet" page. In our example we will use the "Seed phrase" option secured by a password.
+
+![](./imgs/okx2.png)
+![](./imgs/okx3.png)
+
+**Step 3: Create a Password**
+
+1. You will now be prompted to create a password for the wallet.
+2. Enter a strong password and confirm it by entering it again.
+3. Click on the Confirm button.
+
+![](./imgs/okx4.png)
+
+**Step 4: Back Up Your Seed Phrase**
+
+1. You will now be prompted to save your seed phrase. Be sure to write this down and keep it in a safe space
+
+![](./imgs/okx6.png)
+
+**Step 5: Welcome to the OKX Wallet Dashboard**
+
+1. After setting up your password, you will see the OKX Wallet dashboard upon clicking the extension.
+
+![](./imgs/okx5.png)
+![](./imgs/okx7.png)  
 
 ### Razor
 
