@@ -4,7 +4,7 @@ sidebar_position: 8
 
 # Run a Follower Node
 
-This guide will help you set up and run a Movement follower node. The Bardock Testnet and Mainnet currently support this feature. Learn more about Node architecture [here](/general/Mainnet/node_level_architecture). For simplicity we have provided instruction for deploying using an Ansible script below. 
+This guide will help you set up and run a Movement follower node. The Bardock Testnet and Mainnet currently support this feature. Learn more about Node architecture [here](/general/Mainnet/node_level_architecture). For simplicity we have provided instructions for deploying using an Ansible script below. 
 
 ## Hardware Recommendations
 
@@ -26,9 +26,9 @@ cd movement
 
 ### Configuration
 
-To access to the leader Da to get blocks, the follower IP must be declared in the white access list. Contact Movement to add the access. 
+To access to the leader DA to get blocks, the follower IP must be declared in the white access list. Contact Movement to add the access. 
 
-Update the Variables below in the `movement-full-follower.yml` file for Mainnet. This is located in `docs/movement-node/run/ansible/follower-node/mainnet` or `docs/movement-node/run/ansible/follower-node/` depending on if you are deploying to Mainnet or Testnet. 
+Update the variables below in the `movement-full-follower.yml` file for Mainnet. This is located in `docs/movement-node/run/ansible/follower-node/mainnet` or `docs/movement-node/run/ansible/follower-node/` depending on if you are deploying to mainnet or testnet. 
 
 #### Mainnet Configuration
  
@@ -69,7 +69,7 @@ vars:
 
 ```
 
-For synchronization since genesis you need to remove this variable from movement-full-follower.service.j2 file. Remove this line:
+To synchronize from genesis you need to remove this variable from movement-full-follower.service.j2 file. Remove this line:
 
 ```yaml
 Environment="MOVEMENT_SYNC={{ movement_sync }}"

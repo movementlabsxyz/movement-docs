@@ -28,7 +28,7 @@ git checkout afddfd02d627b2a8189751950eefca3a59ddfe3b
 
 ## Restoration script
 
-The HOME directory is the directory where the `.movement` folder is located. It should be in `/home/ubuntu` or `/home/ssm-user` folder depending on you OS.
+The HOME directory is the directory where the `.movement` folder is located. It should be in `/home/ubuntu` or `/home/ssm-user` folder depending on your OS.
 In the Home directory create a new script file call `restoration.sh` and copy past this content using `nano` or `vi`:
 
 ```
@@ -55,7 +55,7 @@ export SYNC_BUCKET="mtnet-l-sync-bucket-sync"
 systemctl start  movement-full-follower.service
 ```
 
-Update the <access key> and <secret key> with the values you'll find in the file: `/etc/systemd/system/movement-full-follower.service`.
+Update the <access key> and <secret key> with the values from the file: `/etc/systemd/system/movement-full-follower.service`.
 
 Set the script executable with: ```chmod +x restoration.sh```
 
@@ -67,9 +67,9 @@ To start the node db restoration from a recent snapshot execute this command fro
 ./restoration.sh
 ```
 
-The restoration should start. It take around 1 hour depending on the speed of the hard drive and network.
+The restoration should start. It can take around 1 hour depending on the speed of the hard drive and network.
 
-At the end of the restoration the script restart the node.
+At the end of the restoration the script will restart the node.
 
 The node should sync with the leader node.
 
@@ -91,7 +91,7 @@ Both `ledger_version` and `block_height` state should be near or the same.
 
 ## Run Locally
 
-This procedure can be done locally with these differences:
+To test restoration against a local node and not a real work, do the following:
 
 From the initial [guide](followerNode_from_genesis.md) use this commit to checkout:  ```afddfd02d627b2a8189751950eefca3a59ddfe3b``` .
 
