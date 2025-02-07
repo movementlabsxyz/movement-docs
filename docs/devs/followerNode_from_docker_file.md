@@ -7,6 +7,8 @@ sidebar_position: 8
 This guide will help you to sync an existing Bardock follower node. This procedure is only for Bardock Testnet network.
 If you don't have a Bardock instance setup follows the Bardock Ansible script installation of this [guide](followerNode_from_genesis.md) with this following commit: ```afddfd02d627b2a8189751950eefca3a59ddfe3b``` .
 
+The setup should have been run once at least to create all configuration files in the .movement folder.
+
 ## Hardware Recommendations
 
 To do the restoration the partition `/` should have at least 400GB of free space.
@@ -17,6 +19,9 @@ Verify the Systemd Bardock service file: `/etc/systemd/system/movement-full-foll
 Validate that the `CONTAINER_REV`  var is correctly set as follow:
 
 ```Environment="CONTAINER_REV=afddfd02d627b2a8189751950eefca3a59ddfe3b"```
+
+Verify that in the file `.movement/config.json the entry` the field `da_db_path` is `"da_db_path": "/.movement/suzuka-da-db"` and not `"da_db_path": "/.movement/movement-da-db"`
+If not, update it with the right value.
 
 ## Update the docker files
 
