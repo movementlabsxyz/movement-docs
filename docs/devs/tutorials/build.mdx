@@ -179,8 +179,10 @@ cd ..
 Create a new React app named `client`:
 
 ```
-npx create-react-app client --template typescript
+npx --legacy-peer-deps create-react-app client --template typescript
 ```
+
+Why --legacy-peers-deps is needed: https://github.com/facebook/react/issues/31699
 
 At the root of your project, you'll have two directories: `client` and `move`.
 
@@ -412,6 +414,21 @@ Lastly replace the code in the `index.css`
   }
 ```
 
+Create constants.ts file in the client's src directory with contents:
+
+```
+export const ONCHAIN_BIO = "<your-account-address>";
+```
+
+Install these required packages and run the application again:
+
+```
+npm --legacy-peer-deps i petra-plugin-wallet-adapter aptos @aptos-labs/ts-sdk @aptos-labs/wallet-adapter-ant-design @aptos-labs/wallet-adapter-react @telegram-apps/bridge @mizuwallet-sdk/core graphql-request graphql
+npm start
+```
+
+Update versions of Node.js and npm, if needed: https://nodejs.org/en/download/
+
 Your locally-running app should now look like this:
 
 ![app](./imgs/localapp.png)
@@ -436,3 +453,5 @@ Now you know how to deploy an Aptos dApp for testnet.
 Check out `onchain_bio.move` logic, try a redeployment by tinkering with it. As a challenge, try modifying the Front End to better display your name and bio!
 
 We can't wait to see what dApps you build and deploy to Movement Network!
+
+Full example available at: https://github.com/movementlabsxyz/onchain-bio-dapp 
