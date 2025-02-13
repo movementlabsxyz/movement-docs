@@ -15,5 +15,7 @@ https://explorer.movementnetwork.xyz/?network=testnet
 
 
 
+### OpenScan.AI MEVM Blockchain Explorer 
 
+https://move.openscan.ai
 
