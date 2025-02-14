@@ -10,30 +10,9 @@ This page contains public endpoints that may at times be subject to rate limits.
 
 :::
 
-## Movement Porto Testnet
-**Chain ID: 177**
+### Network Status
 
-| Service          | URL                                                                    |
-|------------------|------------------------------------------------------------------------|
-| RPC              | [https://aptos.testnet.porto.movementlabs.xyz/v1](https://aptos.testnet.porto.movementlabs.xyz/v1)     |
-| Faucet endpoint  | [https://fund.testnet.porto.movementlabs.xyz/](https://fund.testnet.porto.movementlabs.xyz/)     |
-| Explorer         | [https://explorer.movementnetwork.xyz/](https://explorer.movementnetwork.xyz/) |
-| Faucet UI         | [https://mizu.testnet.porto.movementnetwork.xyz/](https://mizu.testnet.porto.movementnetwork.xyz/) |
-| Indexer Explorer        | [Public Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql) |
-| Indexer Endpoint      | [https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql](https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql) |
-
-
-
-
-
-## Movement Bardock Testnet
-**Chain ID: 250**
-
-| Service          | URL                                                                    |
-|------------------|------------------------------------------------------------------------|
-| RPC              | [https://aptos.testnet.bardock.movementlabs.xyz/v1](https://aptos.testnet.bardock.movementlabs.xyz/v1)         |
-| Faucet endpoint  | [https://faucet.testnet.bardock.movementnetwork.xyz/](https://faucet.testnet.bardock.movementnetwork.xyz/)     |
-| Explorer         | [https://explorer.movementlabs.xyz/ ](https://explorer.movementlabs.xyz/ ) |
+**View the network status and uptime performance of Movement Network here: https://status.movementnetwork.xyz/**
 
 
 ## Movement Developer Mainnet
@@ -51,8 +30,36 @@ The Movement Mainnet is currently in Developer Mainnet mode. We are onboarding a
 | RPC              | [https://mainnet.movementnetwork.xyz/v1](https://mainnet.movementnetwork.xyz/v1)     |
 | Bridge           |   Coming Soon       |
 | Explorer         | [https://explorer.movementnetwork.xyz/?network=mainnet](https://explorer.movementnetwork.xyz/?network=mainnet) |
-| Indexer Explorer | [Public Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.mainnet.movementnetwork.xyz%2Fv1%2Fgraphql) | 
+| Indexer Explorer | [Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.mainnet.movementnetwork.xyz%2Fv1%2Fgraphql) | 
 | Indexer Endpoint | [https://indexer.mainnet.movementnetwork.xyz/v1/graphql](https://indexer.mainnet.movementnetwork.xyz/v1/graphql) |
+
+
+## Movement Bardock Testnet
+**Chain ID: 250**
+
+| Service          | URL                                                                    |
+|------------------|------------------------------------------------------------------------|
+| RPC              | [https://aptos.testnet.bardock.movementlabs.xyz/v1](https://aptos.testnet.bardock.movementlabs.xyz/v1)         |
+| Faucet endpoint  | [https://faucet.testnet.bardock.movementnetwork.xyz/](https://faucet.testnet.bardock.movementnetwork.xyz/)     |
+| Faucet UI        | [https://faucet.movementnetwork.xyz/?network=aptos](https://faucet.movementnetwork.xyz/?network=aptos)         |
+| Explorer         | [https://explorer.movementlabs.xyz/ ](https://explorer.movementlabs.xyz/ ) |
+| Indexer Explorer | [Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.testnet.movementnetwork.xyz%2Fv1%2Fgraphql) | 
+| Indexer Endpoint | [https://indexer.testnet.movementnetwork.xyz](https://indexer.testnet.movementnetwork.xyz) |
+
+
+
+## Movement Porto Testnet
+**Chain ID: 177**
+
+| Service          | URL                                                                    |
+|------------------|------------------------------------------------------------------------|
+| RPC              | [https://aptos.testnet.porto.movementlabs.xyz/v1](https://aptos.testnet.porto.movementlabs.xyz/v1)     |
+| Faucet endpoint  | [https://fund.testnet.porto.movementlabs.xyz/](https://fund.testnet.porto.movementlabs.xyz/)     |
+| Explorer         | [https://explorer.movementnetwork.xyz/](https://explorer.movementnetwork.xyz/) |
+| Faucet UI         | [https://mizu.testnet.porto.movementnetwork.xyz/](https://mizu.testnet.porto.movementnetwork.xyz/) |
+| Indexer Explorer        | [Public Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql) |
+| Indexer Endpoint      | [https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql](https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql) |
+
 
 
 ## Suzuka Devnet
