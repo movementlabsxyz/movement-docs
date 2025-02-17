@@ -18,7 +18,7 @@ To do the restoration the partition `/` should have at least 400GB of free space
 Verify the Systemd Bardock service file: `/etc/systemd/system/movement-full-follower.service`
 Validate that the `CONTAINER_REV`  var is correctly set as follow:
 
-```Environment="CONTAINER_REV=afddfd02d627b2a8189751950eefca3a59ddfe3b"```
+```Environment="CONTAINER_REV=a87cdf89cd075695bf54ba746e3d214cf33aaef0"```
 
 Verify that in the file `.movement/config.json the entry` the field `da_db_path` is `"da_db_path": "/.movement/suzuka-da-db"` and not `"da_db_path": "/.movement/movement-da-db"`
 If not, update it with the right value.
@@ -28,7 +28,7 @@ If not, update it with the right value.
 Go in the directory `$HOME/movement` and type:
 
 ```
-git checkout afddfd02d627b2a8189751950eefca3a59ddfe3b
+git checkout a87cdf89cd075695bf54ba746e3d214cf33aaef0
 ```
 
 ## Restoration script
@@ -43,8 +43,7 @@ In the Home directory create a new script file call `restoration.sh` and copy pa
 systemctl stop  movement-full-follower.service
 
 export DOT_MOVEMENT_PATH=/home/ubuntu/.movement
-export CONTAINER_REV=afddfd02d627b2a8189751950eefca3a59ddfe3b
-export MOVEMENT_SYNC="follower::mtnet-l-sync-bucket-sync<=>{maptos,maptos-storage,suzuka-da-db}/**"
+export CONTAINER_REV=a87cdf89cd075695bf54ba746e3d214cf33aaef0
 export AWS_DEFAULT_REGION=us-west-1
 export AWS_REGION=us-west-1
 export MAPTOS_CHAIN_ID=250
@@ -58,6 +57,7 @@ export SYNC_BUCKET="mtnet-l-sync-bucket-sync"
 
 # Start the node.
 systemctl start  movement-full-follower.service
+
 ```
 
 Update the <access key> and <secret key> with the values from the file: `/etc/systemd/system/movement-full-follower.service`.
@@ -98,7 +98,7 @@ Both `ledger_version` and `block_height` state should be near or the same.
 
 To test restoration against a local node and not a real work, do the following:
 
-From the initial [guide](followerNode_from_genesis.md) use this commit to checkout:  ```afddfd02d627b2a8189751950eefca3a59ddfe3b``` .
+From the initial [guide](followerNode_from_genesis.md) use this commit to checkout:  ```a87cdf89cd075695bf54ba746e3d214cf33aaef0``` .
 
 To restore the db, you can use docker and the same  `restoration.sh` script created in the `movement` directory.
 
