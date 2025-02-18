@@ -41,7 +41,7 @@ The Movement Mainnet is currently in Developer Mainnet mode. We are onboarding a
 |------------------|------------------------------------------------------------------------|
 | RPC              | [https://aptos.testnet.bardock.movementlabs.xyz/v1](https://aptos.testnet.bardock.movementlabs.xyz/v1)         |
 | Faucet endpoint  | [https://faucet.testnet.bardock.movementnetwork.xyz/](https://faucet.testnet.bardock.movementnetwork.xyz/)     |
-| Faucet UI        | [https://faucet.movementnetwork.xyz/?network=aptos](https://faucet.movementnetwork.xyz/?network=aptos)         |
+| Faucet UI        | [https://faucet.movementnetwork.xyz/](https://faucet.movementnetwork.xyz/)         |
 | Explorer         | [https://explorer.movementlabs.xyz/ ](https://explorer.movementlabs.xyz/ ) |
 | Indexer Explorer | [Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.testnet.movementnetwork.xyz%2Fv1%2Fgraphql) | 
 | Indexer Endpoint | [https://indexer.testnet.movementnetwork.xyz](https://indexer.testnet.movementnetwork.xyz) |
@@ -49,6 +49,11 @@ The Movement Mainnet is currently in Developer Mainnet mode. We are onboarding a
 
 
 ## Movement Porto Testnet
+
+:::info
+
+Porto will be officially deprecated on February 28th. Please migrate your testnet dApps to Bardock, as it will transition to the permanent testnet.
+:::
 **Chain ID: 177**
 
 | Service          | URL                                                                    |
