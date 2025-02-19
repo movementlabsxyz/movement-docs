@@ -46,7 +46,7 @@ Due to current network load, we have restricted the faucet API to only accept re
 
    Type `custom` and press **Enter**.
 
-  You will be promted for the following details from our [Network EndPoints](/devs/networkEndpoints)
+  You will be prompted, promoted for the following details from our [Network EndPoints](/devs/networkEndpoints)
 
   - RPC/Rest Endpoint: https://aptos.testnet.porto.movementlabs.xyz/v1
   - Faucet Endpoint: https://faucet.testnet.porto.movementnetwork.xyz/
