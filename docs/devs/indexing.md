@@ -4,7 +4,7 @@ sidebar_position: 6
 
 # Indexers
 
-The Movement Indexer is a GraphQL API you can use to retrive aggregate data, historical data, and data that might be hard to get from the simpler full node API. 
+The Movement Indexer is a GraphQL API you can use to retrieve aggregate data, historical data, and data that might be hard to get from the simpler full node API. 
 
 | Service          | URL                                                                    |
 |------------------|------------------------------------------------------------------------|
