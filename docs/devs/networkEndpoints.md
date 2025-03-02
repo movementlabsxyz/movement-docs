@@ -46,27 +46,6 @@ The Movement Mainnet is currently in Developer Mainnet mode. We are onboarding a
 | Indexer Explorer | [Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.testnet.movementnetwork.xyz%2Fv1%2Fgraphql) | 
 | Indexer Endpoint | [https://indexer.testnet.movementnetwork.xyz](https://indexer.testnet.movementnetwork.xyz) |
 
-
-
-## Movement Porto Testnet
-
-:::info
-
-Porto will be officially deprecated on February 28th. Please migrate your testnet dApps to Bardock, as it will transition to the permanent testnet.
-:::
-**Chain ID: 177**
-
-| Service          | URL                                                                    |
-|------------------|------------------------------------------------------------------------|
-| RPC              | [https://aptos.testnet.porto.movementlabs.xyz/v1](https://aptos.testnet.porto.movementlabs.xyz/v1)     |
-| Faucet endpoint  | [https://fund.testnet.porto.movementlabs.xyz/](https://fund.testnet.porto.movementlabs.xyz/)     |
-| Explorer         | [https://explorer.movementnetwork.xyz/](https://explorer.movementnetwork.xyz/) |
-| Faucet UI         | [https://mizu.testnet.porto.movementnetwork.xyz/](https://mizu.testnet.porto.movementnetwork.xyz/) |
-| Indexer Explorer        | [Public Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql) |
-| Indexer Endpoint      | [https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql](https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql) |
-
-
-
 ## Suzuka Devnet
 
 We often test updates on our Suzuka devnet before pushing to testnet, you can deploy your modules and test on our devnet with the details below.
