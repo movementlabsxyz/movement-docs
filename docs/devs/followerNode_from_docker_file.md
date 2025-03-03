@@ -13,12 +13,29 @@ The setup should have been run once at least to create all configuration files i
 
 To do the restoration the partition `/` should have at least 400GB of free space.
 
+
+## Update from old bardock version
+To update from the Bardock version prior end February 2025, the easier is to create a fresh new instance.
+
+To update a existing follower the process is:
+ - edit the rev in the  `/etc/systemd/system/suzuka-full-follower.service` see Configurations files updates .
+ - rename `.movement` folder in `.movement.save` .
+ - start end stop the node to create a new `.movement` folder and configuration file.
+ - edit the .movement/config.json file and verify that the following entries are set as follow:
+   * `"movement_da_light_node_connection_protocol": "https"`,
+   * `"da_db_path": "/.movement/suzuka-da-db"`
+ - do a db restoration as defined later in Restoration script.
+ - Start the node that should sync.
+ - Remove the `.movement.save` folder.
+
+
+
 ## Configurations files updates
 
-Verify the Systemd Bardock service file: `/etc/systemd/system/movement-full-follower.service`
+Verify the Systemd Bardock service file: `/etc/systemd/system/suzuka-full-follower.service`
 Validate that the `CONTAINER_REV`  var is correctly set as follow:
 
-```Environment="CONTAINER_REV=a87cdf89cd075695bf54ba746e3d214cf33aaef0"```
+```Environment="CONTAINER_REV=7e8d9b6"```
 
 Verify that in the file `.movement/config.json the entry` the field `da_db_path` is `"da_db_path": "/.movement/suzuka-da-db"` and not `"da_db_path": "/.movement/movement-da-db"`
 If not, update it with the right value.
@@ -28,7 +45,7 @@ If not, update it with the right value.
 Go in the directory `$HOME/movement` and type:
 
 ```
-git checkout a87cdf89cd075695bf54ba746e3d214cf33aaef0
+git checkout 7e8d9b65b31091f5254f903557e52347799e8473
 ```
 
 ## Restoration script
@@ -42,14 +59,14 @@ In the Home directory create a new script file call `restoration.sh` and copy pa
 # Stop the node if needed.
 systemctl stop  movement-full-follower.service
 
-export DOT_MOVEMENT_PATH=/home/ubuntu/.movement
-export CONTAINER_REV=a87cdf89cd075695bf54ba746e3d214cf33aaef0
+export DOT_MOVEMENT_PATH=/home/ssm-user/.movement
+export CONTAINER_REV=7e8d9b6
 export AWS_DEFAULT_REGION=us-west-1
 export AWS_REGION=us-west-1
 export MAPTOS_CHAIN_ID=250
 export AWS_ACCESS_KEY_ID="<access key>"
 export AWS_SECRET_ACCESS_KEY="<secret key>"
-export SYNC_PATTERN="{maptos,maptos-storage,suzuka-da-db}/**"
+export SYNC_PATTERN="{default_signer_address_whitelist,maptos,maptos-storage,suzuka-da-db}/**"
 export SYNC_BUCKET="mtnet-l-sync-bucket-sync"
 
 # Restore the DB.
@@ -60,7 +77,7 @@ systemctl start  movement-full-follower.service
 
 ```
 
-Update the <access key> and <secret key> with the values from the file: `/etc/systemd/system/movement-full-follower.service`.
+Update the <access key> and <secret key> with the values from the file: `/etc/systemd/system/movement-full-follower.service` (mainnet) or `/etc/systemd/system/suzuka-full-follower.service` (Testnet/Bardock).
 
 Set the script executable with: ```chmod +x restoration.sh```
 
@@ -98,7 +115,7 @@ Both `ledger_version` and `block_height` state should be near or the same.
 
 To test restoration against a local node and not a real work, do the following:
 
-From the initial [guide](followerNode_from_genesis.md) use this commit to checkout:  ```a87cdf89cd075695bf54ba746e3d214cf33aaef0``` .
+From the initial [guide](followerNode_from_genesis.md) use this commit to checkout:  ```7e8d9b6``` .
 
 To restore the db, you can use docker and the same  `restoration.sh` script created in the `movement` directory.
 
