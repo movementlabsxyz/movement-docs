@@ -5,7 +5,7 @@ sidebar_position: 8
 # Sync a Follower Node with default DB archive
 
 This guide will help you to sync an existing Bardock follower node. This procedure is only for Bardock Testnet network.
-If you don't have a Bardock instance setup follows the Bardock Ansible script installation of this [guide](followerNode_from_genesis.md) with this following commit: ```afddfd02d627b2a8189751950eefca3a59ddfe3b``` .
+If you don't have a Bardock instance setup follows the Bardock Ansible script installation of this [guide](followerNode_from_genesis.md) with this following commit: ```a87cdf89cd075695bf54ba746e3d214cf33aaef0``` .
 
 The setup should have been run once at least to create all configuration files in the .movement folder.
 
