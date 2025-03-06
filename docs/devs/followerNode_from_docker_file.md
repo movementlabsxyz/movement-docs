@@ -60,7 +60,7 @@ export SYNC_BUCKET="mtnet-l-sync-bucket-sync"
 systemctl start  movement-full-follower.service
 ```
 
-Update the <access key> and <secret key> with the values from the file: `/etc/systemd/system/movement-full-follower.service`.
+Update the `<access key>` and `<secret key>` with the values from the file: `/etc/systemd/system/movement-full-follower.service`.
 
 Set the script executable with: ```chmod +x restoration.sh```
 
