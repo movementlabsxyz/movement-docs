@@ -114,7 +114,7 @@ systemctl start  movement-full-follower.service
 ```
 
 
-Update the <access key> and <secret key> provided by movement .
+Update the `<access key>` and `<secret key>` provided by movement.
 
 Set the script executable with: ```chmod +x restoration.sh```
 
