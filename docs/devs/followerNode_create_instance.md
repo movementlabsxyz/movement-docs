@@ -2,9 +2,9 @@
 sidebar_position: 8
 ---
 
-# Run a Follower Node
+# Create a Follower Node Instance
 
-This guide will help you set up and run a Movement follower node. The Bardock Testnet and Mainnet currently support this feature. Learn more about Node architecture [here](/general/Mainnet/node_level_architecture). For simplicity we have provided instructions for deploying using an Ansible script below. 
+This guide will help you to create a Movement follower node instance. To configure it and run it use this [guide](followerNode_configure.md.md). The Bardock Testnet and Mainnet currently support this feature. Learn more about Node architecture [here](/general/Mainnet/node_level_architecture). For simplicity we have provided instructions for deploying using an Ansible script below. 
 
 ## Hardware Recommendations
 
@@ -13,7 +13,7 @@ This guide will help you set up and run a Movement follower node. The Bardock Te
 - 2 TB SSD w/ 60K IOPS and 200 MiB/s throughput
 
 
-## Deployment
+## Creation
 
 ### Clone Movement Repository 
 
@@ -21,74 +21,21 @@ This guide will help you set up and run a Movement follower node. The Bardock Te
 
 git clone https://github.com/movementlabsxyz/movement
 cd movement
+git checkout ac7a5db417ceb55803073b5be614ceb0549e8dc7
 
 ```
 
-### Configuration
+### Example of AWS Instance
 
-To access to the leader DA to get blocks, the follower IP must be declared in the white access list. Contact Movement to add the access. 
-
-Update the variables below in the `movement-full-follower.yml` file for Mainnet. This is located in `docs/movement-node/run/ansible/follower-node/mainnet` or `docs/movement-node/run/ansible/follower-node/` depending on if you are deploying to mainnet or testnet. 
-
-#### Mainnet Configuration
- 
-```yaml
-
-vars:
-    repo_url: "https://github.com/movementlabsxyz/movement"
-    destination_path: "/home/{{ user }}/movement"
-    movement_sync: 'follower::mainnet-l-sync-bucket-sync<=>{default_signer_address_whitelist,maptos,maptos-storage,suzuka-da-db}/**'
-    chain_id: "126"
-
-    movement_da_light_node_connection_protocol: "https"
-    movement_da_light_node_connection_hostname: "m1-da-light-node.mainnet"
-    movement_da_light_node_connection_port: "443"
-
-    aws_region: "us-west-1"
-    rev: "{{ movement_container_version }}"
-
-```
+Create a AWS instance of type `c5.4xlarge` with at least 1Tb (best 4Tb) of disk of type io2 and 32000 IOPS preferably in `us-west-1` region. 
 
 
-#### Bardock Testnet Configuration
+### Current Container Revision
 
-```yaml
+The current container revision to use is:
 
-vars:
-    repo_url: "https://github.com/movementlabsxyz/movement"
-    destination_path: "/home/{{ user }}/movement"
-    movement_sync: "follower::mtnet-l-sync-bucket-sync<=>{maptos,maptos-storage,suzuka-da-db}/**"
-    chain_id: "250"
-
-    movement_da_light_node_connection_protocol: "https"
-    movement_da_light_node_connection_hostname: "m1-da-light-node.testnet.bardock.movementnetwork.xyz"
-    movement_da_light_node_connection_port: "443"
-
-    aws_region: "us-west-1"
-    rev: "{{ movement_container_version }}"
-
-```
-
-To synchronize from genesis you need to remove this variable from movement-full-follower.service.j2 file. Remove this line:
-
-```yaml
-Environment="MOVEMENT_SYNC={{ movement_sync }}"
-```
-
-### Fetching the Latest Container Revision
-
-Please use the revision below:
-
-```6e00b778ee7d8139b153aa4eb80805aead07e252```
-
-Generally, you should be able to use the latest revision by running the following command:
-
-```bash
-
-CONTAINER_REV=$(git rev-parse HEAD)
-echo "CONTAINER_REV=${CONTAINER_REV}"
-
-```
+ - Mainnet: `d963665`
+ - Testnet: `d963665`
 
 
 ### Sample Deployment Scripts
@@ -96,13 +43,12 @@ echo "CONTAINER_REV=${CONTAINER_REV}"
 #### Mainnet
 
 ```bash
-
 ansible-playbook --inventory <inventory_url>, \
     --user <user>  \
-    --extra-vars "movement_container_version=6e00b778ee7d8139b153aa4eb80805aead07e252" \
+    --extra-vars "movement_container_version=d963665" \
     --extra-vars "user=<user>" \
     docs/movement-node/run/ansible/follower-node/mainnet/movement-full-follower.yml \
-    --private-key <pem_file>
+    --private-key <instance_pem_file>
 
 ```
 
@@ -114,15 +60,14 @@ Replace the following:
 
 - **`<inventory_url>`**: The URL or IP of your inventory.
 - **`<user>`**: Your username.
-- **`<pem_file>`**: Your private key file.
+- **`<pem_file>`**: Your instance private key file.
 
-Example:
+Example for AWS and mainnet:
 
 ```bash
-
 ansible-playbook --inventory ec2-18-144-5-233.us-west-1.compute.amazonaws.com, \
     --user rahat  \
-    --extra-vars "movement_container_version=6e00b778ee7d8139b153aa4eb80805aead07e252" \
+    --extra-vars "movement_container_version=d963665" \
     --extra-vars "user=rahat" \
     docs/movement-node/run/ansible/follower-node/mainnet/movement-full-follower.yml \
     --private-key rahat_deployment_test.pem
@@ -137,9 +82,9 @@ For Bardock Testnet, please use the following example:
 
 ansible-playbook --inventory ec2-18-144-5-233.us-west-1.compute.amazonaws.com, \
     --user rahat  \
-    --extra-vars "movement_container_version=6e00b778ee7d8139b153aa4eb80805aead07e252" \
+    --extra-vars "movement_container_version=d963665" \
     --extra-vars "user=rahat" \
-    docs/movement-node/run/ansible/follower-node/movement-full-follower.yml \
+    docs/movement-node/run/ansible/follower-node/testnet/movement-full-follower.yml \
     --private-key rahat_deployment_test.pem
 
 ```
