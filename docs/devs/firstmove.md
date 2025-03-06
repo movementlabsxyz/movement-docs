@@ -48,8 +48,8 @@ Due to current network load, we have restricted the faucet API to only accept re
 
   You will be promted for the following details from our [Network EndPoints](/devs/networkEndpoints)
 
-  - RPC/Rest Endpoint: https://aptos.testnet.porto.movementlabs.xyz/v1
-  - Faucet Endpoint: https://faucet.testnet.porto.movementnetwork.xyz/
+  - RPC/Rest Endpoint: https://aptos.testnet.bardock.movementlabs.xyz/v1
+  - Faucet Endpoint: https://faucet.testnet.bardock.movementnetwork.xyz/
 
 2. **Enter Private Key**
 
@@ -77,7 +77,7 @@ Run `movement --help` for more information about commands
 
 :::info
 
-Note that Porto Explorer is available here: https://explorer.testnet.porto.movementnetwork.xyz/?network=testnet
+Note that Bardock Explorer is available here: https://explorer.movementnetwork.xyz/?network=bardock+testnet
 
 :::
 
@@ -95,7 +95,7 @@ Before deploying contracts, you'll need testnet tokens.
 
 2. **Visit the Faucet**
 
-   Go to the [Movement Labs Web Faucet](https://mizu.testnet.porto.movementnetwork.xyz/) to fund your account.
+   Go to the [Movement Labs Web Faucet](https://faucet.movementnetwork.xyz/) to fund your account.
 
 3. **Request Tokens**
 
@@ -122,8 +122,8 @@ profiles:
     private_key: "YOUR_PRIVATE_KEY"
     public_key: "YOUR_PUBLIC_KEY"
     account: "YOUR_ACCOUNT_ADDRESS"
-    rest_url: "https://aptos.testnet.porto.movementlabs.xyz/v1/"
-    faucet_url: "https://faucet.testnet.porto.movementlabs.xyz/"
+    rest_url: "https://aptos.testnet.bardock.movementlabs.xyz/v1"
+    faucet_url: "https://faucet.testnet.bardock.movementnetwork.xyz/"
 ```
 
 :::warning
