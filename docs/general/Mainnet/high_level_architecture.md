@@ -10,12 +10,12 @@ sidebar_position: 1
 
 The DA service is used to store transaction data and make it available to the network. The service is accessed via [DA light nodes](./node_level_architecture.md#da-light-node). The DA service is currently responsible for the following actions: 
 
-- Forming Proto/Movement Network Blocks
+- Forming protoBlocks
 - Signing these blocks
 - Storing digests of the blocks and then posting the digests to Celestia
 - Reading a blob stream of sequenced digests from Celestia
-- Using the blob stream to lookup Proto Blocks
-- Construct a Proto Block stream
+- Using the blob stream to lookup protoBlocks
+- Construct a protoBlock stream
 
 ## Sequencing
 

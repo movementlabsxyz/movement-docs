@@ -64,16 +64,16 @@ A user submits a transaction to the Movement Network. After basic validation, th
 
 2. **Sequencing**:
 
-Authorized sequencers (Leader node) pull transactions from the mempool and arrange them into transaction batches (partial ordering). These batches are then forwarded to the Data Availability (DA) service, which provides the final ordering step by forming proto-blocks.
+An authorized sequencer (Leader node) pulls transactions from the mempool and arranges them into transaction batches (partial ordering). These batches are then forwarded to Celestia, which provides the final ordering step and from which protoBlocks can be formed.
 
 3. **Data Publication**:
-The sequencer, via the DA service, posts digests of these transaction batches to Celestia. This ensures the data is publicly available and creates a fully ordered record that the Movement Network can retrieve.
+The sequencer records the data and makes it publicly available, such that the Movement Network can retrieve it. Moreover, the sequencer posts digests of the transaction batches to Celestia for final ordering.
 
 4. **Execution**:
 
-Once proto-blocks are retrieved, a node executes the transactions (e.g., using the Move VM). This updates the Movement Network state. The node then packages the executed proto-blocks into finalized Movement Blocks, including the new state root and other metadata.
+Once protoBlocks are retrieved, a node executes the transactions using the Move VM. This updates the Movement Network state. The node then packages the executed protoBlocks into finalized Movement Blocks, including the new state root and other metadata.
 
 5. **Settlement**:
 
-Multiple Movement Blocks are periodically aggregated into a super-block. The resulting state digest for the super-block is written to an L1 contract as a post-confirmation. Once settled, the Movement Network recognizes that state as finalized. Nodes read the settled confirmation from L1 to update their local state databases.
+Multiple Movement Blocks are periodically aggregated into a superBlock. The resulting state digest for the superBlock is written to an L1 contract as a Postconfirmation. Once settled, the Movement Network recognizes that state as finalized. Nodes read the settled confirmation from L1 to update their local state databases.
 
