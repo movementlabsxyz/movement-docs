@@ -41,7 +41,7 @@ The network uses the [Fast Finality Settlement Module](../Introduction/technical
 
 As the training wheels are removed the network will move to a decentralized model where validators will be able to attest to the correctness of state transitions, and a supermajority of validators will be required to advance the state roots on L1.
 
-At the moment the node will create state digests over multiple blocks resulting in a super-block. A post-confirmation is written to an L! contract. The node will then read the settled post-confirmation on the L! and make this available in the state DB. This will ultimately be viewable through the Movement Network REST API. 
+At the moment the node will create state digests over multiple blocks resulting in a super-block. A post-confirmation is written to an [L! contract](https://etherscan.io/address/0x1bC3248fF599e1a71183a464058b01A78eC42edE). The node will then read the settled post-confirmation on the L! and make this available in the state DB. This will ultimately be viewable through the Movement Network REST API. 
 
 ## Fees
 
