@@ -29,7 +29,7 @@ The protoBlock is the final ordering step of transactions. Next stop: execution.
 
 ## Execution
 
-The [full node](./node_level_architecture.md#full-node) receives protoBlocks via the [DA light node](node_level_architecture.md#da-light-node) and executes the transactions in the protoBlocks. The full node then creates Movement blocks from the protoBlocks, which contain additional information such as the new state root after applying the transactions.
+A node receives protoBlocks via the [DA light node](node_level_architecture.md#da-light-node) and executes the transactions in the protoBlocks. The node then creates Movement blocks from the protoBlocks, which contain additional information such as the new state root after applying the transactions.
 
 ## Settlement
 
