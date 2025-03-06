@@ -6,9 +6,9 @@ sidebar_position: 2
 
 ## Node Types
 
-### Full node
+### Leader node
 
-A full node provides the core functionality of a Movement node:
+A Leader node provides the core functionality of a Movement node:
 
 - Ingresses transactions into a local mempool
 - Forms batches from the transactions in the mempool and forwards them

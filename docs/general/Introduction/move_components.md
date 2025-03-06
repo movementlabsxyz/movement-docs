@@ -58,10 +58,22 @@ Understanding the transaction lifecycle is crucial for understanding how Move-ba
 
 The transaction lifecycle within a Move-based chain involves:
 
-1. **Submission**: A transaction is submitted to the mempool.
-2. **Sequencing**: The sequencer extracts a batch of transactions from the mempool and orders them.
-3. **Data Publication**: The sequencer publishes the transaction data to the DA service.
-4. **Execution**: The executor processes the transactions, resulting in a new L2 state.
-5. **Settlement**: The new state is published to L1 in the bridge contract for final settlement.
+1. **Submission**:
 
-This process ensures efficient and secure transaction finality.
+A user submits a transaction to the Movement Network. After basic validation, the transaction is placed into the mempool, awaiting inclusion.
+
+2. **Sequencing**:
+
+Authorized sequencers (Leader node) pull transactions from the mempool and arrange them into transaction batches (partial ordering). These batches are then forwarded to the Data Availability (DA) service, which provides the final ordering step by forming proto-blocks.
+
+3. **Data Publication**:
+The sequencer, via the DA service, posts digests of these transaction batches to Celestia. This ensures the data is publicly available and creates a fully ordered record that the Movement Network can retrieve.
+
+4. **Execution**:
+
+Once proto-blocks are retrieved, a node executes the transactions (e.g., using the Move VM). This updates the Movement Network state. The node then packages the executed proto-blocks into finalized Movement Blocks, including the new state root and other metadata.
+
+5. **Settlement**:
+
+Multiple Movement Blocks are periodically aggregated into a super-block. The resulting state digest for the super-block is written to an L1 contract as a post-confirmation. Once settled, the Movement Network recognizes that state as finalized. Nodes read the settled confirmation from L1 to update their local state databases.
+
