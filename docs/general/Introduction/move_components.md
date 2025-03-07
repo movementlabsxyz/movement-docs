@@ -64,7 +64,7 @@ A user submits a transaction to the Movement Network. After basic validation, th
 
 2. **Sequencing**:
 
-An authorized sequencer (Leader node) pulls transactions from the mempool and arranges them into transaction batches (partial ordering). These batches are then forwarded to Celestia, which provides the final ordering step and from which protoBlocks can be formed.
+An authorized sequencer (Leader node) pulls transactions from the mempool and arranges them into transaction batches (partial ordering). The digests of these batches are then forwarded to Celestia, which provides the final ordering step. From the ordering and the recorded batches, protoBlocks are formed, which will be executed during the execution step.
 
 3. **Data Publication**:
 The sequencer records the data and makes it publicly available, such that the Movement Network can retrieve it. Moreover, the sequencer posts digests of the transaction batches to Celestia for final ordering.
