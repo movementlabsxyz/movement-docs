@@ -43,6 +43,13 @@ The following public endpoints are provided by Movement's ecosystem infrastructu
 | [BlockPi](https://blockpi.io/)    | https://movement.blockpi.network/rpc/v1/public/v1     |                  |
 | [Sentio](https://app.sentio.xyz/) |  https://rpc.sentio.xyz/movement/v1                   | https://rpc.sentio.xyz/movement-indexer/v1/graphql |
 
+#### Custom Solutions
+
+| Name             | Documentation                                                          |
+|------------------|------------------------------------------------------------------------|
+| [Pangea](https://pangea.foundation/)    | https://docs.pangea.foundation/chain-data/movement/movement.html    |
+
+
 
 ## Movement Bardock Testnet
 **Chain ID: 250**
