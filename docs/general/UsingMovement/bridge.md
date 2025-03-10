@@ -12,7 +12,7 @@ Note: The Movement Network Bridge is currently in beta and only supports transfe
 
 Learn more about Layer Zero OFT(Omnichain Fungible Tokens) and how this is implemented using Aptos Move [here](https://docs.layerzero.network/v2/developers/aptos-move/contract-modules/oft).
 
-Note: OFT's do not currently support the COIN standard and as such all OFT's are minted as Fungible Asset Standard. 
+Note: OFTs do not currently support the Coin standard and as such all OFTs are minted as Fungible Asset Standard. 
 
 ## Bridge Interface
 
@@ -40,7 +40,7 @@ The mainnet Bridge currently allows for bridging between Ethereum Mainnet and Mo
 
 :::info
 
-Note that the Move Token listed below is not an OFT but is an FA token that is used to pay for gas on the Movement Network. On the Movement Network both COIN and FA move can be used to initialize accounts and pay for gas.
+Note that the Move Token listed below is not an OFT but is an FA token that is used to pay for gas on the Movement Network. On the Movement Network both Coin and FA move can be used to initialize accounts and pay for gas.
 
 :::
 
@@ -50,11 +50,11 @@ Note that the Move Token listed below is not an OFT but is an FA token that is u
 
 | Adaptor | Address |
 |---------|---------|
-| MOVEOFTAdapter | `0xf1df43a3053cd18e477233b59a25fc483c2cbe0f` |
-| USDCOFTAdapter | `0xc209a627a7B0a19F16A963D9f7281667A2d9eFf2` |
-| USDTOFTAdapter | `0x5e87D7e75B272fb7150B4d1a05afb6Bd71474950` |
-| WETHOFTAdapter | `0x06E01cB086fea9C644a2C105A9F20cfC21A526e8` |
-| WBTCOFTAdapter | `0xa55688C280E725704CFe8Ea30eD33fE5B91cE6a4` |
+| MOVE OFT Adapter | `0xf1df43a3053cd18e477233b59a25fc483c2cbe0f` |
+| USDC OFT Adapter | `0xc209a627a7B0a19F16A963D9f7281667A2d9eFf2` |
+| USDT OFT Adapter | `0x5e87D7e75B272fb7150B4d1a05afb6Bd71474950` |
+| WETH OFT Adapter | `0x06E01cB086fea9C644a2C105A9F20cfC21A526e8` |
+| WBTC OFT Adapter | `0xa55688C280E725704CFe8Ea30eD33fE5B91cE6a4` |
 
 ### Ethereum Token Addresses
 
@@ -67,7 +67,7 @@ Note that the Move Token listed below is not an OFT but is an FA token that is u
 | WBTC | `0x2260fac5e5542a773aa44fbcfedf7c193bc2c599` |
 
 
-### Movement OFT Addresses
+### Movement OFT Contract Addresses
 
 | Token | Address |
 |-------|---------|
@@ -77,11 +77,15 @@ Note that the Move Token listed below is not an OFT but is an FA token that is u
 | WETH.e | `0x3dfe1ac4574c7dbbe6f1c5ba862de88fc3e7d3cf8eba95ef1abf32b582889e6d` |
 | WBTC.e | `0xbdf86868a32dbae96f2cd50ab05b4be43b92e84e793a4fc01b5b460cc38fdc14` |
 
-### Movement OFT/FA/Movement Escrow Addresses
+### Movement MOVE Escrow Address:
+
+`0x42afc6935b692cd286e3087a4464ec516a60dd21c9e355e1b8b0088376501372`
+
+### Movement OFT / FA Addresses
 
 | Token | Address |
 |-------|---------|
-| MOVE | `0x42afc6935b692cd286e3087a4464ec516a60dd21c9e355e1b8b0088376501372` |
+| MOVE   | `0xa` |
 | USDC.e | `0x83121c9f9b0527d1f056e21a950d6bf3b9e9e2e8353d0e95ccea726713cbea39` |
 | USDT.e | `0x447721a30109c662dde9c73a0c2c9c9c459fb5e5a9c92f03c50fa69737f5d08d` |
 | WETH.e | `0x908828f4fb0213d4034c3ded1630bbd904e8a3a6bf3c63270887f0b06653a376` |
