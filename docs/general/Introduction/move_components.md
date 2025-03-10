@@ -54,14 +54,21 @@ The modularity of the Move-based chain framework allows developers to select dif
 
 ## Transaction Lifecycle
 
-Understanding the transaction lifecycle is crucial for understanding how Move-based chains achieve efficient and secure transaction finality. This lifecycle outlines the steps from the initial submission of a transaction to its final settlement, ensuring that every transaction is processed correctly and securely.
+Understanding the transaction lifecycle is crucial for understanding how Move-based chains achieve efficient and secure transaction finality. This lifecycle outlines the steps from the initial submission of a transaction to its final settlement, ensuring that every transaction is processed correctly and securely. The transaction lifecycle is also displayed in the [high-level architecture](../Mainnet/high_level_architecture.md) documentation.
 
 The transaction lifecycle within a Move-based chain involves:
 
-1. **Submission**: A transaction is submitted to the mempool.
-2. **Sequencing**: The sequencer extracts a batch of transactions from the mempool and orders them.
-3. **Data Publication**: The sequencer publishes the transaction data to the DA service.
-4. **Execution**: The executor processes the transactions, resulting in a new L2 state.
-5. **Settlement**: The new state is published to L1 in the bridge contract for final settlement.
+1. **Submission**:
+A user submits a transaction to the Movement Network. After basic validation, the transaction is placed into the mempool, awaiting inclusion.
 
-This process ensures efficient and secure transaction finality.
+2. **Sequencing**:
+An authorized [sequencer node](../Mainnet/node_level_architecture.md#sequencer-node) (Leader node) pulls transactions from the mempool and arranges them into transaction batches (partial ordering). The digests of these batches are then forwarded to Celestia, which provides the final ordering step. From the ordering and the recorded batches, protoBlocks are formed, which will be executed during the execution step.
+
+3. **Data Publication**:
+The sequencer records the data and makes it publicly available, such that the Movement Network can retrieve it. Moreover, the sequencer posts digests of the transaction batches to Celestia for final ordering.
+
+4. **Execution**:
+Once protoBlocks are retrieved, a node executes the transactions using the Move VM. This updates the Movement Network state. The node then packages the executed protoBlocks into finalized Movement Blocks, including the new state root and other metadata.
+
+5. **Settlement**:
+Multiple Movement Blocks are periodically aggregated into a superBlock. The resulting state digest for the superBlock is written to an L1 contract as a Postconfirmation. Once settled, the Movement Network recognizes that state as finalized. Nodes read the settled confirmation from L1 to update their local state databases.
