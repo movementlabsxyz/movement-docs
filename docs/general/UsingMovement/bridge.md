@@ -40,7 +40,7 @@ The mainnet Bridge currently allows for bridging between Ethereum Mainnet and Mo
 
 :::info
 
-Note that the Move Token listed below is not an OFT but is an FA token that is used to pay for gas on the Movement Network.
+Note that the Move Token listed below is not an OFT but is an FA token that is used to pay for gas on the Movement Network. On the Movement Network both COIN and FA move can be used to initialize accounts and pay for gas.
 
 :::
 
