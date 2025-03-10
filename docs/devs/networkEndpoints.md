@@ -28,7 +28,7 @@ The Movement Mainnet is currently in Developer Mainnet mode. We are onboarding a
 | Service          | URL                                                                    |
 |------------------|------------------------------------------------------------------------|
 | RPC              | https://mainnet.movementnetwork.xyz/v1     |
-| Bridge           |   Coming Soon       |
+| Bridge           | https://bridge.movementnetwork.xyz/      |
 | Explorer         | https://explorer.movementnetwork.xyz/?network=mainnet |
 | Indexer Explorer | [Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.mainnet.movementnetwork.xyz%2Fv1%2Fgraphql) | 
 | Indexer Endpoint | https://indexer.mainnet.movementnetwork.xyz/v1/graphql |

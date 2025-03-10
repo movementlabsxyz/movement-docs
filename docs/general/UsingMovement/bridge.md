@@ -34,24 +34,64 @@ We are launching with support for the following assets:
 - Other Assets
     - 3 Day waiting period for withdrawals when briding from Movement to Ethereum
 
+## Mainnet Addresses
+
+The mainnet Bridge currently allows for bridging between Ethereum Mainnet and Movement Mainnet.
+
+:::info
+
+Note that the Move Token listed below is not an OFT but is an FA token that is used to pay for gas on the Movement Network.
+
+:::
+
+
+
+### Adaptor Addresses on Ethereum Mainnet
+
+| Adaptor | Address |
+|---------|---------|
+| MOVEOFTAdapter | `0xf1df43a3053cd18e477233b59a25fc483c2cbe0f` |
+| USDCOFTAdapter | `0xc209a627a7B0a19F16A963D9f7281667A2d9eFf2` |
+| USDTOFTAdapter | `0x5e87D7e75B272fb7150B4d1a05afb6Bd71474950` |
+| WETHOFTAdapter | `0x06E01cB086fea9C644a2C105A9F20cfC21A526e8` |
+| WBTCOFTAdapter | `0xa55688C280E725704CFe8Ea30eD33fE5B91cE6a4` |
+
+### Ethereum Token Addresses
+
+| Token | Address |
+|-------|---------|
+| MOVE | `0x3073f7aAA4DB83f95e9FFf17424F71D4751a3073` |
+| USDC | `0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48` |
+| USDT | `0xdac17f958d2ee523a2206206994597c13d831ec7` |
+| WETH | `0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2` |
+| WBTC | `0x2260fac5e5542a773aa44fbcfedf7c193bc2c599` |
+
+
+### Movement OFT Addresses
+
+| Token | Address |
+|-------|---------|
+| MOVE | `0x7e4fd97ef92302eea9b10f74be1d96fb1f1511cf7ed28867b0144ca89c6ebc3c` |
+| USDC.e | `0x4d2969d384e440db9f1a51391cfc261d1ec08ee1bdf7b9711a6c05d485a4110a` |
+| USDT.e | `0x38cdb3f0afabee56a3393793940d28214cba1f5781e13d5db18fa7079f60ab55` |
+| WETH.e | `0x3dfe1ac4574c7dbbe6f1c5ba862de88fc3e7d3cf8eba95ef1abf32b582889e6d` |
+| WBTC.e | `0xbdf86868a32dbae96f2cd50ab05b4be43b92e84e793a4fc01b5b460cc38fdc14` |
+
+### Movement OFT/FA/Movement Escrow Addresses
+
+| Token | Address |
+|-------|---------|
+| MOVE | `0x42afc6935b692cd286e3087a4464ec516a60dd21c9e355e1b8b0088376501372` |
+| USDC.e | `0x83121c9f9b0527d1f056e21a950d6bf3b9e9e2e8353d0e95ccea726713cbea39` |
+| USDT.e | `0x447721a30109c662dde9c73a0c2c9c9c459fb5e5a9c92f03c50fa69737f5d08d` |
+| WETH.e | `0x908828f4fb0213d4034c3ded1630bbd904e8a3a6bf3c63270887f0b06653a376` |
+| WBTC.e | `0xb06f29f24dde9c6daeec1f930f14a441a8d6c0fbea590725e88b340af3e1939c` |
+
+
 ## Testnet Addresses
 
 The testnet Bridge currently allows for bridging between Binance Smart Chain Testnet and Movement Bardock Testnet.
 
-### Bridge Contract Addresses
-
-| Network | Address |
-|---------|---------|
-| BSC Testnet | `0xbA1BBC0E25b5Fd3e4D991a14C0fc99E13401e05E` |
-| Bardock Testnet | `0x9fca138cfc073f0735dab0ad0b99e3bed844ac70ed36ea7636a0addfa5d56236` |
-
-### Adaptor Addresses on Binance Smart Chain Testnet
-
-| Adaptor | Address |
-|---------|---------|
-| USDCOFTAdapter | `0x9078C798192C04d473F259A86aC97d6d9D5863Ba` |
-| USDTOFTAdapter | `0xf9F7D5D9eD90B4706111653D75B187DF3283eE29` |
-| WETHOFTAdapter | `0x2E067e69598cfd2c110bC1A61a8e121f36e464Bf` |
 
 ### Mock Token Addresses on BSC Testnet
 
