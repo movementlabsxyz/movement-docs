@@ -38,10 +38,12 @@ The Movement Mainnet is currently in Developer Mainnet mode. We are onboarding a
 
 The following public endpoints are provided by Movement's ecosystem infrastructure providers. All of the partners below also have paid private nodes. To learn more about setting up a private node for your project, see their website below.
 
-| Name             | RPC Endpoint                                                           | Indexer Endpoint |
-|------------------|------------------------------------------------------------------------|------------------|
-| [BlockPi](https://blockpi.io/)    | https://movement.blockpi.network/rpc/v1/public/v1     |                  |
-| [Sentio](https://app.sentio.xyz/) |  https://rpc.sentio.xyz/movement/v1                   | https://rpc.sentio.xyz/movement-indexer/v1/graphql |
+| Name             | RPC Endpoint                                                                    | Indexer Endpoint |
+|------------------|---------------------------------------------------------------------------------|------------------|
+| [Blockhunters](https://blockhunters.org/)  | https://rpc.movement.bh.rocks/v1                      |                  |
+| [BlockPi](https://blockpi.io/)             | https://movement.blockpi.network/rpc/v1/public/v1     |                  |
+| [Lava Network](https://www.lavanet.xyz/)   | https://movement.lava.build/ |                        |                  |
+| [Sentio](https://app.sentio.xyz/)          |  https://rpc.sentio.xyz/movement/v1                   | https://rpc.sentio.xyz/movement-indexer/v1/graphql |
 
 #### Custom Solutions
 
