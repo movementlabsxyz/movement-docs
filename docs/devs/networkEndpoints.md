@@ -39,6 +39,9 @@ The following public endpoints are provided by Movement's ecosystem infrastructu
 | [BlockPi](https://blockpi.io/)             | https://movement.blockpi.network/rpc/v1/public/v1     |                  |
 | [Lava Network](https://www.lavanet.xyz/)   | https://movement.lava.build/ |                        |                  |
 | [Sentio](https://app.sentio.xyz/)          |  https://rpc.sentio.xyz/movement/v1                   | https://rpc.sentio.xyz/movement-indexer/v1/graphql |
+| [Hello Moon](https://www.hellomoon.io/)  | https://movement.hellomoon.io/v1                        |                  |
+| [ANkr](https://www.ankr.com/)  | https://rpc.ankr.com/http/movement_mainnet/v1                     |                  |
+
 
 #### Custom Solutions
 
@@ -59,6 +62,14 @@ The following public endpoints are provided by Movement's ecosystem infrastructu
 | Explorer         | https://explorer.movementlabs.xyz/  |
 | Indexer Explorer | [Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.testnet.movementnetwork.xyz%2Fv1%2Fgraphql) | 
 | Indexer Endpoint | https://indexer.testnet.movementnetwork.xyz |
+
+### Partner Endpoints
+
+The following public endpoints are provided by Movement's ecosystem infrastructure providers. All of the partners below also have paid private nodes. To learn more about setting up a private node for your project, see their website below.
+
+| Name             | RPC Endpoint                                                                    | Indexer Endpoint |
+|------------------|---------------------------------------------------------------------------------|------------------|
+| [ANkr](https://www.ankr.com/)  | https://rpc.ankr.com/http/movement_mainnet/v1                     |                  |
 
 ## Suzuka Devnet
 
