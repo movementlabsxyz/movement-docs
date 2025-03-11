@@ -113,12 +113,12 @@ const config = {
           position: "left",
           label: "Build",
         },
-        {
-          type: "docSidebar",
-          sidebarId: "apiSidebar",
-          position: "left",
-          label: "API",
-        },
+        // {
+        //   type: "docSidebar",
+        //   sidebarId: "apiSidebar",
+        //   position: "left",
+        //   label: "API",
+        // },
         {
           type: 'search',
           position: 'left',
