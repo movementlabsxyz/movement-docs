@@ -26,8 +26,6 @@ cd movement
 
 ### Configuration
 
-To access to the leader DA to get blocks, the follower IP must be declared in the white access list. Contact Movement to add the access. 
-
 Update the variables below in the `movement-full-follower.yml` file for Mainnet. This is located in `docs/movement-node/run/ansible/follower-node/mainnet` or `docs/movement-node/run/ansible/follower-node/` depending on if you are deploying to mainnet or testnet. 
 
 #### Mainnet Configuration
