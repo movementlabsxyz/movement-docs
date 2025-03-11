@@ -17,11 +17,6 @@ This page contains public endpoints that may at times be subject to rate limits.
 
 ## Movement Developer Mainnet
 
-:::info
-
-The Movement Mainnet is currently in Developer Mainnet mode. We are onboarding a select group of developers to deploy on Movement.
-
-:::
 
 **Chain ID: 126**
 
