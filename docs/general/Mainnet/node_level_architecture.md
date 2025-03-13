@@ -36,6 +36,6 @@ The DA light node is a standalone service, that differs from the above node type
 
 1. Write: the light node forwards signed transaction-batches, which are submitted by authorized nodes, to the data availability layer.
 2. Read: the light node reads the data from the data availability layer and verifies them against its verification parameters, currently by verifying a trusted signature.
-3. Read: the light node reads the ordered transaction batch digests from Celestia and with the data from the DA layer constructs protoBlocks.
+3. Read: the light node reads the ordered transaction batches with the data from the DA layer constructs protoBlocks.
 
 The DA light node provides access to these operation via a gRPC API.

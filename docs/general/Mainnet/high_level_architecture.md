@@ -6,22 +6,23 @@ sidebar_position: 1
 
 ![architecture_movement.png](./images/architecture_movement.png)
 
+:::info
+Integration with Celestia is currently in progress and will be coming soon.
+:::
+
 ## Data Availability
 
 The DA service is used to store transaction data and make it available to the network. The service is accessed via [DA light nodes](./node_level_architecture.md#da-light-node). The DA service is currently responsible for the following actions:
 
 - Forming transaction batches
 - Signing the transaction batches
-- Storing digests of the transactin batches and then posting the digests to Celestia
-- Reading a blob stream of sequenced digests from Celestia
-- Using the blob stream to construct protoBlocks
+- Ordering the transactions batches
+- Using the ordered transaction protoBlocks
 - Construct a protoBlock stream
 
 ## Sequencing
 
-In order to protect the DA layer from spam, only certain [sequencer nodes](./node_level_architecture.md#sequencer-node) receive authorization to sequence transactions into ordered transaction batches. These sequencer nodes provide basic sequencing for transactions ingressed from the users. The sequencer node sends the transaction batch digest to the DA service using the [DA light node](node_level_architecture.md#da-light-node). Initially, there will be a leader node that is responsible for sequencing transactions.
-
-The sequencer node takes transaction batches and writes digests of these to Celestia. Celestia is then used in order to sequence the transaction digests. This results in protoBlocks, where each protoBlock may contain several transaction batches.
+In order to protect the DA layer from spam, only certain [sequencer nodes](./node_level_architecture.md#sequencer-node) receive authorization to sequence transactions into ordered transaction batches. These sequencer nodes provide basic sequencing for transactions ingressed from the users. The sequencer node sends the transaction batch digest to the DA service using the [DA light node](node_level_architecture.md#da-light-node). Initially, there will be a leader node that is responsible for sequencing transactions. Sequenced transactions then result in contstrction of protoBlocks, where each protoBlock may contain several transaction batches.
 
 The protoBlock is the final ordering step of transactions. Next stop: execution.
 
