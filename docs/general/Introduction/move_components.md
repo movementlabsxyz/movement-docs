@@ -16,7 +16,7 @@ The Move Stack is a collection of tools, components, and adapters that enable th
 The Move Stack's configurable components include:
 
 - **Sequencer**: Developers can opt for the default decentralized shared sequencing service or choose a self-reliant sequencing mechanism.
-- **Data Availability**: Supports various DA solutions, including Ethereum EIP-4844 blobs, 0G, Avail, Celestia, EigenDA, and Near.
+- **Data Availability**: Supports various DA solutions
 - **Settlement Mechanisms**: Offers options for optimistic (fraud proof), ZK (validity proof) and staked (attestations) settlement mechanisms.
 
 :::info
@@ -62,10 +62,10 @@ The transaction lifecycle within a Move-based chain involves:
 A user submits a transaction to the Movement Network. After basic validation, the transaction is placed into the mempool, awaiting inclusion.
 
 2. **Sequencing**:
-An authorized [sequencer node](../Mainnet/node_level_architecture.md#sequencer-node) (Leader node) pulls transactions from the mempool and arranges them into transaction batches (partial ordering). The digests of these batches are then forwarded to Celestia, which provides the final ordering step. From the ordering and the recorded batches, protoBlocks are formed, which will be executed during the execution step.
+An authorized [sequencer node](../Mainnet/node_level_architecture.md#sequencer-node) (Leader node) pulls transactions from the mempool and arranges them into transaction batches (ordering). From the ordering and the recorded batches, protoBlocks are formed, which will be executed during the execution step.
 
 3. **Data Publication**:
-The sequencer records the data and makes it publicly available, such that the Movement Network can retrieve it. Moreover, the sequencer posts digests of the transaction batches to Celestia for final ordering.
+The sequencer records the data and makes it publicly available so that the Movement Network can retrieve it. 
 
 4. **Execution**:
 Once protoBlocks are retrieved, a node executes the transactions using the Move VM. This updates the Movement Network state. The node then packages the executed protoBlocks into finalized Movement Blocks, including the new state root and other metadata.
