@@ -78,7 +78,7 @@ After a few minutes, to verify, use these commands:
 To get the current leader Bardock state:
 
 ```
-curl https://aptos.testnet.bardock.movementlabs.xyz/v1
+curl https://testnet.bardock.movementnetwork.xyz/v1
 ```
 
 To get your follower state:
