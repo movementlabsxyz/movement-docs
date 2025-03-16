@@ -48,10 +48,10 @@ Due to current network load, we have restricted the faucet API to only accept re
 
   You will be promted for the following details from our [Network EndPoints](/devs/networkEndpoints)
 
-  - RPC/Rest Endpoint: https://aptos.testnet.bardock.movementlabs.xyz/v1
+  - RPC/Rest Endpoint: https://testnet.bardock.movementnetwork.xyz/v1
   - Faucet Endpoint: https://faucet.testnet.bardock.movementnetwork.xyz/
 
-2. **Enter Private Key**
+1. **Enter Private Key**
 
    Next, you'll be asked to enter your private key:
 
@@ -122,7 +122,7 @@ profiles:
     private_key: "YOUR_PRIVATE_KEY"
     public_key: "YOUR_PUBLIC_KEY"
     account: "YOUR_ACCOUNT_ADDRESS"
-    rest_url: "https://aptos.testnet.bardock.movementlabs.xyz/v1"
+    rest_url: "https://testnet.bardock.movementnetwork.xyz/v1"
     faucet_url: "https://faucet.testnet.bardock.movementnetwork.xyz/"
 ```
 

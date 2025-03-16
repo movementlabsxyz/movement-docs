@@ -15,7 +15,7 @@ This page contains public endpoints that may at times be subject to rate limits.
 **View the network status and uptime performance of Movement Network here: https://status.movementnetwork.xyz/**
 
 
-## Movement Developer Mainnet
+## Movement Mainnet
 
 
 **Chain ID: 126**
@@ -56,20 +56,13 @@ The following public endpoints are provided by Movement's ecosystem infrastructu
 
 | Service          | URL                                                                    |
 |------------------|------------------------------------------------------------------------|
-| RPC              | https://aptos.testnet.bardock.movementlabs.xyz/v1         |
+| RPC              | https://testnet.bardock.movementnetwork.xyz/v1         |
 | Faucet endpoint  | https://faucet.testnet.bardock.movementnetwork.xyz/     |
 | Faucet UI        | https://faucet.movementnetwork.xyz/        |
-| Explorer         | https://explorer.movementlabs.xyz/  |
+| Explorer         | https://explorer.movementnetwork.xyz/?network=bardock+testnet  |
 | Indexer Explorer | [Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.testnet.movementnetwork.xyz%2Fv1%2Fgraphql) | 
 | Indexer Endpoint | https://indexer.testnet.movementnetwork.xyz |
 
-### Partner Endpoints
-
-The following public endpoints are provided by Movement's ecosystem infrastructure providers. All of the partners below also have paid private nodes. To learn more about setting up a private node for your project, see their website below.
-
-| Name             | RPC Endpoint                                                                    | Indexer Endpoint |
-|------------------|---------------------------------------------------------------------------------|------------------|
-| [ANkr](https://www.ankr.com/)  | https://rpc.ankr.com/http/movement_mainnet/v1                     |                  |
 
 ## Suzuka Devnet
 

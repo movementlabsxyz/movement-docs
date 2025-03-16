@@ -168,7 +168,7 @@ systemctl start movement-full-follower.service
 Compare to: 
 
 - Mainnet endpoint: https://mainnet.movementnetwork.xyz/v1
-- Testnet endpoint: https://aptos.testnet.bardock.movementlabs.xyz/v1
+- Testnet endpoint: https://testnet.bardock.movementnetwork.xyz/v1
 
 ## Run Locally 
 
@@ -234,4 +234,4 @@ curl localhost:30731/v1
 
 ```
 
-You should see a ledger_version field CLOSE to the other values on the network, e.g., https://aptos.testnet.bardock.movementlabs.xyz/v1.
+You should see a ledger_version field CLOSE to the other values on the network, e.g., https://testnet.bardock.movementnetwork.xyz/v1.
