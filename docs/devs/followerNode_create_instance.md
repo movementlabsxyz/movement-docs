@@ -2,9 +2,9 @@
 sidebar_position: 8
 ---
 
-# Run a Follower Node
+# Create a Follower Node Instance
 
-This guide will help you set up and run a Movement follower node. The Bardock Testnet and Mainnet currently support this feature. Learn more about Node architecture [here](/general/Mainnet/node_level_architecture). For simplicity we have provided instructions for deploying using an Ansible script below. 
+This guide will help you to create a Movement follower node instance. To configure it and run it use this [guide](followerNode_configure.md.md). The Bardock Testnet and Mainnet currently support this feature. Learn more about Node architecture [here](/general/Mainnet/node_level_architecture). For simplicity we have provided instructions for deploying using an Ansible script below. 
 
 ## Hardware Recommendations
 
@@ -13,7 +13,7 @@ This guide will help you set up and run a Movement follower node. The Bardock Te
 - 2 TB SSD w/ 60K IOPS and 200 MiB/s throughput
 
 
-## Deployment
+## Creation
 
 ### Clone Movement Repository 
 
@@ -94,13 +94,12 @@ echo "CONTAINER_REV=${CONTAINER_REV}"
 #### Mainnet
 
 ```bash
-
 ansible-playbook --inventory <inventory_url>, \
     --user <user>  \
-    --extra-vars "movement_container_version=6e00b778ee7d8139b153aa4eb80805aead07e252" \
+    --extra-vars "movement_container_version=d963665" \
     --extra-vars "user=<user>" \
     docs/movement-node/run/ansible/follower-node/mainnet/movement-full-follower.yml \
-    --private-key <pem_file>
+    --private-key <instance_pem_file>
 
 ```
 
@@ -112,15 +111,14 @@ Replace the following:
 
 - **`<inventory_url>`**: The URL or IP of your inventory.
 - **`<user>`**: Your username.
-- **`<pem_file>`**: Your private key file.
+- **`<pem_file>`**: Your instance private key file.
 
-Example:
+Example for AWS and mainnet:
 
 ```bash
-
 ansible-playbook --inventory ec2-18-144-5-233.us-west-1.compute.amazonaws.com, \
     --user rahat  \
-    --extra-vars "movement_container_version=6e00b778ee7d8139b153aa4eb80805aead07e252" \
+    --extra-vars "movement_container_version=d963665" \
     --extra-vars "user=rahat" \
     docs/movement-node/run/ansible/follower-node/mainnet/movement-full-follower.yml \
     --private-key rahat_deployment_test.pem
@@ -135,9 +133,9 @@ For Bardock Testnet, please use the following example:
 
 ansible-playbook --inventory ec2-18-144-5-233.us-west-1.compute.amazonaws.com, \
     --user rahat  \
-    --extra-vars "movement_container_version=6e00b778ee7d8139b153aa4eb80805aead07e252" \
+    --extra-vars "movement_container_version=d963665" \
     --extra-vars "user=rahat" \
-    docs/movement-node/run/ansible/follower-node/movement-full-follower.yml \
+    docs/movement-node/run/ansible/follower-node/testnet/movement-full-follower.yml \
     --private-key rahat_deployment_test.pem
 
 ```
