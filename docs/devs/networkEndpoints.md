@@ -10,19 +10,44 @@ This page contains public endpoints that may at times be subject to rate limits.
 
 :::
 
-## Movement Porto Testnet
-**Chain ID: 177**
+### Network Status
+
+**View the network status and uptime performance of Movement Network here: https://status.movementnetwork.xyz/**
+
+
+## Movement Mainnet
+
+
+**Chain ID: 126**
 
 | Service          | URL                                                                    |
 |------------------|------------------------------------------------------------------------|
-| RPC              | [https://aptos.testnet.porto.movementlabs.xyz/v1](https://aptos.testnet.porto.movementlabs.xyz/v1)     |
-| Faucet endpoint  | [https://fund.testnet.porto.movementlabs.xyz/](https://fund.testnet.porto.movementlabs.xyz/)     |
-| Explorer         | [https://explorer.movementnetwork.xyz/](https://explorer.movementnetwork.xyz/) |
-| Faucet UI         | [https://mizu.testnet.porto.movementnetwork.xyz/](https://mizu.testnet.porto.movementnetwork.xyz/) |
-| Indexer Explorer        | [Public Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql) |
-| Indexer Endpoint      | [https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql](https://indexer.testnet.porto.movementnetwork.xyz/v1/graphql) |
+| RPC              | https://mainnet.movementnetwork.xyz/v1     |
+| Bridge           | https://bridge.movementnetwork.xyz/      |
+| Explorer         | https://explorer.movementnetwork.xyz/?network=mainnet |
+| Indexer Explorer | [Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.mainnet.movementnetwork.xyz%2Fv1%2Fgraphql) | 
+| Indexer Endpoint | https://indexer.mainnet.movementnetwork.xyz/v1/graphql |
 
 
+### Partner Endpoints
+
+The following public endpoints are provided by Movement's ecosystem infrastructure providers. All of the partners below also have paid private nodes. To learn more about setting up a private node for your project, see their website below.
+
+| Name             | RPC Endpoint                                                                    | Indexer Endpoint |
+|------------------|---------------------------------------------------------------------------------|------------------|
+| [Blockhunters](https://blockhunters.org/)  | https://rpc.movement.bh.rocks/v1                      |                  |
+| [BlockPi](https://blockpi.io/)             | https://movement.blockpi.network/rpc/v1/public/v1     |                  |
+| [Lava Network](https://www.lavanet.xyz/)   | https://movement.lava.build/ |                        |                  |
+| [Sentio](https://app.sentio.xyz/)          |  https://rpc.sentio.xyz/movement/v1                   | https://rpc.sentio.xyz/movement-indexer/v1/graphql |
+| [Hello Moon](https://www.hellomoon.io/)  | https://movement.hellomoon.io/v1                        |                  |
+| [Ankr](https://www.ankr.com/)  | https://rpc.ankr.com/http/movement_mainnet/v1                     |                  |
+
+
+#### Custom Solutions
+
+| Name             | Documentation                                                          |
+|------------------|------------------------------------------------------------------------|
+| [Pangea](https://pangea.foundation/)    | https://docs.pangea.foundation/chain-data/movement/movement.html    |
 
 
 
@@ -31,28 +56,12 @@ This page contains public endpoints that may at times be subject to rate limits.
 
 | Service          | URL                                                                    |
 |------------------|------------------------------------------------------------------------|
-| RPC              | [https://aptos.testnet.bardock.movementlabs.xyz/v1](https://aptos.testnet.bardock.movementlabs.xyz/v1)         |
-| Faucet endpoint  | [https://faucet.testnet.bardock.movementnetwork.xyz/](https://faucet.testnet.bardock.movementnetwork.xyz/)     |
-| Explorer         | [https://explorer.movementlabs.xyz/ ](https://explorer.movementlabs.xyz/ ) |
-
-
-## Movement Developer Mainnet
-
-:::info
-
-The Movement Mainnet is currently in Developer Mainnet mode. We are onboarding a select group of developers to deploy on Movement.
-
-:::
-
-**Chain ID: 126**
-
-| Service          | URL                                                                    |
-|------------------|------------------------------------------------------------------------|
-| RPC              | [https://mainnet.movementnetwork.xyz/v1](https://mainnet.movementnetwork.xyz/v1)     |
-| Bridge           |   Coming Soon       |
-| Explorer         | [https://explorer.movementnetwork.xyz/?network=mainnet](https://explorer.movementnetwork.xyz/?network=mainnet) |
-| Indexer Explorer | [Public Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.mainnet.movementnetwork.xyz%2Fv1%2Fgraphql) | 
-| Indexer Endpoint | [https://indexer.mainnet.movementnetwork.xyz/v1/graphql](https://indexer.mainnet.movementnetwork.xyz/v1/graphql) |
+| RPC              | https://testnet.bardock.movementnetwork.xyz/v1         |
+| Faucet endpoint  | https://faucet.testnet.bardock.movementnetwork.xyz/     |
+| Faucet UI        | https://faucet.movementnetwork.xyz/        |
+| Explorer         | https://explorer.movementnetwork.xyz/?network=bardock+testnet  |
+| Indexer Explorer | [Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.testnet.movementnetwork.xyz%2Fv1%2Fgraphql) | 
+| Indexer Endpoint | https://indexer.testnet.movementnetwork.xyz |
 
 
 ## Suzuka Devnet
@@ -61,9 +70,9 @@ We often test updates on our Suzuka devnet before pushing to testnet, you can de
 
 | Service          | URL                                                                    |
 |------------------|------------------------------------------------------------------------|
-| RPC              | [https://devnet.suzuka.movementnetwork.xyz/v1](https://devnet.suzuka.movementnetwork.xyz/v1)     |
-| Faucet endpoint  | [https://faucet.devnet.suzuka.movementnetwork.xyz/](https://faucet.devnet.suzuka.movementnetwork.xyz/)     |
-| Explorer         | [https://explorer.suzuka.movementnetwork.xyz/?network=devnet](https://explorer.suzuka.movementnetwork.xyz/?network=devnet) |
+| RPC              | https://devnet.suzuka.movementnetwork.xyz/v1     |
+| Faucet endpoint  | https://faucet.devnet.suzuka.movementnetwork.xyz/    |
+| Explorer         | https://explorer.suzuka.movementnetwork.xyz/?network=devnet |
 
 
 ## Network Properties

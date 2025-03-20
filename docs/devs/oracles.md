@@ -4,7 +4,7 @@ sidebar_position: 6
 
 # Oracles
 
-This document explains how to use real-time data from [Pyth Network](https://www.pyth.network/) in modules on the Movement Porto testnet.
+This document explains how to use real-time data from [Pyth Network](https://www.pyth.network/) in modules on the Movement Bardock testnet.
 
 ## Configuring the Move.toml file
 

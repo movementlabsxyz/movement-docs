@@ -49,13 +49,13 @@ const { Account, Aptos, AptosConfig, Network, Ed25519PrivateKey } = require("@ap
 
 ## Configuration
 
-Configure the SDK to connect to the Movement Porto Testnet (Please refer to [Network Endpoints](/devs/networkEndpoints) for more endpoints):
+Configure the SDK to connect to the Movement Bardock Testnet (Please refer to [Network Endpoints](/devs/networkEndpoints) for more endpoints):
 
 ```javascript
 const config = new AptosConfig({
     network: Network.CUSTOM,
-    fullnode: 'https://aptos.testnet.porto.movementlabs.xyz/v1',
-    faucet: 'https://fund.testnet.porto.movementlabs.xyz/',
+    fullnode: 'https://testnet.bardock.movementnetwork.xyz/v1',
+    faucet: 'https://faucet.testnet.bardock.movementnetwork.xyz/',
 });
 
 // Initialize the Aptos client
@@ -128,8 +128,8 @@ const { Account, Aptos, AptosConfig, Network, Ed25519PrivateKey } = require("@ap
 // Define the custom network configuration
 const config = new AptosConfig({
     network: Network.CUSTOM,
-    fullnode: 'https://aptos.testnet.porto.movementlabs.xyz/v1',
-    faucet: 'https://fund.testnet.porto.movementlabs.xyz/',
+    fullnode: 'https://testnet.bardock.movementnetwork.xyz/v1',
+    faucet: 'https://faucet.testnet.bardock.movementnetwork.xyz/',
 });
 
 // Define the module address and functions

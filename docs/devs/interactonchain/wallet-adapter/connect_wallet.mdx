@@ -81,7 +81,7 @@ In this example, we'll be using Next.js and TypeScript.
 
 
 ### Implement Wallet Provider & Custom network
-Create a new files with name `provider/WalletProvider.tsx`, import the Aptos Wallet Adapter and any legacy wallet plugins & custom network to connect to the porto network or aptos devnet.
+Create a new files with name `provider/WalletProvider.tsx`, import the Aptos Wallet Adapter and any legacy wallet plugins & custom network to connect to the Bardock network or aptos devnet.
 ```typescript title="src/provider/WalletProvider.tsx"
 import { AptosWalletAdapterProvider } from "@aptos-labs/wallet-adapter-react";
 import { PropsWithChildren } from "react";
@@ -93,8 +93,8 @@ export const WalletProvider = ({ children }: PropsWithChildren) => {
   ];
   const config = new AptosConfig({
     network: Network.TESTNET,
-    fullnode: 'https://aptos.testnet.porto.movementlabs.xyz/v1',
-    faucet: 'https://fund.testnet.porto.movementlabs.xyz/'
+    fullnode: 'https://testnet.bardock.movementnetwork.xyz/v1',
+    faucet: 'https://faucet.testnet.bardock.movementnetwork.xyz/'
   })
 
   return (

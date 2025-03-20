@@ -21,21 +21,72 @@ This guide will help you to create a Movement follower node instance. To configu
 
 git clone https://github.com/movementlabsxyz/movement
 cd movement
-git checkout ac7a5db417ceb55803073b5be614ceb0549e8dc7
 
 ```
 
-### Example of AWS Instance
+### Configuration
 
-Create a AWS instance of type `c5.4xlarge` with at least 1Tb (best 4Tb) of disk of type io2 and 32000 IOPS preferably in `us-west-1` region. 
+Update the variables below in the `movement-full-follower.yml` file for Mainnet. This is located in `docs/movement-node/run/ansible/follower-node/mainnet` or `docs/movement-node/run/ansible/follower-node/` depending on if you are deploying to mainnet or testnet. 
+
+#### Mainnet Configuration
+ 
+```yaml
+
+vars:
+    repo_url: "https://github.com/movementlabsxyz/movement"
+    destination_path: "/home/{{ user }}/movement"
+    movement_sync: 'follower::mainnet-l-sync-bucket-sync<=>{default_signer_address_whitelist,maptos,maptos-storage,suzuka-da-db}/**'
+    chain_id: "126"
+
+    movement_da_light_node_connection_protocol: "https"
+    movement_da_light_node_connection_hostname: "m1-da-light-node.mainnet"
+    movement_da_light_node_connection_port: "443"
+
+    aws_region: "us-west-1"
+    rev: "{{ movement_container_version }}"
+
+```
 
 
-### Current Container Revision
+#### Bardock Testnet Configuration
 
-The current container revision to use is:
+```yaml
 
- - Mainnet: `d963665`
- - Testnet: `d963665`
+vars:
+    repo_url: "https://github.com/movementlabsxyz/movement"
+    destination_path: "/home/{{ user }}/movement"
+    movement_sync: "follower::mtnet-l-sync-bucket-sync<=>{maptos,maptos-storage,suzuka-da-db}/**"
+    chain_id: "250"
+
+    movement_da_light_node_connection_protocol: "https"
+    movement_da_light_node_connection_hostname: "m1-da-light-node.testnet.bardock.movementnetwork.xyz"
+    movement_da_light_node_connection_port: "443"
+
+    aws_region: "us-west-1"
+    rev: "{{ movement_container_version }}"
+
+```
+
+To synchronize from genesis you need to remove this variable from movement-full-follower.service.j2 file. Remove this line:
+
+```yaml
+Environment="MOVEMENT_SYNC={{ movement_sync }}"
+```
+
+### Fetching the Latest Container Revision
+
+Please use the revision below:
+
+```6e00b778ee7d8139b153aa4eb80805aead07e252```
+
+Generally, you should be able to use the latest revision by running the following command:
+
+```bash
+
+CONTAINER_REV=$(git rev-parse HEAD)
+echo "CONTAINER_REV=${CONTAINER_REV}"
+
+```
 
 
 ### Sample Deployment Scripts
@@ -115,7 +166,7 @@ systemctl start movement-full-follower.service
 Compare to: 
 
 - Mainnet endpoint: https://mainnet.movementnetwork.xyz/v1
-- Testnet endpoint: https://aptos.testnet.bardock.movementlabs.xyz/v1
+- Testnet endpoint: https://testnet.bardock.movementnetwork.xyz/v1
 
 ## Run Locally 
 
@@ -181,4 +232,4 @@ curl localhost:30731/v1
 
 ```
 
-You should see a ledger_version field CLOSE to the other values on the network, e.g., https://aptos.testnet.bardock.movementlabs.xyz/v1.
+You should see a ledger_version field CLOSE to the other values on the network, e.g., https://testnet.bardock.movementnetwork.xyz/v1.
