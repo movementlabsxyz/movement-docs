@@ -6,7 +6,7 @@ sidebar_position: 4
 
 :::info
 
-This page contains public endpoints that may at times be subject to rate limits. 
+This page contains public endpoints that may at times be subject to rate limits.
 
 :::
 
@@ -25,7 +25,7 @@ This page contains public endpoints that may at times be subject to rate limits.
 | RPC              | https://mainnet.movementnetwork.xyz/v1     |
 | Bridge           | https://bridge.movementnetwork.xyz/      |
 | Explorer         | https://explorer.movementnetwork.xyz/?network=mainnet |
-| Indexer Explorer | [Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.mainnet.movementnetwork.xyz%2Fv1%2Fgraphql) | 
+| Indexer Explorer | [Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.mainnet.movementnetwork.xyz%2Fv1%2Fgraphql) |
 | Indexer Endpoint | https://indexer.mainnet.movementnetwork.xyz/v1/graphql |
 
 
@@ -35,6 +35,7 @@ The following public endpoints are provided by Movement's ecosystem infrastructu
 
 | Name             | RPC Endpoint                                                                    | Indexer Endpoint |
 |------------------|---------------------------------------------------------------------------------|------------------|
+| [NodeOps](https://nodeops.network) | https://movement-rpc.nodeops.network/v1 |                   |                  |
 | [Blockhunters](https://blockhunters.org/)  | https://rpc.movement.bh.rocks/v1                      |                  |
 | [BlockPi](https://blockpi.io/)             | https://movement.blockpi.network/rpc/v1/public/v1     |                  |
 | [Lava Network](https://www.lavanet.xyz/)   | https://movement.lava.build/ |                        |                  |
@@ -60,7 +61,7 @@ The following public endpoints are provided by Movement's ecosystem infrastructu
 | Faucet endpoint  | https://faucet.testnet.bardock.movementnetwork.xyz/     |
 | Faucet UI        | https://faucet.movementnetwork.xyz/        |
 | Explorer         | https://explorer.movementnetwork.xyz/?network=bardock+testnet  |
-| Indexer Explorer | [Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.testnet.movementnetwork.xyz%2Fv1%2Fgraphql) | 
+| Indexer Explorer | [Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.testnet.movementnetwork.xyz%2Fv1%2Fgraphql) |
 | Indexer Endpoint | https://indexer.testnet.movementnetwork.xyz |
 
 
