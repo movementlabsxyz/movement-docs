@@ -1,5 +1,5 @@
 ---
-sidebar_position: 9
+sidebar_position: 11
 ---
 
 # FAQ
@@ -14,9 +14,6 @@ Movement Labs makes the Move programming language accessible across the entire m
 
 Currently we are live on testnet and the latest information on networks can be found [here](/devs/networkEndpoints).
 
-## Why are there three different endpoints for each language?
-
-The Movement Network is a single L2 built with different environments. During our devnet and testnet phases these are currently on separate networks but as we continue building towards mainnet and beyond we plan to consolidate these into a single network.
 
 ## How do I get started building?
 
