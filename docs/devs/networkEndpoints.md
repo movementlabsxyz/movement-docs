@@ -38,9 +38,10 @@ The following public endpoints are provided by Movement's ecosystem infrastructu
 | [Blockhunters](https://blockhunters.org/)  | https://rpc.movement.bh.rocks/v1                      |                  |
 | [BlockPi](https://blockpi.io/)             | https://movement.blockpi.network/rpc/v1/public/v1     |                  |
 | [Lava Network](https://www.lavanet.xyz/)   | https://movement.lava.build/ |                        |                  |
+| [NodeOps](https://nodeops.network)         | https://movement-rpc.nodeops.network/v1 |             |                  |
 | [Sentio](https://app.sentio.xyz/)          |  https://rpc.sentio.xyz/movement/v1                   | https://rpc.sentio.xyz/movement-indexer/v1/graphql |
-| [Hello Moon](https://www.hellomoon.io/)  | https://movement.hellomoon.io/v1                        |                  |
-| [Ankr](https://www.ankr.com/)  | https://rpc.ankr.com/http/movement_mainnet/v1                     |                  |
+| [Hello Moon](https://www.hellomoon.io/)    | https://movement.hellomoon.io/v1                      |                  |
+| [Ankr](https://www.ankr.com/)              | https://rpc.ankr.com/http/movement_mainnet/v1         |                  |
 
 
 #### Custom Solutions

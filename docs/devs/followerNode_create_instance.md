@@ -4,7 +4,7 @@ sidebar_position: 8
 
 # Create a Follower Node Instance
 
-This guide will help you to create a Movement follower node instance. To configure it and run it use this [guide](followerNode_configure.md.md). The Bardock Testnet and Mainnet currently support this feature. Learn more about Node architecture [here](/general/Mainnet/node_level_architecture). For simplicity we have provided instructions for deploying using an Ansible script below. 
+The following guide will help you create a Movement follower node instance. To configure and run the node use the following guide [(Follower Node Installation)](followerNode_installation.md). Currently one can run a follower node on mainnet and testnet. Learn more about Node architecture [here](/general/Mainnet/node_level_architecture). For simplicity we have provided instructions for deploying using an Ansible script below. 
 
 ## Hardware Recommendations
 
@@ -18,20 +18,17 @@ This guide will help you to create a Movement follower node instance. To configu
 ### Clone Movement Repository 
 
 ```bash
-
 git clone https://github.com/movementlabsxyz/movement
 cd movement
-
 ```
 
 ### Configuration
 
-Update the variables below in the `movement-full-follower.yml` file for Mainnet. This is located in `docs/movement-node/run/ansible/follower-node/mainnet` or `docs/movement-node/run/ansible/follower-node/` depending on if you are deploying to mainnet or testnet. 
+Update the variables below in the `movement-full-follower.yml` file for mainnet. This is located in `docs/movement-node/run/ansible/follower-node/mainnet` or `docs/movement-node/run/ansible/follower-node/` depending on if you are deploying to mainnet or testnet. 
 
 #### Mainnet Configuration
  
 ```yaml
-
 vars:
     repo_url: "https://github.com/movementlabsxyz/movement"
     destination_path: "/home/{{ user }}/movement"
@@ -44,14 +41,12 @@ vars:
 
     aws_region: "us-west-1"
     rev: "{{ movement_container_version }}"
-
 ```
 
 
-#### Bardock Testnet Configuration
+#### Testnet Configuration
 
 ```yaml
-
 vars:
     repo_url: "https://github.com/movementlabsxyz/movement"
     destination_path: "/home/{{ user }}/movement"
@@ -64,10 +59,9 @@ vars:
 
     aws_region: "us-west-1"
     rev: "{{ movement_container_version }}"
-
 ```
 
-To synchronize from genesis you need to remove this variable from movement-full-follower.service.j2 file. Remove this line:
+To synchronize from genesis you need to remove this line from the `movement-full-follower.service.j2` file.
 
 ```yaml
 Environment="MOVEMENT_SYNC={{ movement_sync }}"
@@ -77,15 +71,13 @@ Environment="MOVEMENT_SYNC={{ movement_sync }}"
 
 Please use the revision below:
 
-```6e00b778ee7d8139b153aa4eb80805aead07e252```
+`0.3.4-amd64`
 
 Generally, you should be able to use the latest revision by running the following command:
 
 ```bash
-
 CONTAINER_REV=$(git rev-parse HEAD)
 echo "CONTAINER_REV=${CONTAINER_REV}"
-
 ```
 
 
@@ -100,7 +92,6 @@ ansible-playbook --inventory <inventory_url>, \
     --extra-vars "user=<user>" \
     docs/movement-node/run/ansible/follower-node/mainnet/movement-full-follower.yml \
     --private-key <instance_pem_file>
-
 ```
 
 :::info
@@ -113,93 +104,81 @@ Replace the following:
 - **`<user>`**: Your username.
 - **`<pem_file>`**: Your instance private key file.
 
-Example for AWS and mainnet:
+Example using AWS:
+
+#### Mainnet
 
 ```bash
 ansible-playbook --inventory ec2-18-144-5-233.us-west-1.compute.amazonaws.com, \
-    --user rahat  \
+    --user me  \
     --extra-vars "movement_container_version=d963665" \
-    --extra-vars "user=rahat" \
+    --extra-vars "user=me" \
     docs/movement-node/run/ansible/follower-node/mainnet/movement-full-follower.yml \
-    --private-key rahat_deployment_test.pem
-
+    --private-key my_deployment_test.pem
 ```
 
-#### Bardock Testnet
-
-For Bardock Testnet, please use the following example:
+#### Testnet
 
 ```bash
-
 ansible-playbook --inventory ec2-18-144-5-233.us-west-1.compute.amazonaws.com, \
-    --user rahat  \
+    --user me  \
     --extra-vars "movement_container_version=d963665" \
-    --extra-vars "user=rahat" \
+    --extra-vars "user=me" \
     docs/movement-node/run/ansible/follower-node/testnet/movement-full-follower.yml \
-    --private-key rahat_deployment_test.pem
-
+    --private-key my_deployment_test.pem
 ```
 
 #### After installation
 
-If the service doesn't start, often it's because the config.json file hasn't been created correctly.
+If the service doesn't start, often it's due to the config.json file not being properly created.
 
-To solve the issue replace the provided [config.json](config.json) in the $HOME/.movement folder and start the service with the command:
+To solve the issue, replace the provided [config.json](config.json) in `$HOME/.movement` and start the service with the command:
 
 ```bash
 systemctl start movement-full-follower.service 
-
 ```
 
 ### Verify Deployment
 
-- Connect to your instance (in the above example I ssh into my instance)
+- Connect to your instance (in the above example we ssh into the instance)
 - run the command **`curl localhost:30731/v1`**
 - Output should be similar to this:
 
 ```json
-
 {"chain_id":126,"epoch":"1","ledger_version":"9","oldest_ledger_version":"0","ledger_timestamp":"1732636319660843","node_role":"validator","oldest_block_height":"0","block_height":"3","git_hash":"9dfc8e7a3d622597dfd81cc4ba480a5377f87a"}
-
 ```
 
 Compare to: 
 
-- Mainnet endpoint: https://mainnet.movementnetwork.xyz/v1
-- Testnet endpoint: https://testnet.bardock.movementnetwork.xyz/v1
+- Mainnet: https://mainnet.movementnetwork.xyz/v1
+- Testnet: https://testnet.bardock.movementnetwork.xyz/v1
 
 ## Run Locally 
 
-It is easiest to gain quick familiarity with the Movement Follower Node by running it locally.
-
-To do this, ensure you have nix installed. We recommend the Determinate Systems nix installation script. You can find it [here](https://determinate.systems/posts/determinate-nix-installer/).
+It is easiest to gain familiarity with the Movement follower node by running it locally. To do this, ensure you have nix installed. We recommend the Determinate Systems nix installation script. You can find it [here](https://determinate.systems/posts/determinate-nix-installer/).
 
 ```bash
-
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
-
 ```
 
 After installing `nix`, clone the Movement repository and open the `nix-shell` environment.
 
 ```bash
-
 # if you have not cloned the repository yet
 git clone https://github.com/movementlabsxyz/movement
 cd movement
 git checkout 6e00b778ee7d8139b153aa4eb80805aead07e252
 nix develop
-
 ```
 
-This should install all dependencies needed to work on the Movement Follower Node.
+This should install all dependencies needed to install the Movement follower node.
 
-You can now either run the follower node natively or with our containers via the provided just commands.
+You can now either run the follower node natively or with our containers via the provided `just` commands.
 
-First create, an environment file for the follower node. The example below is for the Movement Testnet Bardock. Comments are made on how to change the environment file for other networks.
+First create, an environment file for the follower node. The example below is for Movement testnet. Comments are made on how to change the environment file for other networks.
 
 ```
-CONTAINER_REV=6e00b778ee7d8139b153aa4eb80805aead07e252
+CONTAINER_REV=0.3.4-amd64
 DOT_MOVEMENT_PATH=./.movement
 MAPTOS_CHAIN_ID=250 # change this to the chain id of the network you are running
 MOVEMENT_DA_LIGHT_NODE_CONNECTION_PROTOCOL=https
@@ -210,26 +189,20 @@ MOVEMENT_DA_LIGHT_NODE_CONNECTION_PORT=443
 To run natively you can use the following command:
 
 ```bash
-
 source .env
 just movement-full-node native build.setup.follower -t=false
-
 ```
 
 To run with containers you can use the following command:
 
 ```bash
-
 just movement-full-node docker-compose follower
-
 ```
 
 To check on the status of the service under either runner, run:
 
 ```bash
-
 curl localhost:30731/v1
-
 ```
 
-You should see a ledger_version field CLOSE to the other values on the network, e.g., https://testnet.bardock.movementnetwork.xyz/v1.
+You should see a ledger_version field close to the other values on the network, e.g., https://testnet.bardock.movementnetwork.xyz/v1.
