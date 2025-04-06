@@ -12,7 +12,7 @@ import CustomDocCardList from '@site/src/components/CustomDocCardList';
 Welcome to Movement! Here is everything you need to start developing on the Movement Network.
 
 <CustomDocCardList items={[
-  {type: 'link', label: 'Your First Move Module', href: '/devs/firstmove', description: "Learn more about the Movement Network"},
+  {type: 'link', label: 'Your First Move Module', href: '/devs/firstMoveContract', description: "Learn more about the Movement Network"},
   {type: 'link', label: 'Movement CLI', href: '/devs/movementcli', description: "Install the Movement CLI to bootstrap your development environment"},
   {type: 'link', label: 'Interact Onchain', href: '/devs/interactonchain/', description: "Start Interacting with your Move Module"},
   {type: 'link', label: 'Network Endpoints', href: '/devs/networkEndpoints', description: "All the Endpoints you need to get started."},
