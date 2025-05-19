@@ -8,8 +8,10 @@ The Movement Indexer is a GraphQL API you can use to retrive aggregate data, his
 
 | Service          | URL                                                                    |
 |------------------|------------------------------------------------------------------------|
-| API Explorer     | [https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.testnet.movementnetwork.xyz%2Fv1%2Fgraphql](Explorer)     |
-| GraphQl Endpoint | [https://indexer.testnet.movementnetwork.xyz/v1/graphql](Endpoint)|
+| API Explorer (testnet)     | https://cloud.hasura.io/public/graphiql?endpoint=https://indexer.testnet.movementnetwork.xyz/v1/graphql     |
+| GraphQl Endpoint (testnet) | https://indexer.testnet.movementnetwork.xyz/v1/graphql |
+| API Explorer (mainnet)     | https://cloud.hasura.io/public/graphiql?endpoint=https://indexer.mainnet.movementnetwork.xyz/v1/graphql    |
+| GraphQl Endpoint (mainnet) | https://indexer.mainnet.movementnetwork.xyz/v1/graphql |
 
 
 ## Architecture
