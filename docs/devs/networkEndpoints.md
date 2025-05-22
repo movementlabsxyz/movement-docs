@@ -57,8 +57,8 @@ The following public endpoints are provided by Movement's ecosystem infrastructu
 
 | Service          | URL                                                                    |
 |------------------|------------------------------------------------------------------------|
-| RPC              | https://testnet.bardock.movementnetwork.xyz/v1         |
-| Faucet endpoint  | https://faucet.testnet.bardock.movementnetwork.xyz/     |
+| RPC              | https://full.testnet.movementinfra.xyz/v1        |
+| Faucet endpoint  | https://faucet.testnet.movementinfra.xyz      |
 | Faucet UI        | https://faucet.movementnetwork.xyz/        |
 | Explorer         | https://explorer.movementnetwork.xyz/?network=bardock+testnet  |
 | Indexer Explorer | [Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.testnet.movementnetwork.xyz%2Fv1%2Fgraphql) | 
