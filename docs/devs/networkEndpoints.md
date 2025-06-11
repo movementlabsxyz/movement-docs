@@ -22,8 +22,9 @@ This page contains public endpoints that may at times be subject to rate limits.
 
 | Service          | URL                                                                    |
 |------------------|------------------------------------------------------------------------|
-| RPC              | https://mainnet.movementnetwork.xyz/v1     |
-| Bridge           | https://bridge.movementnetwork.xyz/      |
+| RPC (Primary)    | https://full.mainnet.movementinfra.xyz/v1                              |
+| RPC (Secondary)  | https://mainnet.movementnetwork.xyz/v1                                 |
+| Bridge           | https://bridge.movementnetwork.xyz/                                    |
 | Explorer         | https://explorer.movementnetwork.xyz/?network=mainnet |
 | Indexer Explorer | [Explorer](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.mainnet.movementnetwork.xyz%2Fv1%2Fgraphql) | 
 | Indexer Endpoint | https://indexer.mainnet.movementnetwork.xyz/v1/graphql |
