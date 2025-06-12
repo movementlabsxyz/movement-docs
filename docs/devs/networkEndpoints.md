@@ -35,7 +35,6 @@ The following public endpoints are provided by Movement's ecosystem infrastructu
 
 | Name             | RPC Endpoint                                                                    | Indexer Endpoint |
 |------------------|---------------------------------------------------------------------------------|------------------|
-| [Blockhunters](https://blockhunters.org/)  | https://rpc.movement.bh.rocks/v1                      |                  |
 | [BlockPi](https://blockpi.io/)             | https://movement.blockpi.network/rpc/v1/public/v1     |                  |
 | [Lava Network](https://www.lavanet.xyz/)   | https://movement.lava.build/ |                        |                  |
 | [NodeOps](https://nodeops.network)         | https://movement-rpc.nodeops.network/v1 |             |                  |
