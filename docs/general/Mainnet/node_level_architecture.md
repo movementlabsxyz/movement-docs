@@ -22,7 +22,7 @@ The Full Node is responsible for getting user transactions from RPC entry points
 
 An archival node is a read-only follower-type node that synchronizes with the DA network and provides a view on the chain state.
 
-### DA node
+### DA Sequencer node
 
 The DA node is a standalone service, that differs from the above node types. It performs these categories of operations:
 
