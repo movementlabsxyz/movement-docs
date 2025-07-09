@@ -45,8 +45,8 @@ The transaction flow in Movement can be broken down into two main parts:
 
 1. **Transaction Reception and Validation**
    - Receives transactions through RPC endpoints
-   - Verifies transaction validity
-   - Validates transaction parameters
+   - Verifies transaction data
+   - Validates transaction pre execution
    - Adds valid transactions to mempool
 
 2. **Batch Processing**
