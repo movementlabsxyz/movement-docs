@@ -53,7 +53,7 @@ The transaction flow in Movement can be broken down into two main parts:
    - Creates batches of transactions from the mempool
    - Sends batches to the DA Sequencer Node
    - Retrieves new blocks from DA Sequencer
-   - Executes blocks containing validated transactions
+   - Executes blocks transactions
 
 #### DA Sequencer Node Processing
 
