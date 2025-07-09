@@ -88,7 +88,6 @@ The transaction flow in Movement can be broken down into two main parts:
    - Provides block retrieval service
 
 3. **Celestia Integration**
-   - Ensures data availability
-   - Provides consensus layer
-   - Stores block data permanently
+   - Ensures block ordering retrival.
+   - Stores block digest order permanently
 
