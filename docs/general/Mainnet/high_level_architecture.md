@@ -63,7 +63,7 @@ The transaction flow in Movement can be broken down into two main parts:
    - Saves batches as pending
 
 2. **Block Production**
-   - Aggregates pending batches into blocks
+   - Every 500 ms, aggregates pending batches into blocks
    - Assigns new block heights
    - Persists blocks in local storage
    - Removes processed pending batches
