@@ -69,7 +69,7 @@ The transaction flow in Movement can be broken down into two main parts:
    - Removes processed pending batches
 
 3. **Data Availability**
-   - Sends block data to Celestia network
+   - Sends block digest data to Celestia network
    - Provides block retrieval service for Full Nodes
    - Maintains block height synchronization
 
