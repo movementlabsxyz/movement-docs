@@ -76,6 +76,7 @@ The transaction flow in Movement can be broken down into two main parts:
 ### Key Components
 
 1. **Full Node**
+   - Provide RPC entry point.
    - Handles transaction ingestion and validation
    - Manages local mempool
    - Executes blocks
