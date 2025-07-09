@@ -85,6 +85,7 @@ The transaction flow in Movement can be broken down into two main parts:
    - Manages batch processing
    - Produces blocks
    - Interfaces with Celestia
+   - Stores block data permanently
    - Provides block retrieval service
 
 3. **Celestia Integration**
