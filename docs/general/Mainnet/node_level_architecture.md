@@ -26,8 +26,9 @@ An archival node is a read-only follower-type node that synchronizes with the DA
 
 The DA node is a standalone service, that differs from the above node types. It performs these categories of operations:
 
-1. Write: the DA node forwards signed transaction-batches, which are submitted by authorized nodes, to the data availability layer.
-2. Read: the DA node reads the data from the data availability layer and verifies them against its verification parameters, currently by verifying a trusted signature.
-3. Read: the DA node reads the ordered transaction batches with the data from the DA layer constructs protoBlocks.
+1. Write: the DA node aggregate signed transaction-batches, which are submitted by authorized nodes
+2. Write: Order transaction and produce blocks
+3. Read: Give access to all produced blocks
+4. Write: Save block order in Celestia
 
 The DA light node provides access to these operation via a gRPC API.
