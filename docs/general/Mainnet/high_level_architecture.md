@@ -20,8 +20,10 @@ The DA service is used to store transaction data and make it available to the ne
 
 - Get all Transaction batches from the connected FullNode
 - Create new blcoks from the Transaction batch and order the transactions in the batch
-- Send Created Block to Celestia Network as well as to the Full Node
 - Persist block data and provide that data for future requests
+- Send Created Block digest to Celestia Network
+- And in parallele send the Block to all connected the Full Node
+
 
 
 ## Fees
