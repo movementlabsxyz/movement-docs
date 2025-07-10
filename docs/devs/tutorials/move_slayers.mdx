@@ -1,0 +1,562 @@
+---
+title: Move Slayers (On-chain RPG)
+sidebar_position: 3
+---
+
+# 🎮 Building an On-Chain RPG with Move: A Complete Educational Guide
+
+This guide walks through every line of code in the [`move_slayers`](https://github.com/movementlabsxyz/move-slayers) game, explaining how to build an on-chain RPG using the Move language on Movement.
+
+## 📚 What You'll Learn
+
+- **Move Language Fundamentals**: Structs, functions, resource management
+- **On-Chain Game Design**: State management, player progression, combat systems
+- **Best Practices**: Resource safety, error handling, modular design
+- **Real-World Patterns**: How to structure complex on-chain applications
+
+---
+
+## 🏗️ Project Structure
+
+```
+move_slayers/
+├── sources/
+│   ├── hero.move      # Player logic and game mechanics
+│   └── enemies.move   # Enemy definitions and combat
+├── tests/
+│   └── hero_tests.move # Comprehensive test suite
+└── Move.toml          # Project configuration
+```
+
+---
+
+## 📦 Module 1: Hero System (`sources/hero.move`)
+
+### 🔧 Module Declaration and Imports
+
+```
+module move_slayers::hero {
+
+    use std::signer;
+    use std::vector;
+    use std::string;
+    use std::option;
+    use move_slayers::enemies;
+```
+
+**Explanation:**
+- `module move_slayers::hero` - Declares this as a Move module named `hero` in the `move_slayers` package
+- `use std::signer` - Imports the signer type for account authentication
+- `use std::vector` - For dynamic arrays (inventory system)
+- `use std::string` - For human-readable item names
+- `use std::option` - For optional values (equipment slots can be empty)
+- `use move_slayers::enemies` - Imports our enemy module for combat
+
+### 🏷️ Constants and Type Definitions
+
+```
+    const TYPE_SWORD: u8 = 0;
+    const TYPE_SHIELD: u8 = 1;
+    const TYPE_ARMOR: u8 = 2;
+    const TYPE_POTION: u8 = 3;
+```
+
+**Explanation:**
+- These constants define item types using `u8` (8-bit unsigned integers)
+- Using constants instead of magic numbers makes code more readable
+- `u8` is memory-efficient for simple enums
+
+### 📦 Item Structure
+
+```
+    struct Item has copy, drop, store {
+        id: u64,
+        name: string::String,
+        item_type: u8,
+        power: u64,
+    }
+```
+
+**Explanation:**
+- `struct Item` - Defines a custom data type for game items
+- `has copy, drop, store` - Move capabilities:
+  - `copy`: Can be duplicated (useful for testing)
+  - `drop`: Can be discarded (when items are consumed)
+  - `store`: Can be stored in global storage (inventory)
+- `id: u64` - Unique identifier for each item
+- `name: string::String` - Human-readable item name
+- `item_type: u8` - References our constants (0=sword, 1=shield, etc.)
+- `power: u64` - Effect strength (damage for weapons, heal for potions)
+
+### 👤 Player Structure
+
+```
+    struct Player has key {
+        level: u8,
+        exp: u64,
+        health: u64,
+        mana: u64,
+        max_health: u64,
+        max_mana: u64,
+        inventory: vector<Item>,
+        equipped_sword: option::Option<Item>,
+        equipped_shield: option::Option<Item>,
+        equipped_armor: option::Option<Item>,
+    }
+```
+
+**Explanation:**
+- `struct Player has key` - Player is a resource stored at an account address
+- `has key` - Can be stored as a top-level resource in global storage
+- `level: u8` - Player level (1-255, sufficient for most games)
+- `exp: u64` - Experience points (64-bit allows for large numbers)
+- `health/mana` - Current values
+- `max_health/max_mana` - Maximum values (increase with level)
+- `inventory: vector<Item>` - Dynamic array of items
+- `equipped_*: option::Option<Item>` - Optional equipment slots (can be empty)
+
+### 🎮 Player Initialization
+
+```
+    /// Initializes a new player with base stats and empty inventory
+    public fun init_player(account: &signer) {
+        move_to(account, Player {
+            level: 1,
+            exp: 0,
+            health: 100,
+            mana: 50,
+            max_health: 100,
+            max_mana: 50,
+            inventory: vector::empty<Item>(),
+            equipped_sword: option::none<Item>(),
+            equipped_shield: option::none<Item>(),
+            equipped_armor: option::none<Item>(),
+        });
+    }
+```
+
+**Explanation:**
+- `public fun` - Function accessible from other modules
+- `account: &signer` - Reference to the account that will own the player
+- `move_to(account, Player {...})` - Creates and stores the Player resource at the account's address
+- `vector::empty<Item>()` - Creates an empty vector to hold items
+- `option::none<Item>()` - Creates empty optional values for equipment slots
+
+### 🎒 Inventory Management
+
+```
+    /// Adds an item to the player's inventory
+    public fun add_item(account: &signer, item: Item) acquires Player {
+        let player = borrow_global_mut<Player>(signer::address_of(account));
+        vector::push_back(&mut player.inventory, item);
+    }
+```
+
+**Explanation:**
+- `acquires Player` - Tells Move this function will access the Player resource
+- `borrow_global_mut<Player>(signer::address_of(account))` - Gets mutable reference to Player resource
+- `signer::address_of(account)` - Converts signer to account address
+- `vector::push_back(&mut player.inventory, item)` - Adds item to end of inventory
+
+### ⚔️ Equipment System
+
+```
+    /// Equips a sword from inventory
+    public fun equip_sword(account: &signer, item_id: u64): bool acquires Player {
+        let player = borrow_global_mut<Player>(signer::address_of(account));
+        equip_specific(&mut player.inventory, item_id, TYPE_SWORD, &mut player.equipped_sword)
+    }
+```
+
+**Explanation:**
+- Returns `bool` - Success/failure of equipping
+- `equip_specific()` - Helper function that handles the actual equipping logic
+- `TYPE_SWORD` - Ensures only swords can be equipped in this slot
+
+### 🔧 Helper Function: Equipment Logic
+
+```
+    /// Helper: equips item of specific type if found in inventory
+    fun equip_specific(
+        inventory: &mut vector<Item>, 
+        item_id: u64, 
+        required_type: u8,
+        equip_slot: &mut option::Option<Item>
+    ): bool {
+        let i = 0;
+        let len = vector::length(inventory);
+        while (i < len) {
+            let item_ref = vector::borrow(inventory, i);
+            if (item_ref.id == item_id && item_ref.item_type == required_type) {
+                let item = vector::remove(inventory, i);
+                *equip_slot = option::some(item);
+                return true;
+            };
+            i = i + 1;
+        };
+        false
+    }
+```
+
+**Explanation:**
+- `fun` (no `public`) - Private helper function
+- `&mut vector<Item>` - Mutable reference to inventory
+- `while (i < len)` - Manual loop through inventory
+- `vector::borrow(inventory, i)` - Gets reference to item at index i
+- `vector::remove(inventory, i)` - Removes and returns item at index i
+- `*equip_slot = option::some(item)` - Stores item in equipment slot
+- Returns `false` if item not found
+
+### 🧪 Potion System
+
+```
+    /// Uses a potion to restore health
+    public fun use_potion(account: &signer, item_id: u64): bool acquires Player {
+        let player = borrow_global_mut<Player>(signer::address_of(account));
+        let i = 0;
+        let len = vector::length(&player.inventory);
+        while (i < len) {
+            let item_ref = vector::borrow(&player.inventory, i);
+            if (item_ref.id == item_id && item_ref.item_type == TYPE_POTION) {
+                let potion = vector::remove(&mut player.inventory, i);
+                player.health = min(player.health + potion.power, player.max_health);
+                return true;
+            };
+            i = i + 1;
+        };
+        false
+    }
+```
+
+**Explanation:**
+- Searches inventory for potion with matching ID
+- `min(player.health + potion.power, player.max_health)` - Heals but doesn't exceed max health
+- Consumes potion by removing it from inventory
+- Returns `true` if potion used, `false` if not found
+
+### ⚔️ Combat System
+
+```
+    /// Player attacks an enemy. If enemy survives, it counterattacks. If enemy dies, player gains EXP.
+    public fun attack_enemy(account: &signer, enemy: &mut enemies::Enemy): bool acquires Player {
+        let player = borrow_global_mut<Player>(signer::address_of(account));
+
+        let damage = if (option::is_some(&player.equipped_sword)) {
+            let sword_ref = option::borrow(&player.equipped_sword);
+            sword_ref.power
+        } else {
+            5 // base attack
+        };
+
+        let killed = enemies::take_damage(enemy, damage);
+
+        if (killed) {
+            slay_enemy(account, enemies::get_exp_reward(enemy));
+            true
+        } else {
+            // Enemy counterattacks
+            let attack = enemies::get_attack(enemy);
+            if (player.health <= attack) {
+                player.health = 0; // player dies
+            } else {
+                player.health = player.health - attack;
+            };
+            false
+        }
+    }
+```
+
+**Explanation:**
+- `enemy: &mut enemies::Enemy` - Mutable reference to enemy (can modify its health)
+- `option::is_some(&player.equipped_sword)` - Checks if sword is equipped
+- `option::borrow(&player.equipped_sword)` - Gets reference to equipped sword
+- `enemies::take_damage(enemy, damage)` - Calls enemy module to apply damage
+- If enemy killed: calls `slay_enemy()` to award EXP
+- If enemy survives: enemy counterattacks and damages player
+
+### ⭐ Leveling System
+
+```
+    /// Awards EXP for slaying an enemy and handles leveling
+    public fun slay_enemy(account: &signer, exp_reward: u64) acquires Player {
+        let player = borrow_global_mut<Player>(signer::address_of(account));
+        player.exp = player.exp + exp_reward;
+
+        let required_exp = exp_required(player.level);
+        while (player.exp >= required_exp) {
+            player.exp = player.exp - required_exp;
+            player.level = player.level + 1;
+            player.max_health = player.max_health + 20;
+            player.max_mana = player.max_mana + 10;
+            player.health = player.max_health;
+            player.mana = player.max_mana;
+            required_exp = exp_required(player.level);
+        };
+    }
+```
+
+**Explanation:**
+- `while (player.exp >= required_exp)` - Handles multiple level-ups at once
+- `player.exp = player.exp - required_exp` - Subtracts used EXP
+- `player.max_health = player.max_health + 20` - Increases max stats
+- `player.health = player.max_health` - Full heal on level up
+- `required_exp = exp_required(player.level)` - Recalculates for next level
+
+### 📊 EXP Calculation
+
+```
+    /// Returns EXP required to level up (exponential)
+    fun exp_required(level: u8): u64 {
+        100 * (1u64 << (level - 1))
+    }
+```
+
+**Explanation:**
+- `1u64 << (level - 1)` - Bit shift for exponential growth
+- Level 1→2: 100 * 2^0 = 100 EXP
+- Level 2→3: 100 * 2^1 = 200 EXP
+- Level 3→4: 100 * 2^2 = 400 EXP
+
+### 🛠️ Utility Functions
+
+```
+    /// Helper: finds minimum of two values
+    fun min(a: u64, b: u64): u64 {
+        if (a < b) a else b
+    }
+
+    /// Helper: finds maximum of two values
+    fun max(a: u64, b: u64): u64 {
+        if (a > b) a else b
+    }
+```
+
+**Explanation:**
+- Simple utility functions for common operations
+- Used in potion healing to prevent exceeding max health
+
+### 🔍 Public Getters
+
+```
+    /// Public getters for Player fields
+    public fun get_level(player: &Player): u8 { player.level }
+    public fun get_exp(player: &Player): u64 { player.exp }
+    public fun get_health(player: &Player): u64 { player.health }
+    public fun get_mana(player: &Player): u64 { player.mana }
+    public fun get_max_health(player: &Player): u64 { player.max_health }
+    public fun get_max_mana(player: &Player): u64 { player.max_mana }
+```
+
+**Explanation:**
+- Read-only access to player stats
+- Useful for UI/display purposes
+- Follows encapsulation principles
+
+---
+
+## 🐗 Module 2: Enemy System (`sources/enemies.move`)
+
+### 🔧 Module Declaration
+
+```
+module move_slayers::enemies {
+
+    use std::string;
+```
+
+**Explanation:**
+- Simple module with just string import for enemy names
+- Focused on enemy creation and combat interaction
+
+### 👹 Enemy Structure
+
+```
+    /// Enemy definition
+    struct Enemy has copy, drop, store {
+        name: string::String,
+        health: u64,
+        attack: u64,
+        exp_reward: u64,
+    }
+```
+
+**Explanation:**
+- `has copy, drop, store` - Can be duplicated, discarded, and stored
+- `name` - Human-readable enemy name
+- `health` - Current health points
+- `attack` - Damage dealt when counterattacking
+- `exp_reward` - Experience points awarded when killed
+
+### 🐗 Enemy Creation
+
+```
+    /// Spawns a weak early-game boar
+    public fun spawn_boar(): Enemy {
+        Enemy {
+            name: string::utf8(b"Boar"),
+            health: 30,
+            attack: 5,
+            exp_reward: 50,
+        }
+    }
+```
+
+**Explanation:**
+- `string::utf8(b"Boar")` - Creates string from byte array
+- `b"Boar"` - Byte literal syntax
+- Balanced stats for early-game progression
+
+### ⚔️ Combat Mechanics
+
+```
+    /// Applies damage to the enemy. Returns true if enemy is killed.
+    public fun take_damage(enemy: &mut Enemy, amount: u64): bool {
+        if (enemy.health <= amount) {
+            enemy.health = 0;
+            true
+        } else {
+            enemy.health = enemy.health - amount;
+            false
+        }
+    }
+```
+
+**Explanation:**
+- `&mut Enemy` - Mutable reference to modify enemy health
+- Returns `bool` - Whether enemy was killed
+- Sets health to 0 if damage exceeds current health
+- Otherwise subtracts damage from health
+
+### 🔍 Public Getters
+
+```
+    /// Public getters for Enemy fields
+    public fun get_health(enemy: &Enemy): u64 { enemy.health }
+    public fun get_attack(enemy: &Enemy): u64 { enemy.attack }
+    public fun get_exp_reward(enemy: &Enemy): u64 { enemy.exp_reward }
+    public fun get_name(enemy: &Enemy): &string::String { &enemy.name }
+```
+
+**Explanation:**
+- Read-only access to enemy properties
+- `&string::String` - Returns reference to avoid copying
+
+### 🏭 Factory Function
+
+```
+    /// Public factory for Enemy (for testing)
+    public fun make_enemy(name: string::String, health: u64, attack: u64, exp_reward: u64): Enemy {
+        Enemy { name, health, attack, exp_reward }
+    }
+```
+
+**Explanation:**
+- Factory pattern for creating custom enemies
+- Useful for testing and future expansion
+- Allows creation of different enemy types
+
+---
+
+## 🧪 Testing (`tests/hero_tests.move`)
+
+### 🔧 Test Module Setup
+
+```
+#[test_only]
+module move_slayers::hero_tests {
+
+    use std::signer;
+    use std::string;
+    use std::vector;
+    use std::option;
+    use std::account;
+    use move_slayers::hero;
+    use move_slayers::enemies;
+```
+
+**Explanation:**
+- `#[test_only]` - Compile-time attribute for test-only code
+- `use std::account` - For creating test accounts
+- Imports all necessary modules for testing
+
+### 🎯 Test Helper
+
+```
+    // Test account addresses
+    const PLAYER_ADDR: address = @0x1;
+
+    // Test helper: creates a test signer
+    fun create_test_signer(): signer {
+        account::create_account_for_test(PLAYER_ADDR)
+    }
+```
+
+**Explanation:**
+- `@0x1` - Address literal syntax
+- `account::create_account_for_test()` - Creates test account
+- Reusable helper for all tests
+
+### ✅ Sample Test
+
+```
+    #[test]
+    fun test_hero_creation() {
+        let player = create_test_signer();
+        hero::init_player(&player);
+        // Test that player was created successfully by trying to add an item
+        let test_item = hero::make_item(1, string::utf8(b"Test Item"), hero::type_sword(), 10);
+        hero::add_item(&player, test_item);
+    }
+```
+
+**Explanation:**
+- `#[test]` - Marks function as a test
+- Creates player and adds item to verify initialization worked
+- Tests basic functionality without explicit assertions
+
+---
+
+## 🚀 Key Learning Points
+
+### 1. **Resource Safety**
+- Move's type system prevents common bugs
+- Resources can't be accidentally duplicated or lost
+- Global storage is type-safe
+
+### 2. **Modular Design**
+- Separate modules for different concerns
+- Clear interfaces between modules
+- Easy to extend and maintain
+
+### 3. **On-Chain State Management**
+- Player data stored as resources
+- Immutable references for reading
+- Mutable references for writing
+
+### 4. **Error Handling**
+- Return `bool` for success/failure
+- Use `option::Option<T>` for optional values
+- Graceful handling of edge cases
+
+### 5. **Testing Best Practices**
+- Comprehensive test coverage
+- Test-only modules
+- Helper functions for common test setup
+
+---
+
+## 🎯 Next Steps
+
+### Ideas for Extension:
+1. **More Enemy Types** - Different stats and behaviors
+2. **Item Effects** - Shields reduce damage, armor provides defense
+3. **Spell System** - Mana-based abilities
+4. **Quest System** - Objectives and rewards
+5. **Multiplayer** - Player vs player combat
+6. **NFT Integration** - Unique items as NFTs
+
+### Advanced Concepts to Explore:
+- **Events** - Emit game events for frontend
+- **Capabilities** - Fine-grained access control
+- **Generics** - Reusable code patterns
+- **Abort Codes** - Custom error handling
