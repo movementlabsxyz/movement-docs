@@ -1,66 +1,31 @@
 {
     "title": "Node API",
     "pages": [
-        {
-            "title": "Accounts",
-            "pages": [
-                "get_account",
-                "get_account_resources",
-                "get_account_modules",
-                "get_account_resource",
-                "get_account_module",
-                "get_account_transactions"
-            ]
-        },
-        {
-            "title": "Blocks",
-            "pages": [
-                "get_block_by_height",
-                "get_block_by_version"
-            ]
-        },
-        {
-            "title": "Events",
-            "pages": [
-                "get_events_by_creation_number",
-                "get_events_by_event_handle"
-            ]
-        },
-        {
-            "title": "General",
-            "pages": [
-                "spec",
-                "healthy",
-                "get_ledger_info"
-            ]
-        },
-        {
-            "title": "Tables",
-            "pages": [
-                "get_table_item",
-                "get_raw_table_item"
-            ]
-        },
-        {
-            "title": "Transactions",
-            "pages": [
-                "get_transactions",
-                "submit_transaction",
-                "get_transaction_by_hash",
-                "wait_transaction_by_hash",
-                "get_transaction_by_version",
-                "submit_batch_transactions",
-                "simulate_transaction",
-                "encode_submission",
-                "estimate_gas_price"
-            ]
-        },
-        {
-            "title": "View",
-            "pages": [
-                "view"
-            ]
-        }
+        "get_account",
+        "get_account_resources", 
+        "get_account_modules",
+        "get_account_resource",
+        "get_account_module",
+        "get_account_transactions",
+        "get_block_by_height",
+        "get_block_by_version",
+        "get_events_by_creation_number",
+        "get_events_by_event_handle",
+        "spec",
+        "healthy",
+        "get_ledger_info",
+        "get_table_item",
+        "get_raw_table_item",
+        "get_transactions",
+        "submit_transaction",
+        "get_transaction_by_hash",
+        "wait_transaction_by_hash",
+        "get_transaction_by_version",
+        "submit_batch_transactions",
+        "simulate_transaction",
+        "encode_submission",
+        "estimate_gas_price",
+        "view"
     ],
     "defaultOpen": true
 } 
