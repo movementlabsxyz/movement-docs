@@ -1,0 +1,62 @@
+import { DocsLayout } from 'fumadocs-ui/layouts/docs';
+import type { ReactNode } from 'react';
+import { baseOptions } from '@/app/layout.config';
+import { generalSource } from '@/lib/source';
+
+const sidebarTabs = [
+  {
+    title: 'Build',
+    description: 'Developer Documentation',
+    url: '/devs',
+  },
+  {
+    title: 'Learn',
+    description: 'General Documentation',
+    url: '/general',
+  },
+  {
+    title: 'API',
+    description: 'API Documentation',
+    url: '/api',
+  },
+];
+
+function rewriteUrls(node: any, base: string): any {
+  const newNode = { ...node };
+  if (newNode.url) {
+    // Check if this is an external URL (starts with http:// or https://)
+    if (newNode.url.startsWith('http://') || newNode.url.startsWith('https://')) {
+      // Keep external URLs as-is
+      return newNode;
+    }
+    
+    const parts = newNode.url.split('/');
+    // Remove any empty strings and the section name (case-insensitive)
+    const filtered = parts.filter((p: string) => Boolean(p) && p.toLowerCase() !== 'general' && p.toLowerCase() !== 'learn');
+    newNode.url = [base, ...filtered].join('/');
+    if (!newNode.url.startsWith('/')) newNode.url = '/' + newNode.url;
+  }
+  if (newNode.children) {
+    newNode.children = newNode.children.map((child: any) => rewriteUrls(child, base));
+  }
+  if (newNode.index) {
+    newNode.index = rewriteUrls(newNode.index, base);
+  }
+  return newNode;
+}
+
+export default function Layout({ children }: { children: ReactNode }) {
+  return (
+    <div className="docs-bg relative min-h-screen">
+      <DocsLayout
+        tree={rewriteUrls(generalSource.pageTree, '/general')}
+        {...baseOptions}
+        sidebar={{
+          tabs: sidebarTabs,
+        }}
+      >
+        {children}
+      </DocsLayout>
+    </div>
+  );
+} 

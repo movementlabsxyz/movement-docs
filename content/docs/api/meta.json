@@ -1,0 +1,6 @@
+{
+    "title": "API",
+    "pages": ["index", "node"],
+    "root": true,
+    "defaultOpen": true
+} 

@@ -1,0 +1,6 @@
+{
+    "title": "Use Wallet",
+    "pages": ["ConnectWallet", "signAndSubmitTx", "signMessage"],
+    "root": false,
+    "defaultOpen": false
+} 
