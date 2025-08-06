@@ -1,3 +1,197 @@
 @import 'tailwindcss';
 @import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
+
+/* Theme Configuration */
+:root {
+  /* Custom Colors */
+  --color-primary-50: #fefce8;
+  --color-primary-100: #fef9c3;
+  --color-primary-200: #fef08a;
+  --color-primary-300: #fde047;
+  --color-primary-400: #facc15;
+  --color-primary-500: #eab308;
+  --color-primary-600: #ca8a04;
+  --color-primary-700: #a16207;
+  --color-primary-800: #854d0e;
+  --color-primary-900: #713f12;
+  
+  --color-secondary-50: #f8fafc;
+  --color-secondary-100: #f1f5f9;
+  --color-secondary-200: #e2e8f0;
+  --color-secondary-300: #cbd5e1;
+  --color-secondary-400: #94a3b8;
+  --color-secondary-500: #64748b;
+  --color-secondary-600: #475569;
+  --color-secondary-700: #334155;
+  --color-secondary-800: #1e293b;
+  --color-secondary-900: #0f172a;
+  
+  /* Movement Brand Colors */
+  --color-movement-yellow: #FFDA34;
+  --color-movement-black: #111111;
+  
+  /* Custom Spacing */
+  --spacing-18: 4.5rem;
+  --spacing-88: 22rem;
+  
+  /* Custom Border Radius */
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+}
+
+/* Movement Card Styles - Updated to match provided design */
+.cardContainer {
+  --ifm-link-color: #FFFFFF;
+  --ifm-link-hover-color: #000000;
+  --ifm-link-hover-decoration: none;
+  box-shadow: 0 1.5px 3px 0 rgb(0 0 0 / 15%);
+  border: 1px solid var(--ifm-color-emphasis-200, #ffe666);
+  transition: all 0.2s ease;
+  transition-property: border, box-shadow, background;
+  margin: 0;
+  width: 100%;
+  background: #111;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem;
+}
+.cardContainer:hover {
+  background: #FFDA34;
+  border-color: #FFDA34;
+}
+.movementIcon {
+  color: #FFDA34;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  transition: color 0.2s ease;
+}
+.cardContainer:hover .movementIcon {
+  color: #000000;
+}
+.cardTitle {
+  color: #FFFFFF;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  transition: color 0.2s ease;
+}
+.cardDescription {
+  color: #FFFFFF;
+  opacity: 0.8;
+  font-size: 1.1rem;
+  transition: color 0.2s ease;
+}
+.cardContainer:hover .cardTitle,
+.cardContainer:hover .cardDescription {
+  color: #000000;
+  opacity: 1;
+}
+.cardsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  padding: 0;
+  margin: 2rem 0;
+}
+
+/* Movement Card Styling */
+.movement-card {
+  background: var(--color-movement-black);
+  color: white;
+  border-top: 1px solid var(--color-movement-yellow);
+  border-left: 1px solid;
+  border-right: 1px solid;
+  border-bottom: none;
+  border-image: linear-gradient(to bottom, var(--color-movement-yellow), transparent 90%) 1 100%;
+  border-image-slice: 1;
+  border-image-width: 2;
+  border-image-outset: 0;
+  border-image-repeat: stretch;
+  border-radius: 12px;
+  transition: background 0.3s, color 0.3s;
+}
+
+.movement-card:hover {
+  background: var(--color-movement-yellow);
+  color: var(--color-movement-black);
+  border: none;
+  border-image: none;
+}
+
+.movement-card .movement-icon {
+  color: var(--color-movement-yellow) !important;
+  transition: color 0.3s ease !important;
+}
+
+.movement-card:hover .movement-icon {
+  color: var(--color-movement-black) !important;
+}
+
+.docs-bg::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 300px;
+  background-image: url('/img/subpage-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.45;
+  z-index: -1;
+  pointer-events: none;
+  width: 100vw;
+}
+
+html:not(.dark) .docs-bg::before {
+  display: none;
+}
+
+html:not(.dark) .movement-card {
+  background: #fff;
+  color: #111;
+  border-top: 2px solid var(--color-movement-yellow);
+  border-left: 1px solid #f6e9b6;
+  border-right: 1px solid #f6e9b6;
+  border-bottom: none;
+  border-image: none;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.06);
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+html:not(.dark) .movement-card .text-gray-300 {
+  color: #444 !important;
+  opacity: 1 !important;
+}
+
+html:not(.dark) .movement-card .text-2xl {
+  color: #111 !important;
+  font-weight: 700 !important;
+}
+
+html:not(.dark) .movement-card:hover {
+  background: var(--color-movement-yellow);
+  color: #111;
+  border: none;
+  border-image: none;
+}
+
+html:not(.dark) .movement-card .movement-icon {
+  color: var(--color-movement-yellow) !important;
+}
+
+html:not(.dark) .movement-card:hover .movement-icon {
+  color: #111 !important;
+}
+
+/* Hide color mode/theme toggle button */
+/* [data-theme-toggle], .theme-toggle, .color-mode-toggle {
+  display: none !important;
+} */
+

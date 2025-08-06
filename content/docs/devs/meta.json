@@ -1,0 +1,6 @@
+{
+    "title": "Build",
+    "pages": ["index", "firstMoveContract", "movementcli", "networkEndpoints", "interactonchain","templates", "indexing", "oracles", "fullnode", "tutorials", "faq"],
+    "root": true,
+    "defaultOpen": true
+} 

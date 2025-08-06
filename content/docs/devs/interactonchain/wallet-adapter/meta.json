@@ -1,0 +1,6 @@
+{
+    "title": "Wallet Adapter",
+    "pages": ["connect_wallet", "useWallet", "aptos_wallet_standard"],
+    "root": false,
+    "defaultOpen": false
+} 

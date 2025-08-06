@@ -1,0 +1,6 @@
+{
+    "title": "Learn",
+    "pages": ["index", "introduction", "mainnet", "usingmovement","[Faucet](https://faucet.movementnetwork.xyz/)", "[Explorer](https://explorer.movementnetwork.xyz/)"],
+    "root": true,
+    "defaultOpen": true
+} 

@@ -1,4 +1,4 @@
-# new-docs
+# Movement Docs
 
 This is a Next.js application generated with
 [Create Fumadocs](https://github.com/fuma-nama/fumadocs).
@@ -25,8 +25,16 @@ In the project, you can see:
 | Route                     | Description                                            |
 | ------------------------- | ------------------------------------------------------ |
 | `app/(home)`              | The route group for your landing page and other pages. |
-| `app/docs`                | The documentation layout and pages.                    |
+| `app/devs`                | The documentation layout and pages for developers.     |
+| `app/general`             | The documentation layout and pages for general users.  |
 | `app/api/search/route.ts` | The Route Handler for search.                          |
+
+### Content Structure
+
+The content is organized into two main sections:
+
+- `content/devs/` - Developer documentation (accessible at `/devs`)
+- `content/general/` - General user documentation (accessible at `/general`)
 
 ### Fumadocs MDX
 

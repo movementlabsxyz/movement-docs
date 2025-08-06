@@ -1,0 +1,6 @@
+{
+    "title": "Interact on Chain",
+    "pages": ["tsSdk", "rustSDK", "pythonSDK", "wallet-adapter"],
+    "root": false,
+    "defaultOpen": true
+} 
