@@ -6,7 +6,7 @@ export default function NotFound() {
   return (
     <HomeLayout {...baseOptions}>
       <div className="docs-bg relative min-h-screen flex items-center justify-center">
-        <div className="max-w-2xl w-full mx-auto px-6 py-12 text-center">
+        <div className="max-w-6xl w-full mx-auto px-6 py-12 text-center">
           {/* 404 Number */}
           <div className="mb-8">
             <h1 className="text-8xl font-bold text-[#FFDA34] mb-4 font-mono">
@@ -45,36 +45,28 @@ export default function NotFound() {
             {/* Quick Navigation */}
             <div className="mt-12 pt-8 border-t border-gray-700">
               <p className="text-gray-400 mb-4">Quick Navigation</p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-lg mx-auto">
-                <Link 
-                  href="/docs"
-                  className="group p-4 rounded-lg border border-gray-700 hover:border-[#FFDA34] transition-colors duration-200"
-                >
-                  <div className="text-[#FFDA34] group-hover:text-white transition-colors duration-200">
-                    📚
-                  </div>
-                  <p className="text-white text-sm font-medium mt-2">Documentation</p>
-                </Link>
-                
-                <Link 
-                  href="/devs"
-                  className="group p-4 rounded-lg border border-gray-700 hover:border-[#FFDA34] transition-colors duration-200"
-                >
-                  <div className="text-[#FFDA34] group-hover:text-white transition-colors duration-200">
-                    🚀
-                  </div>
-                  <p className="text-white text-sm font-medium mt-2">Build</p>
-                </Link>
-                
-                <Link 
-                  href="/general"
-                  className="group p-4 rounded-lg border border-gray-700 hover:border-[#FFDA34] transition-colors duration-200"
-                >
-                  <div className="text-[#FFDA34] group-hover:text-white transition-colors duration-200">
-                    ℹ️
-                  </div>
-                  <p className="text-white text-sm font-medium mt-2">Learn</p>
-                </Link>
+              <div className="flex justify-center">
+                <div className="grid grid-cols-2 gap-12 max-w-5xl">
+                  <Link 
+                    href="/devs"
+                    className="group px-12 py-8 rounded-lg border border-gray-700 hover:border-[#FFDA34] transition-colors duration-200"
+                  >
+                    <div className="text-[#FFDA34] group-hover:text-white transition-colors duration-200 text-2xl">
+                      🚀
+                    </div>
+                    <p className="text-white text-base font-medium mt-3">Build</p>
+                  </Link>
+                  
+                  <Link 
+                    href="/general"
+                    className="group px-12 py-8 rounded-lg border border-gray-700 hover:border-[#FFDA34] transition-colors duration-200"
+                  >
+                    <div className="text-[#FFDA34] group-hover:text-white transition-colors duration-200 text-2xl">
+                      ℹ️
+                    </div>
+                    <p className="text-white text-base font-medium mt-3">Learn</p>
+                  </Link>
+                </div>
               </div>
             </div>
             
