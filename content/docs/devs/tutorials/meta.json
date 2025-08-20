@@ -1,6 +1,6 @@
 {
     "title": "Tutorials",
-    "pages": ["build", "deploy", "move_slayers"],
+    "pages": ["build", "deploy", "move_slayers", "uniswap_v2_example"],
     "root": false,
     "defaultOpen": false
 } 

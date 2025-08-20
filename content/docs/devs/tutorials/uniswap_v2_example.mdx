@@ -1,0 +1,514 @@
+---
+title: Uniswap V2 AMM Example
+description: Build a decentralized exchange using Uniswap V2 protocol on Movement
+---
+
+# Movement DeFi: Uniswap V2 AMM Implementation
+
+A complete, production-ready Automated Market Maker (AMM) implementation built for Movement. This project demonstrates advanced DeFi mechanics including constant product formula pools, LP token management, and factory registry patterns.
+
+The complete Movement DeFi Examples repository can be found [here](https://github.com/movementlabsxyz/movement-defi-examples)
+## 🚀 Quick Start
+
+### Prerequisites
+
+- [Movement CLI](https://docs.movementnetwork.xyz/devs/movementcli) installed and configured
+- Basic understanding of the Move programming language and DeFi concepts
+- Movement testnet account with sufficient funds
+
+### Installation & Setup
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/movementlabsxyz/movement-defi-examples.git
+   cd univ2
+   ```
+
+2. **Install dependencies and compile:**
+   ```bash
+   movement move compile --skip-fetch-latest-git-deps
+   ```
+
+3. **Configure your deployment profile and deploy:**
+   ```bash
+   # Setup and deployment (see Movement CLI docs for profile configuration)
+   movement move publish --profile your-profile-name
+   ```
+
+## 📚 Educational Overview
+
+This implementation serves as a comprehensive educational resource for understanding AMM mechanics, Move programming patterns, and DeFi protocol design. It's structured to demonstrate real-world smart contract development practices while maintaining educational clarity.
+
+### What You'll Learn
+
+- **AMM Mathematics**: Constant product formula (`x × y = k`) implementation
+- **Move Resource Management**: Safe handling of digital assets using Move's ownership model
+- **Generic Programming**: Type-safe token pair operations with compile-time guarantees
+- **Event-Driven Architecture**: Comprehensive event emission for off-chain indexing
+- **Security Patterns**: Slippage protection, access control, and arithmetic safety
+- **Gas Optimization**: Efficient storage operations and algorithmic implementations
+
+## 🏗️ Architecture Deep Dive
+
+### Module Dependency Hierarchy
+
+The codebase follows a clean dependency structure that prevents circular dependencies and promotes modularity:
+
+```
+errors.move (base layer - no dependencies)
+    ↓
+math.move (mathematical utilities)
+    ↓
+lp_token.move (LP token management)
+    ↓
+pool.move (core AMM logic) 
+    ↓
+factory.move (pool registry)
+```
+
+### Core Components
+
+#### 1. Pool Module (`sources/pool.move`)
+
+The heart of the AMM implementation, handling all liquidity and swap operations.
+
+**Key Functions:**
+- `add_liquidity_entry()` - Adds tokens to liquidity pools, mints LP tokens
+- `remove_liquidity_entry()` - Burns LP tokens, returns underlying assets
+- `swap_x_to_y_entry()` / `swap_y_to_x_entry()` - Token swap operations
+- `get_reserves()` - View function for current pool reserves
+
+**Mathematical Foundation:**
+```move
+// Constant product formula: x × y = k
+let new_reserve_x = old_reserve_x + amount_x_in;
+let new_reserve_y = (old_reserve_x * old_reserve_y) / new_reserve_x;
+let amount_y_out = old_reserve_y - new_reserve_y;
+```
+
+**Security Features:**
+- Minimum liquidity requirement (1000 tokens burned on first mint)
+- Slippage protection via minimum output amounts
+- Fee calculation (0.3%) with precision maintenance
+- Safe arithmetic operations to prevent overflow
+
+#### 2. Factory Module (`sources/factory.move`)
+
+Manages pool creation and registry, serving as the central coordinator for the AMM ecosystem.
+
+**Key Functions:**
+- `initialize()` - Sets up factory with fee recipient configuration
+- `create_pool_entry()` - Creates new trading pairs
+- `get_pool()` - Retrieves pool information for token pairs
+- `all_pools_length()` - Returns total number of created pools
+
+**Design Patterns:**
+- Uses `SimpleMap` for efficient O(1) pool lookups
+- Maintains ordered type pairs to prevent duplicate pools
+- Event emission for off-chain pool discovery
+
+#### 3. Math Module (`sources/math.move`)
+
+Provides essential mathematical utilities with safety guarantees.
+
+**Key Functions:**
+- `sqrt()` - Integer square root with overflow protection
+- `safe_mul_div()` - Multiplication and division with overflow checks
+- `minimum_liquidity()` - Returns the minimum LP tokens burned on first mint
+
+**Safety Guarantees:**
+- All operations check for overflow conditions
+- Square root handles edge cases (0, 1, large numbers)
+- Maintains precision in fee calculations
+
+#### 4. LP Token Module (`sources/lp_token.move`)
+
+Manages liquidity provider tokens using Movement's native coin framework.
+
+**Key Functions:**
+- `initialize()` - Creates LP token type for a trading pair
+- `mint()` - Issues new LP tokens to liquidity providers
+- `burn()` - Destroys LP tokens when removing liquidity
+- `get_balance()` / `get_supply()` - Query functions for balances and supply
+
+**Features:**
+- Uses Movement's fungible asset framework
+- Automatic supply tracking for accurate share calculations
+- Generic implementation for any token pair
+
+### Advanced Features
+
+#### Type Ordering System
+```move
+fun is_ordered<X, Y>(): bool {
+    let x_struct_name = type_info::struct_name(&x_type_info);
+    let y_struct_name = type_info::struct_name(&y_type_info);
+    &x_struct_name < &y_struct_name
+}
+```
+
+This ensures consistent pool addressing and prevents duplicate pools for the same pair.
+
+#### Event-Driven Architecture
+
+All major operations emit comprehensive events:
+- `MintEvent` - Liquidity additions with amounts and recipient
+- `BurnEvent` - Liquidity removal with amounts and recipient  
+- `SwapEvent` - Token swaps with input/output amounts
+- `PoolCreatedEvent` - New pool creation with token types
+
+These events enable:
+- Off-chain indexing and analytics
+- Real-time monitoring and alerting
+- Historical transaction analysis
+- Integration with external systems
+
+## 🛠️ Complete Tutorial: Build Your Own AMM
+
+### Step 1: Environment Setup
+
+Ensure you have the Movement CLI installed and configured. For installation and profile setup instructions, see the [Movement CLI documentation](https://docs.movementnetwork.xyz/devs/movementcli).
+
+### Step 2: Project Compilation
+
+Navigate to your project directory and compile the contracts:
+
+```bash
+# Compile without fetching latest dependencies (for faster builds)
+movement move compile --skip-fetch-latest-git-deps
+
+# Alternative: Full compilation with latest dependencies
+movement move compile
+```
+
+**Understanding the Compilation:**
+- Verifies Move syntax and type safety
+- Checks module dependencies
+- Generates bytecode for deployment
+- Validates resource usage patterns
+
+### Step 3: Contract Deployment
+
+Deploy your AMM to the Movement network:
+
+```bash
+# Deploy to your configured network
+movement move publish --profile my-amm-profile
+```
+
+**What Happens During Deployment:**
+- Contracts are published to your account address
+- Module dependencies are resolved
+- Test tokens (TokenA and TokenB) are automatically initialized
+- Factory and pool templates become available
+
+### Step 4: Factory Initialization
+
+Initialize the AMM factory with your address as the fee setter:
+
+```bash
+movement move run \
+  --function-id 'YOUR_ADDRESS::factory::initialize' \
+  --args address:YOUR_ADDRESS \
+  --profile my-amm-profile
+```
+
+**Replace `YOUR_ADDRESS`** with your actual deployment address.
+
+### Step 5: Test Token Setup
+
+Mint test tokens to your account for AMM testing:
+
+```bash
+# Mint Token A (1000 tokens)
+movement move run \
+  --function-id 'YOUR_ADDRESS::token_a::mint_entry' \
+  --args address:YOUR_ADDRESS u64:100000000000 \
+  --profile my-amm-profile
+
+# Mint Token B (1000 tokens)  
+movement move run \
+  --function-id 'YOUR_ADDRESS::token_b::mint_entry' \
+  --args address:YOUR_ADDRESS u64:100000000000 \
+  --profile my-amm-profile
+```
+
+**Token Decimals:** All amounts use 8 decimal places (10^8 = 1 token).
+
+### Step 6: Pool Creation
+
+Create a liquidity pool for your token pair:
+
+```bash
+movement move run \
+  --function-id 'YOUR_ADDRESS::factory::create_pool_entry' \
+  --type-args 'YOUR_ADDRESS::token_a::TokenA' 'YOUR_ADDRESS::token_b::TokenB' \
+  --profile my-amm-profile
+```
+
+**Type Arguments:** Specify the exact token types in the correct order (alphabetically sorted).
+
+### Step 7: Adding Initial Liquidity
+
+Provide initial liquidity to establish the trading pair:
+
+```bash
+# Add 100 tokens of each type
+movement move run \
+  --function-id 'YOUR_ADDRESS::pool::add_liquidity_entry' \
+  --type-args 'YOUR_ADDRESS::token_a::TokenA' 'YOUR_ADDRESS::token_b::TokenB' \
+  --args u64:10000000000 u64:10000000000 \
+  --profile my-amm-profile
+```
+
+**Initial Liquidity Math:**
+- Sets the initial price ratio (1:1 in this example)
+- Mints √(x × y) LP tokens minus minimum liquidity
+- Burns 1000 LP tokens permanently (prevents division by zero attacks)
+
+### Step 8: Testing Token Swaps
+
+Execute token swaps to test the AMM functionality:
+
+```bash
+# Swap Token A for Token B (1 token input)
+movement move run \
+  --function-id 'YOUR_ADDRESS::pool::swap_x_to_y_entry' \
+  --type-args 'YOUR_ADDRESS::token_a::TokenA' 'YOUR_ADDRESS::token_b::TokenB' \
+  --args u64:100000000 u64:90000000 \
+  --profile my-amm-profile
+
+# Swap Token B for Token A (1 token input)
+movement move run \
+  --function-id 'YOUR_ADDRESS::pool::swap_y_to_x_entry' \
+  --type-args 'YOUR_ADDRESS::token_a::TokenA' 'YOUR_ADDRESS::token_b::TokenB' \
+  --args u64:100000000 u64:90000000 \
+  --profile my-amm-profile
+```
+
+**Slippage Parameters:**
+- First argument: Input amount (100000000 = 1 token)
+- Second argument: Minimum output (90000000 = 0.9 tokens, 10% slippage tolerance)
+
+### Step 9: Querying Pool State
+
+Monitor your pool's state using view functions:
+
+```bash
+# Check pool reserves and timestamp
+movement move view \
+  --function-id 'YOUR_ADDRESS::pool::get_reserves' \
+  --type-args 'YOUR_ADDRESS::token_a::TokenA' 'YOUR_ADDRESS::token_b::TokenB' \
+  --profile my-amm-profile
+
+# Check your LP token balance
+movement move view \
+  --function-id 'YOUR_ADDRESS::lp_token::get_balance' \
+  --type-args 'YOUR_ADDRESS::token_a::TokenA' 'YOUR_ADDRESS::token_b::TokenB' \
+  --args address:YOUR_ADDRESS \
+  --profile my-amm-profile
+
+# Check total LP token supply
+movement move view \
+  --function-id 'YOUR_ADDRESS::lp_token::get_supply' \
+  --type-args 'YOUR_ADDRESS::token_a::TokenA' 'YOUR_ADDRESS::token_b::TokenB' \
+  --profile my-amm-profile
+```
+
+### Step 10: Removing Liquidity
+
+Test liquidity removal functionality:
+
+```bash
+# Remove small amount (1 LP token)
+movement move run \
+  --function-id 'YOUR_ADDRESS::pool::remove_liquidity_entry' \
+  --type-args 'YOUR_ADDRESS::token_a::TokenA' 'YOUR_ADDRESS::token_b::TokenB' \
+  --args u64:100000000 \
+  --profile my-amm-profile
+```
+
+## 🧪 Testing & Development
+
+### Running Tests
+
+Execute the comprehensive test suite:
+
+```bash
+# Run all tests
+movement move test
+
+# Run specific test modules
+movement move test --filter math_test
+movement move test --filter pool_test
+movement move test --filter factory_test
+movement move test --filter integration_test
+
+# Run with verbose output
+movement move test -v
+```
+
+### Test Categories
+
+1. **Unit Tests** (`tests/`)
+   - Mathematical function accuracy
+   - Individual module functionality
+   - Edge case handling
+
+2. **Integration Tests**
+   - Cross-module interactions
+   - End-to-end workflows
+   - Real-world scenarios
+
+3. **Security Tests**
+   - Overflow protection
+   - Access control validation
+   - Slippage protection verification
+
+### Development Workflow
+
+```bash
+# Standard development cycle
+movement move compile && movement move test
+
+# Deploy and test on network
+movement move publish --profile your-profile
+# ... run integration tests
+```
+
+## 🔒 Security Considerations
+
+### Arithmetic Safety
+
+**Overflow Protection:**
+```move
+public fun safe_mul_div(a: u64, b: u64, c: u64): u64 {
+    assert!(c > 0, errors::division_by_zero());
+    let result = ((a as u128) * (b as u128)) / (c as u128);
+    assert!(result <= (U64_MAX as u128), errors::mul_div_overflow());
+    (result as u64)
+}
+```
+
+**Key Safety Measures:**
+- All multiplication/division uses 128-bit intermediate calculations
+- Explicit overflow checks before casting to smaller types
+- Square root implementation handles edge cases properly
+- Fee calculations maintain precision while preventing manipulation
+
+### Access Control
+
+**Factory Administration:**
+- Fee recipient changes require proper signer authorization
+- Pool creation is permissionless but validated
+- No privileged operations in core pool functionality
+
+**Resource Protection:**
+- Move's ownership model prevents resource duplication
+- Explicit resource transfers with clear ownership
+- No external access to internal pool resources
+
+### MEV Protection
+
+**Slippage Protection:**
+- All swaps require minimum output amount specification
+- Deadline enforcement prevents transaction replay attacks
+- Price impact is predictable via constant product formula
+
+**Front-Running Mitigation:**
+- Atomic operations prevent sandwich attacks within single transaction
+- Transparent pricing removes information asymmetries
+- Gas-efficient operations reduce MEV extraction opportunities
+
+## ⚡ Performance & Optimization
+
+### Gas Efficiency
+
+**Storage Optimization:**
+- Minimal storage operations per transaction
+- Efficient data structures (SimpleMap for O(1) lookups)
+- Event-based state tracking for off-chain queries
+
+**Algorithmic Efficiency:**
+- Square root uses Newton's method for optimal convergence
+- Fee calculations avoid repeated division operations
+- Batch operations where possible to reduce transaction costs
+
+### Memory Management
+
+**Resource Lifecycle:**
+- Explicit resource creation and destruction
+- Move's automatic memory management prevents leaks
+- Efficient handling of temporary calculations
+
+## 🚀 Advanced Features & Extensions
+
+### Multi-Hop Router (Future Enhancement)
+
+A multi-hop routing system could be implemented to enable swaps through multiple pools:
+
+```move
+// Future: Multi-hop swap execution
+public entry fun execute_swap_path<X, Y>(
+    account: &signer,
+    path: vector<TypeInfo>,
+    amount_in: u64,
+    amount_out_min: u64,
+    deadline: u64
+) {
+    // Implementation needed - would iterate through pools
+    // and execute sequential swaps for optimal pricing
+}
+```
+
+### Price Oracle Integration
+
+Framework for TWAP (Time-Weighted Average Price) implementation:
+
+```move
+struct PriceOracle<phantom X, phantom Y> has key {
+    price_cumulative_last_x: u128,
+    price_cumulative_last_y: u128,
+    last_update_timestamp: u64,
+}
+```
+
+### Fee Tier Support
+
+Extension point for multiple fee tiers:
+
+```move
+const FEE_TIER_LOW: u64 = 5;     // 0.05%
+const FEE_TIER_MEDIUM: u64 = 30; // 0.30%  
+const FEE_TIER_HIGH: u64 = 100;  // 1.00%
+```
+
+## 🛣️ Future Development Roadmap
+
+This AMM provides a solid foundation that developers can extend with additional DeFi features:
+
+### Routing & Optimization
+- **Multi-Hop Router** - Enable swaps through multiple pools for better pricing
+- **Path Optimization** - Algorithms to find optimal swap routes automatically
+- **MEV Protection** - Advanced slippage protection and transaction ordering
+
+### Oracle & Pricing
+- **TWAP Integration** - Time-weighted average price feeds for accurate market data
+- **External Oracle Support** - Integration with Chainlink or other price feed providers
+- **Dynamic Fee Adjustment** - Fee tiers that adjust based on market volatility
+
+### Advanced Features
+- **Flash Loans** - Uncollateralized lending within single transactions
+- **Concentrated Liquidity** - UniswapV3-style position management for capital efficiency
+- **Limit Orders** - Advanced order types beyond simple market swaps
+- **Fee Tier Variety** - Multiple fee levels (0.05%, 0.3%, 1%) for different scenarios
+
+### Governance & Management
+- **Protocol Governance** - Decentralized parameter management and upgrades
+- **Fee Distribution** - Automated protocol fee collection and distribution
+- **Emergency Controls** - Circuit breakers and pause functionality
+
+### Cross-Chain & Scaling
+- **Multi-Chain Deployment** - Deploy on multiple Movement-compatible networks
+- **Bridge Integration** - Cross-chain liquidity aggregation
+- **Layer 2 Optimization** - Gas efficiency improvements and batch operations
