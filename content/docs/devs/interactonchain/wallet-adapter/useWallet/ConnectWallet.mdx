@@ -1,150 +1,360 @@
 ---
 title: Wallet Connection
-description: Implement wallet connection functionality
+description: Full implementation of a wallet connection interface for Movement Network with added UX features
 ---
 
+<Callout>
+Want to skip this and go straight to the code? [Click here](https://github.com/Rahat-ch/Movement-Network-ConnectWallet-Template)
+</Callout>
 
-This component demonstrates how to implement wallet connection functionality using the Aptos Wallet Adapter in a React application. It provides a simple interface for users to connect and disconnect their Aptos wallet.
+## Building a Movement Network Wallet Connection Template
+
+This tutorial will guide you through building a wallet connection interface for Movement Network using Next.js, TypeScript, and the Aptos Wallet Adapter.
 
 ## Prerequisites
 
-- `@aptos-labs/wallet-adapter-react` package installed
-- A React application setup
+- Node.js 18+ and npm/yarn installed
+- Basic knowledge of React and TypeScript
+- A Movement-compatible wallet (we recommend [Nightly](https://nightly.app/))
 
-## Implementation
+## Project Setup
 
-The `WalletConnectDemo` component uses the `useWallet` hook from the Aptos Wallet Adapter to manage wallet connections. Here's how to implement it:
+### 1. Create a Next.js Application with shadcn/ui
 
-1️⃣ First, import the necessary dependencies:
+This template was built using the shadcn init command, which automatically creates a Next.js application with TypeScript, Tailwind CSS, and the shadcn/ui component system pre-configured:
 
-```typescript
-import { WalletName, useWallet } from '@aptos-labs/wallet-adapter-react';
+```bash
+npx shadcn@latest init
 ```
 
-2️⃣ The component uses these key features from the `useWallet` hook:
-- `connect`: Function to establish a connection with the wallet
-- `disconnect`: Function to terminate the wallet connection
-- `account`: Contains the connected account information
-- `connected`: Boolean state indicating if a wallet is connected
+Follow the Prompts for a Next JS application.
 
-3️⃣ Key Functions:
+### 2. Install Required UI Components
 
-```typescript
-// Connect to wallet
-const handleConnect = async () => {
-  try {
-    await connect("Petra" as WalletName<"Petra">);
-    // You can replace "Petra" with any supported wallet name
-  } catch (error) {
-    console.error('Failed to connect to wallet:', error);
-  }
-};
+After initializing the project, install the specific shadcn/ui components used in this template:
 
-// Disconnect from wallet
-const handleDisconnect = async () => {
-  try {
-    await disconnect();
-  } catch (error) {
-    console.error('Failed to disconnect from wallet:', error);
-  }
-};
+```bash
+npx shadcn@latest add button card dialog input sonner
 ```
 
-## Usage
+### 3. Install Core Dependencies
 
-The component renders a simple UI that shows:
-- A "Connect Wallet" button when no wallet is connected
-- The connected wallet address and a "Disconnect" button when a wallet is connected
+Install the Aptos SDK and wallet adapter packages:
 
-To use this component in your application:
+```bash
+npm install @aptos-labs/ts-sdk @aptos-labs/wallet-adapter-react
+```
+
+### 4. Install Wallet Standard and Peer Dependencies
+
+**Important**: You'll need to install peer dependencies with the legacy peer deps flag to avoid version conflicts:
+
+```bash
+npm install @aptos-labs/wallet-standard --legacy-peer-deps
+npm install @telegram-apps/bridge uuid aptos got --legacy-peer-deps
+```
+
+## Core Implementation
+
+### 1. Wallet Provider Setup
+
+Create a wallet provider component at `components/wallet-provider.tsx`:
 
 ```typescript
-import WalletConnectDemo from './components/WalletConnect';
+"use client";
 
-// In your React component:
-function App() {
-  return (
-    <div>
-      <WalletConnectDemo />
-    </div>
-  );
+import { ReactNode } from "react";
+import { AptosWalletAdapterProvider } from "@aptos-labs/wallet-adapter-react";
+import { AptosConfig, Network } from "@aptos-labs/ts-sdk";
+
+interface WalletProviderProps {
+  children: ReactNode;
 }
-```
 
-## Important Notes
-
-1️⃣ Make sure your app is wrapped with the Aptos Wallet Provider:
-```typescript
-import { AptosWalletAdapterProvider } from '@aptos-labs/wallet-adapter-react';
-
-function App() {
+export function WalletProvider({ children }: WalletProviderProps) {
+  // Movement Mainnet configuration
+  const aptosConfig = new AptosConfig({
+    network: Network.MAINNET,
+    fullnode: "https://full.mainnet.movementinfra.xyz/v1",
+  });
+  
   return (
-    <AptosWalletAdapterProvider>
-      <WalletConnectDemo />
+    <AptosWalletAdapterProvider
+      autoConnect={true}
+      dappConfig={aptosConfig}
+      onError={(error) => {
+        console.error("Wallet error:", JSON.stringify(error, null, 2));
+      }}
+    >
+      {children}
     </AptosWalletAdapterProvider>
   );
 }
 ```
 
-2️⃣ You can modify the wallet name in `handleConnect` to connect to different wallets:
-   - "Petra"
-   - "Martian"
-   - "Pontem"
-   - Other supported Aptos wallets
+### 2. Root Layout Configuration
 
-3️⃣ Error handling is implemented for both connection and disconnection operations to provide a better user experience.
+Update your `app/layout.tsx` to include the wallet provider:
 
-## Example Response
+```typescript
+import { WalletProvider } from "@/components/wallet-provider";
+import { Toaster } from "@/components/ui/sonner";
 
-When connected, the component will display the wallet address and a disconnect button. The address will be in the format:
-```
-Connected to: 0x123...abc
-```
-
-## FullCode
-```typescript title="src/components/WalletConnect.tsx"
-import React from 'react';
-import { WalletName, useWallet } from '@aptos-labs/wallet-adapter-react';
-
-const WalletConnectButton = () => {
-  const { connect, disconnect, account, connected } = useWallet();
-
-  const handleConnect = async () => {
-    try {
-      // Change below to the desired wallet name instead of "Petra"
-      await connect("Petra" as WalletName<"Petra">);
-      console.log('Connected to wallet:', account);
-    } catch (error) {
-      console.error('Failed to connect to wallet:', error);
-    }
-  };
-
-  const handleDisconnect = async () => {
-    try {
-      await disconnect();
-      console.log('Disconnected from wallet');
-    } catch (error) {
-      console.error('Failed to disconnect from wallet:', error);
-    }
-  };
-
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <div>
-      <h1>Aptos Wallet Connection</h1>
-      <div>
-        {connected ? (
-          <div>
-            <p>Connected to: {account?.address}</p>
-            <button onClick={handleDisconnect}>Disconnect</button>
-          </div>
-        ) : (
-          <button onClick={handleConnect}>Connect Wallet</button>
-        )}
-      </div>
-    </div>
+    <html lang="en">
+      <body>
+        <WalletProvider>
+          {children}
+          <Toaster />
+        </WalletProvider>
+      </body>
+    </html>
   );
+}
+```
+
+### 3. Wallet Selection Modal with Movement Network Connection
+
+There is some filtered logic for the wallets here in order to remove wallets that are not fully compatible with Movement Network. 
+
+Create `components/wallet-selection-modal.tsx`:
+
+```typescript
+"use client";
+
+import { useState } from "react";
+import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import { getAptosWallets } from "@aptos-labs/wallet-standard";
+// ... UI imports
+
+export function WalletSelectionModal({ children }: { children: React.ReactNode }) {
+  const [open, setOpen] = useState(false);
+  const { wallets, connect } = useWallet();
+
+  // Filter and prioritize wallets
+  const filteredWallets = wallets
+    .filter((wallet) => {
+      const name = wallet.name.toLowerCase();
+      // Filter out incompatible wallets
+      return !name.includes("petra") && 
+             !name.includes("google") && 
+             !name.includes("apple");
+    })
+    .filter((wallet, index, self) => {
+      // Remove duplicates
+      return index === self.findIndex((w) => w.name === wallet.name);
+    })
+    .sort((a, b) => {
+      // Nightly wallet first (best Movement support)
+      if (a.name.toLowerCase().includes("nightly")) return -1;
+      if (b.name.toLowerCase().includes("nightly")) return 1;
+      return 0;
+    });
+
+  const handleWalletSelect = async (walletName: string) => {
+    try {
+      // IMPORTANT: Connect with Movement network info
+      if (typeof window !== "undefined") {
+        const allWallets = getAptosWallets();
+        const selectedWallet = allWallets.aptosWallets.find(w => w.name === walletName);
+        
+        if (selectedWallet?.features?.['aptos:connect']) {
+          // Connect directly to Movement Network
+          const networkInfo = {
+            chainId: 126, // Movement Mainnet
+            name: "custom" as const,
+            url: "https://full.mainnet.movementinfra.xyz/v1"
+          };
+          
+          const result = await selectedWallet.features['aptos:connect'].connect(false, networkInfo);
+          
+          if (result.status === "Approved") {
+            await connect(walletName);
+            setOpen(false);
+            return;
+          }
+        }
+      }
+      
+      // Fallback
+      await connect(walletName);
+      setOpen(false);
+    } catch (error) {
+      // Handle error
+    }
+  };
+
+  // Render modal with wallet options...
+}
+```
+
+### 4. Network Switching Component
+
+Since Aptos wallet adapter doesn't support using the built in switch component for custom networks like Movement, we need a special approach. This code is compatible with Nightly Wallet, you will need to determine if other wallets are able to use the switch network functionality. Otherwise the fallback will be to ask the user to manually switch the network in their wallet. 
+
+Create `components/switch-network.tsx`:
+
+```typescript
+export function SwitchNetwork() {
+  const { network, wallet } = useWallet();
+  
+  // Detect current network by chain ID
+  const isMovementMainnet = network?.chainId === 126;
+  const isMovementTestnet = network?.chainId === 250;
+  const isNightly = wallet?.name?.toLowerCase().includes("nightly");
+
+  const handleSwitchNetwork = async (targetNetwork: "mainnet" | "testnet") => {
+    const chainId = targetNetwork === "mainnet" ? 126 : 250;
+    
+    // Only Nightly supports Movement network switching
+    if (isNightly && typeof window !== "undefined") {
+      if ((window as any).nightly?.aptos?.changeNetwork) {
+        await (window as any).nightly.aptos.changeNetwork({
+          chainId,
+          name: "custom"
+        });
+        return;
+      }
+    }
+    
+    toast.error("Network switching only supported with Nightly wallet");
+  };
+
+  // Render network status and switch buttons...
+}
+```
+
+## Key Features Implementation
+
+### 1. Send Transaction
+
+The send transaction component (`components/send-transaction.tsx`) handles Movement network configurations:
+
+```typescript
+const MOVEMENT_CONFIGS = {
+  mainnet: {
+    chainId: 126,
+    fullnode: "https://full.mainnet.movementinfra.xyz/v1",
+  },
+  testnet: {
+    chainId: 250,
+    fullnode: "https://full.testnet.movementinfra.xyz/v1",
+  }
 };
 
-export default WalletConnectButton;
+// Dynamically use the correct network based on chain ID
+const getCurrentNetworkConfig = () => {
+  if (network?.chainId === 126) return MOVEMENT_CONFIGS.mainnet;
+  if (network?.chainId === 250) return MOVEMENT_CONFIGS.testnet;
+  return MOVEMENT_CONFIGS.testnet; // Default
+};
 ```
 
+### 2. Sign Message
+
+The sign message component (`components/sign-message.tsx`) handles signature formatting:
+
+```typescript
+// Handle different signature formats from wallets
+if (response.signature?.data?.data) {
+  // Convert byte array to hex string
+  const byteArray = Object.values(response.signature.data.data) as number[];
+  signature = '0x' + byteArray.map(byte => byte.toString(16).padStart(2, '0')).join('');
+}
+```
+
+## Movement Network Configuration
+
+### Chain IDs
+- **Mainnet**: 126
+- **Testnet**: 250 (Bardock)
+
+### RPC Endpoints
+- **Mainnet**: `https://full.mainnet.movementinfra.xyz/v1`
+- **Testnet**: `https://full.testnet.movementinfra.xyz/v1`
+
+### Explorer
+- **Format**: `https://explorer.movementnetwork.xyz/txn/{txHash}?network={mainnet|testnet}`
+
+## Important Considerations
+
+### 1. Wallet Compatibility
+
+Not all Aptos wallets support Movement Network properly. We recommend:
+- **Nightly Wallet** (Full support including network switching)
+- Other wallets may work but without network switching
+
+### 2. Network Connection on Wallet Selection
+
+**Critical**: When users click "Connect Wallet", the implementation attempts to connect directly to Movement Network (not Aptos mainnet). This is achieved through the wallet-standard `aptos:connect` feature with network info.
+
+### 3. Network Switching Limitations
+
+- Standard Aptos wallet adapter doesn't support Movement network switching
+- Only Nightly wallet currently supports programmatic network switching
+- Other wallets require manual network configuration
+
+### 4. Error Handling
+
+The template includes proper error handling for:
+- Network mismatches
+- Failed transactions
+- Wallet connection issues
+- Signature formatting differences
+
+## Project Structure
+
+```
+movement-wallet-app/
+├── app/
+│   ├── layout.tsx         # Root layout with providers
+│   └── page.tsx           # Main page with wallet UI
+├── components/
+│   ├── wallet-provider.tsx        # Wallet adapter setup
+│   ├── wallet-selection-modal.tsx # Connection with Movement network
+│   ├── wallet-demo-content.tsx    # Connected wallet UI
+│   ├── switch-network.tsx         # Network switching (Nightly only)
+│   ├── send-transaction.tsx       # Send MOVE tokens
+│   ├── sign-message.tsx           # Message signing
+│   └── ui/                        # shadcn/ui components
+└── lib/
+    └── utils.ts           # Utility functions
+```
+
+## Testing Your Implementation
+
+1. **Install Nightly Wallet** from [nightly.app](https://nightly.app/)
+2. **Run your development server**: `npm run dev`
+3. **Connect Wallet**: Click connect and select Nightly
+4. **Verify Network**: Check that you're connected to Movement Network (Chain ID 126 or 250)
+5. **Test Features**:
+   - Switch between Movement mainnet and testnet
+   - Send a test transaction (ensure you have MOVE tokens)
+   - Sign a message
+
+## Troubleshooting Errors
+
+### Peer Dependency Issues
+Always use `--legacy-peer-deps` when installing wallet-related packages:
+```bash
+npm install [package] --legacy-peer-deps
+```
+
+### Wallet Not Connecting to Movement
+Ensure the wallet selection modal is using the correct network info:
+- Chain ID: 126 (mainnet) or 250 (testnet)
+- Network name: "custom"
+
+### Network Switching Not Working
+Only Nightly wallet supports Movement network switching. Other wallets need manual configuration.
+
+### Transaction Failures
+Verify:
+- Correct network configuration in send-transaction component
+- Wallet is on Movement Network
+- Sufficient MOVE balance
