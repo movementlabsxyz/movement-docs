@@ -1,0 +1,223 @@
+---
+title: Stablecoin Example
+description: Build a Collateralized Stablecoin (mFUSD) on Movement
+---
+
+<Callout type="warning">
+This code is not audited, if you are building on this code, ensure that you complete an audit before deploying to mainnet.
+</Callout>
+
+In this tutorial, we'll build **mFUSD** - a collateralized stablecoin on the Movement Network. This stablecoin maintains a 1:1 peg with USD through over-collateralization with APT tokens.
+
+If you would like to see the finished code, you can find it [here](https://github.com/movementlabsxyz/movement-defi-examples).
+
+The finished code also includes a module for a more basic fiat backed stablecoin.
+
+## What You'll Learn
+
+- How to create a fungible asset (FA) token on Movement
+- Implementing collateralized debt positions (CDPs)
+- Building mint, burn, and liquidation mechanics
+- Managing collateral vaults and positions
+- Deploying on Movement testnet
+
+## Prerequisites
+- Movement CLI installed
+- Basic understanding of Move language
+- Testnet account with Move tokens
+
+## Core Concepts
+
+### Collateralized Stablecoin Model
+mFUSD follows a collateralized debt position (CDP) model:
+- Users deposit APT as collateral
+- They can mint mFUSD up to a safe collateralization ratio
+- Minimum collateralization ratio: 150% (1.5x over-collateralized)
+- If positions fall below 150%, they can be liquidated
+
+### Key Components
+1. **Fungible Asset (FA)**: The mFUSD token itself
+2. **Collateral Vault**: Holds deposited Move tokens
+3. **Collateral Positions**: Tracks each user's debt and collateral
+4. **Protocol Stats**: Global statistics for monitoring
+
+## Module Structure
+
+### 1. Data Structures
+
+```move
+/// Manages minting and burning capabilities
+struct Management has key {
+    mint_ref: MintRef,
+    burn_ref: BurnRef,
+    transfer_ref: TransferRef,
+}
+
+/// Vault holding all collateral
+struct CollateralVault has key {
+    move_balance: Coin<AptosCoin>,
+}
+
+/// Individual user position
+struct CollateralPosition has key {
+    collateral_amount: u64,
+    minted_amount: u64,
+}
+
+/// Global protocol statistics
+struct ProtocolStats has key {
+    total_collateral: u64,
+    total_minted: u64,
+}
+```
+
+### 2. Constants
+
+```move
+const MIN_COLLATERAL_RATIO: u64 = 15000; // 150% in basis points
+const BASIS_POINTS: u64 = 10000;
+const ASSET_SYMBOL: vector<u8> = b"mFUSD";
+```
+
+## Core Functions
+
+### 1. Initialization
+
+```move
+fun init_module(admin: &signer) {
+    // Create the fungible asset
+    let constructor_ref = &object::create_named_object(
+        admin,
+        ASSET_SYMBOL,
+    );
+    
+    primary_fungible_store::create_primary_store_enabled_fungible_asset(
+        constructor_ref,
+        option::none(),
+        string::utf8(b"Movement USD"),
+        string::utf8(ASSET_SYMBOL),
+        8, // decimals
+        string::utf8(b"https://example.com/mfusd-icon.png"),
+        string::utf8(b"https://movementlabs.xyz"),
+    );
+    
+    // Store management capabilities
+    let management = Management {
+        mint_ref,
+        burn_ref,
+        transfer_ref,
+    };
+    
+    // Initialize vault and stats
+    move_to(admin, management);
+    move_to(admin, CollateralVault { move_balance: coin::zero<AptosCoin>() });
+    move_to(admin, ProtocolStats { total_collateral: 0, total_minted: 0 });
+}
+```
+
+### 2. Deposit and Mint
+
+```move
+public entry fun deposit_and_mint(
+    user: &signer,
+    collateral_amount: u64,
+    mint_amount: u64
+) {
+    // Deposit collateral
+    let coins = coin::withdraw<AptosCoin>(user, collateral_amount);
+    coin::merge(&mut vault.move_balance, coins);
+    
+    // Create or update position
+    if (!exists<CollateralPosition>(user_addr)) {
+        move_to(user, CollateralPosition {
+            collateral_amount: 0,
+            minted_amount: 0,
+        });
+    }
+    
+    // Check collateralization ratio
+    assert!(is_position_healthy(
+        position.collateral_amount + collateral_amount,
+        position.minted_amount + mint_amount
+    ), EUNDERCOLLATERALIZED);
+    
+    // Mint mFUSD to user
+    let tokens = fungible_asset::mint(&management.mint_ref, mint_amount);
+    primary_fungible_store::deposit(user_addr, tokens);
+}
+```
+
+### 3. Health Check
+
+```move
+fun is_position_healthy(collateral: u64, minted: u64): bool {
+    if (minted == 0) return true;
+    
+    let collateral_value_cents = collateral * get_apt_price_in_cents();
+    let minted_value_cents = minted * 100; // mFUSD = $1
+    let required_collateral_value = (minted_amount * MIN_COLLATERAL_RATIO) / BASIS_POINTS;
+    
+    collateral_value_cents >= required_collateral_value
+}
+```
+
+### 4. Liquidation 
+
+<Callout type="info">
+Our Contract is using fixed prices and not an oracle. This Liquidation process will not actually take place unless you implement an oracle.
+</Callout>
+
+```move
+public entry fun liquidate(
+    liquidator: &signer,
+    user_to_liquidate: address
+) {
+    // Check if position is unhealthy
+    assert!(!is_position_healthy(
+        position.collateral_amount,
+        position.minted_amount
+    ), EUNDERCOLLATERALIZED);
+    
+    // Liquidator repays debt
+    let tokens = fungible_asset::withdraw(liquidator, position.minted_amount);
+    fungible_asset::burn(&management.burn_ref, tokens);
+    
+    // Liquidator receives collateral
+    let seized_coins = coin::extract(&mut vault.move_balance, position.collateral_amount);
+    coin::deposit(liquidator_addr, seized_coins);
+    
+    // Clear position
+    position.collateral_amount = 0;
+    position.minted_amount = 0;
+}
+```
+
+## Deployment Guide
+
+### 1. Setup Project
+
+```bash
+# Initialize project
+movement move init --name stablecoin
+
+# Update Move.toml with your address
+[addresses]
+mfusd = "0xYOUR_ADDRESS_HERE"
+```
+
+### 2. Compile and Test
+
+```bash
+# Compile the module
+movement move compile
+
+# Run tests
+movement move test
+```
+
+### 3. Deploy to Testnet
+
+```bash
+# Deploy
+movement move publish
+```
