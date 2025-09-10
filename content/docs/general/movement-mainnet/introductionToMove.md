@@ -5,9 +5,9 @@ description: A high level overview of the move programming language
 
 # Introduction to Move
 
-Movement Labs is building a network of Move-based blockchains. Our flagship products is the Movement Mainnet.
+Movement Labs is building a network of Move-based blockchains. Our flagship products include the Movement Mainnet and Movement Sidechain.
 
-Movement Mainnet is a community-first blockchain providing the highest possible TPS through Move, fast finality, native day-zero access to mass liquidity, and modular customizations.
+Movement Sidechain is a Move-based sidechain secured by an L1, providing the highest possible TPS through Move, fast finality, native day-zero access to mass liquidity, and modular customizations.
 
 <!-- > ⚠️ This documentation provides a high level intro to the vision. The [white paper](https://www.movementnetwork.xyz/whitepaper/movement-whitepaper_en.pdf) goes into more details on some of the presented solutions. -->
 
