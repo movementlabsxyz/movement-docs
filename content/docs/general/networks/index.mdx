@@ -1,0 +1,66 @@
+---
+id: networks
+sidebar_position: 4
+title: Network Information
+description: "All the information on the Movement networks"
+---
+
+import React from 'react';
+
+# Movement Networks
+
+## Network Overview
+
+Movement provides several networks with different architectures for development and production needs:
+
+### L1 Networks (Native Move Blockchain)
+1. **[Testnet](/general/networks/testnet)** — L1 testing environment for developers to build and test applications with native Move execution.
+2. **[Devnet](/general/networks/devnet)** — L1 development network for testing latest features and protocol upgrades.
+
+### Sidechain Networks (Ethereum-Secured)
+3. **[Mainnet](/general/networks/mainnet)** — Production sidechain secured by Ethereum L1, currently serving as the main network until L1 migration.
+4. **[Sidechain](/general/networks/sidechain)** — Legacy sidechain implementation, now consolidated into mainnet operations.
+
+### Network Properties
+
+| Network | Type | Chain ID | Genesis | Faucet | Governance | Update Schedule | Data Persistence |
+|---------|------|----------|---------|---------|------------|-----------------|------------------|
+| **Mainnet (Sidechain)** | Ethereum-Secured | 126 | Coming Soon | N/A | Transitioning to L1 | Monthly, varies | Permanent |
+| **Testnet (L1)** | Native L1 | 250 | Coming Soon | Coming Soon | Managed by Movement Labs | Monthly, varies | Resets as Needed, but avoided |
+| **Devnet (L1)** | Native L1 | 27 | Coming Soon | Coming Soon | Managed by Movement Labs | As updated | Resets as Needed |
+
+### Network URLs
+
+The below URLs are provided by Movement Labs:
+
+| Network | REST API | Explorer | Faucet | Indexer | Additional Resources |
+|---------|----------|----------|---------|---------|---------------------|
+| **Mainnet (Sidechain)** | [API](https://mainnet.movementnetwork.xyz/v1) | [Explorer](https://explorer.movementnetwork.xyz/?network=mainnet) | N/A | TBD | [Bridge](https://bridge.movementnetwork.xyz/) |
+| **Testnet (L1)** | [API](https://testnet.movementnetwork.xyz/v1) | [Explorer](https://explorer.movementnetwork.xyz/?network=bardock+testnet) | [Faucet](https://faucet.movementnetwork.xyz/) | Coming Soon | Native Move Tools |
+| **Devnet (L1)** | [API](https://devnet.movementnetwork.xyz/v1) | Coming Soon | Coming Soon | Coming Soon | Development Tools |
+
+## Network Details
+
+For comprehensive information about each network, visit the dedicated pages:
+
+### **[Movement Mainnet (Sidechain)](/general/networks/mainnet)**
+Currently operating as an Ethereum-secured sidechain serving production traffic with real economic value. This network will eventually migrate to become the flagship L1 network.
+
+### **[Movement Sidechain](/general/networks/sidechain)**
+Technical documentation for the sidechain architecture and implementation, including details on how the current mainnet operates as an Ethereum-secured sidechain.
+
+### **[Movement Testnet (L1)](/general/networks/testnet)**  
+A native L1 testing environment that provides developers with a safe space to build and test applications using the full Move execution environment before deploying to production networks.
+
+### **[Movement Devnet (L1)](/general/networks/devnet)**
+A native L1 development network for testing the latest protocol features and upgrades, providing early access to new functionality in the Movement ecosystem.
+
+## Additional Resources
+
+- **[Node Operations](/general/nodes)** - Information about running Movement nodes
+- **[Faucet](https://faucet.movementnetwork.xyz/)** - Get testnet tokens
+- **[Explorer](https://explorer.movementnetwork.xyz/)** - Browse network activity and transactions
+
+## Whitepaper
+
+For further information about Movement Sidechain, please refer to our [Movement Sidechain Whitepaper](/general/movement-sidechain/whitepaper).

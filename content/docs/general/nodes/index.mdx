@@ -1,0 +1,131 @@
+---
+id: nodes
+sidebar_position: 6
+title: Movement Nodes Overview
+description: "Comprehensive guide to Movement network node types and operations"
+---
+
+import React from 'react';
+
+# Movement Network Nodes
+
+The Movement network consists of three main node types: **validator nodes**, **validator fullnodes (VFNs)**, and **public fullnodes (PFNs)**. To participate in consensus, you are required to run a validator node and stake the minimum amount of MOVE tokens. VFNs and PFNs are not required to participate in consensus, but they are essential for distributing blockchain data and enabling ecosystem services such as indexing, querying, and RESTful API services.
+
+VFNs can only be run by validator operators, while PFNs can be run by anyone. All node types are currently in development and will be available soon.
+
+## Node Types Overview
+
+### Validator Nodes (Coming Soon)
+- **Purpose**: Participate in consensus protocol and validate transactions
+- **Requirements**: Must stake minimum MOVE tokens
+- **Rewards**: Earn staking rewards for successful validation
+- **Status**: 🚧 Coming Soon
+- **Requirements**: See **[System Requirements](/general/nodes/requirements#validator-node---coming-soon)**
+
+### Validator Fullnodes (VFNs) (Coming Soon)
+- **Purpose**: Serve as secure entry/exit points for validator operations
+- **Requirements**: Can only be operated by validator operators
+- **Benefits**: Improved reliability and secure data access for validators
+- **Status**: 🚧 Coming Soon
+- **Requirements**: See **[System Requirements](/general/nodes/requirements#validator-fullnode-vfn---coming-soon)**
+
+### Public Fullnodes (PFNs) (Coming Soon)
+- **Purpose**: Replicate blockchain state and provide public access
+- **Requirements**: No staking required, open to anyone
+- **Benefits**: Increase network decentralization and data availability
+- **Use Cases**: RPC services, indexing, dApps, and ecosystem tools
+- **Status**: 🚧 Coming Soon
+- **Requirements**: See **[System Requirements](/general/nodes/requirements#public-fullnode-pfn---currently-supported)**
+
+## Quick Links
+
+### System Requirements
+Essential information for planning and deploying Movement nodes.
+
+- **[Complete System Requirements](/general/nodes/requirements)** - Comprehensive hardware and software requirements for all node types
+- **[Cloud Provider Recommendations](/general/nodes/requirements#cloud-provider-recommendations)** - AWS, GCP, and Azure instance recommendations
+- **[Storage Requirements](/general/nodes/requirements#storage-requirements)** - Storage types, capacity planning, and performance considerations
+- **[Network Requirements](/general/nodes/requirements#network-requirements)** - Bandwidth, latency, and port configuration
+
+### Validation on Movement (Coming Soon)
+Comprehensive guides for validation, staking, and governance will be available when Movement validators launch.
+
+**Coming Soon:**
+- Validation mechanics and economics
+- Validator state management
+- Staking requirements and procedures
+- On-chain governance participation
+
+### Staking (Coming Soon)
+Detailed staking documentation will be published when the staking system is ready.
+
+**Coming Soon:**
+- Staking mechanics and rewards
+- Governance voting procedures
+- Staking pool operations
+- Delegation mechanisms
+
+### Node Operations (Coming Soon)
+Step-by-step deployment and operational guides will be available when nodes launch.
+
+**Coming Soon:**
+- Validator node deployment guides
+- VFN setup and configuration
+- PFN deployment instructions
+- Node monitoring and maintenance
+- Network connection procedures
+- Safe shutdown procedures
+
+### Development Tools (Coming Soon)
+Developer tools and local development environments will be available soon.
+
+**Coming Soon:**
+- Local development networks
+- Node upgrade procedures
+- State bootstrapping tools
+- Performance monitoring tools
+
+## Getting Started
+
+All Movement node types are currently in development and will be available soon. Detailed deployment guides and operational procedures will be published when the nodes are ready for mainnet launch.
+
+### Coming Soon: Node Operations
+- **Validator Nodes** - Consensus participation and staking
+- **Validator Fullnodes (VFNs)** - Secure validator infrastructure  
+- **Public Fullnodes (PFNs)** - Public blockchain access and services
+
+Stay tuned for updates on node availability and deployment instructions.
+
+## Architecture Overview
+
+The Movement network uses a multi-tier architecture:
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Validator     │◄──►│   Validator     │◄──►│   Validator     │
+│     Node        │    │     Node        │    │     Node        │
+└─────────┬───────┘    └─────────┬───────┘    └─────────┬───────┘
+          │                      │                      │
+          ▼                      ▼                      ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Validator     │    │   Validator     │    │   Validator     │
+│   Fullnode      │    │   Fullnode      │    │   Fullnode      │
+└─────────┬───────┘    └─────────┬───────┘    └─────────┬───────┘
+          │                      │                      │
+          └──────────┬───────────┴───────────┬──────────┘
+                     │                       │
+          ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+          │    Public       │    │    Public       │    │    Public       │
+          │   Fullnode      │    │   Fullnode      │    │   Fullnode      │
+          └─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+## Additional Resources
+
+**Coming Soon:**
+- Movement CLI tools for node management
+- Network endpoints and configuration
+- Troubleshooting guides and solutions
+
+**Available Now:**
+- **[Community Support](https://discord.gg/movementlabsxyz)** - Get help from the community

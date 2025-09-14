@@ -1,0 +1,43 @@
+---
+id: validator-node
+title: Validator & VFN Overview
+description: "Overview of Movement validator nodes and validator fullnodes"
+---
+
+# Validator & VFN Overview
+
+**Validator nodes and Validator Fullnodes (VFNs) are coming soon.** 
+
+To participate in the Movement consensus protocol, you will need to deploy and run a **validator node**. Additionally, it will be **highly recommended** to run a **validator fullnode (VFN)** to provide secure and reliable access to blockchain data.
+
+Comprehensive deployment guides will be available when validators launch on Movement.
+
+## Node Types Comparison
+
+| Feature | Validator Node | Validator Fullnode (VFN) |
+|---------|----------------|---------------------------|
+| **Purpose** | Consensus participation | Data distribution & security |
+| **Required** | ✅ Yes (for consensus) | 📋 Highly recommended |
+| **Staking** | ✅ Required | ❌ No staking needed |
+| **Public Access** | ❌ Private network only | ✅ Public API access |
+| **API Services** | ❌ Disabled for security | ✅ Full REST/WebSocket APIs |
+| **Hardware** | High (consensus critical) | Moderate (data serving) |
+| **Uptime** | Critical (affects rewards) | Important (affects users) |
+
+## Getting Started
+
+### Coming Soon: Validator Deployment
+
+Validator node deployment guides are currently in development and will be available when Movement validators launch. The recommended validator setup will include:
+
+### Architecture Overview
+
+The recommended validator setup uses a two-tier architecture:
+
+```
+Internet ←→ VFN ←→ Validator Node
+            ↑           ↑
+    (Public APIs)  (Private Network)
+    (Data Access)  (Consensus Only)
+```
+

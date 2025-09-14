@@ -1,0 +1,412 @@
+---
+id: node-level-architecture
+title: Node Level Architecture
+description: "Detailed node-level architecture and components"
+---
+
+# Movement L1 Node Level Architecture
+
+This document provides a detailed view of the internal architecture of Movement L1 nodes, covering the various components, their interactions, and the data flows within a single node instance.
+
+## Node Architecture Overview
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        Movement L1 Node                             │
+├─────────────────────────────────────────────────────────────────────┤
+│  Network Interface Layer                                             │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐  │
+│  │   P2P Net   │ │   RPC/API   │ │  WebSocket  │ │   Metrics   │  │
+│  │   Handler   │ │   Server    │ │   Server    │ │   Exporter  │  │
+│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘  │
+├─────────────────────────────────────────────────────────────────────┤
+│  Transaction Processing Layer                                        │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐  │
+│  │   Mempool   │ │ Transaction │ │   Executor  │ │ State Cache │  │
+│  │   Manager   │ │  Validator  │ │   Engine    │ │   Manager   │  │
+│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘  │
+├─────────────────────────────────────────────────────────────────────┤
+│  Consensus Layer                                                     │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐  │
+│  │  Consensus  │ │   Voting    │ │   Leader    │ │   Safety    │  │
+│  │   Engine    │ │   Module    │ │  Election   │ │   Module    │  │
+│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘  │
+├─────────────────────────────────────────────────────────────────────┤
+│  Storage Layer                                                       │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐  │
+│  │   State     │ │ Transaction │ │   Event     │ │   Config    │  │
+│  │   Store     │ │    Store    │ │   Store     │ │   Store     │  │
+│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘  │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+## Core Components
+
+### 1. Network Interface Layer
+
+#### P2P Network Handler
+**Purpose**: Manages peer-to-peer communication with other nodes
+
+**Components**:
+- **Connection Manager**: Establishes and maintains connections to peers
+- **Message Router**: Routes incoming messages to appropriate handlers
+- **Gossip Protocol**: Implements efficient information dissemination
+- **Peer Discovery**: Discovers and connects to new network peers
+
+**Key Functions**:
+```rust
+// Pseudo-code for P2P interface
+pub struct P2PNetworkHandler {
+    connection_manager: ConnectionManager,
+    message_router: MessageRouter,
+    gossip_protocol: GossipProtocol,
+    peer_discovery: PeerDiscovery,
+}
+
+impl P2PNetworkHandler {
+    pub fn handle_incoming_message(&self, peer_id: PeerId, message: NetworkMessage);
+    pub fn broadcast_message(&self, message: NetworkMessage);
+    pub fn send_to_peer(&self, peer_id: PeerId, message: NetworkMessage);
+    pub fn discover_peers(&self) -> Vec<PeerId>;
+}
+```
+
+#### RPC/API Server
+**Purpose**: Provides external API access to node functionality
+
+**Endpoints**:
+- **Transaction Submission**: Submit signed transactions to the network
+- **State Queries**: Query account states and resource data
+- **Block Information**: Retrieve block and transaction information
+- **Network Status**: Get node and network health information
+
+**Configuration**:
+```yaml
+api_server:
+  bind_address: "0.0.0.0:8080"
+  max_connections: 1000
+  rate_limit: 100  # requests per second
+  authentication: optional
+```
+
+#### WebSocket Server
+**Purpose**: Real-time event streaming to subscribers
+
+**Event Types**:
+- **New Blocks**: Real-time block notifications
+- **Transaction Confirmations**: Transaction status updates
+- **Account Changes**: State change notifications
+- **Network Events**: Validator set changes and network events
+
+#### Metrics Exporter
+**Purpose**: Exports node performance and health metrics
+
+**Metric Categories**:
+- **Performance**: Transaction throughput, latency, CPU usage
+- **Network**: Peer count, message rates, bandwidth usage
+- **Storage**: Database size, disk I/O, cache hit rates
+- **Consensus**: Participation rates, voting statistics
+
+### 2. Transaction Processing Layer
+
+#### Mempool Manager
+**Purpose**: Manages pending transactions before consensus
+
+**Components**:
+- **Transaction Pool**: In-memory storage of pending transactions
+- **Priority Queue**: Orders transactions by gas price and priority
+- **Spam Filter**: Prevents spam and invalid transactions
+- **Expiration Manager**: Removes expired transactions
+
+**Data Structures**:
+```rust
+pub struct MempoolManager {
+    transaction_pool: HashMap<TransactionHash, SignedTransaction>,
+    priority_queue: BTreeMap<Priority, TransactionHash>,
+    account_sequences: HashMap<AccountAddress, SequenceNumber>,
+    expiration_times: BTreeMap<Timestamp, Vec<TransactionHash>>,
+}
+```
+
+#### Transaction Validator
+**Purpose**: Validates transaction signatures, format, and basic checks
+
+**Validation Steps**:
+1. **Signature Verification**: Cryptographic signature validation
+2. **Format Checking**: Transaction structure and field validation
+3. **Sequence Validation**: Account sequence number verification
+4. **Gas Validation**: Gas price and limit verification
+5. **Balance Checking**: Sufficient balance for transaction fees
+
+#### Executor Engine
+**Purpose**: Executes validated transactions using the MoveVM
+
+**Execution Pipeline**:
+1. **Transaction Preparation**: Load account states and dependencies
+2. **MoveVM Execution**: Execute Move bytecode in sandboxed environment
+3. **State Updates**: Apply changes to global state
+4. **Event Generation**: Generate events for state changes
+5. **Gas Accounting**: Calculate and charge gas fees
+
+**MoveVM Integration**:
+```rust
+pub struct ExecutorEngine {
+    move_vm: MoveVM,
+    state_view: StateView,
+    gas_meter: GasMeter,
+    event_store: EventStore,
+}
+
+impl ExecutorEngine {
+    pub fn execute_transaction(&mut self, txn: SignedTransaction) -> ExecutionResult {
+        // Load account state
+        let account_state = self.state_view.get_account_state(txn.sender());
+        
+        // Execute in MoveVM
+        let vm_result = self.move_vm.execute_script(
+            &txn.payload(),
+            &account_state,
+            &mut self.gas_meter,
+        );
+        
+        // Process results
+        self.apply_state_changes(vm_result.state_changes);
+        self.store_events(vm_result.events);
+        
+        vm_result
+    }
+}
+```
+
+#### State Cache Manager
+**Purpose**: Manages in-memory caching of frequently accessed state
+
+**Cache Types**:
+- **Account Cache**: Recently accessed account states
+- **Resource Cache**: Frequently queried Move resources
+- **Module Cache**: Compiled Move module bytecode
+- **Merkle Cache**: Recently computed Merkle tree nodes
+
+### 3. Consensus Layer
+
+#### Consensus Engine
+**Purpose**: Coordinates the Byzantine Fault Tolerant consensus protocol
+
+**State Machine**:
+```rust
+pub enum ConsensusState {
+    Propose,     // Node proposes a new block
+    Prevote,     // Node votes on proposed blocks
+    Precommit,   // Node commits to a specific block
+    Commit,      // Node finalizes and applies block
+}
+
+pub struct ConsensusEngine {
+    state: ConsensusState,
+    current_round: Round,
+    current_height: BlockHeight,
+    validator_set: ValidatorSet,
+    voting_power: VotingPower,
+}
+```
+
+**Consensus Flow**:
+1. **Block Proposal**: Leader proposes new block with transactions
+2. **Prevote Phase**: Validators vote on proposed block validity
+3. **Precommit Phase**: Validators commit to block if valid
+4. **Block Commit**: Block is finalized and added to chain
+
+#### Voting Module
+**Purpose**: Handles vote creation, validation, and aggregation
+
+**Vote Types**:
+- **Prevote**: Initial vote on block proposal
+- **Precommit**: Final commitment vote
+- **Nil Vote**: Vote for no block (safety mechanism)
+
+**Vote Aggregation**:
+```rust
+pub struct VotingModule {
+    prevotes: VoteAggregator,
+    precommits: VoteAggregator,
+    validator_signatures: HashMap<ValidatorId, Signature>,
+}
+
+impl VotingModule {
+    pub fn add_vote(&mut self, vote: Vote) -> VoteResult {
+        // Validate vote signature and format
+        if !self.validate_vote(&vote) {
+            return VoteResult::Invalid;
+        }
+        
+        // Add to appropriate aggregator
+        match vote.vote_type {
+            VoteType::Prevote => self.prevotes.add_vote(vote),
+            VoteType::Precommit => self.precommits.add_vote(vote),
+        }
+    }
+    
+    pub fn check_supermajority(&self, vote_type: VoteType) -> bool {
+        let aggregator = match vote_type {
+            VoteType::Prevote => &self.prevotes,
+            VoteType::Precommit => &self.precommits,
+        };
+        
+        aggregator.total_voting_power() > (self.validator_set.total_power() * 2 / 3)
+    }
+}
+```
+
+#### Leader Election
+**Purpose**: Determines which validator proposes the next block
+
+**Election Algorithm**:
+- **Weighted Selection**: Probability proportional to validator stake
+- **Deterministic**: Same leader selected by all honest validators
+- **Rotation**: Regular rotation to prevent centralization
+- **Liveness**: Guaranteed progress even with offline validators
+
+#### Safety Module
+**Purpose**: Ensures consensus safety properties are maintained
+
+**Safety Checks**:
+- **Conflicting Vote Detection**: Prevents double voting
+- **Fork Detection**: Identifies potential blockchain forks
+- **Slashing Evidence**: Collects evidence of malicious behavior
+- **Recovery Mechanisms**: Handles network partitions and attacks
+
+### 4. Storage Layer
+
+#### State Store
+**Purpose**: Persistent storage of global blockchain state
+
+**Storage Format**:
+```rust
+pub struct StateStore {
+    account_store: MerkleTreeStore<AccountAddress, AccountState>,
+    resource_store: HashMap<ResourceKey, ResourceValue>,
+    module_store: HashMap<ModuleId, CompiledModule>,
+    state_root: HashValue,
+}
+```
+
+**Operations**:
+- **Read Operations**: Efficient state queries with Merkle proofs
+- **Write Operations**: Atomic state updates with versioning
+- **Proof Generation**: Generate cryptographic proofs of state
+- **State Synchronization**: Sync state with other nodes
+
+#### Transaction Store
+**Purpose**: Stores complete transaction history and metadata
+
+**Schema**:
+```sql
+CREATE TABLE transactions (
+    hash BLOB PRIMARY KEY,
+    block_height INTEGER,
+    block_index INTEGER,
+    sender BLOB,
+    sequence_number INTEGER,
+    payload BLOB,
+    signature BLOB,
+    gas_used INTEGER,
+    status TEXT,
+    timestamp INTEGER
+);
+
+CREATE INDEX idx_sender_sequence ON transactions(sender, sequence_number);
+CREATE INDEX idx_block_height ON transactions(block_height);
+```
+
+#### Event Store
+**Purpose**: Stores events emitted by transaction execution
+
+**Event Structure**:
+```rust
+pub struct Event {
+    pub key: EventKey,
+    pub sequence_number: u64,
+    pub type_tag: TypeTag,
+    pub data: Vec<u8>,
+    pub transaction_hash: HashValue,
+    pub block_height: u64,
+}
+```
+
+**Indexing**:
+- **By Event Key**: Fast queries for specific event streams
+- **By Type**: Query events by Move type
+- **By Transaction**: Find all events from a specific transaction
+- **By Block**: Retrieve all events from a block
+
+#### Configuration Store
+**Purpose**: Stores node configuration and network parameters
+
+**Configuration Types**:
+- **Network Config**: Peer discovery, connection limits
+- **Consensus Config**: Voting timeouts, block limits
+- **Execution Config**: Gas prices, resource limits
+- **API Config**: Rate limits, authentication settings
+
+## Node Types and Specialization
+
+### Validator Nodes
+**Special Components**:
+- **Consensus Participation**: Full consensus engine activation
+- **Block Production**: Ability to propose and create blocks
+- **Validator Key Management**: Secure storage of validator keys
+- **Slashing Protection**: Protection against slashing conditions
+
+### Full Nodes
+**Configuration**:
+- **State Synchronization**: Complete state replication
+- **API Services**: Full API endpoint availability
+- **Event Streaming**: Real-time event notifications
+- **Mempool Participation**: Transaction relay and validation
+
+### Light Nodes
+**Optimizations**:
+- **Selective Sync**: Only relevant account synchronization
+- **Proof Verification**: Verify state without full storage
+- **Reduced Storage**: Minimal persistent storage requirements
+- **Bandwidth Optimization**: Efficient data transfer protocols
+
+## Performance Optimization
+
+### Caching Strategies
+- **LRU Cache**: Least Recently Used eviction for hot data
+- **Write-Through Cache**: Consistent caching with persistent storage
+- **Bloom Filters**: Fast negative lookups for non-existent data
+- **Compression**: Data compression for storage and network transfer
+
+### Parallel Processing
+- **Transaction Parallelization**: Concurrent execution of independent transactions
+- **I/O Parallelization**: Asynchronous disk and network operations
+- **Multi-threading**: CPU-intensive operations on multiple cores
+- **Pipeline Processing**: Overlap computation and I/O operations
+
+### Resource Management
+- **Memory Pools**: Pre-allocated memory for frequent operations
+- **Connection Pooling**: Reuse database and network connections
+- **Garbage Collection**: Efficient cleanup of temporary data
+- **Rate Limiting**: Prevent resource exhaustion from excessive load
+
+## Monitoring and Diagnostics
+
+### Health Checks
+- **Network Connectivity**: Peer connection status
+- **Consensus Participation**: Voting and block production rates
+- **Storage Health**: Database integrity and performance
+- **Resource Utilization**: CPU, memory, and disk usage
+
+### Logging and Tracing
+- **Structured Logging**: Machine-readable log formats
+- **Distributed Tracing**: Request tracing across components
+- **Performance Metrics**: Detailed timing and throughput data
+- **Error Tracking**: Comprehensive error collection and analysis
+
+### Debugging Tools
+- **State Inspection**: Tools for examining blockchain state
+- **Transaction Simulation**: Test transaction execution
+- **Network Analysis**: Analyze peer connections and message flow
+- **Performance Profiling**: Identify performance bottlenecks
