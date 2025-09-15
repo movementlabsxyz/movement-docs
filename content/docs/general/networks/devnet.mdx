@@ -1,0 +1,93 @@
+---
+id: devnet
+title: L1 (Devnet)
+description: "Movement L1 Development Network"
+---
+
+import React from 'react';
+
+Movement Devnet is a native L1 blockchain network that serves as the development environment for testing the latest protocol features and upgrades. Unlike the current mainnet sidechain, devnet operates as a full L1 blockchain with native Move execution.
+
+#### Devnet vs Testnet
+
+**Devnet** is for experimental development with rapid updates and frequent resets, while **testnet** provides a stable, production-like environment with persistent data for pre-production testing.
+
+## Key Features
+
+The devnet is development-focused with the following features:
+
+- **Latest Features**: Access to cutting-edge protocol features before they reach other networks
+- **Rapid Updates**: Weekly updates with new functionality and improvements
+- **Experimental APIs**: Early access to new APIs and developer tools
+- **Reset Capability**: Network resets for major upgrades and testing
+
+## Network Properties
+
+| Property | Value |
+|----------|-------|
+| **Network Type** | Native L1 Blockchain |
+| **Consensus** | BFT Consensus |
+| **Block Time** | ~1 second (Target) |
+| **Finality** | ~1 second (Details TBD) |
+| **Validators** | Managed by Movement Labs |
+| **Data Retention** | Reset on major updates |
+| **Faucet** | Available via API |
+
+
+## Use Cases
+
+#### Protocol Development
+
+Protocol development involves testing _**new consensus mechanisms**_, validating _**protocol upgrades**_, experimenting with _**new transaction types**_, and conducting _**performance testing and optimization**_.
+
+#### Application Development
+
+Application development includes building and testing _**Move applications**_, performing _**integration testing**_ with L1 features, conducting _**performance benchmarking**_, and preparing for _**migration from sidechain**_.
+
+#### Tooling and Infrastructure
+
+Tooling and infrastructure development covers testing _**new developer tools**_, validating _**indexing and analytics services**_, conducting _**infrastructure stress testing**_, and developing _**API and SDK**_ capabilities.
+
+
+## Migration Preparation
+
+#### For Developers
+
+For developers, preparation involves _**testing applications**_ and  _**optimizing performance**_ to take advantage of L1-specific optimizations, and _**updating dependencies**_ to ensure SDKs and tools support L1.
+
+#### For Infrastructure Providers
+
+For infrastructure providers, preparation includes _**node operations**_ to prepare for native validator requirements, _**API services**_ adaptation to L1 RPC interfaces, _**indexing**_ updates for native blockchain data structures, and _**monitoring**_ implementation of L1-specific health checks.
+
+
+
+## Getting Started
+
+#### Prerequisites
+
+- [Movement CLI tools](/devs/movementcli) installed
+- Understanding of [Move language](/general/l1/move-language)
+- Devnet MOVE tokens from [faucet](/general/networks/testnet#getting-started)
+
+## Resources (Coming Soon)
+
+#### Network Information
+
+- **RPC endpoints** for application integration
+- **Faucet access** for test tokens
+- **Explorer** for transaction and block browsing
+- **Development tools and SDKs**
+
+#### Tools and SDKs
+
+- **Movement CLI** for L1 interactions
+- **TypeScript/JavaScript SDKs**
+- **Rust SDKs** for native integration
+- **Development frameworks and templates**
+
+#### Documentation
+
+- **RPC Documentation** with complete API reference for L1 interactions
+- **Move Examples** featuring sample applications built for L1 architecture
+- **Migration Guides** explaining how to prepare applications for L1 migration
+- **Performance Benchmarks** comparing L1 vs sidechain performance

@@ -1,0 +1,341 @@
+---
+id: validator
+title: Run a Validator Node
+description: "Complete guide to running Movement validator nodes"
+---
+
+# Run a Validator Node
+
+A validator node is the core component required to participate in the Movement consensus protocol. Validators propose blocks, validate transactions, and earn staking rewards for their participation in securing the network.
+
+## What is a Validator Node?
+
+Validator nodes are responsible for:
+- **Consensus Participation**: Propose and vote on blocks
+- **Transaction Validation**: Verify transaction authenticity and state transitions  
+- **Network Security**: Stake tokens to secure the network
+- **Reward Generation**: Earn staking rewards for honest participation
+
+## Prerequisites
+
+### Staking Requirements
+- **Minimum Stake**: 1,000,000 MOVE tokens (subject to governance changes)
+- **Self-Stake**: Validators must self-stake a minimum amount
+- **Delegation**: Can accept delegated stake from other token holders
+
+### Technical Requirements
+Before running a validator, ensure you understand:
+- **[Staking on Movement](/general/nodes/validator-node/staking)** - How staking mechanics work
+- **[Governance](/general/nodes/validator-node/governance)** - Voting and proposal processes
+- **[Economics](/general/nodes/validator-node/economics)** - Reward mechanisms and penalties
+
+## Hardware Requirements
+
+### Minimum Requirements
+- **CPU**: 8 cores (3.0+ GHz)
+- **Memory**: 32GB RAM
+- **Storage**: 1TB NVMe SSD
+- **Network**: 1Gbps internet connection
+
+### Recommended Requirements (Mainnet)
+- **CPU**: 16+ cores (3.5+ GHz)
+- **Memory**: 64GB+ RAM
+- **Storage**: 2TB+ NVMe SSD with high IOPS (10,000+ IOPS)
+- **Network**: 10Gbps internet connection with low latency
+
+### Storage Considerations
+- Use high-performance NVMe SSDs for database storage
+- Separate OS drive from blockchain data drive
+- Plan for 50-100GB growth per month
+- Implement regular backup strategies
+
+### Network Requirements
+- **Bandwidth**: Minimum 1Gbps up/down (10Gbps recommended)
+- **Latency**: Low latency connection to other validators (under 50ms preferred)
+- **Reliability**: Redundant internet connections recommended
+- **Firewall**: Open required ports (see network configuration)
+
+## Software Requirements
+
+- **Operating System**: Ubuntu 20.04+ LTS (recommended) or equivalent Linux distribution
+- **Movement Node**: Latest validator software
+- **Movement CLI**: Latest version for management operations
+- **Monitoring Tools**: Prometheus, Grafana (recommended)
+- **Backup Tools**: For data protection and disaster recovery
+
+## Validator Node Setup Process
+
+### 1. Hardware and Environment Preparation
+```bash
+# Update system
+sudo apt update && sudo apt upgrade -y
+
+# Install dependencies
+sudo apt install -y curl wget git build-essential
+
+# Configure firewall
+sudo ufw allow 6180/tcp  # P2P port
+sudo ufw allow 8080/tcp  # API port (if needed)
+sudo ufw enable
+```
+
+### 2. Generate Validator Identity
+```bash
+# Generate validator keys
+movement-cli keys generate --output-file validator-keys.json
+
+# Generate consensus key
+movement-cli consensus generate-key --output-file consensus-key.json
+
+# Generate network identity
+movement-cli network generate-identity --output-file network-identity.json
+```
+
+**🔒 Security Note**: Store these keys securely and create encrypted backups. Loss of keys means loss of validator access.
+
+### 3. Configure Validator Node
+Create validator configuration file:
+
+```yaml
+# validator-config.yaml
+base:
+  data_dir: "/opt/movement/data"
+  role: "validator"
+
+consensus:
+  consensus_keypair_file: "consensus-key.json"
+  safety_rules:
+    service:
+      type: "local"
+    backend:
+      type: "on_disk_storage"
+
+validator_network:
+  identity:
+    type: "from_file"
+    path: "network-identity.json"
+  
+  network_keypairs_file: "validator-keys.json"
+  
+  listen_address: "/ip4/0.0.0.0/tcp/6180"
+  
+  seeds: []  # Will be populated with network seeds
+
+execution:
+  genesis_file_location: "genesis.blob"
+
+storage:
+  backup_service_address: "127.0.0.1:6186"
+  storage_pruner_config:
+    ledger_pruner_config:
+      enable: true
+      prune_window: 150000000
+
+api:
+  enabled: false  # Disable API for validator security
+```
+
+### 4. Download Network Configuration
+```bash
+# Download genesis and waypoint for target network
+wget https://github.com/movementlabsxyz/movement-networks/raw/main/mainnet/genesis.blob
+wget https://github.com/movementlabsxyz/movement-networks/raw/main/mainnet/waypoint.txt
+
+# Verify checksums
+sha256sum genesis.blob waypoint.txt
+```
+
+### 5. Initialize Validator
+```bash
+# Initialize validator with configuration
+movement-node --config-path validator-config.yaml \
+  --genesis-file-location genesis.blob \
+  --waypoint-file waypoint.txt
+```
+
+### 6. Set Up Staking Pool
+```bash
+# Initialize staking pool (requires tokens)
+movement-cli stake initialize-staking-pool \
+  --operator-address <validator-address> \
+  --voter-address <voter-address> \
+  --stake-amount 1000000000000  # 1M MOVE in microMOVE
+```
+
+### 7. Join Validator Set
+```bash
+# Join the validator set
+movement-cli stake join-validator-set \
+  --validator-address <validator-address>
+
+# Verify validator status
+movement-cli query validator-status --address <validator-address>
+```
+
+## Validator Operations
+
+### Starting the Validator
+```bash
+# Start as systemd service (recommended)
+sudo systemctl start movement-validator
+sudo systemctl enable movement-validator
+
+# Or run directly
+movement-node --config-path validator-config.yaml
+```
+
+### Monitoring Validator Health
+```bash
+# Check validator status
+movement-cli query validator-status
+
+# Monitor consensus participation
+movement-cli query validator-performance --epochs 10
+
+# Check peer connections (should be 0 for private validators)
+movement-cli query peer-count
+
+# Monitor resource usage
+htop
+iostat -x 1
+```
+
+### Validator Maintenance
+
+#### Regular Tasks
+- **Daily**: Check sync status and performance metrics
+- **Weekly**: Review logs for errors or warnings
+- **Monthly**: Update software and security patches
+- **Quarterly**: Review staking performance and delegation
+
+#### Software Updates
+```bash
+# Stop validator safely
+sudo systemctl stop movement-validator
+
+# Backup current state
+tar -czf validator-backup-$(date +%Y%m%d).tar.gz /opt/movement/data
+
+# Update software
+wget https://releases.movementnetwork.xyz/validator/latest
+chmod +x movement-node
+
+# Restart validator
+sudo systemctl start movement-validator
+```
+
+## Security Best Practices
+
+### Network Security
+- **Private Network**: Keep validator on private network, use VFN for public access
+- **Firewall**: Only open necessary ports (P2P port 6180)
+- **VPN**: Consider VPN for management access
+- **DDoS Protection**: Implement DDoS protection measures
+
+### Key Management
+- **Hardware Security Modules (HSM)**: Use HSM for key storage in production
+- **Key Rotation**: Implement regular key rotation procedures
+- **Backup Encryption**: Encrypt all key backups
+- **Access Control**: Limit access to validator keys
+
+### Operational Security
+- **Monitoring**: Implement comprehensive monitoring and alerting
+- **Logging**: Secure log storage and analysis
+- **Access Logs**: Monitor all access to validator infrastructure
+- **Incident Response**: Have incident response procedures ready
+
+## Performance Optimization
+
+### CPU Optimization
+```bash
+# Set CPU governor to performance
+echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+
+# Set process affinity for validator
+taskset -c 0-7 movement-node --config-path validator-config.yaml
+```
+
+### Memory Optimization
+```bash
+# Increase memory limits
+echo 'vm.swappiness=1' >> /etc/sysctl.conf
+echo 'vm.dirty_ratio=15' >> /etc/sysctl.conf
+echo 'vm.dirty_background_ratio=5' >> /etc/sysctl.conf
+sysctl -p
+```
+
+### Storage Optimization
+```bash
+# Use appropriate filesystem
+mkfs.ext4 -F /dev/nvme0n1
+mount -o noatime,nodiratime /dev/nvme0n1 /opt/movement/data
+
+# Optimize I/O scheduler
+echo noop > /sys/block/nvme0n1/queue/scheduler
+```
+
+## Troubleshooting
+
+### Common Issues
+
+#### Validator Not Participating in Consensus
+1. Check if validator is in active set: `movement-cli query validator-set`
+2. Verify staking requirements are met
+3. Check network connectivity to other validators
+4. Review consensus logs for errors
+
+#### Sync Issues
+1. Verify genesis and waypoint files are correct
+2. Check peer connectivity (should connect through VFN)
+3. Monitor resource usage (CPU, memory, disk I/O)
+4. Review network configuration
+
+#### Performance Issues
+1. Monitor CPU and memory usage
+2. Check disk I/O patterns and latency
+3. Verify network bandwidth and latency
+4. Review validator configuration parameters
+
+### Emergency Procedures
+
+#### Validator Compromise
+1. Immediately stop the validator node
+2. Rotate all cryptographic keys
+3. Investigate the security incident
+4. Notify the community if network impact
+
+#### Hardware Failure
+1. Stop validator gracefully if possible
+2. Restore from backup on new hardware
+3. Verify data integrity before restarting
+4. Monitor for any state inconsistencies
+
+## Economics and Rewards
+
+### Reward Mechanism
+- **Block Rewards**: Earn rewards for successful block proposals
+- **Transaction Fees**: Receive portion of transaction fees
+- **Staking Rewards**: Proportional to stake amount and performance
+- **Penalties**: Slashing for malicious behavior or excessive downtime
+
+### Performance Metrics
+- **Uptime**: Percentage of time validator is online and participating
+- **Proposal Rate**: Frequency of successful block proposals
+- **Voting Participation**: Participation in consensus voting
+- **Commission**: Fee charged to delegators (if applicable)
+
+## Next Steps
+
+After setting up your validator node:
+
+1. **Set Up VFN**: Deploy a **[Validator Fullnode](/general/nodes/validator-fullnode)** for public access
+2. **Configure Monitoring**: Set up **[monitoring and alerting](/general/nodes/validator-node/monitoring)**
+3. **Join Community**: Connect with other validators on **[Discord](https://discord.gg/movementlabsxyz)**
+4. **Ongoing Operations**: Review **[validator operations guide](/general/nodes/validator-node/operations)**
+
+## Support Resources
+
+- **[Validator Troubleshooting](/general/nodes/validator-node/troubleshooting)** - Common issues and solutions
+- **[Performance Tuning](/general/nodes/validator-node/performance)** - Advanced optimization guides
+- **[Security Guide](/general/nodes/validator-node/security)** - Comprehensive security practices
+- **[Community Forum](https://forum.movementnetwork.xyz)** - Validator discussions and support

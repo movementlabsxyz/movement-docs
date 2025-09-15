@@ -1,19 +1,10 @@
 ---
-title: Introduction to Move
-description: A high level overview of the move programming language
+title: Move Language
+description: A high level overview of the Move programming language
 ---
 
-# Introduction to Move
 
-Movement Labs is building a network of Move-based blockchains. Our flagship products include the Movement Mainnet and Movement Sidechain.
-
-Movement Sidechain is a Move-based sidechain secured by an L1, providing the highest possible TPS through Move, fast finality, native day-zero access to mass liquidity, and modular customizations.
-
-<!-- > ⚠️ This documentation provides a high level intro to the vision. The [white paper](https://www.movementnetwork.xyz/whitepaper/movement-whitepaper_en.pdf) goes into more details on some of the presented solutions. -->
-
-## Why Move?
-
-Move is a safe and secure programming language designed by Facebook for smart contracts that emphasize ownership and safety. Assets in Move are represented as resources. Owing to Move's strong ownership model and explicit resource abilities, Move simplifies the development of safe smart contracts for common blockchain tasks such as transferring ownership of assets, minting, and destroying. 
+Move is a safe and secure programming language designed by Facebook for smart contracts that emphasize ownership and safety. Assets in Move are represented as resources. Owing to Move's strong ownership model and explicit resource abilities, Move simplifies the development of safe smart contracts for common blockchain tasks such as transferring ownership of assets, minting, and destroying.
 
 The chart below compares common non-Move runtimes against Aptos and Sui Move runtimes, underscoring the different models and benefits of Move.
 

@@ -1,0 +1,19 @@
+{
+  "title": "Full Node",
+  "pages": [
+    "index",
+    "requirements",
+    "deploy-docker",
+    "deploy-source",
+    "deploy-cloud",
+    "local-dev",
+    "configure",
+    "api-config",
+    "indexer",
+    "monitoring",
+    "upgrade",
+    "backup",
+    "performance",
+    "troubleshooting"
+  ]
+}

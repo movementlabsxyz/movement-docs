@@ -1,0 +1,157 @@
+---
+id: architecture
+title: L1 Architecture
+description: "Detailed architecture of the Movement L1"
+---
+
+Movement L1 is designed as a high-performance, native Move blockchain with a modular architecture that separates concerns while maintaining tight integration for optimal performance.
+
+## Core Layers
+
+The Movement L1 architecture is organized into five core layers, each handling specific aspects of the blockchain system while working together to provide a complete, high-performance platform. This high-level architecture is implemented through individual nodes that follow the same five-layer structure, as detailed in the [node-level architecture](/general/l1/node-level-architecture) documentation.
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        Movement L1 Network                      │
+├─────────────────────────────────────────────────────────────────┤
+│  Application Layer                                              │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐                │
+│  │    DeFi     │ │    NFTs     │ │ Enterprise  │                │
+│  │    DApps    │ │   Games     │ │   Apps      │                │
+│  └─────────────┘ └─────────────┘ └─────────────┘                │
+├─────────────────────────────────────────────────────────────────┤
+│  1. API Layer                                                   │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐                │
+│  │  REST API   │ │ WebSocket   │ │   GraphQL   │                │
+│  │  Endpoints  │ │   Events    │ │   Queries   │                │
+│  └─────────────┘ └─────────────┘ └─────────────┘                │
+├─────────────────────────────────────────────────────────────────┤
+│  2. Execution Layer                                             │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐                │
+│  │   MoveVM    │ │ Transaction │ │   State     │                │
+│  │  Runtime    │ │  Pipeline   │ │ Management  │                │
+│  └─────────────┘ └─────────────┘ └─────────────┘                │
+├─────────────────────────────────────────────────────────────────┤
+│  3. Storage Layer                                               │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐                │
+│  │   Merkle    │ │   Account   │ │  Transaction│                │
+│  │    Trees    │ │    Store    │ │   History   │                │
+│  └─────────────┘ └─────────────┘ └─────────────┘                │
+├─────────────────────────────────────────────────────────────────┤
+│  4. Consensus Layer                                             │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐                │
+│  │   Leader    │ │  Validator  │ │    BFT      │                │
+│  │  Selection  │ │   Network   │ │  Consensus  │                │
+│  └─────────────┘ └─────────────┘ └─────────────┘                │
+├─────────────────────────────────────────────────────────────────┤
+│  5. Network Layer                                               │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐                │
+│  │   P2P       │ │  Mempool    │ │  Message    │                │
+│  │  Protocol   │ │  Management │ │  Routing    │                │
+│  └─────────────┘ └─────────────┘ └─────────────┘                │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### 1. API Layer
+
+#### REST API
+
+The REST API provides _**standard endpoints**_ for common blockchain operations, enabling _**direct resource queries**_ to Move resources and _**secure transaction submission**_ for broadcasting. The API supports _**real-time state inspection**_ and querying capabilities.
+
+#### WebSocket Events
+
+WebSocket events deliver _**real-time updates**_ through live transaction and block notifications, featuring _**selective event filtering**_ for subscription and _**low latency**_ with minimal delay for event delivery. The system ensures _**reliable delivery**_ with guaranteed event ordering.
+
+#### GraphQL Interface
+
+The GraphQL interface enables _**flexible queries**_ for complex multi-resource operations, providing _**type-safe query construction**_ through schema definition and supporting _**efficient data aggregation**_ and computation. The system includes _**query result caching**_ for performance optimization.
+
+### 2. Execution Layer
+
+#### Move Virtual Machine (MoveVM)
+
+The MoveVM provides _**native execution**_ of Move bytecode, featuring _**precise gas metering**_ that accounts for instruction, storage, and payload costs. It enforces _**type safety**_ through Move’s static and dynamic safety checks, including resource ownership rules, and ensures _**sandboxing**_ by isolating transaction execution within the VM environment.
+
+#### Transaction Pipeline
+
+The transaction pipeline enables _**parallel processing**_ through [Block-STM](https://arxiv.org/abs/2203.06871), which applies _**dynamic dependency resolution**_ to detect read/write conflicts and order transactions consistently. The system supports _**speculative execution**_ with optimistic parallel execution, where transactions may be aborted and re-executed as needed, and Block-STM guarantees that transactions are only _**committed in deterministic order**_ once all prior dependencies are finalized.
+
+#### State Management
+
+State management maintains a _**consistent global state view**_ of all account and resource data. It integrates with [Block-STM](https://arxiv.org/abs/2203.06871) to provide _**deterministic commit ordering**_ of state changes. For performance, it uses _**in-memory buffering and caching**_ during execution. Finalized state updates are written through _**efficient serialization**_ and stored in _**authenticated data structures**_, ensuring both persistence and verifiability.
+
+### 3. Storage Layer
+
+#### Account Store
+
+The account store implements _**address-based**_ direct mapping from addresses to account data, providing _**native storage**_ of Move resources with _**optimized access patterns**_ for common operations. The system includes _**state data compression**_ for storage efficiency.
+
+#### Merkle Trees
+
+Merkle trees provide a _**cryptographic state root**_ commitment to global state, enabling _**efficient proof generation**_ for state verification and supporting _**incremental updates**_ with minimal computation for state changes. The system ensures _**fast verification**_ of state transitions.
+
+#### Transaction History
+
+Transaction history maintains a _**complete ledger**_ with full history of all transactions, featuring _**efficient indexing**_ for querying by various criteria and _**optional pruning**_ of historical data for storage optimization. The system provides an _**immutable audit trail**_ of all state changes.
+
+### 4. Consensus Layer
+
+#### Byzantine Fault Tolerant (BFT) Consensus
+
+The BFT consensus mechanism uses a _**modified HotStuff-based algorithm**_ designed for high throughput, providing _**safety**_ guarantees that ensure consistency even with up to 1/3 malicious validators. The system maintains _**liveness**_ by ensuring progress under network asynchrony, while delivering _**single-slot finality**_ for fast transaction confirmation.
+
+#### Validator Network
+
+The validator network operates on a _**proof-of-stake**_ model that enables energy-efficient validation through token staking, featuring a _**dynamic set**_ where validators can join or leave based on their stake and performance. The system implements _**regular leader rotation**_ for decentralization and includes _**slashing**_ mechanisms that impose penalties for malicious or negligent behavior.
+
+#### Leader Selection
+
+Leader selection employs a _**deterministic**_ approach with cryptographically verifiable selection that is _**weighted**_ based on validator stake, ensuring _**fair**_ distribution and preventing leader monopolization while maintaining _**efficient**_ operation with minimal computational overhead.
+
+### 5. Network Layer
+
+#### Peer-to-Peer Protocol
+
+The peer-to-peer protocol implements a _**gossip network**_ for efficient information dissemination, featuring _**automatic peer discovery**_ of network participants and _**robust connection management**_ with handling and recovery capabilities. The system includes _**cryptographic message authentication**_ for verification.
+
+#### Mempool
+
+The mempool manages _**pending transactions**_ in a transaction pool, implementing _**priority-based ordering**_ for transaction selection and providing _**spam protection**_ against malicious transactions. The system includes _**broadcast optimization**_ for efficient transaction propagation.
+
+## Security Architecture
+
+#### Cryptographic Primitives
+
+The system employs _**Ed25519 digital signatures**_ for transaction authentication, _**SHA-3 hash functions**_ for data integrity and commitments, and _**efficient Merkle proofs**_ for state and transaction verification. The architecture includes _**verifiable random beacons**_ for leader selection.
+
+#### Access Control
+
+Access control implements an _**address-based account model**_ with _**Move's resource ownership model**_ for asset safety, featuring _**fine-grained permission systems**_ for management and _**multi-signature support**_ for transaction authorization.
+
+#### Network Security
+
+Network security provides _**DDoS protection**_ against network attacks, implements _**rate limiting**_ to prevent resource exhaustion, and ensures _**cryptographic validator authentication**_ for identity verification. The system includes _**slashing conditions**_ that create economic incentives for honest behavior.
+
+## Performance Characteristics
+
+#### Throughput
+
+The system targets _**10,000+ transactions per second**_ with _**burst capacity**_ for higher throughput during brief periods. Future development includes _**horizontal scaling through sharding**_ and _**continuous performance optimization**_ for sustained improvements.
+
+#### Latency
+
+The system achieves _**1-2 second block production**_ with _**single-block finality**_ and _**sub-second transaction confirmation**_. The architecture minimizes _**network propagation delay**_ for optimal performance.
+
+#### Storage
+
+Storage management implements _**bounded state growth**_ through pruning mechanisms, _**configurable history retention**_ for transaction data, and _**efficient data compression**_ techniques. The system includes _**long-term archival solutions**_ for data preservation.
+
+## Governance and Upgrades
+
+#### On-Chain Governance
+
+On-chain governance implements a _**structured proposal system**_ for governance mechanisms, featuring _**token-weighted voting**_ on protocol changes and _**automatic execution**_ of approved proposals. The system includes _**emergency procedures**_ with fast-track processes for critical issues.
+
+#### Protocol Upgrades
+
+Protocol upgrades feature _**coordinated version management**_ for updates, maintaining _**backward compatibility**_ where possible and providing _**automated migration tools**_ for existing state. The process includes _**comprehensive testing**_ before mainnet deployment.

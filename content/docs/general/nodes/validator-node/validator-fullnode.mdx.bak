@@ -1,0 +1,507 @@
+---
+id: validator-fullnode
+title: Run a Validator Fullnode (VFN)
+description: "Complete guide to running Movement validator fullnodes"
+---
+
+# Run a Validator Fullnode (VFN)
+
+A Validator Fullnode (VFN) is a specialized fullnode that can only be operated by validator operators. VFNs serve as secure entry and exit points for validator operations, providing a crucial security layer between your validator and the public network.
+
+## What is a Validator Fullnode?
+
+VFNs provide several critical functions:
+- **Security Layer**: Acts as a buffer between your validator and public network
+- **Data Distribution**: Serves blockchain data to the ecosystem
+- **Load Balancing**: Reduces load on your validator node
+- **API Services**: Provides secure RPC and REST API access
+- **Monitoring**: Easier monitoring and debugging of network issues
+
+## Why Run a VFN?
+
+While VFNs are not required for consensus participation, they are **highly recommended** for all validator operators because:
+
+1. **Enhanced Security**: Isolates your validator from direct public network exposure
+2. **Improved Performance**: Validator can focus solely on consensus while VFN handles data requests
+3. **Better Reliability**: Provides redundant access to blockchain data
+4. **Ecosystem Support**: Contributes to network health and decentralization
+5. **Easier Maintenance**: Simplifies monitoring, debugging, and upgrades
+
+## Architecture Overview
+
+```
+Internet ←→ VFN ←→ Validator Node
+            ↑
+    (Public Access)  (Private Network)
+```
+
+The VFN sits between the public internet and your validator, handling all external communication while your validator operates on a private network.
+
+## Hardware Requirements
+
+### Minimum Requirements
+- **CPU**: 4+ cores (2.5+ GHz)
+- **Memory**: 16GB RAM
+- **Storage**: 500GB NVMe SSD
+- **Network**: 1Gbps internet connection
+
+### Recommended Requirements
+- **CPU**: 8+ cores (3.0+ GHz)
+- **Memory**: 32GB+ RAM
+- **Storage**: 1TB+ NVMe SSD with high IOPS
+- **Network**: 10Gbps internet connection for high-traffic scenarios
+
+### Storage Considerations
+- Less storage intensive than validators (no consensus state)
+- Plan for 30-50GB growth per month
+- Can use faster, smaller drives compared to validators
+- Regular pruning can reduce storage requirements
+
+## Software Requirements
+
+- **Operating System**: Ubuntu 20.04+ LTS or equivalent Linux distribution
+- **Movement Node**: Latest fullnode software
+- **Movement CLI**: Latest version for management
+- **Load Balancer**: Nginx or HAProxy (for high-availability setups)
+- **Monitoring**: Prometheus, Grafana for performance monitoring
+
+## VFN Setup Process
+
+### 1. Environment Preparation
+```bash
+# Update system
+sudo apt update && sudo apt upgrade -y
+
+# Install dependencies
+sudo apt install -y curl wget git nginx
+
+# Configure firewall for VFN
+sudo ufw allow 6180/tcp   # P2P port
+sudo ufw allow 8080/tcp   # REST API port
+sudo ufw allow 8084/tcp   # WebSocket port
+sudo ufw allow 9101/tcp   # Metrics port
+sudo ufw enable
+```
+
+### 2. Generate VFN Identity
+```bash
+# Generate VFN network identity (separate from validator)
+movement-cli network generate-identity --output-file vfn-identity.json
+
+# Generate VFN keys
+movement-cli keys generate --output-file vfn-keys.json
+```
+
+### 3. Configure VFN
+Create VFN configuration file:
+
+```yaml
+# vfn-config.yaml
+base:
+  data_dir: "/opt/movement/vfn-data"
+  role: "validator_fullnode"
+
+validator_network:
+  identity:
+    type: "from_file"
+    path: "vfn-identity.json"
+  
+  network_keypairs_file: "vfn-keys.json"
+  
+  # Connect to your validator (private network)
+  seeds:
+    - "/ip4/<VALIDATOR_IP>/tcp/6180/noise-ik/<VALIDATOR_PEER_ID>/handshake/0"
+
+public_network:
+  identity:
+    type: "from_file" 
+    path: "vfn-identity.json"
+  
+  network_keypairs_file: "vfn-keys.json"
+  
+  # Listen for public connections
+  listen_address: "/ip4/0.0.0.0/tcp/6180"
+  
+  # Connect to other VFNs and PFNs
+  seeds:
+    - "/dns4/pfn.mainnet.movementnetwork.xyz/tcp/6180/noise-ik/<SEED_PEER_ID>/handshake/0"
+
+execution:
+  genesis_file_location: "genesis.blob"
+
+storage:
+  storage_pruner_config:
+    ledger_pruner_config:
+      enable: true
+      prune_window: 100000000  # Keep less history than validator
+
+# Enable API services
+api:
+  enabled: true
+  address: "0.0.0.0:8080"
+  
+  # Enable various API endpoints
+  endpoints:
+    - "health"
+    - "accounts"
+    - "transactions"
+    - "events"
+    - "blocks"
+    - "state"
+
+stream_rpc:
+  enabled: true
+  address: "0.0.0.0:8084"
+
+# Metrics for monitoring
+inspection_service:
+  address: "0.0.0.0:9101"
+  port: 9101
+```
+
+### 4. Network Configuration Between Validator and VFN
+
+Configure secure communication between your validator and VFN:
+
+#### On Validator Node
+```yaml
+# Add to validator-config.yaml
+validator_network:
+  # Allow connection from VFN
+  mutual_authentication: true
+  
+  # Whitelist VFN peer ID
+  upstream_peers:
+    - peer_id: "<VFN_PEER_ID>"
+      addresses: ["/ip4/<VFN_IP>/tcp/6181"]
+
+# Disable public API on validator
+api:
+  enabled: false
+```
+
+#### Network Setup
+```bash
+# Create private network between validator and VFN
+# Example using VPN or private cloud networking
+
+# Option 1: WireGuard VPN
+sudo apt install wireguard
+
+# Option 2: Cloud private networking (AWS VPC, GCP VPN, etc.)
+# Configure according to your cloud provider
+
+# Option 3: Direct private network connection
+# Configure firewall to allow only VFN ↔ Validator communication
+```
+
+### 5. Download Network Configuration
+```bash
+# Download the same genesis as your validator
+wget https://github.com/movementlabsxyz/movement-networks/raw/main/mainnet/genesis.blob
+wget https://github.com/movementlabsxyz/movement-networks/raw/main/mainnet/waypoint.txt
+
+# Verify integrity
+sha256sum genesis.blob waypoint.txt
+```
+
+### 6. Start VFN
+```bash
+# Start VFN
+movement-node --config-path vfn-config.yaml \
+  --genesis-file-location genesis.blob \
+  --waypoint-file waypoint.txt
+```
+
+## VFN Operations
+
+### Starting the VFN Service
+```bash
+# Create systemd service
+sudo tee /etc/systemd/system/movement-vfn.service << EOF
+[Unit]
+Description=Movement Validator Fullnode
+After=network.target
+
+[Service]
+Type=simple
+User=movement
+WorkingDirectory=/opt/movement
+ExecStart=/usr/local/bin/movement-node --config-path vfn-config.yaml
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Start and enable service
+sudo systemctl daemon-reload
+sudo systemctl start movement-vfn
+sudo systemctl enable movement-vfn
+```
+
+### Monitoring VFN Health
+```bash
+# Check VFN sync status
+curl http://localhost:8080/v1/health
+
+# Monitor peer connections
+movement-cli query peer-count
+
+# Check API responsiveness
+curl http://localhost:8080/v1/ledger_info
+
+# Monitor resource usage
+htop
+iostat -x 1
+netstat -tuln | grep :8080
+```
+
+### Load Balancing and High Availability
+
+For production environments, consider load balancing multiple VFNs:
+
+```nginx
+# /etc/nginx/sites-available/vfn-loadbalancer
+upstream vfn_backend {
+    server 127.0.0.1:8080 weight=1 max_fails=3 fail_timeout=30s;
+    server 127.0.0.1:8081 weight=1 max_fails=3 fail_timeout=30s;
+}
+
+server {
+    listen 80;
+    server_name api.validator.example.com;
+    
+    location / {
+        proxy_pass http://vfn_backend;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_connect_timeout 10s;
+        proxy_send_timeout 10s;
+        proxy_read_timeout 10s;
+    }
+    
+    location /health {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+    }
+}
+```
+
+## Security Configuration
+
+### Network Security
+```bash
+# Restrict API access (if needed)
+sudo ufw allow from <TRUSTED_IP_RANGE> to any port 8080
+
+# Set up fail2ban for API protection
+sudo apt install fail2ban
+
+# Configure rate limiting in nginx
+limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
+```
+
+### API Security
+```yaml
+# Add to vfn-config.yaml
+api:
+  # Enable CORS if needed
+  cors:
+    enabled: true
+    allowed_origins: ["https://yourdapp.com"]
+  
+  # Rate limiting
+  rate_limit:
+    enabled: true
+    requests_per_second: 1000
+    burst: 2000
+```
+
+## Performance Optimization
+
+### API Performance Tuning
+```yaml
+# Optimize for high-traffic API usage
+api:
+  # Increase connection limits
+  max_connections: 1000
+  
+  # Enable caching for read requests
+  cache:
+    enabled: true
+    ttl_seconds: 5
+    
+  # Optimize database queries
+  database:
+    connection_pool_size: 50
+    query_timeout_seconds: 30
+```
+
+### System Optimization
+```bash
+# Increase file descriptor limits
+echo '* soft nofile 65536' >> /etc/security/limits.conf
+echo '* hard nofile 65536' >> /etc/security/limits.conf
+
+# Optimize network settings for high connection load
+echo 'net.core.somaxconn = 65536' >> /etc/sysctl.conf
+echo 'net.ipv4.tcp_max_syn_backlog = 65536' >> /etc/sysctl.conf
+sysctl -p
+```
+
+## Monitoring and Metrics
+
+### Prometheus Metrics
+```yaml
+# prometheus.yml
+scrape_configs:
+  - job_name: 'movement-vfn'
+    static_configs:
+      - targets: ['localhost:9101']
+    metrics_path: /metrics
+    scrape_interval: 15s
+```
+
+### Key Metrics to Monitor
+- **API Request Rate**: Requests per second handled
+- **API Response Time**: Average and 95th percentile latency
+- **Peer Connections**: Number of connected peers
+- **Sync Status**: Block height and sync lag
+- **Resource Usage**: CPU, memory, disk I/O, network bandwidth
+
+### Grafana Dashboard
+Create dashboards tracking:
+- VFN performance metrics
+- API endpoint usage
+- Network connectivity health
+- Resource utilization trends
+
+## Common Use Cases
+
+### DApp Infrastructure
+Provide reliable API services for your own dApps:
+```bash
+# Configure dedicated API endpoints
+curl http://vfn.yourdomain.com/v1/accounts/0x1
+curl http://vfn.yourdomain.com/v1/transactions
+```
+
+### Analytics and Indexing
+Use VFN as a data source for analytics:
+```python
+import requests
+
+# Example: Track transaction volume
+def get_recent_transactions():
+    response = requests.get("http://localhost:8080/v1/transactions?limit=100")
+    return response.json()
+```
+
+### Development and Testing
+Provide stable endpoints for development:
+```bash
+# Configure testnet VFN for developers
+movement-node --network testnet --enable-dev-api
+```
+
+## Troubleshooting
+
+### Common Issues
+
+#### VFN Not Syncing
+1. Check connection to validator node
+2. Verify network configuration between VFN and validator
+3. Ensure genesis and waypoint files match validator
+4. Check firewall rules and network connectivity
+
+#### API Performance Issues
+1. Monitor connection pool usage
+2. Check for database query bottlenecks
+3. Verify adequate hardware resources
+4. Consider load balancing across multiple VFNs
+
+#### High Resource Usage
+1. Implement request rate limiting
+2. Optimize database queries and caching
+3. Monitor for excessive peer connections
+4. Consider pruning older state data
+
+### Debug Commands
+```bash
+# Check VFN connectivity to validator
+movement-cli network test-connection <VALIDATOR_IP>:6180
+
+# Verify API health
+curl -v http://localhost:8080/v1/health
+
+# Check sync status
+curl http://localhost:8080/v1/ledger_info
+
+# Monitor real-time metrics
+curl http://localhost:9101/metrics | grep movement_
+```
+
+## Maintenance Operations
+
+### Regular Maintenance
+- **Daily**: Monitor API performance and error rates
+- **Weekly**: Review resource usage and capacity
+- **Monthly**: Update software and security patches
+- **Quarterly**: Review configuration and optimization
+
+### Backup Strategies
+```bash
+# Backup VFN configuration
+tar -czf vfn-config-backup-$(date +%Y%m%d).tar.gz \
+  vfn-config.yaml vfn-identity.json vfn-keys.json
+
+# VFN data can be re-synced, so full data backup is optional
+# Focus on configuration and identity backups
+```
+
+### Disaster Recovery
+1. **Configuration Recovery**: Restore from configuration backups
+2. **Re-sync Data**: VFN can re-sync from validator or network
+3. **Network Reconfiguration**: Update network settings if needed
+4. **Service Restoration**: Verify all services are operational
+
+## Best Practices
+
+### Security
+- Keep VFN software updated
+- Monitor API access patterns for anomalies  
+- Implement proper access controls and rate limiting
+- Regularly rotate network identities and keys
+
+### Performance  
+- Monitor and optimize database performance
+- Implement appropriate caching strategies
+- Use load balancing for high-traffic scenarios
+- Regular performance testing and tuning
+
+### Reliability
+- Implement health checks and monitoring
+- Set up automated alerts for issues
+- Maintain multiple VFNs for redundancy
+- Document operational procedures
+
+## Integration with Validator Operations
+
+VFNs work best as part of a complete validator setup:
+
+1. **[Validator Node](/general/nodes/validator-node/validator)** - Core consensus participation
+2. **[Validator Fullnode](/general/nodes/validator-node/validator-fullnode)** - This guide (public access layer)
+3. **[Monitoring Setup](/general/nodes/validator-node/monitoring)** - Comprehensive monitoring
+4. **[Security Practices](/general/nodes/validator-node/security)** - End-to-end security
+
+## Support Resources
+
+- **[VFN Troubleshooting](/general/nodes/validator-node/vfn-troubleshooting)** - VFN-specific issues
+- **[Performance Optimization](/general/nodes/validator-node/vfn-performance)** - VFN tuning guides  
+- **[API Documentation](/api/node)** - Complete API reference
+- **[Community Discord](https://discord.gg/movementlabsxyz)** - Get help from other operators

@@ -1,0 +1,19 @@
+{
+  "title": "Validator Node",
+  "pages": [
+    "index",
+    "validator",
+    "validator-fullnode",
+    "requirements",
+    "generate-identity",
+    "configure",
+    "genesis-waypoint",
+    "deploy-docker",
+    "deploy-source", 
+    "deploy-cloud",
+    "join-validator-set",
+    "staking",
+    "monitoring",
+    "troubleshooting"
+  ]
+}
