@@ -2,8 +2,6 @@
   "title": "Networks",
   "pages": [
     "index",
-    "sidechain",
-    "l1",
     "mainnet",
     "testnet",
     "devnet"

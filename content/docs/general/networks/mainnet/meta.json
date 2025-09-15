@@ -1,9 +1,9 @@
 {
-  "title": "Mainnet (sidechain)",
+  "title": "Sidechain (Mainnet)",
   "position": 1,
-  "pages": ["index", "what-is-movement-mainnet", "introductionToMove"],
+  "pages": ["index", "what-is-movement-mainnet"],
   "link": {
     "type": "generated-index",
-    "description": "Mainnet (sidechain)"
+    "description": "Sidechain (Mainnet)"
   }
 }

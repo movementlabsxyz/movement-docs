@@ -3,8 +3,6 @@ title: Introduction to Move
 description: A high level overview of the move programming language
 ---
 
-# Introduction to Move
-
 Movement Labs is building a network of Move-based blockchains. Our flagship products include the Movement Mainnet and Movement Sidechain.
 
 Movement Sidechain is a Move-based sidechain secured by an L1, providing the highest possible TPS through Move, fast finality, native day-zero access to mass liquidity, and modular customizations.

@@ -1,10 +1,11 @@
 {
-  "title": "L1",
+  "title": "Movement L1",
   "pages": [
     "index",
     "what-is-movement-l1",
+    "introductionToMove",
     "architecture",
     "node-level-architecture",
-    "whitepaper"
+    "protocol-specification"
   ]
 }
