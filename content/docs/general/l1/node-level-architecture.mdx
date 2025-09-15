@@ -8,44 +8,45 @@ This document provides a detailed view of the internal architecture of Movement 
 
 ## Core Layers
 
-The Movement L1 node architecture is organized into four core layers, each handling specific aspects of node functionality while working together to provide a complete, high-performance blockchain node.
+The Movement L1 node architecture is organized into five core layers, each handling specific aspects of node functionality while working together to provide a complete, high-performance blockchain node. These layers correspond directly to the [L1 architecture](/general/l1/architecture) but focus on the internal implementation details of individual nodes rather than the overall system design.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                        Movement L1 Node                             │
 ├─────────────────────────────────────────────────────────────────────┤
-│  1. Network Interface Layer                                         │
+│  1. API Layer                                                       │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐                    │
+│  │   RPC/API   │ │  WebSocket  │ │   Metrics   │                    │
+│  │   Server    │ │   Server    │ │   Exporter  │                    │
+│  └─────────────┘ └─────────────┘ └─────────────┘                    │
+├─────────────────────────────────────────────────────────────────────┤
+│  2. Storage Layer                                                   │
 │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐    │
-│  │   P2P Net   │ │   RPC/API   │ │  WebSocket  │ │   Metrics   │    │
-│  │   Handler   │ │   Server    │ │   Server    │ │   Exporter  │    │
+│  │   State     │ │ Transaction │ │   Event     │ │   Config    │    │
+│  │   Store     │ │    Store    │ │   Store     │ │   Store     │    │
 │  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘    │
 ├─────────────────────────────────────────────────────────────────────┤
-│  2. Transaction Processing Layer                                    │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐    │
-│  │   Mempool   │ │ Transaction │ │   Executor  │ │ State Cache │    │
-│  │   Manager   │ │  Validator  │ │   Engine    │ │   Manager   │    │
-│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘    │
+│  3. Execution Layer                                                 │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐                    │
+│  │ Transaction │ │   Executor  │ │ State Cache │                    │
+│  │  Validator  │ │   Engine    │ │   Manager   │                    │
+│  └─────────────┘ └─────────────┘ └─────────────┘                    │
 ├─────────────────────────────────────────────────────────────────────┤
-│  3. Consensus Layer                                                 │
+│  4. Consensus Layer                                                 │
 │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐    │
 │  │  Consensus  │ │   Voting    │ │   Leader    │ │   Safety    │    │
 │  │   Engine    │ │   Module    │ │  Election   │ │   Module    │    │
 │  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘    │
 ├─────────────────────────────────────────────────────────────────────┤
-│  4. Storage Layer                                                   │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐    │
-│  │   State     │ │ Transaction │ │   Event     │ │   Config    │    │
-│  │   Store     │ │    Store    │ │   Store     │ │   Store     │    │
-│  └─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘    │
+│  5. Network Layer                                                   │
+│  ┌─────────────┐ ┌─────────────┐                                    │
+│  │   P2P Net   │ │   Mempool   │                                    │
+│  │   Handler   │ │   Manager   │                                    │
+│  └─────────────┘ └─────────────┘                                    │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### 1. Network Interface Layer
-
-#### P2P Network Handler
-
-The P2P Network Handler manages peer-to-peer communication with other nodes.
-The P2P Network Handler consists of a _**connection manager**_ that establishes and maintains connections to peers, a _**message router**_ that routes incoming messages to appropriate handlers, a _**gossip protocol**_ that implements efficient information dissemination, and _**peer discovery**_ mechanisms that discover and connect to new network peers.
+### 1. API Layer
 
 #### RPC/API Server
 
@@ -62,12 +63,26 @@ The WebSocket Server streams _**new block**_ notifications in real-time, _**tran
 The Metrics Exporter exports node performance and health metrics.
 It tracks _**performance metrics**_ including transaction throughput, latency, and CPU usage, _**network metrics**_ such as peer count, message rates, and bandwidth usage, _**storage metrics**_ covering database size, disk I/O, and cache hit rates, and _**consensus metrics**_ including participation rates and voting statistics.
 
-### 2. Transaction Processing Layer
+### 2. Storage Layer
 
-#### Mempool Manager
+#### State Store
 
-The Mempool Manager manages pending transactions before consensus.
-The Mempool Manager includes a _**transaction pool**_ for in-memory storage of pending transactions, a _**priority queue**_ that orders transactions by gas price and priority, a _**spam filter**_ that prevents spam and invalid transactions, and an _**expiration manager**_ that removes expired transactions.
+The State Store provides persistent storage of global blockchain state. It supports _**efficient read operations**_ with Merkle proofs for state queries, _**atomic write operations**_ with versioning for state updates, _**proof generation**_ for cryptographic proofs of state, and _**state synchronization**_ to sync state with other nodes.
+
+#### Transaction Store
+
+The Transaction Store stores the complete transaction history and metadata
+
+#### Event Store and Indexing
+
+The Event Store provides indexing _**by event key**_ for fast queries of specific event streams, _**by type**_ to query events by Move type, _**by transaction**_ to find all events from a specific transaction, and _**by block**_ to retrieve all events from a block.
+
+#### Configuration Store
+
+The Configuration Store stores node configuration and network parameters.
+The Configuration Store manages _**network configuration**_ for peer discovery and connection limits, _**consensus configuration**_ for voting timeouts and block limits, _**execution configuration**_ for gas prices and resource limits, and _**API configuration**_ for rate limits and authentication settings.
+
+### 3. Execution Layer
 
 #### Transaction Validator
 
@@ -93,7 +108,7 @@ The Executor Engine executes validated transactions using the MoveVM and through
 The State Cache Manager manages in-memory caching of frequently accessed state.
 The State Cache Manager maintains an _**account cache**_ for recently accessed account states, a _**resource cache**_ for frequently queried Move resources, a _**module cache**_ for compiled Move module bytecode, and a _**Merkle cache**_ for recently computed Merkle tree nodes.
 
-### 3. Consensus Layer
+### 4. Consensus Layer
 
 #### Consensus Engine
 
@@ -119,39 +134,31 @@ The Leader Election uses _**weighted selection**_ with probability proportional 
 The Safety Module ensures consensus safety properties are maintained.
 The Safety Module performs _**conflicting vote detection**_ to prevent double voting, _**fork detection**_ to identify potential blockchain forks, _**slashing evidence**_ collection for malicious behavior, and implements _**recovery mechanisms**_ to handle network partitions and attacks.
 
-### 4. Storage Layer
+### 5. Network Layer
 
-#### State Store
+#### P2P Network Handler
 
-The State Store provides persistent storage of global blockchain state. It supports _**efficient read operations**_ with Merkle proofs for state queries, _**atomic write operations**_ with versioning for state updates, _**proof generation**_ for cryptographic proofs of state, and _**state synchronization**_ to sync state with other nodes.
+The P2P Network Handler manages peer-to-peer communication with other nodes.
+The P2P Network Handler consists of a _**connection manager**_ that establishes and maintains connections to peers, a _**message router**_ that routes incoming messages to appropriate handlers, a _**gossip protocol**_ that implements efficient information dissemination, and _**peer discovery**_ mechanisms that discover and connect to new network peers.
 
-#### Transaction Store
+#### Mempool Manager
 
-The Transaction Store stores the complete transaction history and metadata
-
-
-#### Event Store and Indexing
-
-The Event Store provides indexing _**by event key**_ for fast queries of specific event streams, _**by type**_ to query events by Move type, _**by transaction**_ to find all events from a specific transaction, and _**by block**_ to retrieve all events from a block.
-
-#### Configuration Store
-
-The Configuration Store stores node configuration and network parameters.
-The Configuration Store manages _**network configuration**_ for peer discovery and connection limits, _**consensus configuration**_ for voting timeouts and block limits, _**execution configuration**_ for gas prices and resource limits, and _**API configuration**_ for rate limits and authentication settings.
+The Mempool Manager manages pending transactions before consensus.
+The Mempool Manager includes a _**transaction pool**_ for in-memory storage of pending transactions, a _**priority queue**_ that orders transactions by gas price and priority, a _**spam filter**_ that prevents spam and invalid transactions, and an _**expiration manager**_ that removes expired transactions.
 
 ## Node Types and Specialization
 
 #### Validator Nodes
 
-Validator Nodes include _**full consensus participation**_ with complete consensus engine activation, _**block production**_ capabilities for proposing and creating blocks, _**validator key management**_ for secure storage of validator keys, and _**slashing protection**_ against slashing conditions.
+Validator nodes provide _**active consensus participation**_ in block production, performing _**state validation**_ by verifying all state transitions and contributing to _**network security**_ through staking mechanisms. These nodes participate in _**protocol governance**_ decisions and include _**full consensus participation**_ with complete consensus engine activation, _**block production**_ capabilities for proposing and creating blocks, _**validator key management**_ for secure storage of validator keys, and _**slashing protection**_ against slashing conditions.
 
 #### Full Nodes
 
-Full Nodes are configured with _**complete state synchronization**_ for state replication, _**full API services**_ with complete endpoint availability, _**real-time event streaming**_ for notifications, and _**mempool participation**_ for transaction relay and validation.
+Full nodes maintain _**complete state synchronization**_ of the blockchain state, providing _**transaction relay**_ services that forward transactions to the validator network and offering _**API services**_ with endpoints for applications. These nodes ensure _**data availability**_ for network participants and are configured with _**complete state synchronization**_ for state replication, _**full API services**_ with complete endpoint availability, _**real-time event streaming**_ for notifications, and _**mempool participation**_ for transaction relay and validation.
 
 #### Light Nodes
 
-Light Nodes implement _**selective synchronization**_ for only relevant account data, _**proof verification**_ to verify state without full storage, _**reduced storage**_ with minimal persistent storage requirements, and _**bandwidth optimization**_ through efficient data transfer protocols.
+Light nodes implement _**selective synchronization**_ by syncing only relevant account data, performing _**proof verification**_ without maintaining full state and achieving _**resource efficiency**_ with minimal storage and bandwidth requirements. These nodes provide _**mobile support**_ optimized for mobile and embedded devices, with _**reduced storage**_ requirements and _**bandwidth optimization**_ through efficient data transfer protocols.
 
 ## Performance Optimization
 

@@ -1,6 +1,6 @@
 ---
 id: architecture
-title: High-Level Architecture
+title: L1 Architecture
 description: "Detailed architecture of the Movement L1"
 ---
 
@@ -8,7 +8,7 @@ Movement L1 is designed as a high-performance, native Move blockchain with a mod
 
 ## Core Layers
 
-The Movement L1 architecture is organized into four core layers, each handling specific aspects of the blockchain system while working together to provide a complete, high-performance platform.
+The Movement L1 architecture is organized into five core layers, each handling specific aspects of the blockchain system while working together to provide a complete, high-performance platform. This high-level architecture is implemented through individual nodes that follow the same five-layer structure, as detailed in the [node-level architecture](/general/l1/node-level-architecture) documentation.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -32,16 +32,22 @@ The Movement L1 architecture is organized into four core layers, each handling s
 │  │  Runtime    │ │  Pipeline   │ │ Management  │                │
 │  └─────────────┘ └─────────────┘ └─────────────┘                │
 ├─────────────────────────────────────────────────────────────────┤
-│  3. Consensus Layer                                             │
+│  3. Storage Layer                                               │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐                │
+│  │   Merkle    │ │   Account   │ │  Transaction│                │
+│  │    Trees    │ │    Store    │ │   History   │                │
+│  └─────────────┘ └─────────────┘ └─────────────┘                │
+├─────────────────────────────────────────────────────────────────┤
+│  4. Consensus Layer                                             │
 │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐                │
 │  │   Leader    │ │  Validator  │ │    BFT      │                │
 │  │  Selection  │ │   Network   │ │  Consensus  │                │
 │  └─────────────┘ └─────────────┘ └─────────────┘                │
 ├─────────────────────────────────────────────────────────────────┤
-│  4. Storage Layer                                               │
+│  5. Network Layer                                               │
 │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐                │
-│  │   Merkle    │ │   Account   │ │  Transaction│                │
-│  │    Trees    │ │    Store    │ │   History   │                │
+│  │   P2P       │ │  Mempool    │ │  Message    │                │
+│  │  Protocol   │ │  Management │ │  Routing    │                │
 │  └─────────────┘ └─────────────┘ └─────────────┘                │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -74,22 +80,7 @@ The transaction pipeline enables _**parallel processing**_ through [Block-STM](h
 
 State management maintains a _**consistent global state view**_ of all account and resource data. It integrates with [Block-STM](https://arxiv.org/abs/2203.06871) to provide _**deterministic commit ordering**_ of state changes. For performance, it uses _**in-memory buffering and caching**_ during execution. Finalized state updates are written through _**efficient serialization**_ and stored in _**authenticated data structures**_, ensuring both persistence and verifiability.
 
-
-### 3. Consensus Layer
-
-#### Byzantine Fault Tolerant (BFT) Consensus
-
-The BFT consensus mechanism uses a _**modified HotStuff-based algorithm**_ designed for high throughput, providing _**safety**_ guarantees that ensure consistency even with up to 1/3 malicious validators. The system maintains _**liveness**_ by ensuring progress under network asynchrony, while delivering _**single-slot finality**_ for fast transaction confirmation.
-
-#### Validator Network
-
-The validator network operates on a _**proof-of-stake**_ model that enables energy-efficient validation through token staking, featuring a _**dynamic set**_ where validators can join or leave based on their stake and performance. The system implements _**regular leader rotation**_ for decentralization and includes _**slashing**_ mechanisms that impose penalties for malicious or negligent behavior.
-
-#### Leader Selection
-
-Leader selection employs a _**deterministic**_ approach with cryptographically verifiable selection that is _**weighted**_ based on validator stake, ensuring _**fair**_ distribution and preventing leader monopolization while maintaining _**efficient**_ operation with minimal computational overhead.
-
-### 4. Storage Layer
+### 3. Storage Layer
 
 #### Account Store
 
@@ -103,23 +94,21 @@ Merkle trees provide a _**cryptographic state root**_ commitment to global state
 
 Transaction history maintains a _**complete ledger**_ with full history of all transactions, featuring _**efficient indexing**_ for querying by various criteria and _**optional pruning**_ of historical data for storage optimization. The system provides an _**immutable audit trail**_ of all state changes.
 
-## Network Architecture
+### 4. Consensus Layer
 
-### 1. Node Types
+#### Byzantine Fault Tolerant (BFT) Consensus
 
-#### Validator Nodes
+The BFT consensus mechanism uses a _**modified HotStuff-based algorithm**_ designed for high throughput, providing _**safety**_ guarantees that ensure consistency even with up to 1/3 malicious validators. The system maintains _**liveness**_ by ensuring progress under network asynchrony, while delivering _**single-slot finality**_ for fast transaction confirmation.
 
-Validator nodes provide _**active consensus participation**_ in block production, performing _**state validation**_ by verifying all state transitions and contributing to _**network security**_ through staking mechanisms. These nodes participate in _**protocol governance**_ decisions.
+#### Validator Network
 
-#### Full Nodes
+The validator network operates on a _**proof-of-stake**_ model that enables energy-efficient validation through token staking, featuring a _**dynamic set**_ where validators can join or leave based on their stake and performance. The system implements _**regular leader rotation**_ for decentralization and includes _**slashing**_ mechanisms that impose penalties for malicious or negligent behavior.
 
-Full nodes maintain _**complete state synchronization**_ of the blockchain state, providing _**transaction relay**_ services that forward transactions to the validator network and offering _**API services**_ with endpoints for applications. These nodes ensure _**data availability**_ for network participants.
+#### Leader Selection
 
-#### Light Nodes
+Leader selection employs a _**deterministic**_ approach with cryptographically verifiable selection that is _**weighted**_ based on validator stake, ensuring _**fair**_ distribution and preventing leader monopolization while maintaining _**efficient**_ operation with minimal computational overhead.
 
-Light nodes implement _**selective synchronization**_ by syncing only relevant account data, performing _**proof verification**_ without maintaining full state and achieving _**resource efficiency**_ with minimal storage and bandwidth requirements. These nodes provide _**mobile support**_ optimized for mobile and embedded devices.
-
-### 2. Network Communication
+### 5. Network Layer
 
 #### Peer-to-Peer Protocol
 
