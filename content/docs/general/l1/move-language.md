@@ -1,6 +1,6 @@
 ---
-title: Introduction to Move
-description: A high level overview of the move programming language
+title: Move Language
+description: A high level overview of the Move programming language
 ---
 
 

@@ -3,7 +3,7 @@
   "pages": [
     "index",
     "what-is-movement-l1",
-    "introductionToMove",
+    "move-language",
     "architecture",
     "node-level-architecture",
     "protocol-specification"
