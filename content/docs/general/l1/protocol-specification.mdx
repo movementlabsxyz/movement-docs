@@ -23,20 +23,20 @@ The Move programming language, originally developed for the Diem project, repres
 
 Movement L1 is designed to unlock the full potential of the Move programming language by providing:
 
-- **Native Move Execution**: High-performance, production-grade MoveVM runtime purpose-built for Layer 1 scalability and security  
-- **High Performance**: Consensus and execution for high throughput  
-- **Developer Experience**: Tooling and documentation for Move developers  
-- **Enterprise Ready**: Production-grade infrastructure suitable for enterprise applications  
+- **Native Move Execution**: High-performance, production-grade MoveVM runtime purpose-built for Layer 1 scalability and security
+- **High Performance**: Consensus and execution for high throughput
+- **Developer Experience**: Tooling and documentation for Move developers
+- **Enterprise Ready**: Production-grade infrastructure suitable for enterprise applications
 
 ### 1.3 Key Features
 
 Movement L1 implements the following key features:
 
-1. **Move Runtime**: MoveVM implementation for blockchain execution  
-2. **High-Throughput Consensus**: [Jolteon](https://arxiv.org/abs/2106.10362) lineage, using a 2-chain commit and quadratic view change; optional [Quorum Store](https://forum.aptosfoundation.org/t/aptos-quorum-store-breaking-the-bottleneck/16671)–like dissemination layer for scaling under load.^[Jolteon originated as DiemBFT v4 and is the basis of AptosBFT — see the [Jolteon paper](https://arxiv.org/abs/2106.10362).]  
-3. **Parallel Execution**: Transaction parallelization for increased throughput  
-4. **State Management**: State storage and management solutions  
-5. **Developer Tooling**: Development environment and debugging tools  
+1. **Move Runtime**: MoveVM implementation for blockchain execution
+2. **High-Throughput Consensus**: [Jolteon](https://arxiv.org/abs/2106.10362) lineage, using a 2-chain commit and quadratic view change; optional [Quorum Store](https://forum.aptosfoundation.org/t/aptos-quorum-store-breaking-the-bottleneck/16671)–like dissemination layer for scaling under load.^[Jolteon originated as DiemBFT v4 and is the basis of AptosBFT — see the [Jolteon paper](https://arxiv.org/abs/2106.10362).]
+3. **Parallel Execution**: Transaction parallelization for increased throughput
+4. **State Management**: State storage and management solutions
+5. **Developer Tooling**: Development environment and debugging tools
 
 ## 2. Technical Architecture
 
@@ -57,13 +57,13 @@ Network Layer        │ Peer-to-peer communication, Mempool management, Message
 
 #### 2.2.1 Jolteon
 
-Movement L1 adopts a [Jolteon](https://arxiv.org/abs/2106.10362)-style BFT protocol. Jolteon introduces a 2-chain commit rule and a quadratic view change (pacemaker) to reduce latency and ensure fast recovery. In the happy path it achieves linear message complexity with single-round finality; under stress it remains robust.
+Movement L1 adopts a [Jolteon](https://arxiv.org/abs/2106.10362)-style BFT protocol. Jolteon introduces a 2-chain commit rule and a quadratic view change (pacemaker) to reduce latency and ensure fast recovery. In the happy path it achieves linear message complexity with one-round confirmations; under stress it remains robust.
 
-The protocol guarantees _**safety**_ with consistency up to 1/3 Byzantine validators, ensures _**liveness**_ with progress under network asynchrony, provides _**finality**_ through 2-chain commit for fast confirmations, and maintains _**efficiency**_ with optimized message complexity and round duration.  
+The protocol guarantees _**safety**_ with consistency up to 1/3 Byzantine validators, ensures _**liveness**_ with progress under network asynchrony, provides _**finality**_ through 2-chain commit for fast confirmations, and maintains _**efficiency**_ with optimized message complexity and round duration.
 
 #### 2.2.2 Validator Selection
 
-The network employs Proof-of-Stake (PoS) with _**weighted selection**_ where validator selection probability is proportional to stake, a _**dynamic set**_ allowing validators to join/leave based on stake and performance, and _**rewards**_ with staking rewards for honest validation and block production. (Note: slashing is defined in protocol but not currently active.)  
+The network employs Proof-of-Stake (PoS) with _**weighted selection**_ where validator selection probability is proportional to stake, a _**dynamic set**_ allowing validators to join/leave based on stake and performance, and _**rewards**_ with staking rewards for honest validation and block production. (Note: slashing is defined in protocol but not currently active.)
 
 #### 2.2.3 Block Production
 
@@ -73,8 +73,8 @@ Block production follows a deterministic leader selection algorithm:
 // Note: This is a simplified pseudocode representation.
 // Deterministic, stake/reputation-weighted round-robin (illustrative)
 fn select_leader(set: &ValidatorSet, round: u64) -> ValidatorId {
-    let order = set.weighted_order_by_stake_and_rep(); // fixed per epoch
-    order[(round as usize) % order.len()]
+let order = set.weighted_order_by_stake_and_rep(); // fixed per epoch
+order[(round as usize) % order.len()]
 }
 ```
 
@@ -86,11 +86,11 @@ fn select_leader(set: &ValidatorSet, round: u64) -> ValidatorId {
 
 #### 2.3.1 Runtime Optimization
 
-Movement L1's MoveVM implementation includes an _**optimized interpreter**_ with verified bytecode, _**instruction caching**_ for caching of compiled bytecode for repeated execution, _**gas optimization**_ with precise gas metering and minimal overhead, and _**memory management**_ with efficient memory allocation and garbage collection.  
+Movement L1's MoveVM implementation includes an _**optimized interpreter**_ with verified bytecode, _**instruction caching**_ for caching of compiled bytecode for repeated execution, _**gas optimization**_ with precise gas metering and minimal overhead, and _**memory management**_ with efficient memory allocation and garbage collection.
 
 #### 2.3.2 Security Features
 
-The MoveVM provides built-in security guarantees including _**resource safety**_ to prevent double-spending and resource leaks, _**type safety**_ with compile-time and runtime type checking, _**access control**_ with fine-grained permission management, and _**formal verification**_ support for mathematical proof of contract correctness.  
+The MoveVM provides built-in security guarantees including _**resource safety**_ to prevent double-spending and resource leaks, _**type safety**_ with compile-time and runtime type checking, _**access control**_ with fine-grained permission management, and _**formal verification**_ support for mathematical proof of contract correctness.
 
 #### 2.3.3 Parallel Execution
 
@@ -119,7 +119,7 @@ impl ParallelExecutor {
 
 #### 2.4.1 Global State Model
 
-Movement L1 maintains a global state organized by account addresses using an _**account model**_ where each address can hold multiple resources and modules, _**resource storage**_ with native storage of Move resources and type information, _**module storage**_ for compiled Move modules with metadata, and _**versioned state**_ indexed by ledger version, with authenticated proofs via the Jellyfish Merkle Tree.  
+Movement L1 maintains a global state organized by account addresses using an _**account model**_ where each address can hold multiple resources and modules, _**resource storage**_ with native storage of Move resources and type information, _**module storage**_ for compiled Move modules with metadata, and _**versioned state**_ indexed by ledger version, with authenticated proofs via the Jellyfish Merkle Tree.
 
 #### 2.4.2 Jellyfish Merkle Tree (JMT)
 
@@ -144,23 +144,23 @@ State Root (Jellyfish Merkle Tree)
 
 #### 2.4.3 Storage Optimization
 
-Several optimizations improve storage efficiency including _**state pruning**_ for removal of old state versions (configurable), _**RocksDB-level compression**_ for data storage and transfer, _**indexing**_ with efficient indexing for common query patterns, and _**caching**_ with multi-level caching for frequently accessed data.  
+Several optimizations improve storage efficiency including _**state pruning**_ for removal of old state versions (configurable), _**RocksDB-level compression**_ for data storage and transfer, _**indexing**_ with efficient indexing for common query patterns, and _**caching**_ with multi-level caching for frequently accessed data.
 
 ### 2.5 Network Protocol
 
 #### 2.5.1 Peer-to-Peer Communication
 
-Network communication uses a gossip-based protocol with _**peer discovery**_ for automatic discovery and connection to network peers, _**message routing**_ for efficient routing of messages based on type and priority, _**bandwidth optimization**_ through compression and batching of network messages, and _**security**_ with cryptographic authentication and message integrity.  
+Network communication uses a gossip-based protocol with _**peer discovery**_ for automatic discovery and connection to network peers, _**message routing**_ for efficient routing of messages based on type and priority, _**bandwidth optimization**_ through compression and batching of network messages, and _**security**_ with cryptographic authentication and message integrity.
 
 #### 2.5.2 Transaction Propagation
 
 Transaction propagation is optimized for low latency:
 
-1. **Client Submission**: Transaction submitted to any network node  
-2. **Initial Validation**: Basic validation (signature, format, balance)  
-3. **Mempool Insertion**: Addition to local mempool if valid  
-4. **Gossip Protocol**: Propagation to connected peers  
-5. **Consensus Inclusion**: Selection for inclusion in next block  
+1. **Client Submission**: Transaction submitted to any network node
+2. **Initial Validation**: Basic validation (signature, format, balance)
+3. **Mempool Insertion**: Addition to local mempool if valid
+4. **Gossip Protocol**: Propagation to connected peers
+5. **Consensus Inclusion**: Selection for inclusion in next block
 
 ## 3. Economic Model
 
@@ -168,7 +168,7 @@ Transaction propagation is optimized for low latency:
 
 #### 3.1.1 MOVE Token
 
-The native MOVE token serves multiple purposes including _**transaction fees**_ for payment of transaction execution and storage, _**staking**_ for validator staking and network security, _**governance**_ for voting on protocol upgrades and parameters, and _**incentives**_ for rewards to validators and network participants.  
+The native MOVE token serves multiple purposes including _**transaction fees**_ for payment of transaction execution and storage, _**staking**_ for validator staking and network security, _**governance**_ for voting on protocol upgrades and parameters, and _**incentives**_ for rewards to validators and network participants.
 
 #### 3.1.2 Fee Structure
 
@@ -189,17 +189,17 @@ fn calculate_fee(gas_used: Gas, gas_unit_price: Octa, storage_refund: Octa) -> F
 
 #### 3.1.3 Staking Mechanism
 
-Validator staking follows these principles including _**minimum stake**_ requirements for validator participation, _**delegation**_ allowing token holders to delegate stake to validators, _**rewards**_ with proportional rewards based on stake and performance, and _**slashing**_ defined in protocol but not active on mainnet as of 2025.  
+Validator staking follows these principles including _**minimum stake**_ requirements for validator participation, _**delegation**_ allowing token holders to delegate stake to validators, _**rewards**_ with proportional rewards based on stake and performance, and _**slashing**_ defined in protocol but not active on mainnet as of 2025.
 
 ### 3.2 Governance Model
 
 #### 3.2.1 On-Chain Governance
 
-Governance decisions are made through on-chain voting with _**proposal submission**_ allowing stakeholders to submit governance proposals, _**voting periods**_ with time-bounded voting on active proposals, and _**execution**_ with automatic execution of approved proposals.  
+Governance decisions are made through on-chain voting with _**proposal submission**_ allowing stakeholders to submit governance proposals, _**voting periods**_ with time-bounded voting on active proposals, and _**execution**_ with automatic execution of approved proposals.
 
 #### 3.2.2 Parameter Management
 
-Key network parameters can be adjusted through governance including _**gas prices**_ for base gas price and fee structure, _**block parameters**_ for block size, time, and transaction limits, _**staking parameters**_ for minimum stake, reward rates, and slashing conditions, and _**network configuration**_ for validator set size and consensus timeouts.  
+Key network parameters can be adjusted through governance including _**gas prices**_ for base gas price and fee structure, _**block parameters**_ for block size, time, and transaction limits, _**staking parameters**_ for minimum stake, reward rates, and slashing conditions, and _**network configuration**_ for validator set size and consensus timeouts.
 
 ## 4. Security Analysis
 
@@ -207,7 +207,7 @@ Key network parameters can be adjusted through governance including _**gas price
 
 #### 4.1.1 Network Attacks
 
-Protection against various network-level attacks includes _**DDoS attacks**_ with rate limiting and traffic analysis, _**eclipse attacks**_ through peer diversity and connection management, _**sybil attacks**_ via Proof-of-Stake and identity verification, and _**long-range attacks**_ using checkpointing and weak subjectivity.  
+Protection against various network-level attacks includes _**DDoS attacks**_ with rate limiting and traffic analysis, _**eclipse attacks**_ through peer diversity and connection management, _**sybil attacks**_ via Proof-of-Stake and identity verification, and _**long-range attacks**_ using checkpointing and weak subjectivity.
 
 #### 4.1.2 Consensus Attacks
 
@@ -215,102 +215,33 @@ Safeguards against consensus-level attacks include _**nothing-at-stake**_ protec
 
 #### 4.1.3 Smart Contract Security
 
-Move language features enhance smart contract security through a _**resource model**_ that prevents double-spending and asset duplication, _**type safety**_ with compile-time prevention of common vulnerabilities, _**access control**_ with fine-grained permission and capability systems, and _**formal verification**_ support for mathematical proofs of contract correctness.  
+Move language features enhance smart contract security through a _**resource model**_ that prevents double-spending and asset duplication, _**type safety**_ with compile-time prevention of common vulnerabilities, _**access control**_ with fine-grained permission and capability systems, and _**formal verification**_ support for mathematical proofs of contract correctness.
 
 ### 4.2 Cryptographic Primitives
 
 #### 4.2.1 Digital Signatures
 
-Movement L1 uses Ed25519 signatures for _**transaction authentication**_ providing proof of transaction authorization, _**validator signatures**_ for consensus vote authentication, _**message integrity**_ for P2P message authentication, and _**multi-signatures**_ via Multi-Ed25519 threshold schemes.  
+Movement L1 uses Ed25519 signatures for _**transaction authentication**_ providing proof of transaction authorization, _**validator signatures**_ for consensus vote authentication, _**message integrity**_ for P2P message authentication, and _**multi-signatures**_ via Multi-Ed25519 threshold schemes.
 
 #### 4.2.2 Hash Functions
 
-SHA-3 (Keccak) is used throughout the system for _**block hashing**_ with unique block identification and in the _**Jellyfish Merkle Tree**_ for authenticated state and transaction commitments. Consensus uses deterministic leader selection; there is no proof-of-work or random beacon.  
+SHA-3 (Keccak) is used throughout the system for _**block hashing**_ with unique block identification and in the _**Jellyfish Merkle Tree**_ for authenticated state and transaction commitments. Consensus uses deterministic leader selection; there is no proof-of-work or random beacon.
 
 ### 4.3 Audit and Verification
 
 #### 4.3.1 Code Audits
 
-Regular independent security audits ensure system integrity covering the _**core protocol**_ including consensus and networking components, _**MoveVM implementation**_ for the virtual machine and execution engine, _**cryptographic libraries**_ for all cryptographic implementations, and _**smart contracts**_ including system contracts and modules.  
+Regular independent security audits ensure system integrity covering the _**core protocol**_ including consensus and networking components, _**MoveVM implementation**_ for the virtual machine and execution engine, _**cryptographic libraries**_ for all cryptographic implementations, and _**smart contracts**_ including system contracts and modules.
 
 #### 4.3.2 Formal Verification
 
-Mathematical verification of critical components includes _**consensus safety**_ with formal proofs of consistency for the underlying Jolteon protocol and _**Move semantics**_ with automated verification of language safety properties through the Move Prover. Incentive economics and governance-driven upgrades are not subject to the same level of formal proof.  
+Mathematical verification of critical components includes _**consensus safety**_ with formal proofs of consistency for the underlying Jolteon protocol and _**Move semantics**_ with automated verification of language safety properties through the Move Prover. Incentive economics and governance-driven upgrades are not subject to the same level of formal proof.
 
-## 5. Performance Analysis
+## 5. Development Ecosystem
 
-### 5.1 Throughput Benchmarks
+### 5.1 Developer Tools
 
-#### 5.1.1 Transaction Processing
-
-Performance measurements under various conditions:
-
-```
-| Scenario           | TPS   | Latency | CPU Usage | Memory Usage |
-|--------------------|-------|---------|-----------|--------------|
-| Simple Transfers   | 15,000| 1.2s    | 65%       | 8GB          |
-| DeFi Operations    | 8,000 | 1.8s    | 80%       | 12GB         |
-| NFT Minting        | 5,000 | 2.1s    | 70%       | 10GB         |
-| Complex Contracts  | 3,000 | 2.8s    | 85%       | 16GB         |
-```
-
-#### 5.1.2 Scaling Characteristics
-
-Throughput scaling with network size:
-
-- **10 Validators**: ~20,000 TPS  
-- **50 Validators**: ~18,000 TPS  
-- **100 Validators**: ~15,000 TPS  
-- **200 Validators**: ~12,000 TPS  
-
-### 5.2 Storage Requirements
-
-#### 5.2.1 State Growth
-
-State size growth projections:
-
-```
-Initial State: ~100MB
-After 1M transactions: ~500MB
-After 10M transactions: ~3GB
-After 100M transactions: ~25GB
-After 1B transactions: ~200GB
-```
-
-#### 5.2.2 Historical Data
-
-Transaction history storage requirements:
-
-- **Full History**: Complete transaction and event data  
-- **Pruned History**: Recent transactions with state snapshots  
-- **Archive Nodes**: Specialized nodes for long-term storage  
-- **Light Clients**: Minimal storage with proof verification  
-
-### 5.3 Network Bandwidth
-
-#### 5.3.1 Consensus Traffic
-
-Bandwidth requirements for consensus participation:
-
-- **Block Proposals**: ~1MB per block (avg)  
-- **Vote Messages**: ~10KB per validator per round  
-- **Synchronization**: Variable based on offline duration  
-- **Peer Discovery**: ~1KB per peer connection  
-
-#### 5.3.2 API Traffic
-
-Bandwidth for external API services:
-
-- **Transaction Submission**: ~1KB per transaction  
-- **State Queries**: Variable (1KB - 100KB)  
-- **Event Subscriptions**: Variable based on activity  
-- **Block Streaming**: ~1MB per block  
-
-## 6. Development Ecosystem
-
-### 6.1 Developer Tools
-
-#### 6.1.1 Movement CLI
+#### 5.1.1 Movement CLI
 
 Comprehensive command-line interface:
 
@@ -332,16 +263,16 @@ movement node run-local
 movement call --function transfer --args 0x123 100
 ```
 
-#### 6.1.2 IDE Integration
+#### 5.1.2 IDE Integration
 
 Support for popular development environments:
 
-- **VS Code Extension**: Syntax highlighting, debugging, IntelliSense  
-- **IntelliJ Plugin**: Full IDE support with advanced features  
-- **Language Server**: Language Server Protocol for editor integration  
-- **Web IDE**: Browser-based development environment  
+- **VS Code Extension**: Syntax highlighting, debugging, IntelliSense
+- **IntelliJ Plugin**: Full IDE support with advanced features
+- **Language Server**: Language Server Protocol for editor integration
+- **Web IDE**: Browser-based development environment
 
-#### 6.1.3 Testing Framework
+#### 5.1.3 Testing Framework
 
 Comprehensive testing infrastructure:
 
@@ -352,13 +283,13 @@ public fun test_transfer() {
     let sender = @0x1;
     let receiver = @0x2;
     let amount = 100;
-    
+
     // Setup test environment
     let state = create_test_state();
-    
+
     // Execute transfer
     let result = transfer(sender, receiver, amount);
-    
+
     // Verify results
     assert!(result.success, 1);
     assert!(balance_of(receiver) == amount, 2);
