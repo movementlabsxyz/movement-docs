@@ -4,7 +4,7 @@ title: What is Movement L1?
 description: "Learn about Movement L1 components and capabilities"
 ---
 
-Movement L1 is a native Layer 1 blockchain built specifically for the Move programming language and virtual machine. Unlike sidechains or Layer 2 solutions, Movement L1 operates as an independent blockchain with its own consensus mechanism, validator set, and native token economics.
+Movement L1 is a native Layer 1 blockchain built specifically for the Move programming language and virtual machine. Unlike sidechains or Layer 2 solutions, Movement L1 operates as an independent blockchain with its own consensus mechanism and validator set.
 
 ## Core Components
 
@@ -69,27 +69,29 @@ Movement L1 runs the Move Virtual Machine natively, providing:
 
 ## Comparison with Sidechains
 
-| Feature | Movement L1 | Movement Sidechain |
+| Feature | Movement L1 | Sidechains |
 |---------|-------------|-------------------|
-| **Security Model** | Native validators | Ethereum-secured |
-| **Consensus** | Independent PoS | Bridged validation |
-| **Move Execution** | Native MoveVM | Adapted execution |
-| **Transaction Fees** | Native MOVE tokens | Bridged tokens |
-| **Finality** | Native finality | Bridge-dependent |
-| **Governance** | Native governance | Limited autonomy |
+| **Security Model** | Native validators | Operator and L1-secured |
+| **Consensus** | BFT with PoS | Operator + Anchoring |
+| **Execution** | native* MoveVM | native or adapted MoveVM |
+| **Transaction Fees** | MOVE | bridged MOVE |
+| **Finality** | Native finality | anchoring- / bridge-dependent |
+| **Governance** | Native governance | dependent on L1 |
+
+_* the L1 defines the meaning of native_
 
 ## Getting Started
 
-### For Developers
-1. **Learn Move**: Familiarize yourself with the Move programming language
-2. **Set up Tools**: Install Movement CLI and development environment
-3. **Deploy on Testnet**: Test your applications on Movement L1 testnet
-4. **Build Applications**: Create DeFi, NFT, or enterprise applications
+#### For Developers
+1. **[Learn Move](/general/l1/introductionToMove)**: Familiarize yourself with the Move programming language
+2. **[Set up Tools](/devs/movementcli)**: Install Movement CLI and development environment
+3. **[Deploy on Testnet](/general/networks/testnet)**: Test your applications on Movement L1 testnet
+4. **[Build Applications](/devs/firstMoveContract)**: Create DeFi, NFT, or enterprise applications
 
-### For Users
-1. **Get a Wallet**: Use Move-compatible wallets for L1 interaction
+#### For Users
+1. **[Get a Wallet](/general/usingmovement/connect_to_movement)**: Use Move-compatible wallets for L1 interaction
 2. **Acquire MOVE**: Obtain native tokens for transaction fees
-3. **Explore DApps**: Discover applications built on Movement L1
+3. **[Explore DApps](https://explorer.movementnetwork.xyz/)**: Discover applications built on Movement L1
 4. **Participate**: Engage with governance and network activities
 
 ## Roadmap and Future
@@ -99,10 +101,3 @@ Movement L1 represents the future of Move-based blockchain infrastructure:
 - **Ecosystem Growth**: Expanding developer and user adoption
 - **Protocol Upgrades**: Continuous improvement and new features
 - **Interoperability**: Cross-chain bridges and communication protocols
-
-## Resources
-
-- **[High-Level Architecture](/general/movement-l1/architecture)** - Technical architecture overview
-- **[Node Operations](/general/networks)** - Running L1 infrastructure
-- **[Developer Guides](/devs)** - Building on Movement L1
-- **[Whitepaper](/general/movement-l1/whitepaper)** - Complete technical specification
