@@ -6,7 +6,9 @@ description: "Detailed architecture of the Movement L1"
 
 Movement L1 is designed as a high-performance, native Move blockchain with a modular architecture that separates concerns while maintaining tight integration for optimal performance.
 
-## System Overview
+## Core Layers
+
+The Movement L1 architecture is organized into four core layers, each handling specific aspects of the blockchain system while working together to provide a complete, high-performance platform.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -18,47 +20,45 @@ Movement L1 is designed as a high-performance, native Move blockchain with a mod
 │  │    DApps    │ │   Games     │ │   Apps      │                │
 │  └─────────────┘ └─────────────┘ └─────────────┘                │
 ├─────────────────────────────────────────────────────────────────┤
-│  API Layer                                                      │
+│  1. API Layer                                                   │
 │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐                │
 │  │  REST API   │ │ WebSocket   │ │   GraphQL   │                │
 │  │  Endpoints  │ │   Events    │ │   Queries   │                │
 │  └─────────────┘ └─────────────┘ └─────────────┘                │
 ├─────────────────────────────────────────────────────────────────┤
-│  Execution Layer                                                │
+│  2. Execution Layer                                             │
 │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐                │
 │  │   MoveVM    │ │ Transaction │ │   State     │                │
 │  │  Runtime    │ │  Pipeline   │ │ Management  │                │
 │  └─────────────┘ └─────────────┘ └─────────────┘                │
 ├─────────────────────────────────────────────────────────────────┤
-│  Consensus Layer                                                │
+│  3. Consensus Layer                                             │
 │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐                │
 │  │   Leader    │ │  Validator  │ │    BFT      │                │
 │  │  Selection  │ │   Network   │ │  Consensus  │                │
 │  └─────────────┘ └─────────────┘ └─────────────┘                │
 ├─────────────────────────────────────────────────────────────────┤
-│  Storage Layer                                                  │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐              │
-│  │   Merkle    │ │   Account   │ │  Transaction│              │
-│  │    Trees    │ │    Store    │ │   History   │              │
-│  └─────────────┘ └─────────────┘ └─────────────┘              │
+│  4. Storage Layer                                               │
+│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐                │
+│  │   Merkle    │ │   Account   │ │  Transaction│                │
+│  │    Trees    │ │    Store    │ │   History   │                │
+│  └─────────────┘ └─────────────┘ └─────────────┘                │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-## Core Components
+### 1. API Layer
 
-### 1. Consensus Layer
+#### REST API
 
-#### Byzantine Fault Tolerant (BFT) Consensus
+The REST API provides _**standard endpoints**_ for common blockchain operations, enabling _**direct resource queries**_ to Move resources and _**secure transaction submission**_ for broadcasting. The API supports _**real-time state inspection**_ and querying capabilities.
 
-The BFT consensus mechanism uses a _**modified HotStuff-based algorithm**_ designed for high throughput, providing _**safety**_ guarantees that ensure consistency even with up to 1/3 malicious validators. The system maintains _**liveness**_ by ensuring progress under network asynchrony, while delivering _**single-slot finality**_ for fast transaction confirmation.
+#### WebSocket Events
 
-#### Validator Network
+WebSocket events deliver _**real-time updates**_ through live transaction and block notifications, featuring _**selective event filtering**_ for subscription and _**low latency**_ with minimal delay for event delivery. The system ensures _**reliable delivery**_ with guaranteed event ordering.
 
-The validator network operates on a _**proof-of-stake**_ model that enables energy-efficient validation through token staking, featuring a _**dynamic set**_ where validators can join or leave based on their stake and performance. The system implements _**regular leader rotation**_ for decentralization and includes _**slashing**_ mechanisms that impose penalties for malicious or negligent behavior.
+#### GraphQL Interface
 
-#### Leader Selection
-
-Leader selection employs a _**deterministic**_ approach with cryptographically verifiable selection that is _**weighted**_ based on validator stake, ensuring _**fair**_ distribution and preventing leader monopolization while maintaining _**efficient**_ operation with minimal computational overhead.
+The GraphQL interface enables _**flexible queries**_ for complex multi-resource operations, providing _**type-safe query construction**_ through schema definition and supporting _**efficient data aggregation**_ and computation. The system includes _**query result caching**_ for performance optimization.
 
 ### 2. Execution Layer
 
@@ -75,7 +75,21 @@ The transaction pipeline enables _**parallel processing**_ through [Block-STM](h
 State management maintains a _**consistent global state view**_ of all account and resource data. It integrates with [Block-STM](https://arxiv.org/abs/2203.06871) to provide _**deterministic commit ordering**_ of state changes. For performance, it uses _**in-memory buffering and caching**_ during execution. Finalized state updates are written through _**efficient serialization**_ and stored in _**authenticated data structures**_, ensuring both persistence and verifiability.
 
 
-### 3. Storage Layer
+### 3. Consensus Layer
+
+#### Byzantine Fault Tolerant (BFT) Consensus
+
+The BFT consensus mechanism uses a _**modified HotStuff-based algorithm**_ designed for high throughput, providing _**safety**_ guarantees that ensure consistency even with up to 1/3 malicious validators. The system maintains _**liveness**_ by ensuring progress under network asynchrony, while delivering _**single-slot finality**_ for fast transaction confirmation.
+
+#### Validator Network
+
+The validator network operates on a _**proof-of-stake**_ model that enables energy-efficient validation through token staking, featuring a _**dynamic set**_ where validators can join or leave based on their stake and performance. The system implements _**regular leader rotation**_ for decentralization and includes _**slashing**_ mechanisms that impose penalties for malicious or negligent behavior.
+
+#### Leader Selection
+
+Leader selection employs a _**deterministic**_ approach with cryptographically verifiable selection that is _**weighted**_ based on validator stake, ensuring _**fair**_ distribution and preventing leader monopolization while maintaining _**efficient**_ operation with minimal computational overhead.
+
+### 4. Storage Layer
 
 #### Account Store
 
@@ -88,20 +102,6 @@ Merkle trees provide a _**cryptographic state root**_ commitment to global state
 #### Transaction History
 
 Transaction history maintains a _**complete ledger**_ with full history of all transactions, featuring _**efficient indexing**_ for querying by various criteria and _**optional pruning**_ of historical data for storage optimization. The system provides an _**immutable audit trail**_ of all state changes.
-
-### 4. API Layer
-
-#### REST API
-
-The REST API provides _**standard endpoints**_ for common blockchain operations, enabling _**direct resource queries**_ to Move resources and _**secure transaction submission**_ for broadcasting. The API supports _**real-time state inspection**_ and querying capabilities.
-
-#### WebSocket Events
-
-WebSocket events deliver _**real-time updates**_ through live transaction and block notifications, featuring _**selective event filtering**_ for subscription and _**low latency**_ with minimal delay for event delivery. The system ensures _**reliable delivery**_ with guaranteed event ordering.
-
-#### GraphQL Interface
-
-The GraphQL interface enables _**flexible queries**_ for complex multi-resource operations, providing _**type-safe query construction**_ through schema definition and supporting _**efficient data aggregation**_ and computation. The system includes _**query result caching**_ for performance optimization.
 
 ## Network Architecture
 
