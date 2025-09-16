@@ -26,10 +26,14 @@ Testnet represents the stable testing version of Movement's L1 architecture:
 | **Network Type** | Native L1 Blockchain |
 | **Consensus** | BFT Consensus |
 | **Block Time** | ~1 second |
-| **Finality** | ~1 second (Details TBD) |
+| **Finality** | ~1 second (Details TBA) |
 | **Validators** | Community + Movement Labs |
 | **Data Retention** | Permanent |
 | **Faucet** | [Get testnet tokens](https://faucet.movementnetwork.xyz/) |
+
+<Callout type="info">
+Migration preparation involves _**sidechain to L1**_ testing to ensure applications are compatible with L1 architecture, _**tool validation**_ to ensure development tools work with L1, _**workflow testing**_ to validate deployment and operational workflows, and _**training**_ to familiarize teams with L1 operations.
+</Callout>
 
 
 ## Use Cases
@@ -42,11 +46,6 @@ Testnet enables comprehensive application development through _**pre-production 
 
 Infrastructure testing includes _**validator setup**_ for testing validator node configurations, _**API services**_ validation for RPC and indexing services, _**monitoring**_ implementation for infrastructure monitoring and alerting, and _**scaling**_ tests to validate infrastructure performance under load.
 
-#### Migration Preparation
-
-Migration preparation involves _**sidechain to L1**_ testing to ensure applications are compatible with L1 architecture, _**tool validation**_ to ensure development tools work with L1, _**workflow testing**_ to validate deployment and operational workflows, and _**training**_ to familiarize teams with L1 operations.
-
-
 ## Getting Started
 
 #### Prerequisites
@@ -54,34 +53,3 @@ Migration preparation involves _**sidechain to L1**_ testing to ensure applicati
 - [Movement CLI tools](/devs/movementcli) installed
 - Understanding of [Move language](/general/l1/move-language)
 - Testnet MOVE tokens from [faucet](https://faucet.movementnetwork.xyz/)
-
-#### Development Workflow
-
-1. **Get Test Tokens**: Use the [faucet](https://faucet.movementnetwork.xyz/) to obtain test MOVE
-2. **Deploy Applications**: Deploy and test your Move applications
-3. **Integration Testing**: Test with realistic network conditions
-4. **Performance Validation**: Benchmark your application performance
-5. **Migration Planning**: Prepare for Mainnet L1 migration
-
-## Resources (Coming Soon)
-
-#### Network Information
-
-- **RPC Endpoints**: Testnet API access points
-- **Explorer**: Block and transaction explorer
-- **Faucet**: Test token distribution
-- **Genesis Files**: Network initialization data
-
-#### Tools and SDK
-
-- **Move Compiler**: L1-compatible Move compilation
-- **SDKs**: TypeScript, Rust, and Python SDKs
-- **Testing Frameworks**: Automated testing tools
-- **Deployment Tools**: Application deployment utilities
-
-#### Documentation
-
-- **API Reference**: Complete RPC API documentation
-- **Move Examples**: Sample applications for L1
-- **Migration Guides**: Sidechain to L1 migration instructions
-- **Best Practices**: L1 development recommendations
