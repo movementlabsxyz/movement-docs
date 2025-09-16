@@ -1,6 +1,13 @@
 {
     "title": "Tutorials",
-    "pages": ["build", "deploy", "move_slayers", "uniswap_v2_example", "stablecoin"],
+    "pages": [
+        "build",
+        "just-aptos-core",
+        "deploy",
+        "move_slayers",
+        "uniswap_v2_example",
+        "stablecoin"
+    ],
     "root": false,
     "defaultOpen": false
-} 
+}

@@ -1,0 +1,172 @@
+---
+title: "Building Movement `aptos-core` From Source"
+description: "Instructions for building the Movement `aptos-core` repository from source code, including prerequisites and setup steps."
+label: "Building From Source"
+---
+# Building Aptos Core with Just
+
+This guide explains how to build Aptos Core using the [`just`](https://github.com/casey/just) command runner. The project uses Nix for reproducible builds and dependency management.
+
+## Prerequisites
+
+- [Nix](https://nixos.org/download.html) with flakes enabled
+- [Just](https://github.com/casey/just#installation) command runner
+- [Docker](https://docs.docker.com/get-docker/) (optional, for container builds)
+
+## Quick Start
+
+```bash
+# Clone the repository
+git clone git@github.com:movementlabsxyz/aptos-core.git && cd aptos-core
+git checkout origin/movement
+
+# Build all packages (default)
+just build
+
+# Enter development environment
+just dev
+
+# Run tests
+just test
+```
+
+## Available Commands
+
+### Building
+
+```bash
+# Build all packages
+just build
+
+# Build specific binary (e.g., aptos-node)
+just build aptos-node
+
+# Build with release profile
+just build all release
+
+# Build specific package with release profile
+just build aptos-node release
+
+# Build any binary by package name
+just build-bin <package-name>
+```
+
+### Development
+
+```bash
+# Enter Nix development shell
+just dev
+
+# Check code formatting
+just fmt
+
+# Run clippy linter
+just clippy
+
+# Clean build artifacts
+just clean
+
+# Update Nix flake.lock
+just update
+```
+
+### Testing
+
+```bash
+# Run all tests
+just test
+```
+
+### Docker
+
+```bash
+# Build Docker image (default: aptos-node)
+just docker-build
+
+# Build specific container
+just docker-build aptos-node latest release
+
+# Build with different tag and profile
+just docker-build aptos-node my-tag dev
+```
+
+### Available Binaries
+
+Use `just list-binaries` to see all available build targets:
+
+```bash
+just list-binaries
+```
+
+Common binaries include:
+- `aptos-node` - Main Aptos node
+- `aptos` - Aptos CLI tool
+- `aptos-debugger` - Debugging tool
+- `aptos-backup-cli` - Backup CLI tool
+- `aptos-keygen` - Key generation tool
+- `transaction-emitter` - Transaction emitter
+- `aptos-node-checker` - Node checker tool
+
+## Build Profiles
+
+The build system supports different profiles:
+
+- `dev` (default) - Development build with debug symbols
+- `release` - Optimized release build
+- Custom profiles as defined in `Cargo.toml`
+
+## Examples
+
+```bash
+# Build the Aptos CLI in release mode
+just build aptos release
+
+# Build and create Docker image for aptos-node
+just build aptos-node release
+just docker-build aptos-node latest release
+
+# Development workflow
+just dev                    # Enter development environment
+cargo build                # Build inside Nix shell
+cargo test                 # Test inside Nix shell
+exit                       # Exit development environment
+
+# Clean and rebuild everything
+just clean
+just build
+```
+
+## Nix Integration
+
+This project uses Nix for:
+- **Reproducible builds** - Consistent builds across environments
+- **Dependency management** - Automatic handling of system dependencies
+- **Development environment** - Isolated shell with all required tools
+
+The Nix build system automatically handles complex dependencies like RocksDB and OpenSSL that can be problematic in traditional build environments.
+
+## Troubleshooting
+
+### RocksDB Compilation Issues
+The Nix build system is specifically designed to handle RocksDB compilation issues. If you encounter problems:
+
+1. Ensure Nix is properly installed with flakes enabled
+2. Try cleaning and rebuilding: `just clean && just build`
+3. Update the flake: `just update`
+
+### Docker Build Issues
+For Docker builds:
+
+1. Ensure Docker and Docker Buildx are installed
+2. The build process automatically builds required binaries first
+3. Check that the target container directory exists in `docker/`
+
+### Getting Help
+
+```bash
+# List all available commands
+just help
+
+# List available binary targets
+just list-binaries
+```
