@@ -1,0 +1,63 @@
+---
+id: public-fullnode
+title: Public Fullnode (PFN)
+description: "Complete guide to running Movement public fullnodes (PFNs)"
+---
+
+Public fullnodes (PFNs) will allow you to synchronize the state of the Movement blockchain and stay up-to-date. PFNs will replicate the entire state of the blockchain by syncing from VFNs and other PFNs. PFNs will be available for anyone to run and will serve as crucial infrastructure for the Movement ecosystem.
+
+PFNs will enable various use cases including:
+
+- **RPC Services**: Provide JSON-RPC endpoints for dApps and wallets
+- **Indexing**: Index blockchain data for analytics and APIs  
+- **Development**: Local testing and development environments
+- **Backup**: Maintain redundant copies of blockchain state
+- **Analytics**: Historical data analysis and research
+
+## Network Connection
+
+**Default connection to mainnet**: If you follow the default setup in this document, then your PFN will be connected to the Movement mainnet. To connect to a different Movement network, such as testnet, make sure you have the correct configuration files and genesis data.
+
+You can find the genesis and waypoint files for all Movement networks in the **[Movement Networks repository](https://github.com/movementlabsxyz/movement-networks)**.
+
+## Overview
+
+When PFNs become available, running a PFN will involve:
+
+1. **Requirements Check** - Ensure your system meets hardware and software specifications
+2. **Deployment Method Selection** - Choose Docker, source build, or cloud deployment
+3. **Node Configuration** - Set up configuration files and network parameters
+4. **Deploy and Sync** - Start the node and sync with the network
+5. **Service Configuration** - Set up optional services like APIs and indexing
+
+Detailed deployment guides will be published when PFNs are ready for launch.
+
+## PFN Types and Use Cases
+
+#### Standard PFN
+- **Purpose**: Basic blockchain synchronization and data access
+- **Resources**: Moderate hardware requirements
+- **Services**: Basic RPC endpoints
+
+#### API PFN  
+- **Purpose**: High-performance API services for dApps
+- **Resources**: Higher compute and memory for request handling
+- **Services**: Full REST API, WebSocket, custom endpoints
+
+#### Indexer PFN
+- **Purpose**: Specialized indexing and analytics
+- **Resources**: High storage and compute for data processing
+- **Services**: Custom indexing, analytics APIs, database integration
+
+#### Archive PFN
+- **Purpose**: Long-term historical data preservation
+- **Resources**: Very high storage requirements
+- **Services**: Complete historical access, research APIs
+
+## System Requirements
+
+Detailed requirements will be provided when PFNs launch.
+
+## Deployment Guides
+
+When PFNs become available, comprehensive guides will be provided for various deployment methods.

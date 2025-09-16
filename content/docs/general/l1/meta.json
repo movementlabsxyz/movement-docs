@@ -1,0 +1,12 @@
+{
+  "title": "Movement L1",
+  "pages": [
+    "index",
+    "what-is-movement-l1",
+    "move-language",
+    "architecture",
+    "node-level-architecture",
+    "nodes",
+    "protocol-specification"
+  ]
+}

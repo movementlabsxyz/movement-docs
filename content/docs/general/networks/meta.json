@@ -1,0 +1,9 @@
+{
+  "title": "Networks",
+  "pages": [
+    "index",
+    "mainnet",
+    "testnet",
+    "devnet"
+  ]
+}

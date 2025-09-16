@@ -1,0 +1,9 @@
+{
+  "title": "Node types and setup",
+  "pages": [
+    "index",
+    "validator-node",
+    "validator-fullnode",
+    "public-fullnode"
+  ]
+}

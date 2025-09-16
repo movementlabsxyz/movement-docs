@@ -1,0 +1,133 @@
+---
+id: nodes
+sidebar_position: 6
+title: Overview
+description: "Comprehensive guide to Movement Mainnet node types and operations"
+---
+
+import React from 'react';
+
+The Movement Mainnet consists of three main node types: 
+
+- **Validator Nodes**
+- **Validator Fullnodes (VFNs)**
+- **Public Fullnodes (PFNs)**
+
+To participate in consensus, you are required to run a validator node and stake the minimum amount of MOVE tokens. VFNs and PFNs are not required to participate in consensus, but they are essential for distributing blockchain data and enabling ecosystem services such as indexing, querying, and RESTful API services.
+VFNs can only be run by validator operators, while PFNs can be run by anyone. All node types are currently in development and will be available soon.
+
+
+Thus, the Movement network uses a multi-tier architecture:
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Validator     │◄──►│   Validator     │◄──►│   Validator     │
+│     Node        │    │     Node        │    │     Node        │
+└─────────┬───────┘    └─────────┬───────┘    └─────────┬───────┘
+          │                      │                      │
+          ▼                      ▼                      ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Validator     │    │   Validator     │    │   Validator     │
+│   Fullnode      │    │   Fullnode      │    │   Fullnode      │
+└─────────┬───────┘    └─────────┬───────┘    └─────────┬───────┘
+          │                      │                      │
+          └──────────┬───────────┴───────────┬──────────┘
+                     │                       │
+            ┌─────────────────┐      ┌─────────────────┐  
+            │    Public       │      │    Public       │   
+            │   Fullnode      │      │   Fullnode      │   
+            └─────────────────┘      └─────────────────┘ 
+```
+
+## Node Types Overview
+
+### Validator Nodes
+
+[View Validator Node Documentation →](/general/l1/nodes/validator-node)
+
+- **Purpose**: Participate in consensus protocol and validate transactions
+- **Requirements**: Must stake minimum MOVE tokens
+- **Rewards**: Earn staking rewards for successful validation
+- **Status**: 🚧 Coming Soon
+- **Requirements**: See System Requirements (Coming Soon)
+
+### Validator Fullnodes (VFNs)
+
+[View VFN Documentation →](/general/l1/nodes/validator-fullnode)
+
+- **Purpose**: Serve as secure entry/exit points for validator operations
+- **Requirements**: Can only be operated by validator operators
+- **Benefits**: Improved reliability and secure data access for validators
+- **Status**: 🚧 Coming Soon
+- **Requirements**: See System Requirements (Coming Soon)
+
+### Public Fullnodes (PFNs)
+
+[View PFN Documentation →](/general/l1/nodes/public-fullnode)
+
+- **Purpose**: Replicate blockchain state and provide public access
+- **Requirements**: No staking required, open to anyone
+- **Benefits**: Increase network decentralization and data availability
+- **Use Cases**: RPC services, indexing, dApps, and ecosystem tools
+- **Status**: 🚧 Coming Soon
+- **Requirements**: See System Requirements (Currently Supported)
+
+## Validator Node Types Comparison
+
+To participate in the Movement consensus protocol, you will need to deploy and run a **validator node**. Additionally, it will be **highly recommended** to run a **validator fullnode (VFN)** to provide secure and reliable access to blockchain data.
+
+Comprehensive deployment guides will be available when validators launch on Movement.
+
+### Node Types Comparison
+
+| Feature | Validator Node | Validator Fullnode (VFN) |
+|---------|----------------|---------------------------|
+| **Purpose** | Consensus participation | Data distribution & security |
+| **Required** | ✅ Yes (for consensus) | 📋 Highly recommended |
+| **Staking** | ✅ Required | ❌ No staking needed |
+| **Public Access** | ❌ Private network only | ✅ Public API access |
+| **API Services** | ❌ Disabled for security | ✅ Full REST/WebSocket APIs |
+| **Hardware** | High (consensus critical) | Moderate (data serving) |
+| **Uptime** | Critical (affects rewards) | Important (affects users) |
+
+### Architecture Overview
+
+The recommended validator setup uses a two-tier architecture:
+
+```
+Internet ←→ VFN ←→ Validator Node
+             ↑           ↑
+      (Public APIs)  (Private Network)
+      (Data Access)  (Consensus Only)
+```
+
+## Quick Links
+
+### System Requirements
+Essential information for planning and deploying Movement nodes.
+
+- **Complete System Requirements** (Coming Soon) - Comprehensive hardware and software requirements for all node types
+- **Cloud Provider Recommendations** (Coming Soon) - AWS, GCP, and Azure instance recommendations
+- **Storage Requirements** (Coming Soon) - Storage types, capacity planning, and performance considerations
+- **Network Requirements** (Coming Soon) - Bandwidth, latency, and port configuration
+
+### Validation & Staking (Coming Soon)
+Comprehensive guides for validation, staking, and governance will be available when Movement validators launch.
+
+### Node Operations (Coming Soon)
+Step-by-step deployment and operational guides will be available when nodes launch.
+
+### Development Tools (Coming Soon)
+Developer tools and local development environments will be available soon.
+
+## Getting Started
+
+All Movement node types are currently in development and will be available soon. Detailed deployment guides and operational procedures will be published when the nodes are ready for mainnet launch.
+
+Stay tuned for updates on node availability and deployment instructions.
+
+
+
+## Additional Resources
+
+- For community resources, support channels, and ways to get involved, see [Community and Support](/general/usingmovement/community-support).
