@@ -4,7 +4,7 @@ title: L1 Architecture
 description: "Detailed architecture of the Movement L1"
 ---
 
-Movement L1 is designed as a high-performance, native Move blockchain with a modular architecture that separates concerns while maintaining tight integration for optimal performance.
+Movement L1 is designed as a high-performance, native Move blockchain with a modular architecture that separates concerns while maintaining tight integration for optimal performance. This document covers the high-level system architecture, while detailed implementation of individual node components is covered in the [Node-Level Architecture](/general/l1/node-level-architecture).
 
 ## Core Layers
 
@@ -70,7 +70,7 @@ The GraphQL interface enables _**flexible queries**_ for complex multi-resource 
 
 #### Move Virtual Machine (MoveVM)
 
-The MoveVM provides _**native execution**_ of Move bytecode, featuring _**precise gas metering**_ that accounts for instruction, storage, and payload costs. It enforces _**type safety**_ through Move’s static and dynamic safety checks, including resource ownership rules, and ensures _**sandboxing**_ by isolating transaction execution within the VM environment.
+The MoveVM provides _**native execution**_ of Move bytecode, featuring _**precise gas metering**_ that accounts for instruction, storage, and payload costs. It enforces _**type safety**_ through Move's static and dynamic safety checks, including resource ownership rules, and ensures _**sandboxing**_ by isolating transaction execution within the VM environment.
 
 #### Transaction Pipeline
 

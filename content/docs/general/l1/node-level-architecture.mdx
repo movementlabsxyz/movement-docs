@@ -4,7 +4,7 @@ title: Node-Level Architecture
 description: "Detailed node-level architecture and components"
 ---
 
-This document provides a detailed view of the internal architecture of Movement L1 nodes, covering the various components, their interactions, and the data flows within a single node instance.
+This document provides a detailed view of the internal architecture of Movement L1 nodes, covering the various components, their interactions, and the data flows within a single node instance. For the high-level system architecture and network design, see [L1 Architecture](/general/l1/architecture).
 
 ## Core Layers
 
@@ -115,7 +115,7 @@ The State Cache Manager maintains an _**account cache**_ for recently accessed a
 The Consensus Engine coordinates the Byzantine Fault Tolerant consensus protocol through the following flow:
 1. **Block Proposal**: Leader proposes a block containing transactions and a Quorum Certificate (QC) for its parent.
 2. **Voting Phase**: Validators verify the proposal and cast _**vote messages**_.
-3. **QC Formation**: Votes are aggregated into a _**Quorum Certificate**_ attesting to the block’s validity.
+3. **QC Formation**: Votes are aggregated into a _**Quorum Certificate**_ attesting to the block's validity.
 4. **Block Commit**: Once a 3-chain of consecutive certified blocks is formed, the earliest block in the chain is _**finalized**_ and added to the ledger.
 
 #### Voting Module
