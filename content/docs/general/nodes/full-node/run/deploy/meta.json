@@ -1,0 +1,8 @@
+{
+  "title": "Deploy a Full Node",
+  "pages": [
+    "index",
+    "source",
+    "docker"
+  ]
+}
