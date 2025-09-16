@@ -43,7 +43,7 @@ Thus, the Movement network uses a multi-tier architecture:
 
 ### Validator Nodes
 
-[View Validator Node Documentation →](/general/nodes/validator-node)
+[View Validator Node Documentation →](/general/l1/nodes/validator-node)
 
 - **Purpose**: Participate in consensus protocol and validate transactions
 - **Requirements**: Must stake minimum MOVE tokens
@@ -53,7 +53,7 @@ Thus, the Movement network uses a multi-tier architecture:
 
 ### Validator Fullnodes (VFNs)
 
-[View VFN Documentation →](/general/nodes/validator-node/validator-fullnode)
+[View VFN Documentation →](/general/l1/nodes/validator-fullnode)
 
 - **Purpose**: Serve as secure entry/exit points for validator operations
 - **Requirements**: Can only be operated by validator operators
@@ -63,7 +63,7 @@ Thus, the Movement network uses a multi-tier architecture:
 
 ### Public Fullnodes (PFNs)
 
-[View PFN Documentation →](/general/nodes/full-node)
+[View PFN Documentation →](/general/l1/nodes/public-fullnode)
 
 - **Purpose**: Replicate blockchain state and provide public access
 - **Requirements**: No staking required, open to anyone
@@ -71,6 +71,35 @@ Thus, the Movement network uses a multi-tier architecture:
 - **Use Cases**: RPC services, indexing, dApps, and ecosystem tools
 - **Status**: 🚧 Coming Soon
 - **Requirements**: See System Requirements (Currently Supported)
+
+## Validator Node Types Comparison
+
+To participate in the Movement consensus protocol, you will need to deploy and run a **validator node**. Additionally, it will be **highly recommended** to run a **validator fullnode (VFN)** to provide secure and reliable access to blockchain data.
+
+Comprehensive deployment guides will be available when validators launch on Movement.
+
+### Node Types Comparison
+
+| Feature | Validator Node | Validator Fullnode (VFN) |
+|---------|----------------|---------------------------|
+| **Purpose** | Consensus participation | Data distribution & security |
+| **Required** | ✅ Yes (for consensus) | 📋 Highly recommended |
+| **Staking** | ✅ Required | ❌ No staking needed |
+| **Public Access** | ❌ Private network only | ✅ Public API access |
+| **API Services** | ❌ Disabled for security | ✅ Full REST/WebSocket APIs |
+| **Hardware** | High (consensus critical) | Moderate (data serving) |
+| **Uptime** | Critical (affects rewards) | Important (affects users) |
+
+### Architecture Overview
+
+The recommended validator setup uses a two-tier architecture:
+
+```
+Internet ←→ VFN ←→ Validator Node
+             ↑           ↑
+      (Public APIs)  (Private Network)
+      (Data Access)  (Consensus Only)
+```
 
 ## Quick Links
 

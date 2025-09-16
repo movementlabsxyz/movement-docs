@@ -6,6 +6,7 @@
     "move-language",
     "architecture",
     "node-level-architecture",
+    "nodes",
     "protocol-specification"
   ]
 }
