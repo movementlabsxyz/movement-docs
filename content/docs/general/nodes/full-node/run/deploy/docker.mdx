@@ -14,63 +14,6 @@ the aptos-core source code approach (above). If M1/M2 support is important to yo
 issue: https://github.com/aptos-labs/aptos-core/issues/1412
 </Callout>
 
-## Option 1: Building Docker Images from Source
-
-If you want to build your own Docker images from the latest source code or customize the build, you can use the Movement [aptos-core](https://github.com/movementlabsxyz/aptos-core) repository with the `just` command runner.
-
-### Prerequisites for Building from Source
-
-- [Docker](https://docs.docker.com/get-docker/)
-- [Nix](https://nixos.org/download.html) with flakes enabled
-- [Just](https://github.com/casey/just#installation) command runner
-
-### Building Custom Docker Images
-
-1. Clone the Movement `aptos-core` repository:
-
-```bash filename="Terminal"
-git clone git@github.com:movementlabsxyz/aptos-core.git && cd aptos-core
-git checkout origin/movement
-```
-
-2. Build the Docker image for `aptos-node`:
-
-```bash filename="Terminal"
-# Build with default (dev) profile
-just docker-build
-
-# Build with release profile for production use
-just docker-build aptos-node latest release
-
-# Build with custom tag
-just docker-build aptos-node my-custom-tag release
-```
-
-3. The build process will:
-   - Automatically build the required `aptos-node` binary using Nix
-   - Create a Docker image with the specified tag
-   - Handle complex dependencies like RocksDB and OpenSSL automatically
-
-4. Once built, you can use your custom image in place of the official `aptoslabs/validator:mainnet` image in the docker run command below.
-
-<Callout type="info">
-**Build Profiles**<br />
-- `dev` (default) - Development build with debug symbols
-- `release` - Optimized release build recommended for production
-- The Nix build system ensures reproducible builds across different environments
-</Callout>
-
-<Callout type="info">
-**Troubleshooting Docker Builds**<br />
-If you encounter issues:
-1. Ensure Docker and Docker Buildx are installed
-2. Try cleaning and rebuilding: `just clean && just build`
-3. Update the flake: `just update`
-4. List available commands: `just help`
-</Callout>
-
-## Option 2: Using Pre-built Docker Images
-
 If you prefer to use the official pre-built images, follow these steps:
 
 1. First, install [Docker](https://docs.docker.com/get-docker/).
@@ -101,19 +44,35 @@ base:
   role: "full_node"
   data_dir: "/opt/aptos/data"
   waypoint:
-    from_file: "/opt/aptos/etc/waypoint.txt"
+    from_file: "/opt/aptos/genesis/waypoint.txt"
 
 execution:
-  genesis_file_location: "/opt/aptos/etc/genesis.blob"
+  genesis_file_location: "/opt/aptos/genesis/genesis.blob"
+  genesis_waypoint:
+    from_file: "/opt/aptos/genesis/genesis_waypoint.txt"
+
+storage:
+  rocksdb_configs:
+    enable_storage_sharding: false
 
 full_node_networks:
   - network_id: "public"
-    discovery_method: "onchain"
+    discovery_method: "none"
     listen_address: "/ip4/0.0.0.0/tcp/6182"
+    seeds:
+      9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F:
+        addresses:
+        - "/dns/vfn.movement-l1/tcp/6182/noise-ik/9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F/handshake/0"
+        role: "Upstream"
 
 api:
   enabled: true
-  address: "0.0.0.0:8080"
+  address: 0.0.0.0:8080 
+
+state_sync:
+  state_sync_driver:
+    bootstrapping_mode: DownloadLatestStates
+    continuous_syncing_mode: ApplyTransactionOutputs
 ```
 
 <Callout type="warning">

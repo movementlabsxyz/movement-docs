@@ -2,7 +2,6 @@
     "title": "Tutorials",
     "pages": [
         "build",
-        "just-aptos-core",
         "deploy",
         "move_slayers",
         "uniswap_v2_example",
