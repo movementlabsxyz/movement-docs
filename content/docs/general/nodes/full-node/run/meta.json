@@ -1,0 +1,8 @@
+{
+  "title": "Run a Full Node",
+  "pages": [
+    "index",
+    "deploy",
+    "verify"
+  ]
+}

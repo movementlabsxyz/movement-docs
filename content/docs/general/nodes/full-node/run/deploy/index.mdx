@@ -1,0 +1,32 @@
+---
+title: "Deploy a PFN"
+description: "Step-by-step guides for deploying a public fullnode (PFN) on Movement networks using various deployment methods including source code, Docker, and cloud platforms coming soon."
+sidebar:
+  label: "Overview"
+---
+
+The following guides provide step-by-step instructions for deploying a PFN on the Movement networks.
+
+<Callout type="info">
+**Do I have to run a PFN?**<br />
+If you do not wish to run a PFN, but still want to interact with the Movement blockchain, you can use the REST API
+provided by the Movement Labs' PFNs (see [Movement APIs](/build/apis)). Note, however, that Movement Labs-provided PFNs have rate
+limits, which can impede your development. You can deploy your own PFN
+and synchronize with the Movement blockchain directly, or use a different node infrastructure provider.
+</Callout>
+
+Select the guide for the deployment method you prefer:
+
+<Callout type="warning">
+**Choose a network**<br />
+These guides default to deploying a PFN in the Movement testnet network, but they can easily be used to do
+the same in other networks (e.g., devnet or mainnet network). To do so, check out the 
+[movement-networks](https://github.com/movementlabsxyz/movement-networks) repo
+and use the `genesis.blob` and `waypoint.txt` node files for the respective networks:
+[mainnet](https://github.com/movementlabsxyz/movement-networks/blob/main/mainnet/README.md),
+[testnet](https://github.com/movementlabsxyz/movement-networks/blob/main/testnet/README.md),
+and [devnet](https://github.com/movementlabsxyz/movement-networks/blob/main/devnet/README.md).
+</Callout>
+
+- ### [Using Source Code](/general/nodes/full-node/run/deploy/source)
+- ### [Using Docker](/general/nodes/full-node/run/deploy/docker)
