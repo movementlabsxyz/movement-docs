@@ -60,6 +60,18 @@ on how to download the `aptos-core` repository and build the binary. Then, follo
       base:
         data_dir: "</path/to/my/homedir/my-full-node/data>"
       ```
+   4. Specify the upstream peer for your PFN. The upstream peer is the node from which your PFN will synchronize blockchain data. In this example, `9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F` is the upstream peer_id. You can also configure this to point to your own PFN if preferred. For example:
+      ```
+      full_node_networks:
+        - network_id: "public"
+          discovery_method: "none"
+          listen_address: "/ip4/0.0.0.0/tcp/6182"
+          seeds:
+            9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F:
+              addresses:
+              - "/dns/testnet.movementnetwork.xyz/tcp/6182/noise-ik/9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F/handshake/0"
+              role: "Upstream"
+      ``` 
 
 6. Start your local public fullnode by running the below command:
 
