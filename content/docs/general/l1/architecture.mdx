@@ -56,11 +56,11 @@ The Movement L1 architecture is organized into five core layers, each handling s
 
 #### REST API
 
-The REST API provides _**standard endpoints**_ for common blockchain operations, enabling _**direct resource queries**_ to Move resources and _**secure transaction submission**_ for broadcasting. The API supports _**real-time state inspection**_ and querying capabilities.
+The REST API provides _**standard endpoints**_ for common blockchain operations, enabling _**direct resource queries**_ to Move resources and _**secure transaction submission**_ for broadcasting. The API supports _**state inspection**_ and querying capabilities. For real-time data access, applications must implement polling mechanisms using these REST endpoints.
 
 #### WebSocket Events
 
-WebSocket events deliver _**real-time updates**_ through live transaction and block notifications, featuring _**selective event filtering**_ for subscription and _**low latency**_ with minimal delay for event delivery. The system ensures _**reliable delivery**_ with guaranteed event ordering.
+Nodes do not provide WebSocket endpoints for real-time block or event streaming at this point. For real-time data access, applications must use polling via RPC endpoints or utilize third-party indexer services.
 
 #### GraphQL Interface
 

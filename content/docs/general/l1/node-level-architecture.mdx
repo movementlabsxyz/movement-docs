@@ -51,12 +51,11 @@ The Movement L1 node architecture is organized into five core layers, each handl
 #### RPC/API Server
 
 The RPC/API Server provides external API access to node functionality.
-The RPC/API Server provides _**transaction submission**_ endpoints for submitting signed transactions to the network, _**state queries**_ for querying account states and resource data, _**block information**_ retrieval for block and transaction data, and _**network status**_ endpoints for getting node and network health information.
+The RPC/API Server provides _**transaction submission**_ endpoints for submitting signed transactions to the network, _**state queries**_ for querying account states and resource data, _**block information**_ retrieval for block and transaction data, and _**network status**_ endpoints for getting node and network health information. For real-time data access, applications must implement polling mechanisms using these RPC endpoints.
 
 #### WebSocket Server
 
-The WebSocket Server provides real-time event streaming to subscribers.
-The WebSocket Server streams _**new block**_ notifications in real-time, _**transaction confirmation**_ status updates, _**account change**_ notifications for state changes, and _**network events**_ including validator set changes and other network events.
+Nodes do not provide WebSocket endpoints for real-time block or event streaming at this point. The WebSocket Server component is not available for external clients. For real-time data access, applications must use polling via RPC endpoints or utilize third-party indexer services.
 
 #### Metrics Exporter
 
