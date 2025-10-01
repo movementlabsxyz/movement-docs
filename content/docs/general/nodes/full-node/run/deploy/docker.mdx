@@ -27,6 +27,7 @@ mkdir data && \
 curl -O https://raw.githubusercontent.com/movementlabsxyz/aptos-core/movement/docker/compose/aptos-node/fullnode.yaml && \
 curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/waypoint.txt && \
 curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/genesis.blob
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/genesis_waypoint.txt
 ```
 
 <Callout type="warning">
@@ -36,7 +37,7 @@ Be sure to download the `genesis.blob` and `waypoint.txt` for those networks, in
 and waypoint pointed to by the `curl` commands above.
 </Callout>
 
-3. Next, make sure that the `fullnode.yaml` configuration file that you downloaded above contains only the following content.
+3. Next, update the `fullnode.yaml` configuration file that you downloaded above with the following content.
    This will ensure that this configuration is for a PFN and not for another node type (e.g., validator or VFN):
 
 ```yaml filename="fullnode.yaml"
@@ -44,12 +45,12 @@ base:
   role: "full_node"
   data_dir: "/opt/aptos/data"
   waypoint:
-    from_file: "/opt/aptos/genesis/waypoint.txt"
+    from_file: "/opt/aptos/waypoint.txt"
 
 execution:
-  genesis_file_location: "/opt/aptos/genesis/genesis.blob"
+  genesis_file_location: "/opt/aptos/genesis.blob"
   genesis_waypoint:
-    from_file: "/opt/aptos/genesis/genesis_waypoint.txt"
+    from_file: "/opt/aptos/genesis_waypoint.txt"
 
 storage:
   rocksdb_configs:
@@ -86,10 +87,10 @@ Override the following if you do not want other PFNs connecting to yours: `liste
 docker run --pull=always \
   --rm -p 8080:8080 \
   -p 9101:9101 -p 6180:6180 \
-  -v $(pwd):/opt/aptos/etc -v $(pwd)/data:/opt/aptos/data \
-  --workdir /opt/aptos/etc \
-  --name=aptos-fullnode ghcr.io/movementlabsxyz/aptos-node:latest aptos-node \
-  -f /opt/aptos/etc/fullnode.yaml
+  -v $(pwd):/opt/aptos -v $(pwd)/data:/opt/aptos/data \
+  --workdir /opt/aptos \
+  --name=aptos-fullnode ghcr.io/movementlabsxyz/aptos-node:1f072d5 \
+  -f /opt/aptos/fullnode.yaml
 ```
 
 <Callout type="warning">
