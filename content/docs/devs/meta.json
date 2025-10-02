@@ -1,6 +1,17 @@
 {
     "title": "Build",
-    "pages": ["index", "firstMoveContract", "movementcli", "networkEndpoints", "interactonchain","templates", "indexing", "oracles", "fullnode", "tutorials", "faq"],
+    "pages": ["index",
+    "firstMoveContract",
+    "movementcli",
+    "networkEndpoints",
+    "interactonchain",
+    "templates",
+    "indexing",
+    "oracles",
+    "fullnode",
+    "tutorials",
+    "move2",
+    "faq"],
     "root": true,
     "defaultOpen": true
 } 

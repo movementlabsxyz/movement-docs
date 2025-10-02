@@ -1,0 +1,439 @@
+---
+title: Move 2
+description: Move 2 Migration Guide for Movement
+---
+
+# Move 2 Migration Guide for Movement
+
+This guide covers the most impactful changes in Move 2 for developers already familiar with Move 1 syntax. Each section shows before/after examples to help you understand how to leverage these new features.
+
+## 1. Enum Types (Move 2.0)
+
+Enums allow you to define different variants of data layout in a single storable type, similar to Rust enums.
+
+### Before (Move 1)
+```move
+module my_addr::events {
+    struct TransferEvent has store, drop {
+        from: address,
+        to: address,
+        amount: u64,
+    }
+    
+    struct MintEvent has store, drop {
+        to: address,
+        amount: u64,
+    }
+    
+    struct BurnEvent has store, drop {
+        from: address,
+        amount: u64,
+    }
+    
+    // Need separate handling for each event type
+    struct EventStore has key {
+        transfers: vector<TransferEvent>,
+        mints: vector<MintEvent>,
+        burns: vector<BurnEvent>,
+    }
+}
+```
+
+### After (Move 2)
+```move
+module my_addr::events {
+    // All variants in one type
+    enum TokenEvent has store, drop {
+        Transfer { from: address, to: address, amount: u64 },
+        Mint { to: address, amount: u64 },
+        Burn { from: address, amount: u64 },
+    }
+    
+    // Single vector for all event types
+    struct EventStore has key {
+        events: vector<TokenEvent>,
+    }
+    
+    // Pattern matching on variants
+    public fun process_event(event: &TokenEvent) {
+        match (event) {
+            TokenEvent::Transfer { from, to, amount } => {
+                // Handle transfer
+            },
+            TokenEvent::Mint { to, amount } => {
+                // Handle mint
+            },
+            TokenEvent::Burn { from, amount } => {
+                // Handle burn
+            },
+        }
+    }
+}
+```
+
+**Benefits**: Cleaner code organization, type safety across variants, and simplified storage patterns.
+
+---
+
+## 2. Receiver Style Functions (Move 2.0)
+
+Call functions using the familiar `value.method(args)` notation instead of `module::function(value, args)`.
+
+### Before (Move 1)
+```move
+module my_addr::token {
+    struct Token has store {
+        value: u64,
+    }
+    
+    public fun new(value: u64): Token {
+        Token { value }
+    }
+    
+    public fun value(token: &Token): u64 {
+        token.value
+    }
+    
+    public fun add(token: &mut Token, amount: u64) {
+        token.value = token.value + amount;
+    }
+    
+    // Usage elsewhere:
+    // let mut token = token::new(100);
+    // let val = token::value(&token);
+    // token::add(&mut token, 50);
+}
+```
+
+### After (Move 2)
+```move
+module my_addr::token {
+    struct Token has store {
+        value: u64,
+    }
+    
+    public fun new(value: u64): Token {
+        Token { value }
+    }
+    
+    // Receiver-style functions
+    public fun value(self: &Token): u64 {
+        self.value
+    }
+    
+    public fun add(self: &mut Token, amount: u64) {
+        self.value = self.value + amount;
+    }
+    
+    // Usage elsewhere - much more intuitive!
+    // let mut token = token::new(100);
+    // let val = token.value();
+    // token.add(50);
+}
+```
+
+**Benefits**: More intuitive, object-oriented style syntax that's easier to read and chain operations.
+
+---
+
+## 3. Index Notation (Move 2.0)
+
+Access vector elements and resource storage with cleaner bracket notation.
+
+### Before (Move 1)
+```move
+module my_addr::registry {
+    use std::vector;
+    
+    struct Registry has key {
+        items: vector<u64>,
+    }
+    
+    public fun get_item(registry: &Registry, index: u64): u64 {
+        *vector::borrow(&registry.items, index)
+    }
+    
+    public fun update_item(registry: &mut Registry, index: u64, value: u64) {
+        let item = vector::borrow_mut(&mut registry.items, index);
+        *item = value;
+    }
+    
+    public fun get_registry(addr: address): &Registry acquires Registry {
+        borrow_global<Registry>(addr)
+    }
+}
+```
+
+### After (Move 2)
+```move
+module my_addr::registry {
+    struct Registry has key {
+        items: vector<u64>,
+    }
+    
+    public fun get_item(registry: &Registry, index: u64): u64 {
+        registry.items[index]
+    }
+    
+    public fun update_item(registry: &mut Registry, index: u64, value: u64) {
+        registry.items[index] = value;
+    }
+    
+    public fun get_registry(addr: address): &Registry acquires Registry {
+        &Registry[addr]  // Cleaner resource access
+    }
+}
+```
+
+**Benefits**: Dramatically cleaner syntax that's familiar to developers from other languages.
+
+---
+
+## 4. Optional Acquires (Move 2.2)
+
+The compiler can now infer which resources a function accesses, making the `acquires` annotation optional.
+
+### Before (Move 1)
+```move
+module my_addr::account {
+    struct Balance has key {
+        value: u64,
+    }
+    
+    struct Config has key {
+        fee: u64,
+    }
+    
+    // Must manually annotate all acquired resources
+    public fun transfer(from: address, to: address, amount: u64) 
+        acquires Balance, Config {
+        let config = borrow_global<Config>(@my_addr);
+        let fee = config.fee;
+        
+        let from_balance = borrow_global_mut<Balance>(from);
+        from_balance.value = from_balance.value - amount - fee;
+        
+        let to_balance = borrow_global_mut<Balance>(to);
+        to_balance.value = to_balance.value + amount;
+    }
+}
+```
+
+### After (Move 2.2)
+```move
+module my_addr::account {
+    struct Balance has key {
+        value: u64,
+    }
+    
+    struct Config has key {
+        fee: u64,
+    }
+    
+    // Acquires annotation is now optional - compiler infers it!
+    public fun transfer(from: address, to: address, amount: u64) {
+        let config = borrow_global<Config>(@my_addr);
+        let fee = config.fee;
+        
+        let from_balance = borrow_global_mut<Balance>(from);
+        from_balance.value = from_balance.value - amount - fee;
+        
+        let to_balance = borrow_global_mut<Balance>(to);
+        to_balance.value = to_balance.value + amount;
+    }
+}
+```
+
+**Benefits**: Less boilerplate, fewer chances for annotation errors, and easier refactoring.
+
+---
+
+## 5. Compound Assignments (Move 2.1)
+
+Use familiar `+=`, `-=`, etc. operators instead of verbose assignment patterns.
+
+### Before (Move 1)
+```move
+module my_addr::counter {
+    struct Counter has key {
+        value: u64,
+    }
+    
+    public fun increment(counter: &mut Counter, amount: u64) {
+        counter.value = counter.value + amount;
+    }
+    
+    public fun decrement(counter: &mut Counter, amount: u64) {
+        counter.value = counter.value - amount;
+    }
+    
+    public fun multiply(counter: &mut Counter, factor: u64) {
+        counter.value = counter.value * factor;
+    }
+}
+```
+
+### After (Move 2.1)
+```move
+module my_addr::counter {
+    struct Counter has key {
+        value: u64,
+    }
+    
+    public fun increment(counter: &mut Counter, amount: u64) {
+        counter.value += amount;
+    }
+    
+    public fun decrement(counter: &mut Counter, amount: u64) {
+        counter.value -= amount;
+    }
+    
+    public fun multiply(counter: &mut Counter, factor: u64) {
+        counter.value *= factor;
+    }
+}
+```
+
+**Benefits**: More concise, familiar syntax from other programming languages. Supported operations: `+=`, `-=`, `*=`, `/=`, `%=`, `&=`, `|=`, `^=`, `<<=`, `>>=`.
+
+---
+
+## 6. Package Visibility (Move 2.0)
+
+Declare functions visible anywhere inside a package but not outside, with cleaner syntax than friend functions.
+
+### Before (Move 1)
+```move
+module my_addr::internal {
+    friend my_addr::public_api;
+    friend my_addr::admin;
+    
+    public(friend) fun internal_helper(): u64 {
+        42
+    }
+}
+
+module my_addr::public_api {
+    use my_addr::internal;
+    
+    public fun call_helper(): u64 {
+        internal::internal_helper()
+    }
+}
+```
+
+### After (Move 2.0)
+```move
+module my_addr::internal {
+    // Cleaner syntax - visible to entire package
+    package fun internal_helper(): u64 {
+        42
+    }
+    
+    // Or use the explicit form
+    public(package) fun another_helper(): u64 {
+        100
+    }
+}
+
+module my_addr::public_api {
+    use my_addr::internal;
+    
+    public fun call_helper(): u64 {
+        // Can call package functions from anywhere in the package
+        internal::internal_helper()
+    }
+}
+```
+
+**Benefits**: Simpler visibility control, no need to maintain friend lists, better encapsulation at package level.
+
+---
+
+## 7. Positional Structs (Move 2.0)
+
+Define wrapper types and simple structs with positional fields instead of named fields.
+
+### Before (Move 1)
+```move
+module my_addr::wrapped {
+    struct Wrapped has store, drop {
+        value: u64,
+    }
+    
+    public fun new(value: u64): Wrapped {
+        Wrapped { value }
+    }
+    
+    public fun unwrap(wrapped: Wrapped): u64 {
+        let Wrapped { value } = wrapped;
+        value
+    }
+}
+```
+
+### After (Move 2.0)
+```move
+module my_addr::wrapped {
+    // Positional struct - perfect for wrappers
+    struct Wrapped(u64) has store, drop;
+    
+    public fun new(value: u64): Wrapped {
+        Wrapped(value)
+    }
+    
+    public fun unwrap(wrapped: Wrapped): u64 {
+        let Wrapped(value) = wrapped;
+        value
+    }
+}
+```
+
+**Benefits**: Less boilerplate for simple wrapper types, cleaner syntax for single-field structs.
+
+---
+
+## Quick Reference: Other Notable Changes
+
+### Simplified Assertions (Move 2.0)
+```move
+// Before: always needed abort code
+assert!(condition, ERROR_CODE);
+
+// After: abort code is optional
+assert!(condition);  // Uses default abort code
+```
+
+### Cleaner Cast Syntax (Move 2.0)
+```move
+// Before: required parentheses
+function((x as u256))
+
+// After: no parentheses needed at top level
+function(x as u256)
+```
+
+### Loop Labels (Move 2.1)
+```move
+// Break or continue outer loops from nested loops
+'outer: loop {
+    loop {
+        if (condition) break 'outer;
+    }
+}
+```
+
+---
+
+## Summary
+
+The most impactful Move 2 features for day-to-day development are:
+
+1. **Enums** - Better type modeling and pattern matching
+2. **Receiver functions** - More intuitive method call syntax
+3. **Index notation** - Cleaner vector and resource access
+4. **Optional acquires** - Less boilerplate in function signatures
+5. **Compound assignments** - Familiar `+=` style operators
+6. **Package visibility** - Simpler module organization
+
+These features make Move code more expressive, safer, and easier to maintain while preserving Move's core safety guarantees.
