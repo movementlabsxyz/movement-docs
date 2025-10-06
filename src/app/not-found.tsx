@@ -17,10 +17,10 @@ export default function NotFound() {
           {/* Main Content */}
           <div className="space-y-6">
             <div>
-              <h2 className="text-3xl font-semibold text-white mb-3">
+              <h2 className="text-3xl font-semibold text-gray-900 dark:text-white mb-3">
                 Page Not Found
               </h2>
-              <p className="text-gray-300 text-lg max-w-md mx-auto">
+              <p className="text-black/80 dark:text-white/80 text-lg max-w-md mx-auto">
                 Sorry, the page you're looking for seems to have been moved or deleted. Use the search bar to find what you're looking for or navigate using the links below.
               </p>
             </div>
@@ -43,28 +43,28 @@ export default function NotFound() {
             </div>
             
             {/* Quick Navigation */}
-            <div className="mt-12 pt-8 border-t border-gray-700">
-              <p className="text-gray-400 mb-4">Quick Navigation</p>
+            <div className="mt-12 pt-8 border-t border-gray-300 dark:border-gray-700">
+              <p className="text-gray-600 dark:text-gray-400 mb-4">Quick Navigation</p>
               <div className="flex justify-center">
                 <div className="grid grid-cols-2 gap-12 max-w-5xl">
                   <Link 
                     href="/devs"
-                    className="group px-12 py-8 rounded-lg border border-gray-700 hover:border-[#FFDA34] transition-colors duration-200"
+                    className="group px-12 py-8 rounded-lg border border-gray-300 dark:border-gray-700 hover:border-[#FFDA34] transition-colors duration-200"
                   >
-                    <div className="text-[#FFDA34] group-hover:text-white transition-colors duration-200 text-2xl">
+                    <div className="text-[#FFDA34] group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200 text-2xl">
                       🚀
                     </div>
-                    <p className="text-white text-base font-medium mt-3">Build</p>
+                    <p className="text-gray-900 dark:text-white text-base font-medium mt-3">Build</p>
                   </Link>
                   
                   <Link 
                     href="/general"
-                    className="group px-12 py-8 rounded-lg border border-gray-700 hover:border-[#FFDA34] transition-colors duration-200"
+                    className="group px-12 py-8 rounded-lg border border-gray-300 dark:border-gray-700 hover:border-[#FFDA34] transition-colors duration-200"
                   >
-                    <div className="text-[#FFDA34] group-hover:text-white transition-colors duration-200 text-2xl">
+                    <div className="text-[#FFDA34] group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200 text-2xl">
                       ℹ️
                     </div>
-                    <p className="text-white text-base font-medium mt-3">Learn</p>
+                    <p className="text-gray-900 dark:text-white text-base font-medium mt-3">Learn</p>
                   </Link>
                 </div>
               </div>
@@ -72,7 +72,7 @@ export default function NotFound() {
             
             {/* Help Text */}
             <div className="mt-8 text-center">
-              <p className="text-gray-500 text-sm">
+              <p className="text-gray-600 dark:text-gray-500 text-sm">
                 Can't find what you're looking for? Check out our{' '}
                 <Link href="/devs/faq" className="text-[#FFDA34] hover:underline">
                   FAQ
