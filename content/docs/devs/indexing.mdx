@@ -61,8 +61,7 @@ query GetUserNFTs {
   current_token_ownerships_v2(
     where: {
       owner_address: {_eq: "0x123..."},
-      amount: {_gt: 0},
-      is_fungible_v2: {_eq: false}
+      amount: {_gt: 0}
     }
   ) {
     token_data_id
@@ -88,8 +87,7 @@ query GetUserNFTs {
 query GetRecentNFTSales {
   token_activities_v2(
     where: {
-      type: {_in: ["0x3::token::DepositEvent", "0x3::token::WithdrawEvent"]},
-      is_fungible_v2: {_eq: false}
+      type: {_in: ["0x3::token::DepositEvent", "0x3::token::WithdrawEvent"]}
     },
     order_by: {transaction_timestamp: desc},
     limit: 50
