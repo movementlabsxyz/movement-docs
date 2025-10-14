@@ -6,36 +6,73 @@ description: "Protocol specification for Movement L1"
 
 ## Abstract
 
-Movement L1 is a blockchain infrastructure built for the Move programming language and virtual machine. Movement L1 provides native Move execution with performance optimizations, security features, and developer tooling.
+Movement L1 is a blockchain infrastructure built to realize the full potential of the Move programming language. It provides a secure, resource-oriented foundation for decentralized applications, on-chain finance, and digitally native organizations. 
 
-This protocol specification presents the technical foundation, architectural decisions, and features of Movement L1 for decentralized applications, DeFi protocols, and enterprise blockchain solutions. The system employs a Jolteon-based consensus with Quorum Store–style data dissemination, tuned for low latency and high throughput.
+Beyond performance and safety, Movement L1 is designed around a simple premise: technology should empower its users. It exists to restore the values of open participation, shared ownership, and verifiable trust to a global, mobile-first economy.
+
+This document outlines the motivation, principles, and high-level architecture of Movement L1 — a people-centered Layer 1 network that unites the efficiency of Move with a design philosophy grounded in accessibility and community ownership.
+
+---
 
 ## 1. Introduction
 
 ### 1.1 Background
 
-The blockchain ecosystem has evolved rapidly, with various platforms attempting to address the trilemma of scalability, security, and decentralization. While significant progress has been made, existing solutions often require trade-offs or complex architectural decisions that limit their effectiveness.
-The "blockchain trilemma" refers to the challenge of achieving scalability, security, and decentralization simultaneously; most platforms must compromise on one to optimize the others.
+The blockchain ecosystem has evolved through repeated attempts to resolve the tension between scalability, security, and decentralization. Each generation of networks made progress, yet the trade-offs between performance and openness have persisted. The result is a landscape defined as much by fragmentation as by innovation — a collection of specialized systems often optimized for capital, not users.
 
-The Move programming language, originally developed for the Diem project, represents a significant advancement in blockchain programming with its resource-oriented design, formal verification capabilities, and built-in safety guarantees.
+The Move programming language, originally developed for the Diem project, represents a clean break from that trend. Its resource-oriented design, type safety, and formal verification make it uniquely suited for building verifiable financial systems. Movement L1 extends this vision to the protocol layer itself, creating a network that is both technically robust and socially aligned with the users who depend on it.
 
-### 1.2 Vision
+### 1.2 Vision and Motivation
 
-Movement L1 is designed to unlock the full potential of the Move programming language by providing:
+Movement continues the evolution of Move-based blockchain infrastructure with a renewed focus on accessibility, community participation, and sustainable on-chain economies. 
+Its aim is to refine existing foundations toward a more inclusive and purposeful network.
 
-- **Native Move Execution**: High-performance, production-grade MoveVM runtime purpose-built for Layer 1 scalability and security
-- **High Performance**: Consensus and execution for high throughput
-- **Developer Experience**: Tooling and documentation for Move developers
-- **Enterprise Ready**: Production-grade infrastructure suitable for enterprise applications
+Modern blockchains often measure success through market metrics rather than user impact. 
+Movement shifts that focus back to participation — to how effectively a network can empower people to build, earn, and coordinate. 
+It is designed to transform mature technology into open infrastructure for real users.
 
-### 1.3 Key Features
+A sovereign Layer 1 enables this direction. 
+By operating its own chain, Movement can shape its economics, governance, and coordination mechanisms around inclusivity and resilience. 
+The result is a network optimized for community-scale applications, real-world assets, and mobile-native finance — a system that prioritizes usability and shared benefit over speculation.
+
+### 1.3 Guiding Principles
+
+Movement’s development is driven by a small set of non-negotiable principles that inform every layer of the system:
+
+1. **People first** — technology should expand agency, not enclose it.  
+2. **Community as infrastructure** — decentralization is not only technical; it is social.  
+3. **Accessibility at the edge** — the next billion users will come from mobile, low-cost, and bandwidth-limited environments.  
+4. **Composability with purpose** — protocols and applications should interconnect into a coherent economic mesh rather than isolated silos.  
+5. **Sustainability over speculation** — value should circulate between builders, validators, and users, forming a stable foundation for long-term growth.
+
+### 1.4 Applications and Ecosystem
+
+Movement L1 is designed as a general-purpose Layer 1 that supports a wide spectrum of decentralized applications, from on-chain finance to digital identity and coordination systems. Its architecture emphasizes composability, verifiability, and predictable performance, allowing developers to build without compromising safety or accessibility.
+
+The network’s focus is on real utility rather than speculative activity. Applications that benefit most from Movement’s design include:
+
+- **Decentralized finance and asset issuance** — markets, payment rails, and credit systems where transparency and verifiable execution are essential.  
+- **Real-world asset integration** — tokenized representations of tangible assets whose ownership and yield can be distributed among users rather than concentrated in custodial entities.  
+- **Mobile-native experiences** — lightweight clients and wallets enabling users to transact and interact directly from any device.  
+- **Identity and reputation frameworks** — systems for establishing trust, contribution history, and governance participation on-chain.  
+- **Community-driven governance and coordination** — mechanisms that allow stakeholders to propose, vote, and execute collective decisions securely.
+
+Together, these categories define the intended shape of the Movement ecosystem: a practical, verifiable network where applications align economic value with human contribution.
+
+### 1.5 L1 Design Philosophy
+
+Movement L1 is a social-technical system. Its purpose is not to create another marketplace for tokens but to establish a durable framework for coordination and ownership. The network treats every contribution — from validation to development, from governance to education — as a building block of value. 
+
+In this sense, Movement is less a product than a public utility: a system where effort converts into value, contribution into ownership, and participation into collective strength.
+
+### 1.6 L1 Key Features
 
 Movement L1 implements the following key features:
 
-1. **Move Runtime**: MoveVM implementation for blockchain execution
-2. **High-Throughput Consensus**: [Jolteon](https://arxiv.org/abs/2106.10362) lineage, using a 2-chain commit and quadratic view change; optional [Quorum Store](https://forum.aptosfoundation.org/t/aptos-quorum-store-breaking-the-bottleneck/16671)–like dissemination layer for scaling under load.^[Jolteon originated as DiemBFT v4 and is the basis of AptosBFT — see the [Jolteon paper](https://arxiv.org/abs/2106.10362).]
-3. **Parallel Execution**: Transaction parallelization for increased throughput
-4. **State Management**: State storage and management solutions
+1. **Move Runtime**: MoveVM implementation for blockchain execution  
+2. **High-Throughput Consensus**: [Jolteon](https://arxiv.org/abs/2106.10362) lineage and a [Quorum Store](https://forum.aptosfoundation.org/t/aptos-quorum-store-breaking-the-bottleneck/16671)–like dissemination layer for scaling under load. 
+3. **Parallel Execution**: Transaction parallelization for increased throughput  
+4. **State Management**: State storage and management solutions  
 5. **Developer Tooling**: Development environment and debugging tools
 
 ## 2. Technical Architecture
