@@ -3,7 +3,7 @@ title: Python SDK
 description: Learn how to interact with Movement using the Aptos Python SDK.
 ---
 
-Aptos provides a lightly maintained official Python SDK. It is available on [PyPi](https://pypi.org/project/aptos-sdk/) with the source code in the [aptos-python-sdk GitHub repository](https://github.com/aptos-labs/aptos-python-sdk). Much of the functionality of the Python SDK mirrors the Typescript SDK. The primary purpose of the Python SDK is to help Python developers to quickly become familiar with Aptos and as an accompaniment to Aptos tutorials.
+The Movement network is compatible with the Aptos Python SDK, which provides a comprehensive interface for blockchain interactions. The SDK is available on [PyPi](https://pypi.org/project/aptos-sdk/) with source code in the [aptos-python-sdk GitHub repository](https://github.com/aptos-labs/aptos-python-sdk). This guide demonstrates how to use the Python SDK to interact with smart contracts deployed on the Movement network.
 
 ## Installation
 
@@ -27,10 +27,544 @@ cd /path/to/python/project
 cp -r /path/to/aptos-python-sdk aptos-sdk
 ```
 
-## Usage
+## Getting Started
+
+This tutorial demonstrates how to use the Python SDK to interact with a smart contract deployed on the Movement network. We'll build a complete example that shows account management, balance checking, and smart contract interactions.
+
+### Create Project Directory
+```bash
+mkdir python-sdk-example
+cd python-sdk-example
+```
+
+### Create Environment Configuration
+
+Create a `.env` file to store your configuration:
+
+```bash
+touch .env
+```
+
+Add the following configuration to your `.env` file:
+
+```
+PRIVATE_KEY=YOUR_PRIVATE_KEY
+RPC_URL = "https://testnet.movementnetwork.xyz/v1"
+FAUCET_URL = "https://faucet.testnet.movementnetwork.xyz/"
+MODULE_ADDRESS=YOUR_MODULE_ADDRESS
+```
+
+<Callout type="info">
+**Note**: Replace the placeholder values with your actual private key and module address. You can generate a private key using the Movement CLI or other wallet tools.
+</Callout>
+
+### Required Imports
+
+First, let's import all the necessary modules for our Movement SDK client:
 
 ```python
-from aptos_sdk import AptosClient
+import asyncio
+import os
+from typing import Optional, Any, Dict
 
-client = AptosClient("https://testnet.bardock.movementnetwork.xyz/v1")
+from aptos_sdk.ed25519 import PrivateKey
+from aptos_sdk.async_client import FaucetClient, RestClient
+from aptos_sdk.account import Account, AccountAddress
+from aptos_sdk.transactions import (
+    EntryFunction, 
+    TransactionPayload, 
+    TransactionArgument
+)
+from aptos_sdk.bcs import Serializer
+from dotenv import load_dotenv
 ```
+
+## Create the Movement Client Class
+
+We'll create a comprehensive client class that handles all interactions with Movement smart contracts:
+
+```python
+class MovementSmartContractClient:
+    """A client for interacting with Movement smart contracts, specifically the message contract."""
+```
+### Initialize the Client
+
+The constructor initializes the client with network configuration and sets up the necessary components:
+
+- **RestClient**: Handles RPC calls to the Movement network
+- **FaucetClient**: Manages account funding for testing
+- **Account**: Manages the user's account and private key
+
+```python
+     def __init__(self, private_key: str, rpc_url: str, faucet_url: str, module_address: str = ""):
+        """
+        Initialize the Movement client with network configuration.
+        
+        Args:
+            private_key: The private key for the account (with or without 0x prefix)
+            rpc_url: The RPC URL for the Movement network
+            faucet_url: The faucet URL for funding accounts
+            module_address: The address of the deployed smart contract module
+        """
+        # Initialize clients
+        self.rest_client = RestClient(rpc_url)
+        self.faucet_client = FaucetClient(faucet_url, self.rest_client)
+        
+        # Setup account
+        if private_key.startswith("0x"):
+            private_key = private_key[2:]
+        
+        self.private_key = PrivateKey.from_hex(private_key)
+        self.account_address = AccountAddress.from_key(self.private_key.public_key())
+        self.account = Account(account_address=self.account_address, private_key=self.private_key)
+        
+        # Contract configuration
+        self.module_address = module_address
+        self.set_message_function = f"message::set_message"
+        self.get_message_function = f"message::get_message"
+        
+        print(f"Account address: {self.account.address()}")
+```
+
+### Account Management Methods
+
+#### Fund Account
+
+The `fund_account` method uses the faucet client to add test tokens to your account:
+
+```python
+    async def fund_account(self, amount: int = 100000000) -> None:
+        """
+        Fund the account using the faucet.
+        
+        Args:
+            amount: Amount to fund in Octas (default: 1 APT = 100000000 Octas)
+        """
+        try:
+            await self.faucet_client.fund_account(self.account.address(), amount)
+            print(f"Successfully funded account with {amount} Octas")
+        except Exception as e:
+            print(f"Error funding account: {e}")
+```
+
+#### Check Balance
+
+The `get_balance` method retrieves the current MOVE token balance in Octas (1 MOVE = 100,000,000 Octas):
+
+```python
+    async def get_balance(self) -> int:
+        """
+        Get the current account balance.
+        
+        Returns:
+            Account balance in Octas
+        """
+        try:
+            balance = await self.rest_client.account_balance(self.account.address())
+            return balance
+        except Exception as e:
+            print(f"Error getting balance: {e}")
+            return 0
+```
+
+### Smart Contract Interaction Methods
+
+#### Read Contract State
+
+The `get_message` method reads data from the smart contract without modifying the blockchain state:
+
+```python
+async def get_message(self, account_address: Optional[str] = None) -> Optional[Dict[str, Any]]:
+        """
+        Retrieve the resource message::MessageHolder::message
+        
+        Args:
+            account_address: The account address to read message for (defaults to current account)
+            
+        Returns:
+            The message holder resource or None if not found
+        """
+        if not self.module_address:
+            raise ValueError("Module address not set. Please provide module_address in constructor.")
+        
+        target_address = AccountAddress.from_str(account_address) if account_address else self.account.address()
+        
+        try:
+            
+            # Get the get_message resource from the account
+            resource = await self.rest_client.view(
+                f"{self.module_address}::{self.get_message_function}",
+                [],
+                [str(target_address)]
+            )
+            print(f"Message resource: {resource}")
+            return resource
+            
+        except Exception as e:
+            print(f"Error reading message: {e}")
+            return None
+```
+
+#### Write to Contract
+
+The `set_message` method submits a transaction to modify the smart contract state:
+
+```python
+    async def set_message(self, message: str) -> Optional[str]:
+        """
+        Potentially initialize and set the resource message::MessageHolder::message
+        
+        Args:
+            message: The message to store
+            
+        Returns:
+            Transaction hash if successful, None otherwise
+        """
+        if not self.module_address:
+            raise ValueError("Module address not set. Please provide module_address in constructor.")
+        
+        try:
+            print("\n=== Submitting Transaction ===")
+            
+            # Create the transaction payload using the correct format
+            payload = EntryFunction.natural(
+                f"{self.module_address}::{self.set_message_function}",
+                "set_message",
+                [],
+                [TransactionArgument(message, Serializer.str)]
+            )
+            
+            # Create and submit the BCS signed transaction
+            signed_transaction = await self.rest_client.create_bcs_signed_transaction(
+                self.account, 
+                TransactionPayload(payload)
+            )
+            
+            # Submit the transaction
+            txn_hash = await self.rest_client.submit_bcs_transaction(signed_transaction)
+            print(f"Submitted transaction: {txn_hash}")
+            
+            # Wait for transaction confirmation
+            await self.rest_client.wait_for_transaction(txn_hash)
+            print(f"Transaction confirmed: {txn_hash}")
+            
+            return txn_hash
+            
+        except Exception as e:
+            print(f"Error setting message: {e}")
+            return None
+```
+
+### Complete Example Usage
+
+Here's a complete example that demonstrates all the functionality:
+```python
+async def main():
+    """Main function to demonstrate the smart contract interaction."""
+    # Load environment variables
+    load_dotenv()
+    
+    private_key = os.getenv("PRIVATE_KEY")
+    rpc_url = os.getenv("RPC_URL")
+    faucet_url = os.getenv("FAUCET_URL")
+    module_address = os.getenv("MODULE_ADDRESS", "")  # Add this to your .env file
+    
+    if not all([private_key, rpc_url, faucet_url]):
+        print("Please set PRIVATE_KEY, RPC_URL, and FAUCET_URL in your .env file")
+        return
+    
+    # Initialize the client
+    client = MovementSmartContractClient(
+        private_key=private_key,
+        rpc_url=rpc_url,
+        faucet_url=faucet_url,
+        module_address=module_address
+    )
+    
+    # Fund the account
+    await client.fund_account()
+    
+    # Get balance
+    await client.get_balance()
+    
+    # Wait a bit for funding to complete
+    await asyncio.sleep(5)
+    
+    # Check current balance
+    balance = await client.get_balance()
+    print(f"Current balance: {balance} Octas")
+    
+    # If module address is set, demonstrate smart contract interaction
+    if module_address:
+        # Try to read existing message
+        await client.get_message()
+        
+        # Set a new message
+        message = "Gmove to those that still Gmove"
+        txn_hash = await client.set_message(message)
+        
+        if txn_hash:
+            # Read the message after setting it
+            await client.get_message()
+    else:
+        print("\nTo interact with smart contracts, please set MODULE_ADDRESS in your .env file")
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+### Expected Output
+
+When you run the example, you should see output similar to:
+
+```bash
+Account address: 0xACCOUNT_ADDRESS
+Successfully funded account with 100000000 Octas
+Current balance: 100000000 Octas
+Message resource: b'["gmove"]'
+
+=== Submitting Transaction ===
+Submitted transaction: 0xTRANSACTION_HASH
+Transaction confirmed: 0xTRANSACTION_HASH
+Message resource: b'["Gmove to those that still Gmove"]'
+```
+
+### Full Example Code
+
+```python
+import asyncio
+import os
+from typing import Optional, Any, Dict
+
+from aptos_sdk.ed25519 import PrivateKey
+from aptos_sdk.async_client import FaucetClient, RestClient
+from aptos_sdk.account import Account, AccountAddress
+from aptos_sdk.transactions import (
+    EntryFunction, 
+    TransactionPayload, 
+    TransactionArgument
+)
+from aptos_sdk.bcs import Serializer
+from dotenv import load_dotenv
+
+
+class MovementSmartContractClient:
+    """A client for interacting with Movement smart contracts, specifically the message contract."""
+    
+    def __init__(self, private_key: str, rpc_url: str, faucet_url: str, module_address: str = ""):
+        """
+        Initialize the Movement client with network configuration.
+        
+        Args:
+            private_key: The private key for the account (with or without 0x prefix)
+            rpc_url: The RPC URL for the Movement network
+            faucet_url: The faucet URL for funding accounts
+            module_address: The address of the deployed smart contract module
+        """
+        # Initialize clients
+        self.rest_client = RestClient(rpc_url)
+        self.faucet_client = FaucetClient(faucet_url, self.rest_client)
+        
+        # Setup account
+        if private_key.startswith("0x"):
+            private_key = private_key[2:]
+        
+        self.private_key = PrivateKey.from_hex(private_key)
+        self.account_address = AccountAddress.from_key(self.private_key.public_key())
+        self.account = Account(account_address=self.account_address, private_key=self.private_key)
+        
+        # Contract configuration
+        self.module_address = module_address
+        self.set_message_function = f"message::set_message"
+        self.get_message_function = f"message::get_message"
+        
+        print(f"Account address: {self.account.address()}")
+    
+    async def fund_account(self, amount: int = 100000000) -> None:
+        """
+        Fund the account using the faucet.
+        
+        Args:
+            amount: Amount to fund in Octas (default: 1 APT = 100000000 Octas)
+        """
+        try:
+            await self.faucet_client.fund_account(self.account.address(), amount)
+            print(f"Successfully funded account with {amount} Octas")
+        except Exception as e:
+            print(f"Error funding account: {e}")
+    
+    async def get_balance(self) -> int:
+        """
+        Get the current account balance.
+        
+        Returns:
+            Account balance in Octas
+        """
+        try:
+            balance = await self.rest_client.account_balance(self.account.address())
+            return balance
+        except Exception as e:
+            print(f"Error getting balance: {e}")
+            return 0
+    
+    async def get_message(self, account_address: Optional[str] = None) -> Optional[Dict[str, Any]]:
+        """
+        Retrieve the resource message::MessageHolder::message
+        
+        Args:
+            account_address: The account address to read message for (defaults to current account)
+            
+        Returns:
+            The message holder resource or None if not found
+        """
+        if not self.module_address:
+            raise ValueError("Module address not set. Please provide module_address in constructor.")
+        
+        target_address = AccountAddress.from_str(account_address) if account_address else self.account.address()
+        
+        try:
+            # Get the get_message resource from the account
+            resource = await self.rest_client.view(
+                f"{self.module_address}::{self.get_message_function}",
+                [],
+                [str(target_address)]
+            )
+            print(f"Message resource: {resource}")
+            return resource
+            
+        except Exception as e:
+            print(f"Error reading message: {e}")
+            return None
+    
+    async def set_message(self, message: str) -> Optional[str]:
+        """
+        Potentially initialize and set the resource message::MessageHolder::message
+        
+        Args:
+            message: The message to store
+            
+        Returns:
+            Transaction hash if successful, None otherwise
+        """
+        if not self.module_address:
+            raise ValueError("Module address not set. Please provide module_address in constructor.")
+        
+        try:
+            print("\n=== Submitting Transaction ===")
+            
+            # Create the transaction payload using the correct format
+            payload = EntryFunction.natural(
+                f"{self.module_address}::{self.set_message_function}",
+                "set_message",
+                [],
+                [TransactionArgument(message, Serializer.str)]
+            )
+            
+            # Create and submit the BCS signed transaction
+            signed_transaction = await self.rest_client.create_bcs_signed_transaction(
+                self.account, 
+                TransactionPayload(payload)
+            )
+            
+            # Submit the transaction
+            txn_hash = await self.rest_client.submit_bcs_transaction(signed_transaction)
+            print(f"Submitted transaction: {txn_hash}")
+            
+            # Wait for transaction confirmation
+            await self.rest_client.wait_for_transaction(txn_hash)
+            print(f"Transaction confirmed: {txn_hash}")
+            
+            return txn_hash
+            
+        except Exception as e:
+            print(f"Error setting message: {e}")
+            return None
+    
+    async def get_account_info(self) -> Any:
+        """
+        Get detailed account information.
+        
+        Returns:
+            Account information from the blockchain
+        """
+        try:
+            account_info = await self.rest_client.account(self.account.address())
+            print(f"Account info: {account_info}")
+            return account_info
+        except Exception as e:
+            print(f"Error getting account info: {e}")
+            return None
+
+
+async def main():
+    """Main function to demonstrate the smart contract interaction."""
+    # Load environment variables
+    load_dotenv()
+    
+    private_key = os.getenv("PRIVATE_KEY")
+    rpc_url = os.getenv("RPC_URL")
+    faucet_url = os.getenv("FAUCET_URL")
+    module_address = os.getenv("MODULE_ADDRESS", "")  # Add this to your .env file
+    
+    if not all([private_key, rpc_url, faucet_url]):
+        print("Please set PRIVATE_KEY, RPC_URL, and FAUCET_URL in your .env file")
+        return
+    
+    # Initialize the client
+    client = MovementSmartContractClient(
+        private_key=private_key,
+        rpc_url=rpc_url,
+        faucet_url=faucet_url,
+        module_address=module_address
+    )
+    
+    # Fund the account
+    await client.fund_account()
+    
+    # Get balance
+    await client.get_balance()
+    
+    # Wait a bit for funding to complete
+    await asyncio.sleep(5)
+    
+    # Get account info
+    await client.get_account_info()
+    
+    # If module address is set, demonstrate smart contract interaction
+    if module_address:
+        # Try to read existing message
+        await client.get_message()
+        
+        # Set a new message
+        message = "Gmove to those that still Gmove"
+        txn_hash = await client.set_message(message)
+        
+        if txn_hash:
+            # Read the message after setting it
+            await client.get_message()
+    else:
+        print("\nTo interact with smart contracts, please set MODULE_ADDRESS in your .env file")
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
+
+```
+
+## Next Steps
+
+Now that you understand the basics of using the Python SDK with Movement:
+
+- **Explore More Functions**: The SDK supports many more operations like multi-signature transactions, token transfers, and complex smart contract interactions
+- **Error Handling**: Implement robust error handling for production applications
+- **Testing**: Write comprehensive tests for your smart contract interactions
+- **Security**: Never hardcode private keys in production code - use secure key management solutions
+
+## Additional Resources
+
+- [Movement Network Documentation](/)
+- [Aptos Python SDK Documentation](https://github.com/aptos-labs/aptos-python-sdk)
+- [Your First Move Contract Tutorial](/devs/firstMoveContract)
+
+This completes the Python SDK tutorial for interacting with the Movement network. The SDK provides a powerful and flexible way to build Python applications that interact with Movement smart contracts.
