@@ -105,7 +105,7 @@ export function CumulativeVestingChart() {
     <div className="my-8">
       <div className="mb-4">
         <p className="text-sm text-gray-600">
-          Cumulative circulating supply over time: stacked view showing the cumulative circulating supply by category from TGE (15-Nov-2024) through full vesting (Nov 2029)
+          Cumulative circulating supply over time: stacked view showing the cumulative circulating supply by category from TGE (Nov 2024) through full vesting (Nov 2029). Real unlock schedules may vary from shown projection.
         </p>
       </div>
 
