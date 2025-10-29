@@ -20,17 +20,11 @@ curl https://sh.rustup.rs -sSf | sh
 ## Quick Install Movement Precompiled Binaries
 
 ```bash tab="MacOS ARM"
-curl -LO https://github.com/movementlabsxyz/homebrew-movement-cli/releases/download/bypass-homebrew/movement-macos-arm64.tar.gz
-tar -xzf movement-macos-arm64.tar.gz
-chmod +x macos-arm64/movement
-sudo mv macos-arm64/movement /usr/local/bin/movement
+curl -LO https://github.com/movementlabsxyz/homebrew-movement-cli/releases/download/bypass-homebrew/movement-macos-arm64.tar.gz && mkdir -p temp_extract && tar -xzf movement-macos-arm64.tar.gz -C temp_extract && chmod +x temp_extract/movement && sudo mv temp_extract/movement /usr/local/bin/movement && rm -rf temp_extract
 ```
 
 ```bash tab="MacOS Intel"
-curl -LO https://github.com/movementlabsxyz/homebrew-movement-cli/releases/download/bypass-homebrew/movement-macos-x86_64.tar.gz
-tar -xzf movement-macos-x86_64.tar.gz
-chmod +x macos-x86_64/movement
-sudo mv macos-x86_64/movement /usr/local/bin/movement
+curl -LO https://github.com/movementlabsxyz/homebrew-movement-cli/releases/download/bypass-homebrew/movement-macos-x86_64.gz && mkdir -p temp_extract && tar -xzf movement-macos-arm64.tar.gz -C temp_extract && chmod +x temp_extract/movement && sudo mv temp_extract/movement /usr/local/bin/movement && rm -rf temp_extract
 ```
 
 ```bash tab="Windows"
