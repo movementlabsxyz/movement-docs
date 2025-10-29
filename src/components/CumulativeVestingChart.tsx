@@ -35,7 +35,7 @@ const colors = {
 export function CumulativeVestingChart() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-  const chartWidth = 800;
+  const chartWidth = 600;
   const chartHeight = 400;
   const margin = { top: 20, right: 40, bottom: 60, left: 80 };
   const innerWidth = chartWidth - margin.left - margin.right;
