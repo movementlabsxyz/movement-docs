@@ -196,13 +196,19 @@ Transaction propagation is optimized for low latency:
 
 ## 3. Economic Model
 
-### 3.1 Token Economics
+### 3.1 Tokenomics
 
 #### 3.1.1 MOVE Token
 
 The native MOVE token serves multiple purposes including _**transaction fees**_ for payment of transaction execution and storage, _**staking**_ for validator staking and network security, _**governance**_ for voting on protocol upgrades and parameters, and _**incentives**_ for rewards to validators and network participants.
 
-#### 3.1.2 Fee Structure
+#### 3.1.2 Token Distribution
+
+<TokenDistributionChart />
+
+<CumulativeVestingChart />
+
+#### 3.1.3 Fee Structure
 
 Transaction fees are calculated based on resource consumption:
 
@@ -219,7 +225,7 @@ fn calculate_fee(gas_used: Gas, gas_unit_price: Octa, storage_refund: Octa) -> F
 }
 ```
 
-#### 3.1.3 Staking Mechanism
+#### 3.1.4 Staking Mechanism
 
 Validator staking follows these principles including _**minimum stake**_ requirements for validator participation, _**delegation**_ allowing token holders to delegate stake to validators, _**rewards**_ with proportional rewards based on stake and performance, and _**slashing**_ defined in protocol but not active on mainnet as of 2025.
 
