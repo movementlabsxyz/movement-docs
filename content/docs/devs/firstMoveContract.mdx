@@ -350,6 +350,21 @@ If you didn't edit `Move.toml`:
 movement move publish --named-addresses hello_blockchain=default
 ```
 
+### Optimizing Package Size (Optional)
+
+To reduce gas costs and package size, you can publish without including artifacts:
+
+```bash
+movement move publish --named-addresses hello_blockchain=default --included-artifacts none
+```
+
+The `--included-artifacts` option controls what gets included in your package:
+- **`none`**: Most compact, includes only bytecode (lowest gas cost)
+- **`sparse`**: Minimal artifacts needed to reconstruct source (default, ~2x size of `none`)
+- **`all`**: All available artifacts (~3-4x size of `none`)
+
+Using `none` significantly reduces deployment costs but means you cannot reconstruct the source package from the blockchain.
+
 ### Confirm Deployment Cost
 
 You'll be prompted to confirm the transaction and spend a small amount of testnet tokens:
