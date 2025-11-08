@@ -1,0 +1,14 @@
+{
+    "title": "Move Book",
+    "pages": [
+        "modules",
+        "scripts",
+        "variablesAssignmentAndScope",
+        "integer",
+        "bool",
+        "address",
+        "Vector"
+    ],
+    "root": false,
+    "defaultOpen": true
+} 

@@ -1,0 +1,119 @@
+---
+title: Boolean
+description: Learn about the boolean type in Move, which represents true or false values and is used for control flow.
+---
+
+# Boolean Type
+
+The `bool` type represents boolean values in Move - either `true` or `false`. Booleans are essential for making decisions and controlling program flow.
+
+## Boolean Literals
+
+There are only two boolean values in Move:
+
+```move
+let is_active = true;
+let is_complete = false;
+```
+
+The compiler can always infer the `bool` type, so explicit type annotations are optional:
+
+```move
+let flag: bool = true;  // Explicit type
+let flag = true;        // Type inferred
+```
+
+## Logical Operations
+
+Move supports three logical operations for booleans:
+
+### AND (`&&`)
+Returns `true` only if both operands are `true`:
+
+```move
+let result = true && true;   // true
+let result = true && false;  // false
+let result = false && true;  // false
+```
+
+### OR (`||`)
+Returns `true` if at least one operand is `true`:
+
+```move
+let result = true || false;  // true
+let result = false || true;  // true
+let result = false || false; // false
+```
+
+### NOT (`!`)
+Inverts the boolean value:
+
+```move
+let result = !true;   // false
+let result = !false;  // true
+```
+
+## Short-Circuit Evaluation
+
+Logical operators use short-circuit evaluation:
+- `&&` stops evaluating if the first operand is `false`
+- `||` stops evaluating if the first operand is `true`
+
+```move
+let x = 5;
+let result = (x > 10) && (x < 20); // Second condition not checked
+```
+
+## Comparison Operations
+
+Booleans are often created from comparison operations:
+
+```move
+let age = 25;
+let is_adult = age >= 18;        // true
+let is_senior = age >= 65;       // false
+let is_young_adult = age >= 18 && age <= 30; // true
+```
+
+## Control Flow Usage
+
+Booleans are primarily used in control flow statements:
+
+```move
+let score = 85;
+let passed = score >= 60;
+
+if (passed) {
+    // Execute if true
+} else {
+    // Execute if false
+}
+```
+
+## Practical Examples
+
+Here are some common boolean usage patterns:
+
+```move
+fun check_eligibility(age: u8, has_license: bool): bool {
+    age >= 18 && has_license
+}
+
+fun is_even(number: u64): bool {
+    number % 2 == 0
+}
+
+fun is_in_range(value: u64, min: u64, max: u64): bool {
+    value >= min && value <= max
+}
+```
+
+## Summary
+
+Booleans are simple but powerful:
+- Only two values: `true` and `false`
+- Support logical operations: `&&`, `||`, `!`
+- Use short-circuit evaluation for efficiency
+- Essential for control flow and decision making
+- Automatically copyable (no explicit `copy` needed)
+
