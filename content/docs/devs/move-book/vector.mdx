@@ -1,5 +1,5 @@
 ---
-title: Vector Type
+title: Vector
 description: Learn about the vector type in Move, which is a dynamic, ordered, and homogeneous collection type.
 ---
 
@@ -9,7 +9,7 @@ description: Learn about the vector type in Move, which is a dynamic, ordered, a
 
 ## What is a Vector?
 
-A vector is a homogeneous collection that stores elements of type `T`:
+A vector is a homogeneous collection that stores elements of the same type:
 - **Dynamic size**: Can grow or shrink at runtime
 - **Ordered**: Elements maintain their insertion order
 - **Indexed**: Access elements by their position (0-based)
@@ -159,6 +159,35 @@ vector::swap(&mut numbers, 0, 4);
 // numbers is now [3, 1, 4, 1, 5]
 ```
 
+## Additional Methods
+
+While the operations above are the most common, the `std::vector` module provides a few other useful functions.
+
+### `singleton`
+
+Creates a vector with a single element. This is a convenient shorthand for creating a vector and pushing one item.
+
+```move
+use std::vector;
+
+let single_element_vec = vector::singleton<u64>(100);
+// single_element_vec is now [100]
+```
+
+### `destroy_empty`
+
+Destroys an empty vector. This is necessary for vectors containing elements that do not have the `drop` ability. If the vector is not empty, the operation will abort.
+
+```move
+use std::vector;
+
+let empty_vec = vector::empty<u64>();
+vector::destroy_empty(empty_vec); // This is successful
+
+let non_empty_vec = vector[1];
+// vector::destroy_empty(non_empty_vec); // This would abort!
+```
+
 ## Practical Examples
 
 Here are common vector usage patterns:
@@ -192,6 +221,42 @@ fun create_message(): vector<u8> {
     message // Returns b"Hello, Move!"
 }
 ```
+
+## Destroying and Copying Vectors
+
+The behavior of a `vector<T>` can depend on the abilities of its element type, `T`.
+
+### Dropping Vectors
+
+Vectors containing elements that do not have the `drop` ability cannot be implicitly discarded. They must be explicitly destroyed using `vector::destroy_empty`, which aborts if the vector is not empty.
+
+```move
+fun destroy_any_vector<T>(vec: vector<T>) {
+    vector::destroy_empty(vec); // This is required.
+}
+```
+
+However, if a vector's elements have the `drop` ability, the vector can be dropped without any explicit action, and its contents will be properly destroyed.
+
+```move
+fun destroy_droppable_vector<T: drop>(vec: vector<T>) {
+    // Valid! No explicit action is needed to destroy the vector.
+}
+```
+
+### Copying Vectors
+
+A `vector<T>` has the `copy` ability if and only if its element type `T` has `copy`. However, even copyable vectors are never implicitly copied. You must use an explicit `copy` instruction.
+
+```move
+let v1 = vector::singleton<u64>(10);
+let v2 = copy v1; // An explicit `copy` is required.
+// let v3 = v1; // This would be a compiler error!
+```
+
+This design choice makes expensive copies of large vectors obvious in the code.
+
+For more details, see the sections on **type abilities** and **generics**.
 
 ## Safety and Performance
 

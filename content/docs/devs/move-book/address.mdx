@@ -134,6 +134,10 @@ The primary purpose of `address` values is to interact with global storage. They
 
 Note that the `move_to<T>` operation does not use an `address` but instead requires a `signer`.
 
+## Ownership
+
+As with the other scalar values built-in to the language, address values are implicitly copyable, meaning they can be copied without an explicit instruction such as `copy`.
+
 ## Summary
 
 Addresses in Move:
