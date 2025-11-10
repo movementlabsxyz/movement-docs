@@ -37,15 +37,6 @@ let addr2 = @0x42;   // Same as @0x0000...0042
 let addr3 = @0x0000000000000000000000000000000000000000000000000000000000000001;
 ```
 
-### Decimal Addresses
-
-You can also use decimal numbers:
-
-```move
-let decimal_addr = @42;
-let large_addr = @1000;
-```
-
 ## Named Addresses
 
 Instead of using hex numbers, you can use named addresses for better readability:
@@ -131,6 +122,17 @@ struct UserInfo has key {
     balance: u64,
 }
 ```
+
+## Global Storage Operations
+
+The primary purpose of `address` values is to interact with global storage. They are used with the following operations:
+
+- `exists<T>`
+- `borrow_global<T>`
+- `borrow_global_mut<T>`
+- `move_from<T>`
+
+Note that the `move_to<T>` operation does not use an `address` but instead requires a `signer`.
 
 ## Summary
 
