@@ -68,7 +68,7 @@ let hash = x"DEADBEEF";
 ```move
 use std::vector;
 
-let mut numbers = vector::empty<u64>();
+let numbers = vector::empty<u64>();
 vector::push_back(&mut numbers, 10);
 vector::push_back(&mut numbers, 20);
 vector::push_back(&mut numbers, 30);
@@ -91,7 +91,7 @@ let has_twenty = vector::contains(&numbers, &20); // true
 ### Modifying Elements
 
 ```move
-let mut numbers = vector[10, 20, 30];
+let numbers = vector[10, 20, 30];
 
 // Modify element at index
 let element_ref = vector::borrow_mut(&mut numbers, 1);
@@ -122,7 +122,7 @@ let (found, index) = vector::index_of(&numbers, &20); // (true, 1)
 ### Combining Vectors
 
 ```move
-let mut first = vector[1, 2, 3];
+let first = vector[1, 2, 3];
 let second = vector[4, 5, 6];
 
 // Append second vector to first
@@ -133,14 +133,14 @@ vector::append(&mut first, second);
 ### Removing Elements
 
 ```move
-let mut numbers = vector[10, 20, 30, 40];
+let numbers = vector[10, 20, 30, 40];
 
 // Remove element at specific index
 let removed = vector::remove(&mut numbers, 1); // 20
 // numbers is now [10, 30, 40]
 
 // Swap remove (faster but changes order)
-let mut items = vector[1, 2, 3, 4];
+let items = vector[1, 2, 3, 4];
 let removed = vector::swap_remove(&mut items, 1); // 2
 // items is now [1, 4, 3] (last element moved to removed position)
 ```
@@ -148,7 +148,7 @@ let removed = vector::swap_remove(&mut items, 1); // 2
 ### Vector Utilities
 
 ```move
-let mut numbers = vector[3, 1, 4, 1, 5];
+let numbers = vector[3, 1, 4, 1, 5];
 
 // Reverse the vector
 vector::reverse(&mut numbers);
@@ -207,16 +207,20 @@ fun calculate_average(scores: &vector<u64>): u64 {
     let len = vector::length(scores);
     
     while (i < len) {
-        sum = sum + *vector::borrow(scores, i);
-        i = i + 1;
+        sum += *vector::borrow(scores, i);
+        i += 1;
     };
     
-    sum / len
+    if (len == 0) {
+        len
+    } else {
+        sum / len
+    }
 }
 
 // Working with byte data
 fun create_message(): vector<u8> {
-    let mut message = b"Hello, ";
+    let message = b"Hello, ";
     vector::append(&mut message, b"Move!");
     message // Returns b"Hello, Move!"
 }
@@ -261,6 +265,7 @@ For more details, see the sections on **type abilities** and **generics**.
 ## Safety and Performance
 
 ### Index Bounds
+
 Vector operations check bounds automatically:
 
 ```move
@@ -269,10 +274,16 @@ let numbers = vector[1, 2, 3];
 ```
 
 ### Memory Management
+
 Vectors automatically manage memory:
 - Elements are automatically cleaned up when the vector is dropped
-- No manual memory management required
 - Efficient resizing as elements are added
+
+## Ownership
+
+A `vector<T>` can only be copied if the element type `T` has the copy ability.
+
+Move does not allow implicit copies of vectors. You must explicitly perform the copy using either: the copy keyword, or a dereference (*).
 
 ## Summary
 
