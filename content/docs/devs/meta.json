@@ -1,6 +1,7 @@
 {
     "title": "Build",
     "pages": ["index",
+    "move-book",
     "firstMoveContract",
     "movementcli",
     "networkEndpoints",

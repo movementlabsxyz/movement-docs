@@ -1,0 +1,303 @@
+---
+title: Vector
+description: Learn about the vector type in Move, which is a dynamic, ordered, and homogeneous collection type.
+---
+
+# Vector Type
+
+`vector<T>` is Move's built-in collection type for storing multiple values of the same type. Think of it as a dynamic array that can grow and shrink during program execution.
+
+## What is a Vector?
+
+A vector is a homogeneous collection that stores elements of the same type:
+- **Dynamic size**: Can grow or shrink at runtime
+- **Ordered**: Elements maintain their insertion order
+- **Indexed**: Access elements by their position (0-based)
+- **Homogeneous**: All elements must be the same type
+
+## Creating Vectors
+
+### Empty Vectors
+
+```move
+use std::vector;
+
+let empty_numbers: vector<u64> = vector[];
+let empty_addresses = vector<address>[];
+let empty_with_function = vector::empty<u64>();
+```
+
+### Vectors with Initial Values
+
+```move
+let numbers = vector[1, 2, 3, 4, 5];
+let addresses = vector[@0x1, @0x2, @0x3];
+let single_item = vector[42u8];
+```
+
+### Type Inference
+
+Move can often infer the vector type from context:
+
+```move
+let numbers = vector[10, 20, 30];  // Inferred as vector<u64>
+let explicit: vector<u32> = vector[10, 20, 30];  // Explicit type
+```
+
+## Special Vector Types
+
+### Byte Vectors (`vector<u8>`)
+
+Byte vectors are commonly used for strings and binary data:
+
+```move
+// Byte strings (ASCII)
+let message = b"Hello, Move!";
+let empty_bytes = b"";
+
+// Hex strings
+let hex_data = x"48656C6C6F";  // "Hello" in hex
+let hash = x"DEADBEEF";
+```
+
+
+## Common Vector Operations
+
+### Adding Elements
+
+```move
+use std::vector;
+
+let numbers = vector::empty<u64>();
+vector::push_back(&mut numbers, 10);
+vector::push_back(&mut numbers, 20);
+vector::push_back(&mut numbers, 30);
+// numbers is now [10, 20, 30]
+```
+
+### Accessing Elements
+
+```move
+let numbers = vector[10, 20, 30];
+
+// Get element by index (returns reference)
+let first = vector::borrow(&numbers, 0);  // &10
+let second = vector::borrow(&numbers, 1); // &20
+
+// Check if vector contains an element
+let has_twenty = vector::contains(&numbers, &20); // true
+```
+
+### Modifying Elements
+
+```move
+let numbers = vector[10, 20, 30];
+
+// Modify element at index
+let element_ref = vector::borrow_mut(&mut numbers, 1);
+*element_ref = 25; // numbers is now [10, 25, 30]
+
+// Remove and return last element
+let last = vector::pop_back(&mut numbers); // 30
+// numbers is now [10, 25]
+```
+
+### Vector Information
+
+```move
+let numbers = vector[10, 20, 30];
+
+// Get vector length
+let length = vector::length(&numbers); // 3
+
+// Check if empty
+let is_empty = vector::is_empty(&numbers); // false
+
+// Find element index
+let (found, index) = vector::index_of(&numbers, &20); // (true, 1)
+```
+
+## Advanced Operations
+
+### Combining Vectors
+
+```move
+let first = vector[1, 2, 3];
+let second = vector[4, 5, 6];
+
+// Append second vector to first
+vector::append(&mut first, second);
+// first is now [1, 2, 3, 4, 5, 6]
+```
+
+### Removing Elements
+
+```move
+let numbers = vector[10, 20, 30, 40];
+
+// Remove element at specific index
+let removed = vector::remove(&mut numbers, 1); // 20
+// numbers is now [10, 30, 40]
+
+// Swap remove (faster but changes order)
+let items = vector[1, 2, 3, 4];
+let removed = vector::swap_remove(&mut items, 1); // 2
+// items is now [1, 4, 3] (last element moved to removed position)
+```
+
+### Vector Utilities
+
+```move
+let numbers = vector[3, 1, 4, 1, 5];
+
+// Reverse the vector
+vector::reverse(&mut numbers);
+// numbers is now [5, 1, 4, 1, 3]
+
+// Swap elements
+vector::swap(&mut numbers, 0, 4);
+// numbers is now [3, 1, 4, 1, 5]
+```
+
+## Additional Methods
+
+While the operations above are the most common, the `std::vector` module provides a few other useful functions.
+
+### `singleton`
+
+Creates a vector with a single element. This is a convenient shorthand for creating a vector and pushing one item.
+
+```move
+use std::vector;
+
+let single_element_vec = vector::singleton<u64>(100);
+// single_element_vec is now [100]
+```
+
+### `destroy_empty`
+
+Destroys an empty vector. This is necessary for vectors containing elements that do not have the `drop` ability. If the vector is not empty, the operation will abort.
+
+```move
+use std::vector;
+
+let empty_vec = vector::empty<u64>();
+vector::destroy_empty(empty_vec); // This is successful
+
+let non_empty_vec = vector[1];
+// vector::destroy_empty(non_empty_vec); // This would abort!
+```
+
+## Practical Examples
+
+Here are common vector usage patterns:
+
+```move
+// Managing a list of user addresses
+fun add_user(users: &mut vector<address>, new_user: address) {
+    if (!vector::contains(users, &new_user)) {
+        vector::push_back(users, new_user);
+    }
+}
+
+// Processing scores
+fun calculate_average(scores: &vector<u64>): u64 {
+    let sum = 0;
+    let i = 0;
+    let len = vector::length(scores);
+    
+    while (i < len) {
+        sum += *vector::borrow(scores, i);
+        i += 1;
+    };
+    
+    if (len == 0) {
+        len
+    } else {
+        sum / len
+    }
+}
+
+// Working with byte data
+fun create_message(): vector<u8> {
+    let message = b"Hello, ";
+    vector::append(&mut message, b"Move!");
+    message // Returns b"Hello, Move!"
+}
+```
+
+## Destroying and Copying Vectors
+
+The behavior of a `vector<T>` can depend on the abilities of its element type, `T`.
+
+### Dropping Vectors
+
+Vectors containing elements that do not have the `drop` ability cannot be implicitly discarded. They must be explicitly destroyed using `vector::destroy_empty`, which aborts if the vector is not empty.
+
+```move
+fun destroy_any_vector<T>(vec: vector<T>) {
+    vector::destroy_empty(vec); // This is required.
+}
+```
+
+However, if a vector's elements have the `drop` ability, the vector can be dropped without any explicit action, and its contents will be properly destroyed.
+
+```move
+fun destroy_droppable_vector<T: drop>(vec: vector<T>) {
+    // Valid! No explicit action is needed to destroy the vector.
+}
+```
+
+### Copying Vectors
+
+A `vector<T>` has the `copy` ability if and only if its element type `T` has `copy`. However, even copyable vectors are never implicitly copied. You must use an explicit `copy` instruction.
+
+```move
+let v1 = vector::singleton<u64>(10);
+let v2 = copy v1; // An explicit `copy` is required.
+// let v3 = v1; // This would be a compiler error!
+```
+
+This design choice makes expensive copies of large vectors obvious in the code.
+
+For more details, see the sections on **type abilities** and **generics**.
+
+## Safety and Performance
+
+### Index Bounds
+
+Vector operations check bounds automatically:
+
+```move
+let numbers = vector[1, 2, 3];
+// let item = vector::borrow(&numbers, 5); // Would abort! Index out of bounds
+```
+
+### Memory Management
+
+Vectors automatically manage memory:
+- Elements are automatically cleaned up when the vector is dropped
+- Efficient resizing as elements are added
+
+## Ownership
+
+A `vector<T>` can only be copied if the element type `T` has the copy ability.
+
+Move does not allow implicit copies of vectors. You must explicitly perform the copy using either: the copy keyword, or a dereference (*).
+
+## Summary
+
+Vectors in Move are:
+- **Dynamic collections** that can grow and shrink
+- **Type-safe** - all elements must be the same type
+- **Indexed** - access elements by position (0-based)
+- **Bounds-checked** - operations abort on invalid indices
+- **Memory-safe** - automatic cleanup and management
+
+Common use cases include:
+- Storing lists of addresses, IDs, or other data
+- Managing collections that change size during execution
+- Working with byte data and strings
+- Building more complex data structures
+
+Vectors are essential for most Move programs that need to work with collections of data.
