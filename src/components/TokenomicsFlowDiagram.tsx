@@ -161,7 +161,7 @@ export function TokenomicsFlowDiagram() {
             markerEnd="url(#arrowhead)"
           />
           <text x="320" y="305" textAnchor="middle" className="text-xs fill-gray-600">
-            Rewards returned to treasury
+            Some rewards returned to treasury
           </text>
         </svg>
       </div>
