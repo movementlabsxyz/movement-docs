@@ -7,7 +7,12 @@
         "integer",
         "bool",
         "address",
-        "vector"
+        "vector",
+        "tupleAndUnit",
+        "constants",
+        "options",
+        "signer",
+        "references"
     ],
     "root": false,
     "defaultOpen": true

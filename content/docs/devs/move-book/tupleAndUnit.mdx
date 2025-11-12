@@ -1,0 +1,218 @@
+---
+title: Tuple and Unit
+description: Learn about the tuple and unit types in Move, which are used to group multiple values.
+---
+
+# Tuple and Unit Types
+
+Tuples in Move are used to support multiple return values from functions and temporary grouping of values. Move's tuple support is limited compared to other programming languages. These expressions do not result in a concrete value at runtime (there are no tuples in the bytecode), and as a result they are very limited:
+
+- They can only appear in expressions (usually in the return position for a function).
+- They cannot be bound to local variables.
+- They cannot be stored in structs.
+- Tuple types cannot be used to instantiate generics.
+
+The unit type `()` is an empty tuple that represents the absence of a value, similar to `void` in other programming languages.
+
+## Tuple Syntax
+
+Tuples are created by a comma-separated list of expressions inside parentheses:
+
+```move
+// Creating tuples (compile-time only)
+(10, true)
+(1, 2, 3)
+(@0x1, b"hello", 42u8)
+```
+
+**Important**: Tuples cannot be assigned to variables or stored - they can only be used in function returns and immediate destructuring.
+
+## Unit Type
+
+The unit type `()` represents "no value" and is used when a function doesn't return anything. The following three functions are equivalent:
+
+```move
+fun do_something(): () {
+    // Function body
+    // Implicitly returns ()
+}
+
+// Equivalent to:
+fun do_something() {
+    // Function body
+}
+```
+
+## Function Returns
+
+Tuples are primarily used for returning multiple values from functions:
+
+```move
+fun get_name_and_age(): (vector<u8>, u8) {
+    (b"Alice", 25)
+}
+
+fun get_coordinates(): (u64, u64) {
+    (100, 200)
+}
+
+fun multiple_values(): (bool, u64, address) {
+    (true, 42, @0x1)
+}
+```
+
+## Destructuring
+
+The main operation for tuples is destructuring - extracting individual values:
+
+```move
+fun example() {
+    // Destructure tuple from function return
+    let (name, age) = get_name_and_age();
+    let (x, y) = get_coordinates();
+    let (flag, number, addr) = multiple_values();
+    
+    // Use the extracted values
+    assert!(age == 25, 0);
+    assert!(x == 100, 1);
+}
+```
+
+### Partial Destructuring
+
+You can ignore values you don't need using underscore:
+
+```move
+fun partial_example() {
+    let (name, _) = get_name_and_age();  // Ignore age
+    let (_, y) = get_coordinates();       // Ignore x coordinate
+    let (flag, _, _) = multiple_values(); // Only use the boolean
+}
+```
+
+### Nested Destructuring
+
+Tuples can be nested and destructured accordingly:
+
+```move
+fun nested_tuple(): ((u64, u64), bool) {
+    ((10, 20), true)
+}
+
+fun use_nested() {
+    let ((x, y), flag) = nested_tuple();
+    assert!(x == 10, 0);
+    assert!(y == 20, 1);
+    assert!(flag == true, 2);
+}
+```
+
+## Limitations
+
+Tuples in Move have several important limitations:
+
+- **No storage**: Cannot be stored in global storage or struct fields
+- **No variables**: Cannot assign tuples to variables
+- **Compile-time only**: Exist only during compilation, not at runtime
+- **No operations**: Cannot perform operations on tuples directly
+
+```move
+// These are NOT allowed:
+// let tuple_var = (1, 2, 3);        // Error: cannot store tuple
+// let x = (1, 2) + (3, 4);          // Error: no tuple operations
+
+// This IS allowed:
+let (a, b, c) = (1, 2, 3);          // OK: immediate destructuring
+```
+
+## Practical Examples
+
+Here are common tuple usage patterns:
+
+```move
+// Swapping values using tuples
+fun swap_values(x: u64, y: u64): (u64, u64) {
+    (y, x)
+}
+
+// Multiple calculations
+fun calculate_stats(numbers: &vector<u64>): (u64, u64, u64) {
+    let sum = 0;
+    let min = 0;
+    let max = 0;
+    // ... calculation logic ...
+    (sum, min, max)
+}
+
+// Error handling pattern
+fun divide_safe(a: u64, b: u64): (bool, u64) {
+    if (b == 0) {
+        (false, 0)  // Error case
+    } else {
+        (true, a / b)  // Success case
+    }
+}
+
+fun use_divide() {
+    let (success, result) = divide_safe(10, 2);
+    if (success) {
+        // Use result
+    }
+}
+```
+
+## Subtyping
+
+Along with references, tuples are the only types that have subtyping in Move. Tuples have subtyping only in the sense that they are covariant with references.
+
+This means that if you have a tuple containing references, you can use it where a tuple with less restrictive reference types is expected:
+
+```move
+let x: &u64 = &0;
+let y: &mut u64 = &mut 1;
+
+// (&u64, &mut u64) is a subtype of (&u64, &u64)
+// since &mut u64 is a subtype of &u64
+let (a, b): (&u64, &u64) = (x, y);
+
+// (&mut u64, &mut u64) is a subtype of (&u64, &u64)
+// since &mut u64 is a subtype of &u64
+let (c, d): (&u64, &u64) = (y, y);
+
+// Error! (&u64, &mut u64) is NOT a subtype of (&mut u64, &mut u64)
+// since &u64 is NOT a subtype of &mut u64
+// let (e, f): (&mut u64, &mut u64) = (x, y);
+```
+
+This subtyping relationship follows the same rules as reference subtyping:
+- `&mut T` is a subtype of `&T` (you can use a mutable reference where an immutable one is expected)
+- `&T` is NOT a subtype of `&mut T` (you cannot use an immutable reference where a mutable one is expected)
+
+## Ownership
+
+Tuples themselves don't have ownership semantics since they cannot be stored. However, the values within tuples follow normal Move ownership rules:
+
+- Values are moved into tuples when created
+- Values are moved out when destructured
+- Copy types can be copied, non-copy types are moved
+
+```move
+fun ownership_example() {
+    let x = 10u64;  // Copy type
+    let v = vector[1, 2, 3];  // Non-copy type
+    
+    let (a, b) = (x, v);  // x is copied, v is moved
+    // x can still be used, but v cannot
+}
+```
+
+## Summary
+
+Tuples in Move are:
+- **Compile-time constructs** for grouping values temporarily
+- **Used primarily** for multiple function returns
+- **Destructured immediately** - cannot be stored as variables
+- **Limited in scope** - no runtime existence or operations
+- **Useful for** returning multiple values and swapping
+
+The unit type `()` represents the absence of a value and is the default return type for functions that don't explicitly return anything.
