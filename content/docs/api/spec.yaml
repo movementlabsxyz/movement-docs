@@ -6141,19 +6141,13 @@ paths:
 
         encoded as BCS. See SignedTransaction in types/src/transaction/mod.rs.
 
-        Make sure to use the `application/x.aptos.signed_transaction+bcs`
+        Make sure to use the `application/x-bcs`
         Content-Type.
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/SubmitTransactionRequest'
-          application/x.aptos.signed_transaction+bcs:
-            schema:
-              type: array
-              items:
-                type: integer
-                format: uint8
         required: true
       responses:
         '202':
@@ -8424,7 +8418,7 @@ paths:
 
         encoded as BCS. See SignedTransaction in types/src/transaction/mod.rs.
 
-        Make sure to use the `application/x.aptos.signed_transaction+bcs`
+        Make sure to use the `application/x-bcs`
         Content-Type.
       requestBody:
         content:
@@ -8433,12 +8427,6 @@ paths:
               type: array
               items:
                 $ref: '#/components/schemas/SubmitTransactionRequest'
-          application/x.aptos.signed_transaction+bcs:
-            schema:
-              type: array
-              items:
-                type: integer
-                format: uint8
         required: true
       responses:
         '202':
@@ -9048,12 +9036,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SubmitTransactionRequest'
-          application/x.aptos.signed_transaction+bcs:
-            schema:
-              type: array
-              items:
-                type: integer
-                format: uint8
         required: true
       responses:
         '200':
@@ -10224,12 +10206,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ViewRequest'
-          application/x.aptos.view_function+bcs:
-            schema:
-              type: array
-              items:
-                type: integer
-                format: uint8
         required: true
       responses:
         '200':
