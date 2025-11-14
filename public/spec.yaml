@@ -6141,7 +6141,7 @@ paths:
 
         encoded as BCS. See SignedTransaction in types/src/transaction/mod.rs.
 
-        Make sure to use the `application/x-bcs`
+        Make sure to use the `application/x.aptos.signed_transaction+bcs`
         Content-Type.
       requestBody:
         content:
@@ -8418,7 +8418,7 @@ paths:
 
         encoded as BCS. See SignedTransaction in types/src/transaction/mod.rs.
 
-        Make sure to use the `application/x-bcs`
+        Make sure to use the `application/x.aptos.signed_transaction+bcs`
         Content-Type.
       requestBody:
         content:
