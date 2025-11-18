@@ -1,8 +1,164 @@
 ---
 title: References
-description: Learn about the reference type in Move, which is used to borrow values.
+description: Learn about the reference types in Move, which allow borrowing values without taking ownership.
 ---
 
 # References
 
-The `reference` type in Move is used to borrow values. Think of references as a way to access values without taking ownership of them.
+Move has two types of references: **immutable** `&` and **mutable** `&mut`. References allow you to borrow values without taking ownership, enabling safe access and modification of data.
+
+## What are References?
+
+References are "borrows" that provide temporary access to a value without transferring ownership. Think of them as safe pointers that the compiler tracks to prevent memory errors.
+
+| Type | Symbol | Purpose |
+|------|--------|---------|
+| Immutable reference | `&T` | Read-only access to value of type `T` |
+| Mutable reference | `&mut T` | Read and write access to value of type `T` |
+| Field reference | `&e.f` | Create an immutable reference to field f of struct e. |
+| Mutable field reference | `&mut e.f` | Create a mutable reference to field f of struct e. |
+| Freeze | `freeze(e)` | Convert the mutable reference e into an immutable reference. |
+
+<Callout type="info">
+**Key Concept**: References are ephemeral - they exist only during program execution and cannot be stored in structs or global storage.
+</Callout>
+
+## Creating References
+
+### Basic Reference Creation
+
+```move
+fun basic_references() {
+    let x = 42u64;
+    
+    let x_ref: &u64 = &x;           // Immutable reference
+    let x_mut_ref: &mut u64 = &mut x;  // Mutable reference
+}
+```
+
+### Field References
+
+You can create references to struct fields:
+
+```move
+struct Person { age: u8, name: vector<u8> }
+
+fun field_references() {
+    let person = Person { age: 25, name: b"Alice" };
+    
+    let age_ref: &u8 = &person.age;        // Reference to field
+    let name_ref: &vector<u8> = &person.name;  // Reference to another field
+}
+```
+
+<Callout type="warning">
+**Limitation**: References to references (`&&T`) are not allowed in Move.
+</Callout>
+
+## Using References
+
+### Reading Through References
+
+Use the `*` operator to read a value through a reference:
+
+```move
+fun reading_example() {
+    let x = 42u64;
+    let x_ref = &x;
+    
+    let value: u64 = *x_ref;  // Read the value (creates a copy)
+    assert!(value == 42, 0);
+}
+```
+
+### Writing Through References
+
+Only mutable references allow writing with `*ref = value`:
+
+```move
+fun writing_example() {
+    let mut x = 42u64;
+    let x_ref = &mut x;
+    
+    *x_ref = 100;  // Write new value
+    assert!(x == 100, 0);
+}
+```
+
+<Callout type="info">
+**Requirements**: Reading requires the `copy` ability, writing requires the `drop` ability.
+</Callout>
+
+## Automatic Conversions
+
+Move automatically converts mutable references to immutable references when needed:
+
+```move
+fun takes_immutable_ref(x: &u64) {
+    // Function only needs read access
+}
+
+fun conversion_example() {
+    let mut x = 42u64;
+    
+    takes_immutable_ref(&mut x);  // Automatic conversion from &mut to &
+}
+```
+
+This means `&mut T` can be used anywhere `&T` is expected, but not vice versa.
+
+## Storage Limitations
+
+References cannot be stored in structs or global storage:
+
+```move
+struct Container {
+    // value_ref: &u64,     // Error: references cannot be stored
+    value: u64,             // OK: store the value directly
+}
+```
+
+<Callout type="warning">
+**Important**: References are ephemeral and exist only during program execution.
+</Callout>
+
+## Common Use Cases
+
+### Function Parameters
+
+```move
+fun process_data(data: &vector<u8>) {
+    // Read-only access to vector without taking ownership
+    let length = vector::length(data);
+}
+
+fun modify_data(data: &mut vector<u8>) {
+    // Can modify the vector
+    vector::push_back(data, 42);
+}
+```
+
+### Struct Field Access
+
+```move
+struct Account { balance: u64 }
+
+fun check_balance(account: &Account): u64 {
+    account.balance  // Access field through reference
+}
+
+fun deposit(account: &mut Account, amount: u64) {
+    account.balance = account.balance + amount;
+}
+```
+
+## Summary
+
+References in Move provide:
+- **Safe borrowing** without ownership transfer
+- **Two types**: immutable `&T` for reading, mutable `&mut T` for reading and writing
+- **Automatic conversions** from mutable to immutable references when needed
+- **Ephemeral nature** - exist only during execution, cannot be stored
+- **Resource safety** by enforcing ability requirements
+
+References are essential for efficient data access without transferring ownership in Move.

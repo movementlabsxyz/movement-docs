@@ -1,8 +1,160 @@
 ---
 title: Signer
-description: Learn about the signer type in Move, which represents unique identifiers for accounts and modules.
+description: Learn about the signer type in Move, which represents authenticated user capabilities for account operations.
 ---
 
 # Signer Type
 
-The `signer` type represents unique identifiers for accounts and modules in Move. Think of addresses as unique locations where code and data can be stored.
+`signer` is a built-in Move resource type that represents a capability allowing the holder to act on behalf of a particular address. It's a fundamental security primitive that ensures only authenticated users can perform operations on their accounts.
+
+## What is a Signer?
+
+A `signer` is conceptually similar to a cryptographic signature or authentication token:
+
+```move
+// Conceptual representation (actual implementation is native)
+struct signer has drop { 
+    a: address 
+}
+```
+
+<Callout type="info">
+**Key Concept**: A `signer` proves that the holder has the authority to act on behalf of a specific address, similar to how a Unix UID represents an authenticated user.
+</Callout>
+
+## Signer vs Address
+
+Understanding the difference between `signer` and `address` is crucial:
+
+| Type | Creation | Purpose | Security |
+|------|----------|---------|----------|
+| `address` | Can be created by anyone | Represents a location | No authentication required |
+| `signer` | Only created by the VM | Proves authentication | Cannot be forged |
+
+### Address Creation
+
+Anyone can create any address value without special permission:
+
+```move
+fun address_examples() {
+    let a1 = @0x1;
+    let a2 = @0x2;
+    let a3 = @0xABCD;
+    // ... any address can be created
+}
+```
+
+### Signer Creation
+
+However, signer values are special because they cannot be created via literals or instructions--only by the Move VM. Before the VM runs a script with parameters of type signer, 
+it will automatically create signer values and pass them into the script:
+
+```move
+script {
+    use std::signer;
+    fun main(s: signer) {
+        assert!(signer::address_of(&s) == @0x42, 0);
+    }
+}
+```
+
+<Callout type="warning">
+**Security**: This function will abort if sent from any address other than `0x42`, providing authentication.
+</Callout>
+
+## Using Signers in Functions
+
+Functions can accept signers as parameters to perform authenticated operations:
+
+```move
+use std::signer;
+
+public entry fun create_account(account: &signer) {
+    let addr = signer::address_of(account);
+    // Only the account owner can call this for their address
+    // ... account creation logic
+}
+```
+
+<Callout type="info">
+**Multi-Signer Support**: Functions can accept multiple signers when operations require multiple parties to authenticate.
+</Callout>
+
+## Signer Operators
+
+The `std::signer` standard library provides utility functions:
+
+| Function | Signature | Description |
+|----------|-----------|-------------|
+| `address_of` | `(&signer): address` | Returns the address wrapped by the signer |
+| `borrow_address` | `(&signer): &address` | Returns a reference to the wrapped address |
+
+### Using Signer Functions
+
+```move
+use std::signer;
+
+public fun example_usage(account: &signer) {
+    // Get the address from a signer
+    let addr: address = signer::address_of(account);
+    
+    // Get a reference to the address
+    let addr_ref: &address = signer::borrow_address(account);
+    
+    // Use the address for operations
+    assert!(addr == @0x123, 0);
+}
+```
+
+## Global Storage Operations
+
+The `signer` is required for publishing resources to global storage:
+
+```move
+use std::signer;
+
+struct UserProfile has key {
+    name: vector<u8>,
+}
+
+public fun create_profile(account: &signer, name: vector<u8>) {
+    let profile = UserProfile { name };
+    
+    // move_to requires a signer to ensure only the account owner
+    // can publish resources under their address
+    move_to(account, profile);
+}
+```
+
+<Callout type="info">
+**Security Guarantee**: Only the authenticated user can publish resources under their address using `move_to<T>(&signer, T)`.
+</Callout>
+
+## Ownership and Abilities
+
+Unlike simple scalar values, signer values are **not copyable**:
+
+```move
+public fun ownership_example(s: &signer) {
+    // Signers are NOT copyable
+    // let s_copy = *s;  // Error: signer does not have copy ability
+    
+    // Must use references to pass signers around
+    let addr = signer::address_of(s);  // OK: borrowing
+}
+```
+
+<Callout type="warning">
+**Important**: Always use references (`&signer`) when passing signers to functions since they cannot be copied.
+</Callout>
+
+## Summary
+
+The `signer` type in Move provides:
+- **Authentication** - proves the holder can act for a specific address
+- **Security** - cannot be forged, only created by the VM
+- **Access Control** - required for publishing resources and state changes
+- **Multi-party Operations** - enables atomic transactions requiring multiple signers
+- **Non-copyable** - must be passed by reference to maintain security
+
+Signers are essential for secure Move programming, ensuring that only authenticated users can perform operations on their accounts and resources.

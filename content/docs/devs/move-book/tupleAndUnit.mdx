@@ -12,8 +12,6 @@ Tuples in Move are used to support multiple return values from functions and tem
 - They cannot be stored in structs.
 - Tuple types cannot be used to instantiate generics.
 
-The unit type `()` is an empty tuple that represents the absence of a value, similar to `void` in other programming languages.
-
 ## Tuple Syntax
 
 Tuples are created by a comma-separated list of expressions inside parentheses:
@@ -25,11 +23,13 @@ Tuples are created by a comma-separated list of expressions inside parentheses:
 (@0x1, b"hello", 42u8)
 ```
 
+<Callout type="warning">
 **Important**: Tuples cannot be assigned to variables or stored - they can only be used in function returns and immediate destructuring.
+</Callout>
 
 ## Unit Type
 
-The unit type `()` represents "no value" and is used when a function doesn't return anything. The following three functions are equivalent:
+The unit type `()` represents "no value" and is used when a function doesn't return anything. Unit is similar to `void` in other programming languages. The following three functions are equivalent:
 
 ```move
 fun do_something(): () {
@@ -90,39 +90,44 @@ fun partial_example() {
 }
 ```
 
-### Nested Destructuring
-
-Tuples can be nested and destructured accordingly:
-
-```move
-fun nested_tuple(): ((u64, u64), bool) {
-    ((10, 20), true)
-}
-
-fun use_nested() {
-    let ((x, y), flag) = nested_tuple();
-    assert!(x == 10, 0);
-    assert!(y == 20, 1);
-    assert!(flag == true, 2);
-}
-```
-
 ## Limitations
 
 Tuples in Move have several important limitations:
 
 - **No storage**: Cannot be stored in global storage or struct fields
+
+```move
+module examples::no_storage {
+    struct Holder {
+        field: (u64, bool)  // Error: tuple type `(u64, bool)` is not allowed as a field type
+    }
+}
+```
+
 - **No variables**: Cannot assign tuples to variables
+
+```move
+fun invalid_local() {
+    let t: (u64, bool) = (1, true);  // Error: tuple type `(u64, bool)` is not allowed as a local variable type
+}
+```
+
 - **Compile-time only**: Exist only during compilation, not at runtime
+
 - **No operations**: Cannot perform operations on tuples directly
 
 ```move
-// These are NOT allowed:
-// let tuple_var = (1, 2, 3);        // Error: cannot store tuple
-// let x = (1, 2) + (3, 4);          // Error: no tuple operations
+fun invalid_operations() {
+    let x = (1, 2) + (3, 4);   // Error: cannot use `(integer, integer)` with an operator which expects a value of type `integer`
+}
+```
 
-// This IS allowed:
-let (a, b, c) = (1, 2, 3);          // OK: immediate destructuring
+- **No Nested tuple**: Cannot be nested
+
+```move
+fun no_nested_tuples() {
+    let t = ((1, 2), 3);  // Error: nested tuples are not allowed
+}
 ```
 
 ## Practical Examples
