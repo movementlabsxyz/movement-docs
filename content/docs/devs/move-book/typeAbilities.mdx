@@ -346,4 +346,14 @@ struct Box<T> has copy, drop, store {
 | `store` | Nested in global storage | All fields must have `store` | Required for storage nesting |
 | `key` | Global storage operations | All fields must have `store` | Enables top-level storage |
 
-Understanding abilities is crucial for designing safe and efficient Move programs, especially when dealing with valuable resources and global storage.
+## Summary
+
+Type abilities control what operations are permitted on values in Move:
+
+- **Four abilities**: `copy`, `drop`, `store`, and `key` gate different operations
+- **Field requirements**: Struct abilities require all fields to have compatible abilities
+- **Conditional abilities**: Generic types inherit abilities based on type parameters
+- **Resource safety**: Abilities prevent accidental duplication or loss of valuable resources
+- **Storage control**: `store` and `key` abilities manage global storage access
+
+Abilities provide fine-grained control over type behavior and resource safety in Move.

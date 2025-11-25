@@ -13,24 +13,23 @@ The `while` construct repeats the body (an expression of type unit) until the co
 
 ### Basic While Loop
 
-Here is an example of a simple while loop that computes the sum of the numbers from 1 to n:
+Here is an example of a simple while loop that calculates the product of numbers from 1 to n (factorial):
 
 ```move
-fun sum(n: u64): u64 {
-    let sum = 0;
+fun factorial(n: u64): u64 {
+    let result = 1;
     let i = 1;
     while (i <= n) {
-        sum = sum + i;
-        i = i + 1
+        result *= i;
+        i += 1;
     };
-
-    sum
+    result
 }
 ```
 
 ### Infinite Loops
 
-Infinite loops are allowed:
+Infinite loops are allowed but should be used with caution due to computational cost:
 
 ```move
 fun foo() {
@@ -40,18 +39,19 @@ fun foo() {
 
 ## Break Statement
 
-The `break` expression can be used to exit a loop before the condition evaluates to `false`. For example, this loop uses `break` to find the smallest factor of n that's greater than 1:
+The `break` expression can be used to exit a loop before the condition evaluates to `false`. For example, this loop uses `break` to find the first power of 2 that exceeds a given threshold:
 
 ```move
-fun smallest_factor(n: u64): u64 {
-    // assuming the input is not 0 or 1
-    let i = 2;
-    while (i <= n) {
-        if (n % i == 0) break;
-        i = i + 1
+fun first_power_exceeding(threshold: u64): u64 {
+    let power = 1;
+    let exponent = 0;
+    while (true) {
+        if (power > threshold) break;
+        power *= 2;
+        exponent += 1;
     };
 
-    i
+    power
 }
 ```
 
@@ -59,19 +59,19 @@ The `break` expression cannot be used outside of a loop.
 
 ## Continue Statement
 
-The `continue` expression skips the rest of the loop and continues to the next iteration. This loop uses `continue` to compute the sum of 1, 2, ..., n, except when the number is divisible by 10:
+The `continue` expression skips the rest of the loop and continues to the next iteration. This loop uses `continue` to count only odd numbers from 1 to n:
 
 ```move
-fun sum_intermediate(n: u64): u64 {
-    let sum = 0;
+fun count_odd_numbers(n: u64): u64 {
+    let count = 0;
     let i = 0;
     while (i < n) {
-        i = i + 1;
-        if (i % 10 == 0) continue;
-        sum = sum + i;
+        i += 1;
+        if (i % 2 == 0) continue;
+        count += 1;
     };
 
-    sum
+    count
 }
 ```
 
@@ -82,19 +82,19 @@ The `continue` expression cannot be used outside of a loop.
 `break` and `continue`, much like `return` and `abort`, can have any type. The following examples illustrate where this flexible typing can be helpful:
 
 ```move
-fun pop_smallest_while_not_equal(
-    v1: vector<u64>,
-    v2: vector<u64>,
-): vector<u64> {
+fun merge_until_duplicate(
+    v1: vector<u8>,
+    v2: vector<u8>,
+): vector<u8> {
     let result = vector::empty();
     while (!vector::is_empty(&v1) && !vector::is_empty(&v2)) {
-        let u1 = *vector::borrow(&v1, vector::length(&v1) - 1);
-        let u2 = *vector::borrow(&v2, vector::length(&v2) - 1);
-        let popped =
-            if (u1 < u2) vector::pop_back(&mut v1)
-            else if (u2 < u1) vector::pop_back(&mut v2)
-            else break; // Here, `break` has type `u64`
-        vector::push_back(&mut result, popped);
+        let val1 = *vector::borrow(&v1, 0);
+        let val2 = *vector::borrow(&v2, 0);
+        let next_val =
+            if (val1 < val2) vector::remove(&mut v1, 0)
+            else if (val2 < val1) vector::remove(&mut v2, 0)
+            else break; // Here, `break` has type `u8`
+        vector::push_back(&mut result, next_val);
     };
 
     result
@@ -102,21 +102,21 @@ fun pop_smallest_while_not_equal(
 ```
 
 ```move
-fun pick(
-    indexes: vector<u64>,
-    v1: &vector<address>,
-    v2: &vector<address>
-): vector<address> {
+fun collect_valid_strings(
+    lengths: vector<u64>,
+    v1: &vector<vector<u8>>,
+    v2: &vector<vector<u8>>
+): vector<vector<u8>> {
     let len1 = vector::length(v1);
     let len2 = vector::length(v2);
     let result = vector::empty();
-    while (!vector::is_empty(&indexes)) {
-        let index = vector::pop_back(&mut indexes);
+    while (!vector::is_empty(&lengths)) {
+        let target_len = vector::pop_back(&mut lengths);
         let chosen_vector =
-            if (index < len1) v1
-            else if (index < len2) v2
-            else continue; // Here, `continue` has type `&vector<address>`
-        vector::push_back(&mut result, *vector::borrow(chosen_vector, index))
+            if (target_len <= len1) v1
+            else if (target_len <= len2) v2
+            else continue; // Here, `continue` has type `&vector<vector<u8>>`
+        vector::push_back(&mut result, *vector::borrow(chosen_vector, target_len - 1))
     };
 
     result
@@ -130,46 +130,60 @@ The `loop` expression repeats the loop body (an expression with type `()`) until
 Without a `break`, the loop will continue forever:
 
 ```move
-fun foo() {
-    let i = 0;
-    loop { i = i + 1 }
+fun infinite_counter() {
+    let counter = 0;
+    loop { counter = counter + 1 }
 }
 ```
 
 ### Loop with Break
 
-Here is an example that uses `loop` to write the sum function:
+Here is an example that uses `loop` to calculate the greatest common divisor (GCD):
 
 ```move
-fun sum(n: u64): u64 {
-    let sum = 0;
-    let i = 0;
+fun gcd(a: u64, b: u64): u64 {
+    let x = a;
+    let y = b;
     loop {
-        i = i + 1;
-        if (i > n) break;
-        sum = sum + i
+        if (y == 0) break;
+        let temp = y;
+        y = x % y;
+        x = temp
     };
 
-    sum
+    x
 }
 ```
 
 ### Loop with Continue
 
-As you might expect, `continue` can also be used inside a `loop`. Here is `sum_intermediate` from above rewritten using `loop` instead of `while`:
+As you might expect, `continue` can also be used inside a `loop`. Here is an example that counts prime numbers up to n:
 
 ```move
-fun sum_intermediate(n: u64): u64 {
-    let sum = 0;
-    let i = 0;
+fun count_primes(n: u64): u64 {
+    let count = 0;
+    let num = 2;
     loop {
-        i = i + 1;
-        if (i % 10 == 0) continue;
-        if (i > n) break;
-        sum = sum + i
+        if (num > n) break;
+        if (!is_prime(num)) {
+            num = num + 1;
+            continue;
+        };
+        count = count + 1;
+        num = num + 1
     };
 
-    sum
+    count
+}
+
+fun is_prime(n: u64): bool {
+    if (n < 2) return false;
+    let i = 2;
+    while (i * i <= n) {
+        if (n % i == 0) return false;
+        i = i + 1
+    };
+    true
 }
 ```
 
@@ -213,26 +227,12 @@ for (i in 1..n) {
 For loops can iterate over numeric ranges:
 
 ```move
-fun sum_range(start: u64, end: u64): u64 {
-    let sum = 0;
+fun product_range(start: u64, end: u64): u64 {
+    let product = 1;
     for (i in start..end) {
-        sum = sum + i;
+        product *= i;
     };
-    sum
-}
-```
-
-### Inclusive Range
-
-Use `..=` for inclusive ranges:
-
-```move
-fun sum_inclusive(start: u64, end: u64): u64 {
-    let sum = 0;
-    for (i in start..=end) {
-        sum = sum + i;
-    };
-    sum
+    product
 }
 ```
 
@@ -241,12 +241,15 @@ fun sum_inclusive(start: u64, end: u64): u64 {
 For loops can iterate over vector indices:
 
 ```move
-fun process_vector(v: &vector<u64>): u64 {
-    let sum = 0;
-    for (i in 0..vector::length(v)) {
-        sum = sum + *vector::borrow(v, i);
+fun find_minimum(v: &vector<u64>): u64 {
+    let min_val = *vector::borrow(v, 0);
+    for (i in 1..vector::length(v)) {
+        let current = *vector::borrow(v, i);
+        if (current < min_val) {
+            min_val = current;
+        };
     };
-    sum
+    min_val
 }
 ```
 
@@ -255,21 +258,33 @@ fun process_vector(v: &vector<u64>): u64 {
 `break` and `continue` work in for loops just like in while loops:
 
 ```move
-fun find_first_even(start: u64, end: u64): u64 {
+fun find_first_perfect_square(start: u64, end: u64): u64 {
     for (i in start..end) {
-        if (i % 2 == 1) continue;
+        let sqrt_i = integer_sqrt(i);
+        if (sqrt_i * sqrt_i != i) continue;
         return i
     };
-    abort 1 // No even number found
+    abort 1 // No perfect square found
 }
 
-fun sum_until_limit(start: u64, end: u64, limit: u64): u64 {
-    let sum = 0;
+fun multiply_until_overflow(start: u64, end: u64, threshold: u64): u64 {
+    let product = 1;
     for (i in start..end) {
-        if (sum + i > limit) break;
-        sum = sum + i;
+        if (product > threshold / i) break; // Prevent overflow
+        product = product * i;
     };
-    sum
+    product
+}
+
+fun integer_sqrt(n: u64): u64 {
+    if (n == 0) return 0;
+    let x = n;
+    let y = (x + 1) / 2;
+    while (y < x) {
+        x = y;
+        y = (x + n / x) / 2;
+    };
+    x
 }
 ```
 
@@ -278,48 +293,59 @@ fun sum_until_limit(start: u64, end: u64, limit: u64): u64 {
 ### Vector Processing
 
 ```move
-fun find_max_index(v: &vector<u64>): u64 {
-    let max_val = 0;
-    let max_idx = 0;
+fun find_second_largest_index(v: &vector<u64>): u64 {
+    let largest = 0;
+    let second_largest = 0;
+    let second_idx = 0;
     
     for (i in 0..vector::length(v)) {
         let val = *vector::borrow(v, i);
-        if (val > max_val) {
-            max_val = val;
-            max_idx = i;
+        if (val > largest) {
+            second_largest = largest;
+            second_idx = if (largest > 0) i - 1 else 0;
+            largest = val;
+        } else if (val > second_largest && val < largest) {
+            second_largest = val;
+            second_idx = i;
         };
     };
     
-    max_idx
+    second_idx
 }
 ```
 
 ### Nested Loops
 
 ```move
-fun matrix_sum(matrix: &vector<vector<u64>>): u64 {
-    let total = 0;
+fun matrix_diagonal_product(matrix: &vector<vector<u64>>): u64 {
+    let product = 1;
+    let size = vector::length(matrix);
     
-    for (i in 0..vector::length(matrix)) {
+    for (i in 0..size) {
         let row = vector::borrow(matrix, i);
-        for (j in 0..vector::length(row)) {
-            total = total + *vector::borrow(row, j);
+        if (i < vector::length(row)) {
+            let diagonal_val = *vector::borrow(row, i);
+            product = product * diagonal_val;
         };
     };
     
-    total
+    product
 }
 ```
 
-### Factorial Calculation
+### Fibonacci Calculation
 
 ```move
-fun factorial(n: u64): u64 {
-    let result = 1;
-    for (i in 1..=n) {
-        result = result * i;
+fun fibonacci(n: u64): u64 {
+    if (n <= 1) return n;
+    let prev = 0;
+    let curr = 1;
+    for (i in 2..=n) {
+        let next = prev + curr;
+        prev = curr;
+        curr = next;
     };
-    result
+    curr
 }
 ```
 
@@ -360,41 +386,53 @@ fun factorial(n: u64): u64 {
 ### Accumulator Pattern
 
 ```move
-fun count_evens(v: &vector<u64>): u64 {
-    let count = 0;
+fun sum_of_squares(v: &vector<u64>): u64 {
+    let sum = 0;
     for (i in 0..vector::length(v)) {
-        if (*vector::borrow(v, i) % 2 == 0) {
-            count = count + 1;
-        };
+        let val = *vector::borrow(v, i);
+        sum = sum + (val * val);
     };
-    count
+    sum
 }
 ```
 
 ### Search Pattern
 
 ```move
-fun linear_search(v: &vector<u64>, target: u64): bool {
+fun find_last_occurrence(v: &vector<u64>, target: u64): u64 {
+    let last_index = vector::length(v); // Use length as "not found" indicator
     for (i in 0..vector::length(v)) {
         if (*vector::borrow(v, i) == target) {
-            return true
+            last_index = i;
         };
     };
-    false
+    last_index
 }
 ```
 
 ### Filter Pattern
 
 ```move
-fun filter_positive(v: &vector<i64>): vector<i64> {
+fun filter_multiples_of_three(v: &vector<u64>): vector<u64> {
     let result = vector::empty();
     for (i in 0..vector::length(v)) {
         let val = *vector::borrow(v, i);
-        if (val > 0) {
+        if (val % 3 == 0 && val > 0) {
             vector::push_back(&mut result, val);
         };
     };
     result
 }
 ```
+
+## Summary
+
+Move provides three loop constructs for repetitive execution and iteration:
+
+- **`while`**: Condition-based loops that repeat while a boolean condition is true
+- **`loop`**: Infinite loops that require explicit `break` statements to exit  
+- **`for`**: Range-based iteration over numeric ranges with `start..end` syntax
+- **Control flow**: Use `break` to exit loops early and `continue` to skip to next iteration
+- **Performance**: Choose the right loop type and minimize work inside loop bodies
+
+Loops enable efficient iteration patterns while maintaining Move's safety guarantees.

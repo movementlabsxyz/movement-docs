@@ -5,36 +5,50 @@ description: Learn about functions in Move, which are used to perform operations
 
 # Functions
 
-Function syntax in Move is shared between module functions and script functions. Functions inside of modules are reusable, whereas script functions are only used once to invoke a transaction.
+Functions are the fundamental building blocks of Move programs, enabling code organization, reusability, and modularity. Move supports both **module functions** (reusable across transactions) and **script functions** (single-use transaction entry points).
 
-## Declaration
+**Key characteristics:**
+- **Statically typed**: All parameters and return types must be explicitly declared
+- **Module-scoped**: Functions belong to specific modules and follow visibility rules
+- **Resource-aware**: Special annotations for global storage access
 
-Functions are declared with the `fun` keyword followed by the function name, type parameters, parameters, a return type, acquires annotations, and finally the function body.
+## Function Declaration
 
+Functions use the `fun` keyword followed by a structured declaration syntax that ensures type safety and clear interfaces:
+
+**Syntax structure:**
 ```
 fun <identifier><[type_parameters: constraint],*>([identifier: type],*): <return_type> <acquires [identifier],*> <function_body>
 ```
 
-For example:
-
+**Complete example:**
 ```move
-fun foo<T1, T2>(x: u64, y: T1, z: T2): (T2, T1, u64) { (z, y, x) }
+fun process_transaction<T: store>(amount: u64, data: T): (bool, T) acquires Account {
+    // function body
+    (true, data)
+}
 ```
 
-## Visibility
+## Visibility and Access Control
 
-Module functions, by default, can only be called within the same module. These internal (sometimes called private) functions cannot be called from other modules or from scripts.
+Move enforces strict **module-level encapsulation** through visibility modifiers, ensuring controlled access to functionality:
+
+**Visibility levels:**
+- **Private (default)**: Only callable within the defining module
+- **Public**: Callable from any module or script
+- **Public(friend)**: Callable only from explicitly trusted modules
+- **Entry**: Can serve as transaction entry points
 
 ```move
-module 0x42::m {
-    fun foo(): u64 { 0 }
-    fun calls_foo(): u64 { foo() } // valid
+module 0x42::defi_pool {
+    fun calculate_fees(): u64 { 100 }
+    fun get_pool_fees(): u64 { calculate_fees() } // valid - same module
 }
 
-module 0x42::other {
-    fun calls_m_foo(): u64 {
-        0x42::m::foo() // ERROR!
-//      ^^^^^^^^^^^^ 'foo' is internal to '0x42::m'
+module 0x42::trading_bot {
+    fun estimate_costs(): u64 {
+        0x42::defi_pool::calculate_fees() // ERROR!
+//      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 'calculate_fees' is private to '0x42::defi_pool'
     }
 }
 ```
@@ -42,7 +56,7 @@ module 0x42::other {
 ```move
 script {
     fun calls_m_foo(): u64 {
-        0x42::m::foo() // ERROR!
+       0x42::defi_pool::calculate_fees() // ERROR!
 //      ^^^^^^^^^^^^ 'foo' is internal to '0x42::m'
     }
 }
@@ -50,22 +64,23 @@ script {
 
 To allow access from other modules or from scripts, the function must be declared `public` or `public(friend)`.
 
-### Public Visibility
+### Public Functions
 
-A `public` function can be called by any function defined in any module or script. As shown in the following example, a public function can be called by:
-- Other functions defined in the same module
-- Functions defined in another module, or
-- The function defined in a script
+**Public functions** allow access to the function from any module or script. As shown in the following example, a public function can be called by:
+
+- other functions defined in the same module,
+- functions defined in another module, or
+- the function defined in a script.
 
 ```move
-module 0x42::m {
-    public fun foo(): u64 { 0 }
-    fun calls_foo(): u64 { foo() } // valid
+module 0x42::defi_pool {
+    public fun get_pool_balance(): u64 { 1000000 }
+    fun internal_calculation(): u64 { get_pool_balance() } // valid - same module
 }
 
-module 0x42::other {
-    fun calls_m_foo(): u64 {
-        0x42::m::foo() // valid
+module 0x42::trading_bot {
+    fun check_liquidity(): u64 {
+        0x42::defi_pool::get_pool_balance() // valid - public access
     }
 }
 ```
@@ -80,65 +95,32 @@ script {
 
 ### Public(friend) Visibility
 
-The `public(friend)` visibility modifier is a more restricted form of the `public` modifier to give more control about where a function can be used. A `public(friend)` function can be called by:
-- Other functions defined in the same module, or
-- Functions defined in modules which are explicitly specified in the friend list
+The `public(friend)` visibility modifier provides controlled access between trusted modules. It's more restrictive than `public` but more permissive than private visibility.
 
-Note that since we cannot declare a script to be a friend of a module, the functions defined in scripts can never call a `public(friend)` function.
+**Access rules for `public(friend)` functions:**
+- Functions within the same module can call them
+- Functions in explicitly declared friend modules can call them
+- Functions in non-friend modules cannot call them
+- Script functions cannot call them (scripts cannot be declared as friends)
 
-```move
-module 0x42::m {
-    friend 0x42::n;  // friend declaration
-    public(friend) fun foo(): u64 { 0 }
-    fun calls_foo(): u64 { foo() } // valid
-}
-
-module 0x42::n {
-    fun calls_m_foo(): u64 {
-        0x42::m::foo() // valid
-    }
-}
-
-module 0x42::other {
-    fun calls_m_foo(): u64 {
-        0x42::m::foo() // ERROR!
-//      ^^^^^^^^^^^^ 'foo' can only be called from a 'friend' of module '0x42::m'
-    }
-}
-```
 
 ```move
-script {
-    fun calls_m_foo(): u64 {
-        0x42::m::foo() // ERROR!
-//      ^^^^^^^^^^^^ 'foo' can only be called from a 'friend' of module '0x42::m'
-    }
-}
-```
-
-### Entry Modifier
-
-The `entry` modifier is designed to allow module functions to be safely and directly invoked much like scripts. This allows module writers to specify which functions can be used to begin execution. The module writer then knows that any non-entry function will be called from a Move program already in execution.
-
-Essentially, `entry` functions are the "main" functions of a module, and they specify where Move programs start executing.
-
-Note though, an `entry` function can still be called by other Move functions. So while they can serve as the start of a Move program, they aren't restricted to that case.
-
-```move
-module 0x42::m {
-    public entry fun foo(): u64 { 0 }
-    fun calls_foo(): u64 { foo() } // valid!
+module 0x42::vault_core {
+    friend 0x42::vault_manager;  // friend declaration
+    public(friend) fun access_vault_funds(): u64 { 50000 }
+    fun internal_operation(): u64 { access_vault_funds() } // valid - same module
 }
 
-module 0x42::n {
-    fun calls_m_foo(): u64 {
-        0x42::m::foo() // valid!
+module 0x42::vault_manager {
+    fun manage_funds(): u64 {
+        0x42::vault_core::access_vault_funds() // valid - trusted friend
     }
 }
 
-module 0x42::other {
-    public entry fun calls_m_foo(): u64 {
-        0x42::m::foo() // valid!
+module 0x42::external_user {
+    fun try_access(): u64 {
+        0x42::vault_core::access_vault_funds() // ERROR!
+//      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 'access_vault_funds' can only be called from a 'friend' of module '0x42::vault_core'
     }
 }
 ```
@@ -146,174 +128,336 @@ module 0x42::other {
 ```move
 script {
     fun calls_m_foo(): u64 {
+        0x42::m::foo() // ERROR!
+//      ^^^^^^^^^^^^ 'foo' can only be called from a 'friend' of module '0x42::m'
+    }
+}
+```
+
+### Entry Functions
+
+**Entry functions** serve as transaction entry points, enabling direct invocation from external clients while maintaining Move's safety guarantees:
+
+**Entry function characteristics:**
+- **Transaction entry points**: Can be called directly by transactions
+- **Client interfaces**: Primary way external applications interact with modules
+- **Flexible visibility**: Can be public, private, or friend-restricted
+- **Still callable internally**: Other Move functions can invoke them
+
+**Design benefits:**
+- **Clear interfaces**: Explicitly marks functions intended for external use
+- **Security boundaries**: Helps identify transaction entry points
+- **Composability**: Entry functions can call other functions normally
+
+```move
+module 0x42::nft_marketplace {
+    public entry fun create_listing(price: u64): u64 { price }
+    fun internal_setup(): u64 { create_listing(100) } // valid - internal call
+}
+
+module 0x42::auction_house {
+    fun start_auction(): u64 {
+        0x42::nft_marketplace::create_listing(500) // valid - cross-module call
+    }
+}
+
+module 0x42::trading_platform {
+    public entry fun launch_sale(): u64 {
+        0x42::nft_marketplace::create_listing(1000) // valid - entry calling entry
+    }
+}
+```
+
+```move
+script {
+    fun calls_m_foo(): u64 {
         0x42::m::foo() // valid!
     }
 }
 ```
 
-Even internal functions can be marked as `entry`! This lets you guarantee that the function is called only at the beginning of execution (assuming you do not call it elsewhere in your module):
+**Private entry functions** provide transaction entry points while maintaining module privacy:
 
 ```move
-module 0x42::m {
-    entry fun foo(): u64 { 0 } // valid! entry functions do not have to be public
+module 0x42::admin_panel {
+    entry fun system_initialize(): u64 { 42 } // private entry - transaction accessible but not cross-module
 }
 
-module 0x42::n {
-    fun calls_m_foo(): u64 {
-        0x42::m::foo() // ERROR!
-//      ^^^^^^^^^^^^ 'foo' is internal to '0x42::m'
+module 0x42::user_interface {
+    fun setup_system(): u64 {
+        0x42::admin_panel::system_initialize() // ERROR!
+//      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 'system_initialize' is private to '0x42::admin_panel'
     }
 }
 ```
 
-## Name
+<Callout type="info">
+**Key insight**: Entry functions can be private, allowing transaction access while preventing cross-module calls.
+</Callout>
 
-Function names can start with letters a to z or letters A to Z. After the first character, function names can contain underscores `_`, letters a to z, letters A to Z, or digits 0 to 9.
+## Function Naming
+
+Move enforces specific naming conventions for functions to ensure consistency and readability:
+
+**Naming rules:**
+- **First character**: Letters (a-z, A-Z) only
+- **Subsequent characters**: Letters, digits (0-9), underscores (_)
+- **Convention**: snake_case is strongly recommended
+- **Restrictions**: Cannot start with underscore or digit
 
 ```move
-fun FOO() {}
-fun bar_42() {}
-fun _bAZ19() {}
-//  ^^^^^^ Invalid function name '_bAZ19'. Function names cannot start with '_'
+// Valid function names
+fun process_payment() {}
+fun calculateFees() {}     // valid but not recommended (prefer snake_case)
+fun handle_nft_transfer() {}
+fun get_balance_v2() {}
+
+// Invalid function names
+fun _private_func() {}     // ERROR: cannot start with underscore
+fun 2nd_attempt() {}       // ERROR: cannot start with digit
+fun process-payment() {}   // ERROR: hyphens not allowed
 ```
 
-## Type Parameters
+**Best practices:**
+- Use descriptive, action-oriented names
+- Follow snake_case convention consistently
+- Avoid abbreviations that reduce clarity
+- Consider the function's purpose in naming
 
-After the name, functions can have type parameters:
+## Generic Functions
+
+**Generic functions** enable code reuse across different types while maintaining type safety through parameterized types:
+
+**Generic syntax:**
+- **Type parameters**: Declared in angle brackets `<T, U>`
+- **Constraints**: Optional ability requirements `<T: copy + drop>`
+- **Usage**: Type parameters can be used in parameters, return types, and function body
 
 ```move
-fun id<T>(x: T): T { x }
-fun example<T1: copy, T2>(x: T1, y: T2): (T1, T1, T2) { (copy x, x, y) }
+// Simple generic function
+fun swap<T>(x: T, y: T): (T, T) { (y, x) }
+
+// Generic with constraints
+fun duplicate_and_store<T: copy + store>(item: T): (T, T) {
+    (copy item, item)
+}
+
+// Multiple type parameters
+fun process_pair<Asset: store, Metadata: copy + drop>(
+    asset: Asset, 
+    meta: Metadata
+): (Asset, Metadata) {
+    (asset, copy meta)
+}
 ```
 
-For more details, see Move generics.
+## Function Parameters
 
-## Parameters
+**Parameters** define the inputs a function accepts, with explicit type annotations ensuring type safety:
 
-Function parameters are declared with a local variable name followed by a type annotation:
+**Parameter syntax:**
+- **Format**: `name: type`
+- **Multiple parameters**: Comma-separated list
+- **Type annotations**: Always required (no type inference)
+- **Ownership**: Parameters transfer ownership unless borrowed
 
 ```move
-fun add(x: u64, y: u64): u64 { x + y }
+// Single parameter
+fun calculate_fee(amount: u64): u64 { amount / 100 }
+
+// Multiple parameters with different types
+fun create_trade(trader: address, amount: u64, active: bool): Trade {
+    Trade { trader, amount, active }
+}
+
+// Reference parameters (borrowing)
+fun read_balance(account: &Account): u64 {
+    account.balance
+}
+
+// Mutable reference parameters
+fun update_balance(account: &mut Account, new_balance: u64) {
+    account.balance = new_balance;
+}
 ```
 
-We read this as "x has type u64".
-
-A function does not have to have any parameters at all:
+**Parameter-less functions** are common for constructors and getters:
 
 ```move
-fun useless() { }
-```
+module 0x42::token_factory {
+    struct TokenConfig { decimals: u8, max_supply: u64 }
 
-This is very common for functions that create new or empty data structures:
-
-```move
-module 0x42::example {
-    struct Counter { count: u64 }
-
-    fun new_counter(): Counter {
-        Counter { count: 0 }
+    // Constructor with no parameters
+    fun default_config(): TokenConfig {
+        TokenConfig { decimals: 8, max_supply: 1000000 }
+    }
+    
+    // Getter with no parameters
+    fun get_current_timestamp(): u64 {
+        // implementation
+        1234567890
     }
 }
 ```
 
-## Acquires
+## Global Storage Access
 
-When a function accesses a resource using `move_from`, `borrow_global`, or `borrow_global_mut`, the function must indicate that it acquires that resource. This is then used by Move's type system to ensure the references into global storage are safe, specifically that there are no dangling references into global storage.
+**Acquires annotations** ensure safe access to global storage by explicitly declaring which resources a function will access:
+
+**Global storage operations requiring acquires:**
+- `move_from<T>(address)`: Moving resource from global storage
+- `borrow_global<T>(address)`: Immutable borrow from global storage
+- `borrow_global_mut<T>(address)`: Mutable borrow from global storage
 
 ```move
-module 0x42::example {
-    struct Balance has key { value: u64 }
+module 0x42::liquidity_pool {
+    struct Pool has key { reserves: u64, fees_collected: u64 }
 
-    public fun add_balance(s: &signer, value: u64) {
-        move_to(s, Balance { value })
+    public fun initialize_pool(admin: &signer, initial_reserves: u64) {
+        move_to(admin, Pool { reserves: initial_reserves, fees_collected: 0 })
     }
 
-    public fun extract_balance(addr: address): u64 acquires Balance {
-        let Balance { value } = move_from(addr); // acquires needed
-        value
+    public fun withdraw_reserves(pool_address: address): u64 acquires Pool {
+        let Pool { reserves, fees_collected: _ } = move_from(pool_address);
+        reserves
+    }
+    
+    public fun get_pool_info(pool_address: address): (u64, u64) acquires Pool {
+        let pool = borrow_global<Pool>(pool_address);
+        (pool.reserves, pool.fees_collected)
+    }
+    
+    public fun add_fees(pool_address: address, fee_amount: u64) acquires Pool {
+        let pool = borrow_global_mut<Pool>(pool_address);
+        pool.fees_collected = pool.fees_collected + fee_amount;
     }
 }
 ```
 
 ### Transitive Acquires
 
-`acquires` annotations must also be added for transitive calls within the module. Calls to these functions from another module do not need to be annotated with these acquires because one module cannot access resources declared in another module--so the annotation is not needed to ensure reference safety.
+**Transitive acquires** occur when a function calls another function that accesses global storage. The calling function must also declare the acquires:
+
+**Key rules:**
+- **Same module**: Must declare acquires for transitive calls within the module
+- **Cross-module**: No acquires needed when calling functions from other modules
+- **Reason**: Cross-module resource access is impossible, so no reference safety issues
 
 ```move
-module 0x42::example {
-    struct Balance has key { value: u64 }
+module 0x42::staking_pool {
+    struct StakeInfo has key { amount: u64, rewards: u64 }
 
-    public fun add_balance(s: &signer, value: u64) {
-        move_to(s, Balance { value })
+    public fun create_stake(staker: &signer, amount: u64) {
+        move_to(staker, StakeInfo { amount, rewards: 0 })
     }
 
-    public fun extract_balance(addr: address): u64 acquires Balance {
-        let Balance { value } = move_from(addr); // acquires needed
-        value
+    public fun claim_rewards(staker_addr: address): u64 acquires StakeInfo {
+        let stake = borrow_global_mut<StakeInfo>(staker_addr);
+        let rewards = stake.rewards;
+        stake.rewards = 0;
+        rewards
     }
 
-    public fun extract_and_add(sender: address, receiver: &signer) acquires Balance {
-        let value = extract_balance(sender); // acquires needed here
-        add_balance(receiver, value)
+    // Transitive acquires - must declare StakeInfo because it calls claim_rewards
+    public fun compound_rewards(staker_addr: address) acquires StakeInfo {
+        let rewards = claim_rewards(staker_addr); // calls function that acquires StakeInfo
+        let stake = borrow_global_mut<StakeInfo>(staker_addr);
+        stake.amount = stake.amount + rewards;
     }
 }
 ```
 
 ```move
-module 0x42::other {
-    fun extract_balance(addr: address): u64 {
-        0x42::example::extract_balance(addr) // no acquires needed
+module 0x42::rewards_distributor {
+    fun distribute_rewards(staker_addr: address): u64 {
+        0x42::staking_pool::claim_rewards(staker_addr) // no acquires needed - cross-module
     }
 }
 ```
 
 ### Multiple Acquires
 
-A function can acquire as many resources as it needs to:
+**Multiple acquires** allow functions to access several different resource types from global storage:
+
+**Syntax**: List all acquired resources separated by commas
+**Use cases**: Functions that coordinate between multiple resource types
 
 ```move
-module 0x42::example {
+module 0x42::defi_protocol {
     use std::vector;
 
-    struct Balance has key { value: u64 }
-    struct Box<T> has key { items: vector<T> }
+    struct UserAccount has key { balance: u64, locked: u64 }
+    struct RewardPool has key { total_rewards: u64, participants: vector<address> }
+    struct GovernanceVotes has key { votes: u64, proposals: vector<u64> }
 
-    public fun store_two<Item1: store, Item2: store>(
-        addr: address,
-        item1: Item1,
-        item2: Item2,
-    ) acquires Balance, Box {
-        let balance = borrow_global_mut<Balance>(addr); // acquires needed
-        balance.value = balance.value - 2;
-        let box1 = borrow_global_mut<Box<Item1>>(addr); // acquires needed
-        vector::push_back(&mut box1.items, item1);
-        let box2 = borrow_global_mut<Box<Item2>>(addr); // acquires needed
-        vector::push_back(&mut box2.items, item2);
+    // Function accessing multiple resource types
+    public fun participate_in_governance<T: store>(
+        user_addr: address,
+        vote_weight: u64,
+        proposal_id: u64,
+    ) acquires UserAccount, RewardPool, GovernanceVotes {
+        // Access user account
+        let account = borrow_global_mut<UserAccount>(user_addr);
+        assert!(account.balance >= vote_weight, 1);
+        account.locked = account.locked + vote_weight;
+        
+        // Update reward pool
+        let pool = borrow_global_mut<RewardPool>(user_addr);
+        if (!vector::contains(&pool.participants, &user_addr)) {
+            vector::push_back(&mut pool.participants, user_addr);
+        };
+        
+        // Record governance vote
+        let votes = borrow_global_mut<GovernanceVotes>(user_addr);
+        votes.votes = votes.votes + vote_weight;
+        vector::push_back(&mut votes.proposals, proposal_id);
     }
 }
 ```
 
-## Return Type
+## Return Types
 
-After the parameters, a function specifies its return type:
+**Return types** specify what values a function produces, ensuring type safety and clear interfaces:
 
+**Basic return type syntax:**
 ```move
-fun zero(): u64 { 0 }
+fun calculate_interest(): u64 { 500 }
+fun get_user_name(): vector<u8> { b"Alice" }
+fun is_valid(): bool { true }
 ```
-
-Here `: u64` indicates that the function's return type is `u64`.
 
 ### Multiple Return Values
 
-Using tuples, a function can return multiple values:
+**Tuple returns** enable functions to produce multiple values simultaneously:
 
 ```move
-fun one_two_three(): (u64, u64, u64) { (0, 1, 2) }
+// Trading pair information
+fun get_trading_pair(): (u64, u64, bool) { 
+    (1000, 2000, true) // (price, volume, active)
+}
+
+// User account details
+fun get_account_info(addr: address): (vector<u8>, u64, bool) {
+    (b"trader_123", 50000, true) // (username, balance, verified)
+}
+
+// Coordinate pair
+fun get_position(): (u64, u64) {
+    (100, 200) // (x, y)
+}
+```
+
+**Destructuring multiple returns:**
+```move
+fun use_multiple_returns() {
+    let (price, volume, active) = get_trading_pair();
+    let (name, balance, _) = get_account_info(@0x123); // ignore verified status
+}
 ```
 
 ### Unit Return Type
 
-If no return type is specified, the function has an implicit return type of unit `()`. These functions are equivalent:
+**Unit type `()`** represents "no meaningful return value" - used for functions that perform actions rather than compute values:
 
 ```move
 fun just_unit(): () { () }
@@ -327,7 +471,14 @@ Script functions must have a return type of unit `()`:
 
 ```move
 script {
-    fun do_nothing() {
+    fun transfer_tokens() {
+        // transaction logic
+        // must return () - no other return type allowed
+    }
+    
+    fun initialize_account() {
+        // setup logic
+        // implicitly returns ()
     }
 }
 ```
@@ -336,26 +487,42 @@ As mentioned in the tuples section, these tuple "values" are virtual and do not 
 
 ## Function Body
 
-A function's body is an expression block. The return value of the function is the last value in the sequence:
+**Function bodies** contain the implementation logic using expression blocks where the final expression becomes the return value:
 
 ```move
-fun example(): u64 {
-    let x = 0;
-    x = x + 1;
-    x // returns 'x'
+fun calculate_fee(amount: u64): u64 {
+    let base_fee = 10;
+    let percentage_fee = amount / 100;
+    base_fee + percentage_fee  // this expression is returned
+}
+
+fun process_payment(sender: address, amount: u64): bool {
+    let sender_balance = get_balance(sender);
+    if (sender_balance >= amount) {
+        deduct_balance(sender, amount);
+        true  // return success
+    } else {
+        false // return failure
+    }
 }
 ```
 
-For more information on expression blocks, see Move variables.
+**Expression block characteristics:**
+- **Sequential execution**: Statements execute in order
+- **Final expression**: Last expression becomes the return value
+- **No explicit return needed**: Final expression is automatically returned
+- **Type consistency**: Final expression must match declared return type
 
 ## Native Functions
 
-Some functions do not have a body specified, and instead have the body provided by the VM. These functions are marked `native`.
+**Native functions** are implemented in the Move VM rather than in Move code, providing access to system-level operations:
 
-Without modifying the VM source code, a programmer cannot add new native functions. Furthermore, it is the intent that native functions are used for either standard library code or for functionality needed for the given Move environment.
+**Characteristics of native functions:**
+- **VM implementation**: Body provided by the virtual machine, not Move code
+- **Standard library**: Most natives are in `std` modules
+- **No custom natives**: Developers cannot create new native functions
 
-Most native functions you will likely see are in standard library code such as `vector`:
-
+**Common native functions:**
 ```move
 module std::vector {
     native public fun empty<Element>(): vector<Element>;
@@ -368,8 +535,8 @@ module std::vector {
 When calling a function, the name can be specified either through an alias or fully qualified:
 
 ```move
-module 0x42::example {
-    public fun zero(): u64 { 0 }
+module 0x42::math {
+    public fun get_pi(): u64 { 314 }
 }
 ```
 
@@ -387,80 +554,134 @@ script {
 
 ### Function Arguments
 
-When calling a function, an argument must be given for every parameter:
+**Arguments** must be provided for every parameter when calling functions, with strict type matching:
 
 ```move
-module 0x42::example {
-    public fun takes_none(): u64 { 0 }
-    public fun takes_one(x: u64): u64 { x }
-    public fun takes_two(x: u64, y: u64): u64 { x + y }
-    public fun takes_three(x: u64, y: u64, z: u64): u64 { x + y + z }
+module 0x42::trading_engine {
+    public fun get_base_fee(): u64 { 25 }
+    public fun apply_discount(fee: u64): u64 { fee * 90 / 100 }
+    public fun calculate_total(principal: u64, fee: u64): u64 { principal + fee }
+    public fun create_order(trader: address, amount: u64, price: u64): bool { true }
 }
 ```
 
+**Calling with correct arguments:**
 ```move
 script {
-    use 0x42::example;
-    fun call_all() {
-        example::takes_none();
-        example::takes_one(0);
-        example::takes_two(0, 1);
-        example::takes_three(0, 1, 2);
+    use 0x42::trading_engine;
+    
+    fun execute_trades() {
+        // No parameters
+        let base_fee = trading_engine::get_base_fee();
+        
+        // Single parameter
+        let discounted_fee = trading_engine::apply_discount(base_fee);
+        
+        // Multiple parameters
+        let total_cost = trading_engine::calculate_total(1000, discounted_fee);
+        
+        // Complex parameter types
+        let success = trading_engine::create_order(@0x123, 500, 2000);
     }
 }
 ```
 
-### Type Arguments
+**Argument requirements:**
+- **Exact count**: Must provide argument for every parameter
+- **Type matching**: Arguments must match parameter types exactly
+- **Order matters**: Arguments passed in parameter declaration order
 
-Type arguments can be either specified or inferred. Both calls are equivalent:
+### Generic Type Arguments
+
+**Type arguments** for generic functions can be explicitly specified or automatically inferred:
 
 ```move
-module 0x42::example {
-    public fun id<T>(x: T): T { x }
-}
-```
-
-```move
-script {
-    use 0x42::example;
-    fun call_all() {
-        example::id(0);
-        example::id<u64>(0);
+module 0x42::container_utils {
+    public fun create_empty<T>(): vector<T> {
+        vector::empty<T>()
+    }
+    
+    public fun swap<T>(x: T, y: T): (T, T) {
+        (y, x)
+    }
+    
+    public fun first_element<T: copy>(v: &vector<T>): T {
+        *vector::borrow(v, 0)
     }
 }
 ```
 
-For more details, see Move generics.
-
-## Returning Values
-
-The result of a function, its "return value", is the final value of its function body. For example:
-
+**Type argument usage:**
 ```move
-fun add(x: u64, y: u64): u64 {
-    x + y
+script {
+    use 0x42::container_utils;
+    
+    fun demonstrate_generics() {
+        // Explicit type arguments
+        let empty_u64_vec = container_utils::create_empty<u64>();
+        let empty_bool_vec = container_utils::create_empty<bool>();
+        
+        // Type inference (compiler determines types)
+        let (b, a) = container_utils::swap(100u64, 200u64); // infers T = u64
+        let (second, first) = container_utils::swap(true, false); // infers T = bool
+        
+        // Mixed approach
+        let numbers = vector[1, 2, 3];
+        let first_num = container_utils::first_element<u64>(&numbers);
+    }
 }
 ```
 
-As mentioned above, the function's body is an expression block. The expression block can sequence various statements, and the final expression in the block will be the value of that block:
+**When to use explicit type arguments:**
+- **Ambiguous contexts**: When compiler cannot infer the type
+- **Clarity**: When explicit types improve code readability
+- **Empty containers**: When creating empty generic containers
 
+## Return Value Mechanics
+
+**Return values** are produced by the final expression in a function's body, enabling both simple and complex computations:
+
+**Simple return example:**
 ```move
-fun double_and_add(x: u64, y: u64): u64 {
-    let double_x = x * 2;
-    let double_y = y * 2;
-    double_x + double_y
+fun calculate_tax(amount: u64): u64 {
+    amount * 8 / 100  // final expression becomes return value
 }
 ```
 
-The return value here is `double_x + double_y`.
-
-### Return Expression
-
-A function implicitly returns the value that its body evaluates to. However, functions can also use the explicit `return` expression:
-
+**Complex return with intermediate calculations:**
 ```move
-fun f1(): u64 { return 0 }
-fun f2(): u64 { 0 }
+fun calculate_compound_yield(principal: u64, rate: u64, periods: u64): u64 {
+    let rate_per_period = rate / periods;
+    let compound_factor = 100 + rate_per_period;
+    let final_amount = principal * compound_factor / 100;
+    final_amount  // this final expression is returned
+}
+```
+
+**Conditional returns:**
+```move
+fun determine_fee_tier(volume: u64): u64 {
+    if (volume >= 1000000) {
+        5  // premium tier
+    } else if (volume >= 100000) {
+        10 // standard tier
+    } else {
+        25 // basic tier
+    }
+    // the if-else expression result is returned
+}
+```
+
+### Explicit Return Statements
+
+**Explicit returns** provide early exit from functions, especially useful in complex control flow:
+
+**Basic explicit return:**
+```move
+fun validate_amount(amount: u64): u64 {
+    if (amount == 0) return 0;  // early exit
+    amount * 105 / 100  // normal calculation
+}
 ```
 
 These two functions are equivalent. In this slightly more involved example, the function subtracts two `u64` values, but returns early with 0 if the second value is too large:
@@ -499,92 +720,23 @@ fun foo() { return }
 fun foo() { return () }
 ```
 
-## Best Practices
-
-1. **Use descriptive names** - Function names should clearly indicate what the function does
-2. **Keep functions focused** - Each function should have a single, well-defined purpose
-3. **Use appropriate visibility** - Only make functions `public` when necessary
-4. **Document acquires** - Always specify `acquires` annotations for global storage access
-5. **Handle errors gracefully** - Use `assert!` or return `Option` types for error handling
-6. **Leverage type parameters** - Use generics to make functions more reusable
-
-## Common Patterns
-
-### Constructor Pattern
-
-```move
-module 0x42::coin {
-    struct Coin has store { value: u64 }
-
-    public fun new(value: u64): Coin {
-        Coin { value }
-    }
-
-    public fun zero(): Coin {
-        Coin { value: 0 }
-    }
-}
-```
-
-### Accessor Pattern
-
-```move
-module 0x42::account {
-    struct Account has key { balance: u64 }
-
-    public fun balance(addr: address): u64 acquires Account {
-        borrow_global<Account>(addr).balance
-    }
-
-    public fun exists_at(addr: address): bool {
-        exists<Account>(addr)
-    }
-}
-```
-
-### Mutator Pattern
-
-```move
-module 0x42::counter {
-    struct Counter has key { value: u64 }
-
-    public fun increment(addr: address) acquires Counter {
-        let counter = borrow_global_mut<Counter>(addr);
-        counter.value = counter.value + 1;
-    }
-
-    public fun add(addr: address, amount: u64) acquires Counter {
-        let counter = borrow_global_mut<Counter>(addr);
-        counter.value = counter.value + amount;
-    }
-}
-```
-
-### Utility Functions
-
-```move
-module 0x42::math {
-    public fun max(a: u64, b: u64): u64 {
-        if (a > b) a else b
-    }
-
-    public fun min(a: u64, b: u64): u64 {
-        if (a < b) a else b
-    }
-
-    public fun abs_diff(a: u64, b: u64): u64 {
-        if (a > b) a - b else b - a
-    }
-}
-```
-
 ## Function Visibility Summary
 
-| Visibility | Callable From | Use Case |
-|------------|---------------|----------|
-| (default) | Same module only | Internal helper functions |
-| `public` | Any module or script | Public APIs |
-| `public(friend)` | Same module or friend modules | Controlled access |
-| `entry` | Can be transaction entry point | Main functions |
+| Visibility | Callable From | Use Case | Example |
+|------------|---------------|----------|----------|
+| (default) | Same module only | Internal helpers | `fun calculate_internal_fee()` |
+| `public` | Any module or script | Public APIs | `public fun get_balance()` |
+| `public(friend)` | Same module + friends | Controlled access | `public(friend) fun admin_operation()` |
+| `entry` | Transaction entry point | Main functions | `entry fun create_account()` |
 
-Understanding functions is fundamental to Move programming, as they are the primary way to organize and reuse code while maintaining Move's safety guarantees.
+## Summary
+
+Functions are the primary building blocks for organizing and reusing code in Move:
+
+- **Declaration**: Use `fun` keyword with parameters, return types, and optional `acquires` annotations
+- **Visibility**: Control access with `public`, `public(friend)`, or `entry` modifiers
+- **Safety**: `acquires` annotations ensure safe global storage access
+- **Flexibility**: Support generics, multiple return values, and early returns
+- **Patterns**: Common patterns include constructors, accessors, mutators, and utilities
+
+Functions enable modular, safe, and reusable code organization in Move programs.

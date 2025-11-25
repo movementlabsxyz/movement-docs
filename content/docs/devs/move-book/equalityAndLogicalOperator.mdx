@@ -296,3 +296,15 @@ Use parentheses for clarity when combining operators:
 let clear_intent = (a || b) && c;  // Explicit grouping
 let also_clear = a || (b && c);    // Explicit grouping
 ```
+
+## Summary
+
+Move's comparison and logical operators enable safe value comparison and boolean logic:
+
+- **Equality**: `==` and `!=` compare values of identical types; require `drop` ability
+- **Logical**: `&&` and `||` work with `bool` types and use short-circuit evaluation
+- **Type Safety**: Strict type matching prevents runtime errors
+- **Performance**: Use references to avoid expensive copies; leverage short-circuiting
+- **Precedence**: `&&` binds tighter than `||`; use parentheses for clarity
+
+These operators are essential for conditional logic and control flow in Move programs.
