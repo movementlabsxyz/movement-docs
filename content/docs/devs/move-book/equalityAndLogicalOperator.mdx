@@ -1,0 +1,310 @@
+---
+title: Equality And Logical Operator
+description: Learn about equality and logical operator in Move, which are used to compare values.
+---
+
+# Equality
+
+Move supports two equality operations: `==` (equal) and `!=` (not equal). These operators allow you to compare values and determine whether they are the same or different.
+
+
+## Operations
+
+| Syntax | Operation | Description |
+|--------|-----------|-------------|
+| `==` | equal | Returns `true` if the two operands have the same value, `false` otherwise |
+| `!=` | not equal | Returns `true` if the two operands have different values, `false` otherwise |
+
+## Basic Usage
+
+Both equality operations work with primitive types and user-defined types:
+
+```move
+// Primitive types
+0 == 0;          // `true`
+1u128 == 2u128;  // `false`
+b"hello" != x"00"; // `true`
+```
+
+## Typing Requirements
+
+Both the equal (`==`) and not-equal (`!=`) operations only work if both operands are the same type:
+
+```move
+1u8 == 1u128; // ERROR!
+//     ^^^^^ cannot use `u128` with an operator which expects a value of type `u8`
+b"" != 0; // ERROR!
+//     ^ cannot use `integer` with an operator which expects a value of type `vector<u8>`
+```
+
+## User-Defined Types
+
+Equality and non-equality also work over user-defined types:
+
+```move
+module 0x42::example {
+    struct S has copy, drop {
+        f: u64, 
+        s: vector<u8> 
+    }
+
+    fun always_true(): bool {
+        let s = S { f: 0, s: b"" };
+        // parens are not needed but added for clarity in this example
+        (copy s) == s
+    }
+
+    fun always_false(): bool {
+        let s = S { f: 0, s: b"" };
+        // parens are not needed but added for clarity in this example
+        (copy s) != s
+    }
+}
+```
+
+## Typing with References
+
+When comparing references, the type of the reference (immutable or mutable) does not matter. You can compare an immutable `&` reference with a mutable `&mut` reference of the same underlying type:
+
+```move
+let i = &0;
+let m = &mut 1;
+
+i == m; // `false`
+m == i; // `false`
+m == m; // `true`
+i == i; // `true`
+```
+
+This is equivalent to applying an explicit `freeze` to each mutable reference where needed:
+
+```move
+let i = &0;
+let m = &mut 1;
+
+i == freeze(m); // `false`
+freeze(m) == i; // `false`
+m == m; // `true`
+i == i; // `true`
+```
+
+However, the underlying type must still be the same:
+
+```move
+let i = &0;
+let s = &b"";
+
+i == s; // ERROR!
+//   ^ expected an argument of type '&u64'
+```
+
+## Drop Ability Restrictions
+
+Both `==` and `!=` consume the value when comparing them. As a result, the type system enforces that the type must have the `drop` ability. Without the `drop` ability, ownership must be transferred by the end of the function, and such values can only be explicitly destroyed within their declaring module.
+
+```move
+module 0x42::example {
+    struct Coin has store { value: u64 }
+    fun invalid(c1: Coin, c2: Coin) {
+        c1 == c2 // ERROR!
+        //    ^^ local `c2` of type `Coin` does not have the `drop` ability
+    }
+}
+```
+
+## Working with Resources
+
+A programmer can always borrow the value first instead of directly comparing the value, since reference types have the `drop` ability:
+
+```move
+module 0x42::compare_without_copy {
+    struct Coin has store { value: u64 }
+    fun swap_if_equal(c1: Coin, c2: Coin): (Coin, Coin) {
+        let are_equal = &c1 == &c2; // valid
+        if (are_equal) (c2, c1) else (c1, c2)
+    }
+}
+```
+
+## Avoiding Extra Copies
+
+While you can compare any value whose type has `drop`, you should often compare by reference to avoid expensive copies:
+
+**Inefficient approach:**
+```move
+let v1: vector<u8> = function_that_returns_vector();
+let v2: vector<u8> = function_that_returns_vector();
+assert!(copy v1 == copy v2, 42);
+//     ^^^^       ^^^^
+use_two_vectors(v1, v2);
+
+let s1: Foo = function_that_returns_large_struct();
+let s2: Foo = function_that_returns_large_struct();
+assert!(copy s1 == copy s2, 42);
+//     ^^^^       ^^^^
+use_two_foos(s1, s2);
+```
+
+**Efficient approach:**
+```move
+let v1: vector<u8> = function_that_returns_vector();
+let v2: vector<u8> = function_that_returns_vector();
+assert!(&v1 == &v2, 42);
+//     ^      ^
+use_two_vectors(v1, v2);
+
+let s1: Foo = function_that_returns_large_struct();
+let s2: Foo = function_that_returns_large_struct();
+assert!(&s1 == &s2, 42);
+//     ^      ^
+use_two_foos(s1, s2);
+```
+
+The efficiency of the `==` operation itself remains the same, but the copies are removed, making the program more efficient overall.
+
+# Logical Operators
+
+Move supports two logical operators: `&&` (logical and) and `||` (logical or). These operators work with boolean values and provide short-circuit evaluation.
+
+## Operations
+
+| Syntax | Operation | Description |
+|--------|-----------|-------------|
+| `&&` | logical and | Returns `true` if both operands are `true`, `false` otherwise |
+| `\|\|` | logical or | Returns `true` if at least one operand is `true`, `false` otherwise |
+
+## Basic Usage
+
+Both logical operators work exclusively with `bool` type operands:
+
+```move
+true && true;   // `true`
+true && false;  // `false`
+false && true;  // `false`
+false && false; // `false`
+
+true || true;   // `true`
+true || false;  // `true`
+false || true;  // `true`
+false || false; // `false`
+```
+
+## Short-Circuit Evaluation
+
+Both `&&` and `||` use short-circuit evaluation, meaning the second operand is only evaluated if necessary:
+
+### Logical AND (`&&`)
+With `&&`, if the first operand is `false`, the second operand is not evaluated since the result will always be `false`:
+
+```move
+fun example_and() {
+    let x = false && expensive_function(); // expensive_function() is NOT called
+    let y = true && expensive_function();  // expensive_function() IS called
+}
+```
+
+### Logical OR (`||`)
+With `||`, if the first operand is `true`, the second operand is not evaluated since the result will always be `true`:
+
+```move
+fun example_or() {
+    let x = true || expensive_function();  // expensive_function() is NOT called
+    let y = false || expensive_function(); // expensive_function() IS called
+}
+```
+
+## Typing Requirements
+
+Both operands must be of type `bool`. Using non-boolean types will result in a type error:
+
+```move
+1 && 2;     // error: cannot use `integer` with an operator which expects a value of type `bool`
+true && 0;  // error: cannot use `integer` with an operator which expects a value of type `bool`
+false || "hello"; // error: cannot use `vector<u8>` with an operator which expects a value of type `bool`
+```
+
+## Practical Examples
+
+Logical operators are commonly used in conditional statements and assertions:
+
+```move
+fun validate_user(age: u64, has_permission: bool): bool {
+    // User must be 18 or older AND have permission
+    age >= 18 && has_permission
+}
+
+fun can_access(is_admin: bool, is_owner: bool, has_key: bool): bool {
+    // Access granted if user is admin OR owner OR has key
+    is_admin || is_owner || has_key
+}
+
+fun complex_condition(x: u64, y: u64, flag: bool): bool {
+    // Complex logical expression
+    (x > 10 && y < 5) || (flag && x == y)
+}
+```
+
+## Combining with Equality
+
+Logical operators are often combined with equality operations:
+
+```move
+fun check_range(value: u64, min: u64, max: u64): bool {
+    value >= min && value <= max
+}
+
+fun is_valid_coordinate(x: u64, y: u64): bool {
+    (x >= 0 && x <= 100) && (y >= 0 && y <= 100)
+}
+
+fun different_values(a: u64, b: u64, c: u64): bool {
+    a != b && b != c && a != c
+}
+```
+
+## Performance Considerations
+
+Due to short-circuit evaluation, place the most likely to fail (for `&&`) or succeed (for `||`) conditions first:
+
+```move
+// Efficient: cheap check first
+fun efficient_check(expensive_condition: bool, cheap_value: u64): bool {
+    cheap_value > 0 && expensive_condition
+}
+
+// Less efficient: expensive check might run unnecessarily
+fun less_efficient_check(expensive_condition: bool, cheap_value: u64): bool {
+    expensive_condition && cheap_value > 0
+}
+```
+
+## Operator Precedence
+
+Logical operators have specific precedence rules. `&&` has higher precedence than `||`:
+
+```move
+// This expression: a || b && c
+// Is evaluated as: a || (b && c)
+// NOT as: (a || b) && c
+
+let result = true || false && false; // `true` (not `false`)
+```
+
+Use parentheses for clarity when combining operators:
+
+```move
+let clear_intent = (a || b) && c;  // Explicit grouping
+let also_clear = a || (b && c);    // Explicit grouping
+```
+
+## Summary
+
+Move's comparison and logical operators enable safe value comparison and boolean logic:
+
+- **Equality**: `==` and `!=` compare values of identical types; require `drop` ability
+- **Logical**: `&&` and `||` work with `bool` types and use short-circuit evaluation
+- **Type Safety**: Strict type matching prevents runtime errors
+- **Performance**: Use references to avoid expensive copies; leverage short-circuiting
+- **Precedence**: `&&` binds tighter than `||`; use parentheses for clarity
+
+These operators are essential for conditional logic and control flow in Move programs.

@@ -1,0 +1,151 @@
+---
+title: Address
+description: Learn about the address type in Move, which represents unique identifiers for accounts and modules.
+---
+
+# Address Type
+
+The `address` type represents unique identifiers for accounts and modules in Move. Think of addresses as unique locations where code and data can be stored.
+
+## What is an Address?
+
+An address is a 256-bit identifier that serves as a unique location in the blockchain:
+- **Accounts**: Store resources and data
+- **Modules**: Store code and functions
+- **Packages**: Collections of modules at the same address
+
+## Address Literals
+
+Addresses are written with the `@` symbol followed by a hexadecimal number:
+
+```move
+let user_address = @0x1;
+let contract_address = @0x42;
+let long_address = @0xDEADBEEF;
+```
+
+### Short and Long Form
+
+Move accepts both short and long address formats:
+
+```move
+// Short form (Move pads with zeros)
+let addr1 = @0x1;    // Same as @0x0000...0001
+let addr2 = @0x42;   // Same as @0x0000...0042
+
+// Long form (explicit)
+let addr3 = @0x0000000000000000000000000000000000000000000000000000000000000001;
+```
+
+## Named Addresses
+
+Instead of using hex numbers, you can use named addresses for better readability:
+
+```move
+// In Move.toml or package configuration
+// std = "0x1"
+// my_package = "0x42"
+
+let std_addr = @std;        // Refers to 0x1
+let my_addr = @my_package;  // Refers to 0x42
+```
+
+## Address Usage
+
+### In Expressions
+
+When using addresses as values, always use the `@` prefix:
+
+```move
+fun get_user_address(): address {
+    @0x123
+}
+
+let user = @0x456;
+```
+
+### In Module Declarations
+
+When declaring modules, omit the `@` prefix:
+
+```move
+module 0x42::my_module {
+    // Module code here
+}
+
+// Or with named addresses
+module my_package::my_module {
+    // Module code here
+}
+```
+
+## Address Properties
+
+Addresses in Move are **opaque**, meaning:
+- You cannot create them from integers
+- You cannot perform arithmetic on them
+- You cannot modify them directly
+- They can only be compared for equality
+
+```move
+let addr1 = @0x1;
+let addr2 = @0x2;
+
+// Valid operations
+let same = addr1 == addr1;     // true
+let different = addr1 != addr2; // true
+
+// Invalid operations (won't compile)
+// let sum = addr1 + addr2;     // ERROR!
+// let addr3 = addr1 * 2;       // ERROR!
+```
+
+## Practical Examples
+
+Here are common ways to use addresses:
+
+```move
+// Check if an address owns a resource
+fun has_account(addr: address): bool {
+    // Implementation would check global storage
+    true // Simplified
+}
+
+// Compare addresses
+fun is_admin(user: address): bool {
+    user == @0x1  // Check if user is admin address
+}
+
+// Store addresses in data structures
+struct UserInfo has key {
+    owner: address,
+    balance: u64,
+}
+```
+
+## Global Storage Operations
+
+The primary purpose of `address` values is to interact with global storage. They are used with the following operations:
+
+- `exists<T>`
+- `borrow_global<T>`
+- `borrow_global_mut<T>`
+- `move_from<T>`
+
+Note that the `move_to<T>` operation does not use an `address` but instead requires a `signer`.
+
+## Ownership
+
+As with the other scalar values built-in to the language, address values are implicitly copyable, meaning they can be copied without an explicit instruction such as `copy`.
+
+## Summary
+
+Addresses in Move:
+- **Identify locations** for accounts and modules
+- **Use `@` prefix** when used as values
+- **Support named aliases** for better readability
+- **Are opaque** - no arithmetic operations allowed
+- **Are copyable** - no explicit `copy` needed
+- **Enable access** to global storage and resources
+
+Addresses are fundamental to Move's security model, ensuring that resources and modules have clear ownership and access patterns.

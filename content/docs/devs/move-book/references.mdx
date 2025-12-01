@@ -1,0 +1,291 @@
+---
+title: References
+description: Learn about the reference types in Move, which allow borrowing values without taking ownership.
+---
+
+# References
+
+Move has two types of references: **immutable** `&` and **mutable** `&mut`. References allow you to borrow values without taking ownership, enabling safe access and modification of data.
+
+## What are References?
+
+References are "borrows" that provide temporary access to a value without transferring ownership. Think of them as safe pointers that the compiler tracks to prevent memory errors.
+
+| Type | Symbol | Purpose |
+|------|--------|---------|
+| Immutable reference | `&T` | Read-only access to value of type `T` |
+| Mutable reference | `&mut T` | Read and write access to value of type `T` |
+| Field reference | `&e.f` | Create an immutable reference to field f of struct e. |
+| Mutable field reference | `&mut e.f` | Create a mutable reference to field f of struct e. |
+| Freeze | `freeze(e)` | Convert the mutable reference e into an immutable reference. |
+
+<Callout type="info">
+**Key Concept**: References are ephemeral - they exist only during program execution and cannot be stored in structs or global storage.
+</Callout>
+
+## Creating References
+
+### Basic Reference Creation
+
+```move
+fun basic_references() {
+    let x = 42u64;
+    
+    let x_ref: &u64 = &x;           // Immutable reference
+    let x_mut_ref: &mut u64 = &mut x;  // Mutable reference
+}
+```
+
+### Field References
+
+The `&e.f` and `&mut e.f` operators can be used both to create a new reference into a struct or to extend an existing reference:
+
+```move
+struct S has drop { f: u64 }
+
+fun field_references() {
+    let s = S { f: 10 };
+    let f_ref1: &u64 = &s.f; // works
+    let s_ref: &S = &s;
+    let f_ref2: &u64 = &s_ref.f; // also works
+}
+```
+
+### Multiple Field Access
+
+A reference expression with multiple fields works as long as both structs are in the same module:
+
+```move
+struct A has drop { b: B }
+struct B has drop { c: u64 }
+
+fun f(a: &A): &u64 {
+    &a.b.c
+}
+```
+
+### References to References
+
+Finally, note that references to references are not allowed:
+
+```move
+fun invalid_references() {
+    let x = 7;
+    let y: &u64 = &x;
+    let z: &&u64 = &y; // will not compile
+}
+```
+
+## Reading and Writing Through References
+
+Both mutable and immutable references can be read to produce a copy of the referenced value. Only mutable references can be written. A write `*x = v` discards the value previously stored in `x` and updates it with `v`.
+
+Both operations use the C-like `*` syntax. However, note that a read is an expression, whereas a write is a mutation that must occur on the left hand side of an equals.
+
+| Syntax | Type | Description |
+|--------|------|-----------|
+| `*e` | `T` where `e` is `&T` or `&mut T` | Read the value pointed to by `e` |
+| `*e1 = e2` | `()` where `e1: &mut T` and `e2: T` | Update the value in `e1` with `e2` |
+
+### Reading Through References
+
+```move
+fun reading_example() {
+    let x = 42u64;
+    let x_ref = &x;
+    
+    let value: u64 = *x_ref;  // Read the value (creates a copy)
+    assert!(value == 42, 0);
+}
+```
+
+### Writing Through References
+
+```move
+fun writing_example() {
+    let x = 42u64;
+    let x_ref = &mut x;
+    
+    *x_ref = 100;  // Write new value
+    assert!(x == 100, 0);
+}
+```
+
+### Ability Requirements
+
+In order for a reference to be read, the underlying type must have the `copy` ability as reading the reference creates a new copy of the value. This rule prevents the copying of resource values:
+
+```move
+struct Coin has store { value: u64 }
+
+fun copy_resource_via_ref_bad(c: Coin) {
+    let c_ref = &c;
+    let counterfeit: Coin = *c_ref; // local `c_ref` of type `Coin` does not have the `copy` ability
+    // pay(c);
+    // pay(counterfeit);
+}
+```
+
+Dually: in order for a reference to be written to, the underlying type must have the `drop` ability as writing to the reference will discard (or "drop") the old value. This rule prevents the destruction of resource values:
+
+```move
+fun destroy_resource_via_ref_bad(ten_coins: Coin, c: Coin) {
+    let ref = &mut ten_coins;
+    *ref = c; // local `ref` of type `Coin` does not have the `drop` ability
+}
+```
+
+## Freeze Inference
+
+A mutable reference can be used in a context where an immutable reference is expected:
+
+```move
+fun freeze_example() {
+    let x = 7;
+    let y: &u64 = &mut x;
+}
+```
+
+This works because the under the hood, the compiler inserts `freeze` instructions where they are needed. Here are a few more examples of freeze inference in action:
+
+```move
+fun takes_immut_returns_immut(x: &u64): &u64 { x }
+
+// freeze inference on return value
+fun takes_mut_returns_immut(x: &mut u64): &u64 { x }
+
+fun expression_examples() {
+    let x = 0;
+    let y = 0;
+    takes_immut_returns_immut(&x); // no inference
+    takes_immut_returns_immut(&mut x); // inferred freeze(&mut x)
+    takes_mut_returns_immut(&mut x); // no inference
+
+    assert!(&x == &mut y, 42); // inferred freeze(&mut y)
+}
+
+fun assignment_examples() {
+    let x = 0;
+    let y = 0;
+    let imm_ref: &u64 = &x;
+
+    imm_ref = &x; // no inference
+    imm_ref = &mut y; // inferred freeze(&mut y)
+}
+```
+
+## Subtyping
+
+With this freeze inference, the Move type checker can view `&mut T` as a subtype of `&T`. As shown above, this means that anywhere for any expression where a `&T` value is used, a `&mut T` value can also be used. This terminology is used in error messages to concisely indicate that a `&mut T` was needed where a `&T` was supplied. For example:
+
+```move
+module 0x42::example {
+    fun read_and_assign(store: &mut u64, new_value: &u64) {
+        *store = *new_value
+    }
+
+    fun subtype_examples() {
+        let x: &u64 = &0;
+        let y: &mut u64 = &mut 1;
+
+        x = &mut 1; // valid
+        y = &2; // invalid!
+
+        read_and_assign(y, x); // valid
+        read_and_assign(x, y); // invalid!
+    }
+}
+```
+
+The invalid assignments will yield error messages indicating subtype mismatches:
+
+```
+error:
+    ┌── example.move:12:9 ───
+    │
+ 12 │         y = &2; // invalid!
+    │         ^ Invalid assignment to local 'y'
+    ·
+ 12 │         y = &2; // invalid!
+    │             -- The type: '&{integer}'
+    ·
+  9 │         let y: &mut u64 = &mut 1;
+    │                -------- Is not a subtype of: '&mut u64'
+```
+
+<Callout type="info"> 
+**Note**: The only other types currently that have subtyping are tuples.
+</Callout>
+
+## Ownership
+
+Both mutable and immutable references can always be copied and extended even if there are existing copies or extensions of the same reference:
+
+```move
+struct S { f: u64 }
+
+fun reference_copies(s: &mut S) {
+    let s_copy1 = s; // ok
+    let s_extension = &mut s.f; // also ok
+    let s_copy2 = s; // still ok
+    // ...
+}
+```
+
+This might be surprising for programmers familiar with Rust's ownership system, which would reject the code above. Move's type system is more permissive in its treatment of copies, but equally strict in ensuring unique ownership of mutable references before writes.
+
+## Storage Limitations
+
+References and tuples are the only types that cannot be stored as a field value of structs, which also means that they cannot exist in global storage. All references created during program execution will be destroyed when a Move program terminates; they are entirely ephemeral. This invariant is also true for values of types without the `store` ability, but note that references and tuples go a step further by never being allowed in structs in the first place.
+
+```move
+struct Container {
+    // value_ref: &u64,     // Error: references cannot be stored
+    value: u64,             // OK: store the value directly
+}
+```
+
+<Callout type="warning">
+**Important**: References are ephemeral and exist only during program execution.
+</Callout>
+
+## Common Use Cases
+
+### Function Parameters
+
+```move
+fun process_data(data: &vector<u8>) {
+    // Read-only access to vector without taking ownership
+    let length = vector::length(data);
+}
+
+fun modify_data(data: &mut vector<u8>) {
+    // Can modify the vector
+    vector::push_back(data, 42);
+}
+```
+
+### Struct Field Access
+
+```move
+struct Account { balance: u64 }
+
+fun check_balance(account: &Account): u64 {
+    account.balance  // Access field through reference
+}
+
+fun deposit(account: &mut Account, amount: u64) {
+    account.balance = account.balance + amount;
+}
+```
+
+## Summary
+
+References in Move provide:
+- **Safe borrowing** without ownership transfer
+- **Two types**: immutable `&T` for reading, mutable `&mut T` for reading and writing
+- **Automatic conversions** from mutable to immutable references when needed
+- **Ephemeral nature** - exist only during execution, cannot be stored
+- **Resource safety** by enforcing ability requirements
+
+References are essential for efficient data access without transferring ownership in Move.

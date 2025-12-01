@@ -1,0 +1,438 @@
+---
+title: Loop
+description: Learn about loop in Move, which are used to control program flow.
+---
+
+# Loop
+
+Move offers multiple constructs for looping: `while`, `loop`, and `for`. These constructs allow you to repeat code execution based on conditions or iterate over ranges and collections.
+
+## While Loops
+
+The `while` construct repeats the body (an expression of type unit) until the condition (an expression of type `bool`) evaluates to `false`.
+
+### Basic While Loop
+
+Here is an example of a simple while loop that calculates the product of numbers from 1 to n (factorial):
+
+```move
+fun factorial(n: u64): u64 {
+    let result = 1;
+    let i = 1;
+    while (i <= n) {
+        result *= i;
+        i += 1;
+    };
+    result
+}
+```
+
+### Infinite Loops
+
+Infinite loops are allowed but should be used with caution due to computational cost:
+
+```move
+fun foo() {
+    while (true) { }
+}
+```
+
+## Break Statement
+
+The `break` expression can be used to exit a loop before the condition evaluates to `false`. For example, this loop uses `break` to find the first power of 2 that exceeds a given threshold:
+
+```move
+fun first_power_exceeding(threshold: u64): u64 {
+    let power = 1;
+    let exponent = 0;
+    while (true) {
+        if (power > threshold) break;
+        power *= 2;
+        exponent += 1;
+    };
+
+    power
+}
+```
+
+The `break` expression cannot be used outside of a loop.
+
+## Continue Statement
+
+The `continue` expression skips the rest of the loop and continues to the next iteration. This loop uses `continue` to count only odd numbers from 1 to n:
+
+```move
+fun count_odd_numbers(n: u64): u64 {
+    let count = 0;
+    let i = 0;
+    while (i < n) {
+        i += 1;
+        if (i % 2 == 0) continue;
+        count += 1;
+    };
+
+    count
+}
+```
+
+The `continue` expression cannot be used outside of a loop.
+
+## The Type of Break and Continue
+
+`break` and `continue`, much like `return` and `abort`, can have any type. The following examples illustrate where this flexible typing can be helpful:
+
+```move
+fun merge_until_duplicate(
+    v1: vector<u8>,
+    v2: vector<u8>,
+): vector<u8> {
+    let result = vector::empty();
+    while (!vector::is_empty(&v1) && !vector::is_empty(&v2)) {
+        let val1 = *vector::borrow(&v1, 0);
+        let val2 = *vector::borrow(&v2, 0);
+        let next_val =
+            if (val1 < val2) vector::remove(&mut v1, 0)
+            else if (val2 < val1) vector::remove(&mut v2, 0)
+            else break; // Here, `break` has type `u8`
+        vector::push_back(&mut result, next_val);
+    };
+
+    result
+}
+```
+
+```move
+fun collect_valid_strings(
+    lengths: vector<u64>,
+    v1: &vector<vector<u8>>,
+    v2: &vector<vector<u8>>
+): vector<vector<u8>> {
+    let len1 = vector::length(v1);
+    let len2 = vector::length(v2);
+    let result = vector::empty();
+    while (!vector::is_empty(&lengths)) {
+        let target_len = vector::pop_back(&mut lengths);
+        let chosen_vector =
+            if (target_len <= len1) v1
+            else if (target_len <= len2) v2
+            else continue; // Here, `continue` has type `&vector<vector<u8>>`
+        vector::push_back(&mut result, *vector::borrow(chosen_vector, target_len - 1))
+    };
+
+    result
+}
+```
+
+## The Loop Expression
+
+The `loop` expression repeats the loop body (an expression with type `()`) until it hits a `break`.
+
+Without a `break`, the loop will continue forever:
+
+```move
+fun infinite_counter() {
+    let counter = 0;
+    loop { counter = counter + 1 }
+}
+```
+
+### Loop with Break
+
+Here is an example that uses `loop` to calculate the greatest common divisor (GCD):
+
+```move
+fun gcd(a: u64, b: u64): u64 {
+    let x = a;
+    let y = b;
+    loop {
+        if (y == 0) break;
+        let temp = y;
+        y = x % y;
+        x = temp
+    };
+
+    x
+}
+```
+
+### Loop with Continue
+
+As you might expect, `continue` can also be used inside a `loop`. Here is an example that counts prime numbers up to n:
+
+```move
+fun count_primes(n: u64): u64 {
+    let count = 0;
+    let num = 2;
+    loop {
+        if (num > n) break;
+        if (!is_prime(num)) {
+            num = num + 1;
+            continue;
+        };
+        count = count + 1;
+        num = num + 1
+    };
+
+    count
+}
+
+fun is_prime(n: u64): bool {
+    if (n < 2) return false;
+    let i = 2;
+    while (i * i <= n) {
+        if (n % i == 0) return false;
+        i = i + 1
+    };
+    true
+}
+```
+
+## The Type of While and Loop
+
+Move loops are typed expressions. A `while` expression always has type `()`:
+
+```move
+let () = while (i < 10) { i = i + 1 };
+```
+
+If a `loop` contains a `break`, the expression has type unit `()`:
+
+```move
+(loop { if (i < 10) i = i + 1 else break }: ());
+let () = loop { if (i < 10) i = i + 1 else break };
+```
+
+If `loop` does not have a `break`, `loop` can have any type much like `return`, `abort`, `break`, and `continue`:
+
+```move
+(loop (): u64);
+(loop (): address);
+(loop (): &vector<vector<u8>>);
+```
+
+## For Loops
+
+For loops are used to iterate over a range of values, providing a more concise syntax for common iteration patterns.
+
+### Basic For Loop Syntax
+
+```move
+for (i in 1..n) {
+    // code to be executed
+}
+```
+
+### Range Iteration
+
+For loops can iterate over numeric ranges:
+
+```move
+fun product_range(start: u64, end: u64): u64 {
+    let product = 1;
+    for (i in start..end) {
+        product *= i;
+    };
+    product
+}
+```
+
+### Vector Iteration
+
+For loops can iterate over vector indices:
+
+```move
+fun find_minimum(v: &vector<u64>): u64 {
+    let min_val = *vector::borrow(v, 0);
+    for (i in 1..vector::length(v)) {
+        let current = *vector::borrow(v, i);
+        if (current < min_val) {
+            min_val = current;
+        };
+    };
+    min_val
+}
+```
+
+### For Loop with Break and Continue
+
+`break` and `continue` work in for loops just like in while loops:
+
+```move
+fun find_first_perfect_square(start: u64, end: u64): u64 {
+    for (i in start..end) {
+        let sqrt_i = integer_sqrt(i);
+        if (sqrt_i * sqrt_i != i) continue;
+        return i
+    };
+    abort 1 // No perfect square found
+}
+
+fun multiply_until_overflow(start: u64, end: u64, threshold: u64): u64 {
+    let product = 1;
+    for (i in start..end) {
+        if (product > threshold / i) break; // Prevent overflow
+        product = product * i;
+    };
+    product
+}
+
+fun integer_sqrt(n: u64): u64 {
+    if (n == 0) return 0;
+    let x = n;
+    let y = (x + 1) / 2;
+    while (y < x) {
+        x = y;
+        y = (x + n / x) / 2;
+    };
+    x
+}
+```
+
+## Practical Examples
+
+### Vector Processing
+
+```move
+fun find_second_largest_index(v: &vector<u64>): u64 {
+    let largest = 0;
+    let second_largest = 0;
+    let second_idx = 0;
+    
+    for (i in 0..vector::length(v)) {
+        let val = *vector::borrow(v, i);
+        if (val > largest) {
+            second_largest = largest;
+            second_idx = if (largest > 0) i - 1 else 0;
+            largest = val;
+        } else if (val > second_largest && val < largest) {
+            second_largest = val;
+            second_idx = i;
+        };
+    };
+    
+    second_idx
+}
+```
+
+### Nested Loops
+
+```move
+fun matrix_diagonal_product(matrix: &vector<vector<u64>>): u64 {
+    let product = 1;
+    let size = vector::length(matrix);
+    
+    for (i in 0..size) {
+        let row = vector::borrow(matrix, i);
+        if (i < vector::length(row)) {
+            let diagonal_val = *vector::borrow(row, i);
+            product = product * diagonal_val;
+        };
+    };
+    
+    product
+}
+```
+
+### Fibonacci Calculation
+
+```move
+fun fibonacci(n: u64): u64 {
+    if (n <= 1) return n;
+    let prev = 0;
+    let curr = 1;
+    for (i in 2..=n) {
+        let next = prev + curr;
+        prev = curr;
+        curr = next;
+    };
+    curr
+}
+```
+
+## Performance Considerations
+
+1. **Choose the right loop type**:
+   - Use `for` loops for known ranges
+   - Use `while` loops for condition-based iteration
+   - Use `loop` for infinite loops with explicit breaks
+
+2. **Minimize work inside loops**:
+   ```move
+   // Inefficient: repeated calculation
+   for (i in 0..n) {
+       let expensive_value = expensive_calculation();
+       process(i, expensive_value);
+   };
+   
+   // Efficient: calculate once
+   let expensive_value = expensive_calculation();
+   for (i in 0..n) {
+       process(i, expensive_value);
+   };
+   ```
+
+3. **Use early termination** when possible with `break`
+
+## Best Practices
+
+1. **Use descriptive loop variables** - `i`, `j`, `k` for simple counters, meaningful names for complex logic
+2. **Avoid infinite loops** unless specifically needed
+3. **Use `for` loops for ranges** - more readable than manual while loop counters
+4. **Consider vector iteration patterns** - use appropriate vector functions when possible
+5. **Handle edge cases** - empty vectors, zero ranges, etc.
+
+## Common Patterns
+
+### Accumulator Pattern
+
+```move
+fun sum_of_squares(v: &vector<u64>): u64 {
+    let sum = 0;
+    for (i in 0..vector::length(v)) {
+        let val = *vector::borrow(v, i);
+        sum = sum + (val * val);
+    };
+    sum
+}
+```
+
+### Search Pattern
+
+```move
+fun find_last_occurrence(v: &vector<u64>, target: u64): u64 {
+    let last_index = vector::length(v); // Use length as "not found" indicator
+    for (i in 0..vector::length(v)) {
+        if (*vector::borrow(v, i) == target) {
+            last_index = i;
+        };
+    };
+    last_index
+}
+```
+
+### Filter Pattern
+
+```move
+fun filter_multiples_of_three(v: &vector<u64>): vector<u64> {
+    let result = vector::empty();
+    for (i in 0..vector::length(v)) {
+        let val = *vector::borrow(v, i);
+        if (val % 3 == 0 && val > 0) {
+            vector::push_back(&mut result, val);
+        };
+    };
+    result
+}
+```
+
+## Summary
+
+Move provides three loop constructs for repetitive execution and iteration:
+
+- **`while`**: Condition-based loops that repeat while a boolean condition is true
+- **`loop`**: Infinite loops that require explicit `break` statements to exit  
+- **`for`**: Range-based iteration over numeric ranges with `start..end` syntax
+- **Control flow**: Use `break` to exit loops early and `continue` to skip to next iteration
+- **Performance**: Choose the right loop type and minimize work inside loop bodies
+
+Loops enable efficient iteration patterns while maintaining Move's safety guarantees.
