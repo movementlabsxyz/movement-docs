@@ -4,11 +4,23 @@
         "modules",
         "scripts",
         "variablesAssignmentAndScope",
+        "constants",
         "integer",
         "bool",
         "address",
-        "vector"
+        "tupleAndUnit",
+        "vector",
+        "signer",
+        "references",
+        "equalityAndLogicalOperator",
+        "assertionAndAbortion",
+        "conditional",
+        "loop",
+        "functions",
+        "structsAndResources",
+        "typeAbilities",
+        "options"
     ],
     "root": false,
-    "defaultOpen": true
+    "defaultOpen": false
 } 
