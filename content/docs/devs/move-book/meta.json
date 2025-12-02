@@ -1,0 +1,26 @@
+{
+    "title": "Move Book",
+    "pages": [
+        "modules",
+        "scripts",
+        "variablesAssignmentAndScope",
+        "constants",
+        "integer",
+        "bool",
+        "address",
+        "tupleAndUnit",
+        "vector",
+        "signer",
+        "references",
+        "equalityAndLogicalOperator",
+        "assertionAndAbortion",
+        "conditional",
+        "loop",
+        "functions",
+        "structsAndResources",
+        "typeAbilities",
+        "options"
+    ],
+    "root": false,
+    "defaultOpen": false
+} 

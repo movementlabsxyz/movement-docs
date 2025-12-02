@@ -12,6 +12,12 @@ Before we begin, ensure you have one of the following command-line interfaces (C
 - **Movement CLI**: [Installation Guide](/devs/movementcli)
 - **Aptos CLI**: [Installation Guide](https://aptos.dev/en/build/cli#-install-the-aptos-cli)
 
+<Callout type="info">
+
+**First Time Users:** If this is your first time following this tutorial, we recommend using the **Movement CLI testnet build** for the best experience. The Movement CLI is specifically configured for Movement networks and will make the setup process smoother.
+
+</Callout>
+
 This tutorial uses the **Movement CLI**, but the commands are identical for the Aptos CLI—just replace `movement` with `aptos` in the commands. If you're using the Aptos CLI, you'll need to configure it for a custom network during the initialization process.
 
 ---
@@ -20,9 +26,18 @@ This tutorial uses the **Movement CLI**, but the commands are identical for the 
 
 First, let's set up the structure for your Move module.
 
+### Create Your Project Directory
+
+Open your command prompt or terminal, create a new directory for your project, and navigate into it:
+
+```bash
+mkdir hello_blockchain
+cd hello_blockchain
+```
+
 ### Initialize the Move Project
 
-Open your command prompt or terminal and navigate to the directory where you want to create your project. Then, run the following command:
+Now that you are inside your project directory, run the following command to initialize the Move project structure:
 
 ```bash
 movement move init --name hello_blockchain
@@ -115,15 +130,18 @@ Note that Bardock Explorer is available here: https://explorer.movementnetwork.x
 
 ## Step 3: Fund Your Account (If Needed)
 
-If the faucet failed to automatically fund your account during initialization, you'll need to manually request testnet tokens.
+
+## Step 2: Fund Your Account
+
+Your account should already be funded with testnet tokens after initialization. However, if you need additional funds for your wallet, you can use the faucet.
 
 1. **Copy Your Account Address**
 
    Make note of your account address from the initialization success message (e.g., `0xYOUR_ACCOUNT_ADDRESS`).
 
-2. **Visit the Faucet**
+2. **Visit the Faucet (Optional)**
 
-   Go to the [Movement Labs Web Faucet](https://faucet.movementnetwork.xyz/) to fund your account.
+   If you need additional testnet tokens, go to the [Movement Labs Web Faucet](https://faucet.movementnetwork.xyz/) to fund your account.
 
 3. **Request Tokens**
 

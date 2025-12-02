@@ -1,0 +1,367 @@
+---
+title: Options
+description: Learn about the option type in Move, which represents optional values that may or may not be present.
+---
+
+# Options
+
+The `Option<T>` type defines a generic option that represents a value of type `T` that may, or may not, be present. It defined in the standard library and provides a type-safe way to handle optional values.
+
+
+```move
+/// Generic type abstraction of a value that may, or may not, be present.
+/// Can contain a value of either resource or copyable kind.
+struct Option<T>;
+```
+
+## Option Variants
+
+The Option type has two conceptual variants:
+
+- **Some**: Contains a value of type `T`
+- **None**: Represents the absence of a value
+
+These variants provide a type-safe way to handle optional data without relying on null pointers or special sentinel values.
+
+## Why Use Option?
+
+Consider an application that takes user input where some fields are required and others are optional. For example, a user's middle name is optional.
+
+While we could use an empty string to represent the absence of a middle name, it would require extra checks to differentiate between an empty string and a missing middle name. Instead, we can use the Option type:
+
+```move
+module book::user_registry;
+
+use std::string::String;
+use std::option::Option;
+
+/// A struct representing a user record.
+public struct User has drop {
+    first_name: String,
+    middle_name: Option<String>,
+    last_name: String,
+}
+
+/// Create a new `User` struct with the given fields.
+public fun register(
+    first_name: String,
+    middle_name: Option<String>,
+    last_name: String,
+): User {
+    User { first_name, middle_name, last_name }
+}
+```
+
+In this example, the `middle_name` field is of type `Option<String>`. This makes the optional nature of the field clear and type-safe.
+
+## Creating Option Values
+
+### Creating Empty Options
+
+Use `option::none<T>()` to create an empty Option that can contain a value of type `T`:
+
+```move
+let empty_name: Option<vector<u8>> = option::none();
+let empty_age: Option<u8> = option::none();
+let empty_address: Option<address> = option::none();
+```
+
+### Creating Non-Empty Options
+
+Use `option::some<T>(value)` to create an Option containing a value:
+
+```move
+let name_opt = option::some(b"Alice");
+let age_opt = option::some(25u8);
+let address_opt = option::some(@0x1);
+```
+
+## Option Operations
+
+### Checking Option State
+
+```move
+let opt = option::some(b"Alice");
+let empty: Option<u64> = option::none();
+
+// Check if option contains a value
+assert!(option::is_some(&opt) == true);
+assert!(option::is_some(&empty) == false);
+
+// Check if option is empty
+assert!(option::is_none(&opt) == false);
+assert!(option::is_none(&empty) == true);
+```
+
+### Borrowing Values
+
+Return references to the value inside the option:
+
+```move
+let opt = option::some(b"Alice");
+
+// Borrow immutable reference (aborts if empty)
+let name_ref = option::borrow(&opt);
+assert!(*name_ref == b"Alice");
+
+// Borrow with default reference (never aborts)
+let default_name = b"Unknown";
+let name_or_default = option::borrow_with_default(&opt, &default_name);
+
+// Borrow mutable reference (aborts if empty)
+let opt = option::some(100u64);
+let value_ref = option::borrow_mut(&mut opt);
+*value_ref
+```
+
+### Extracting and Destroying Values
+
+```move
+let opt = option::some(b"Alice");
+
+// Extract value, leaving option empty (aborts if empty)
+let inner = option::extract(&opt);
+assert!(inner == b"Alice");
+assert!(option::is_none(&opt));
+
+// Destroy and return value (aborts if empty)
+let opt2 = option::some(42u64);
+let value = option::destroy_some(opt2);
+assert!(value == 42);
+
+// Destroy with default (requires copyable type)
+let opt3: Option<u64> = option::none();
+let value_or_default = option::destroy_with_default(opt3, 100);
+assert!(value_or_default == 100);
+
+// Destroy empty option (aborts if contains value)
+let empty_opt: Option<u64> = option::none();
+option::destroy_none(empty_opt);
+```
+
+### Advanced Operations
+
+```move
+// Get value with default (requires copyable type)
+let opt: Option<u64> = option::some(42);
+let value = option::get_with_default(&opt, 100);
+assert!(value == 42);
+
+let empty_opt: Option<u64> = option::none();
+let default_value = option::get_with_default(&empty_opt, 100);
+assert!(default_value == 100);
+
+// Fill empty option with value (aborts if already contains value)
+let empty_opt: Option<u64> = option::none();
+option::fill(&empty_opt, 42);
+assert!(option::is_some(&empty_opt));
+
+// Swap value in option (aborts if empty)
+let opt = option::some(100u64);
+let old_value = option::swap(&opt, 200);
+assert!(old_value == 100);
+assert!(*option::borrow(&opt) == 200);
+
+// Check if option contains specific value
+let opt = option::some(42u64);
+assert!(option::contains(&opt, &42) == true);
+assert!(option::contains(&opt, &100) == false);
+```
+
+## Common Usage Patterns
+
+### Safe Value Access with Default
+
+```move
+public fun get_user_display_name(user: &User): vector<u8> {
+    if (option::is_some(&user.middle_name)) {
+        let middle = option::borrow(&user.middle_name);
+        // Construct full name with middle name
+        b"Full name with middle"
+    } else {
+        // Construct name without middle name
+        b"Name without middle"
+    }
+}
+```
+
+### Option in Function Parameters
+
+```move
+public fun create_user_with_optional_email(
+    name: vector<u8>,
+    email: Option<vector<u8>>
+): User {
+    User { name, email, verified: false }
+}
+
+// Usage
+let user1 = create_user_with_optional_email(
+    b"Alice",
+    option::some(b"alice@example.com")
+);
+
+let user2 = create_user_with_optional_email(
+    b"Bob", 
+    option::none()
+);
+```
+
+### Option in Return Values
+
+```move
+public fun find_user_by_id(users: &vector<User>, id: u64): Option<User> {
+    let i = 0;
+    let len = vector::length(users);
+    
+    while (i < len) {
+        let user = vector::borrow(users, i);
+        if (user.id == id) {
+            return option::some(*user)
+        };
+        i = i + 1;
+    };
+    
+    option::none()
+}
+```
+
+## Practical Examples
+
+### Configuration with Defaults
+
+```move
+module app::config {
+    public struct Config has key {
+        max_users: Option<u64>,
+        timeout: Option<u64>,
+    }
+    
+    public fun get_max_users_or_default(config: &Config): u64 {
+        option::get_with_default(&config.max_users, 1000)
+    }
+    
+    public fun get_timeout_or_default(config: &Config): u64 {
+        option::get_with_default(&config.timeout, 30)
+    }
+}
+```
+
+### Safe Mathematical Operations
+
+```move
+module app::math {
+    public fun safe_divide(a: u64, b: u64): Option<u64> {
+        if (b == 0) {
+            option::none()
+        } else {
+            option::some(a / b)
+        }
+    }
+    
+    public fun safe_sqrt(x: u64): Option<u64> {
+        // Simplified square root that only works for perfect squares
+        let i = 0;
+        while (i * i <= x) {
+            if (i * i == x) {
+                return option::some(i)
+            };
+            i = i + 1;
+        };
+        option::none()
+    }
+}
+```
+
+## Best Practices
+
+### 1. Use Option for Truly Optional Data
+
+```move
+// Good: Optional fields that may genuinely be absent
+public struct User {
+    name: vector<u8>,
+    email: Option<vector<u8>>,     // Optional
+    phone: Option<vector<u8>>,     // Optional
+}
+
+// Avoid: Using Option for required data
+public struct User {
+    name: Option<vector<u8>>,      // Don't do this if name is required
+}
+```
+
+### 2. Prefer get_with_default for Copyable Types
+
+```move
+// Good: Use get_with_default for simple defaults
+public fun get_retry_count(config: &Config): u8 {
+    option::get_with_default(&config.retry_count, 3)
+}
+
+// Less ideal: Manual checking
+public fun get_retry_count_manual(config: &Config): u8 {
+    if (option::is_some(&config.retry_count)) {
+        *option::borrow(&config.retry_count)
+    } else {
+        3
+    }
+}
+```
+
+### 3. Handle Resource Types Carefully
+
+```move
+// For resource types, you cannot use get_with_default
+public fun process_resource_option(opt: Option<SomeResource>): SomeResource {
+    if (option::is_some(&opt)) {
+        option::extract(&opt)
+    } else {
+        // Must create new resource, cannot use default
+        create_new_resource()
+    }
+}
+```
+
+## Ownership
+
+Option values follow standard Move ownership rules:
+
+- **Copy**: If `T` has `copy`, then `Option<T>` has `copy`
+- **Drop**: If `T` has `drop`, then `Option<T>` has `drop`  
+- **Store**: Option always has `store` ability
+
+```move
+let opt1 = option::some(10u64);  // u64 has copy
+let opt2 = copy opt1;            // Can copy because u64 has copy
+
+let opt3 = option::some(vector[1, 2, 3]);  // vector doesn't have copy
+// let opt4 = copy opt3;  // Error: cannot copy
+let opt4 = opt3;  // Must move
+```
+
+**Important**: Some operations like `get_with_default` and `destroy_with_default` require the element type `T` to have the `copy` ability.
+
+## Summary
+
+The Option type in Move provides:
+- **Type-safe handling** of values that may or may not be present
+- **Resource-aware operations** that work with both copyable and resource types
+- **Comprehensive API** for creating, checking, borrowing, and destroying options
+- **Explicit null handling** without null pointer errors
+
+Key operations:
+- **Creation**: `none()`, `some()`
+- **Checking**: `is_some()`, `is_none()`, `contains()`
+- **Access**: `borrow()`, `borrow_mut()`, `borrow_with_default()`
+- **Extraction**: `extract()`, `get_with_default()`, `swap()`
+- **Destruction**: `destroy_some()`, `destroy_none()`, `destroy_with_default()`
+
+Use Option for:
+- Optional struct fields
+- Function parameters that may be omitted  
+- Return values from operations that may fail
+- Configuration settings with defaults
+- Safe handling of potentially absent data
+
+The Option type is essential for writing robust Move code that handles the absence of values safely and explicitly.
