@@ -36,7 +36,7 @@ curl -LO https://github.com/movementlabsxyz/homebrew-movement-cli/releases/downl
 For Macs running x86_64 processors (e.g. Intel chips):
 
 ```bash tab="MacOS Intel (x86_64)"
-curl -LO https://github.com/movementlabsxyz/homebrew-movement-cli/releases/download/bypass-homebrew/movement-macos-x86_64.tar.gz && mkdir -p temp_extract && tar -xzf movement-macos-x86_64.tar.gz -C temp_extract && chmod +x temp_extract/movement && sudo mv temp_extract/movement /usr/local/bin/movement && rm -rf temp_extract
+curl -LO https://github.com/movementlabsxyz/homebrew-movement-cli/releases/download/bypass-homebrew/movement-macos-x86_64.gz && mkdir -p temp_extract && tar -xzf movement-macos-arm64.tar.gz -C temp_extract && chmod +x temp_extract/movement && sudo mv temp_extract/movement /usr/local/bin/movement && rm -rf temp_extract
 ```
 
 In about under 10 seconds, your install should be done. You can verify by running:
@@ -63,6 +63,12 @@ For Macs running x86_64 processors (e.g. Intel chips):
 curl -LO https://github.com/movementlabsxyz/homebrew-movement-cli/releases/download/bypass-homebrew/movement-move2-testnet-macos-x86_64.tar.gz && mkdir -p temp_extract && tar -xzf movement-move2-testnet-macos-x86_64.tar.gz -C temp_extract && chmod +x temp_extract/movement && sudo mv temp_extract/movement /usr/local/bin/movement && rm -rf temp_extract
 ```
 
+For Linux x86_64
+
+```bash tab="Linux x86_64"
+curl -LO https://github.com/movementlabsxyz/homebrew-movement-cli/releases/download/bypass-homebrew/movement-move2-testnet-linux-x86_64.tar.gz && mkdir -p temp_extract && tar -xzf movement-move2-testnet-linux-x86_64.tar.gz -C temp_extract && chmod +x temp_extract/movement && sudo mv temp_extract/movement /usr/local/bin/movement && rm -rf temp_extract
+```
+
 ### Windows
 
 <Callout type="info">
@@ -72,7 +78,7 @@ For Windows users, we recommend installing the Aptos CLI. Movement CLI commands 
 </Callout>
 
 ```bash tab="Windows"
-$Version = "3.5.0"
+$Version = "7.4.0"
 $ZipUrl = "https://github.com/aptos-labs/aptos-core/releases/download/aptos-cli-v$Version/aptos-cli-$Version-Windows-x86_64.zip"
 $InstallDir = "$env:USERPROFILE\.aptoscli\bin"
 $ZipPath = "$env:TEMP\aptos-cli.zip"

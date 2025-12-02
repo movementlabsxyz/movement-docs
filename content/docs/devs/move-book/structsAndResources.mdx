@@ -1,0 +1,731 @@
+---
+title: Structs and Resources
+description: Learn about structs and resources in Move, which are used to define data structures.
+---
+
+# Structs and Resources
+
+Structs are custom data types that contain typed fields and form the foundation of Move's type system. They can hold any non-reference values, including other structs, and are essential for modeling both simple data and complex data structures.
+
+Move structs have unique **ownership semantics** by default:
+- **Linear**: Values cannot be copied - they must be explicitly moved or transferred
+- **Ephemeral**: Values cannot be dropped - they must be consumed or destructured
+- **Private**: Values cannot be stored in global storage without explicit abilities
+
+When structs have these default properties, we call them **resources** - perfect for representing valuable assets like tokens, NFTs, or account balances where duplication or accidental loss would be problematic.
+
+You can grant structs **abilities** (`copy`, `drop`, `store`, `key`) to relax these restrictions and enable different behaviors based on your use case.
+
+## Defining Structs
+
+Structs are declared within modules using the `struct` keyword. Each struct defines a custom type with named, typed fields that can hold data:
+
+```move
+module 0x2::game {
+    struct Player { level: u64, active: bool }    // struct with fields
+    struct Team {}                                // empty struct
+    struct Match { player: Player, }              // nested struct (trailing comma allowed)
+}
+```
+
+**Key rules for struct definitions:**
+- Must be declared inside a module
+- Can contain zero or more typed fields
+- Fields can be primitive types, other structs, or generic types
+- Trailing commas are permitted for better code formatting
+
+### Recursive Structs
+
+Move prevents recursive struct definitions to ensure memory safety and avoid infinite data structures:
+
+```move
+struct Node { next: Node }     // ERROR: cyclic data
+struct Tree { left: Tree }     // ERROR: cyclic data
+```
+
+**Why this restriction exists:**
+- Prevents infinite memory allocation
+- Ensures predictable struct sizes at compile time
+- Maintains Move's safety guarantees
+
+### Struct Abilities
+
+Abilities control what operations are permitted on struct values. By default, structs have **no abilities**, making them resources. You can grant specific abilities using the `has` keyword:
+
+```move
+module 0x2::game {
+    struct Player has copy, drop { level: u64, active: bool }     // copyable and droppable
+    struct Token has store { amount: u64 }                        // storable only
+    struct Account has key { balance: u64 }                       // global storage capable
+    struct Resource { value: u64 }                                // no abilities (pure resource)
+}
+```
+
+**The four abilities:**
+- **`copy`**: Enables value duplication with `copy` operator
+- **`drop`**: Allows automatic cleanup when values go out of scope
+- **`store`**: Permits storage inside other structs and global storage
+- **`key`**: Enables top-level global storage operations
+
+<Callout type="info">
+**Tip**: Only grant abilities your struct actually needs. Resources (no abilities) are perfect for valuable assets.
+</Callout>
+
+## Naming Conventions
+
+Move enforces specific naming rules for structs to maintain consistency and reserve space for future language features:
+
+**Naming Rules:**
+- **First character**: Must be uppercase letter (A-Z)
+- **Subsequent characters**: Letters (a-z, A-Z), digits (0-9), underscores (_)
+- **Case style**: PascalCase is the recommended convention
+
+```move
+// Valid struct names
+struct Player {}
+struct GameState {}
+struct NFT_Metadata {}
+struct Account2024 {}
+
+// Invalid struct names
+struct player {}        // starts with lowercase
+struct _Config {}       // starts with underscore
+struct 2Player {}       // starts with digit
+```
+
+**Best Practices:**
+- Use descriptive, meaningful names
+- Follow PascalCase convention
+- Avoid abbreviations when clarity matters
+- Consider the domain context (e.g., `UserProfile` vs `Profile`)
+
+## Working with Structs
+
+### Creating Struct Values
+
+Struct values are created using **struct literal syntax** - specify the struct name followed by field values in braces:
+
+```move
+module 0x2::game {
+    struct Player has drop { level: u64, active: bool }
+    struct Match has drop { player: Player, round: u64 }
+
+    fun create_game_data() {
+        // Basic struct creation
+        let player = Player { level: 1, active: true };
+        
+        // Nested struct creation
+        let match = Match { 
+            player: Player { level: 5, active: true },
+            round: 1 
+        };
+        
+        // Using existing values
+        let another_match = Match { player, round: 2 };
+    }
+}
+```
+
+**Important notes:**
+- All fields must be provided (no default values)
+- Field order doesn't matter in struct literals
+- Values are moved into the struct (ownership transfer)
+
+#### Field Name Punning
+
+**Field punning** allows shorthand syntax when a local variable name matches the field name:
+
+```move
+fun create_player_data(level: u64, active: bool) {
+    // Verbose syntax
+    let player1 = Player { level: level, active: active };
+    
+    // Punning syntax (equivalent)
+    let player2 = Player { level, active };
+    
+    // Mixed usage
+    let player3 = Player { level, active: true };
+}
+```
+
+**When to use punning:**
+- SUCCESS: When variable names naturally match field names
+- SUCCESS: In constructor functions with matching parameters
+- ERROR: Avoid when it reduces code clarity
+
+### Destructuring Structs
+
+Struct values are **consumed** (destroyed) through pattern matching, which extracts field values and transfers ownership:
+
+**Why destructuring matters:**
+- Only way to access fields of structs without abilities
+- Ensures resources are properly handled
+- Enables clean data extraction patterns
+
+```move
+module 0x2::game {
+    struct Player { level: u64, active: bool }
+    struct Team { player: Player }
+    struct Tournament {}
+
+    // Basic destructuring with field renaming
+    fun extract_player_data() {
+        let player = Player { level: 5, active: true };
+        let Player { level, active: is_active } = player;
+        //           ^ field punning    ^ field renaming
+        
+        // Creates two new variables:
+        // level: u64 = 5
+        // is_active: bool = true
+    }
+
+    // Partial destructuring with wildcards
+    fun get_player_level() {
+        let player = Player { level: 10, active: false };
+        let Player { level, active: _ } = player;  // ignore 'active' field
+        
+        // Only 'level' is bound, 'active' is discarded
+    }
+
+    // Assignment to existing variables
+    fun update_from_player() {
+        let level: u64;
+        let active: bool;
+        
+        // Destructure directly into existing variables
+        Player { level, active } = Player { level: 8, active: true };
+    }
+
+    // Destructuring references (non-consuming)
+    fun read_player_data() {
+        let player = Player { level: 3, active: true };
+        let Player { level, active } = &player;  // borrow, don't consume
+        
+        // Creates references:
+        // level: &u64
+        // active: &bool
+        // 'player' is still available for use
+    }
+
+    // Destructuring mutable references
+    fun modify_player_data() {
+        let mut player = Player { level: 1, active: false };
+        let Player { level, active } = &mut player;
+        
+        // Creates mutable references:
+        // level: &mut u64
+        // active: &mut bool
+        *level = 99;
+        *active = true;
+    }
+
+    // Nested destructuring
+    fun extract_nested_data() {
+        let team = Team { player: Player { level: 7, active: true } };
+        let Team { player: Player { level, active } } = team;
+        //                  ^ nested pattern matching
+        
+        // Directly extracts from nested struct:
+        // level: u64 = 7
+        // active: bool = true
+    }
+
+    // Empty struct destructuring
+    fun handle_tournament() {
+        let tournament = Tournament {};
+        let Tournament {} = tournament;  // must still destructure empty structs
+    }
+}
+```
+
+## Borrowing and References
+
+Borrowing creates references to structs and fields without transferring ownership. This is essential for reading data without consuming resources:
+
+```move
+fun demonstrate_borrowing() {
+    let mut player = Player { level: 3, active: true };
+    
+    // Borrow entire struct (immutable)
+    let player_ref: &Player = &player;
+    let current_level = player_ref.level;  // read through reference
+    
+    // Borrow specific field (immutable)
+    let level_ref: &u64 = &player.level;
+    let level_value = *level_ref;  // dereference to get value
+    
+    // Borrow field (mutable)
+    let level_mut: &mut u64 = &mut player.level;
+    *level_mut = 42;  // modify through mutable reference
+    
+    // player is still accessible after borrowing
+    let final_level = player.level;  // final_level = 42
+}
+```
+
+**Key borrowing concepts:**
+- **Immutable borrow (`&`)**: Read-only access, multiple borrows allowed
+- **Mutable borrow (`&mut`)**: Read-write access, exclusive borrow
+- **Field borrowing**: Can borrow individual fields directly
+- **Non-consuming**: Original value remains available after borrowing
+
+### Advanced Borrowing Patterns
+
+**Nested field borrowing** allows direct access to deeply nested data:
+
+```move
+fun nested_borrowing_examples() {
+    let player = Player { level: 3, active: true };
+    let team = Team { player };
+    
+    // Direct nested field access
+    let level_ref = &team.player.level;
+    let active_ref = &team.player.active;
+    
+    // Mutable nested borrowing
+    let mut team2 = Team { player: Player { level: 1, active: false } };
+    let level_mut = &mut team2.player.level;
+    *level_mut = 50;
+}
+```
+
+**Borrowing through references** - you can chain reference operations:
+
+```move
+fun chained_borrowing() {
+    let player = Player { level: 5, active: true };
+    let player_ref = &player;
+    
+    // These are equivalent:
+    let level1 = &player.level;      // direct field borrow
+    let level2 = &player_ref.level;  // borrow through reference
+    
+    // Both create &u64 references to the same field
+}
+```
+
+**Borrowing rules:**
+- Can borrow nested fields arbitrarily deep
+- Reference chains are automatically dereferenced
+- Mutable borrows require mutable access at every level
+
+## Field Access Patterns
+
+### Reading Field Values
+
+Move provides multiple ways to read field values depending on the struct's abilities and your needs:
+
+```move
+fun reading_examples() {
+    let player = Player { level: 3, active: true };
+    let team = Team { player: copy player };  // requires 'copy' ability
+    
+    // Method 1: Explicit borrow and dereference
+    let level: u64 = *&player.level;
+    let active: bool = *&player.active;
+    
+    // Method 2: Copy entire struct (if it has 'copy' ability)
+    let player_copy: Player = *&team.player;
+    
+    // Method 3: Borrow for temporary access
+    let level_ref = &player.level;
+    let level_value = *level_ref;
+}
+```
+
+**When to use each method:**
+- **Borrow + dereference (`*&`)**: When you need the value but struct lacks `copy`
+- **Direct copy**: When struct has `copy` ability and you need ownership
+- **Reference**: When you only need temporary access
+
+### Implicit Field Access
+
+For **primitive types** (integers, booleans, addresses), Move allows direct field access without explicit borrowing:
+
+```move
+fun implicit_access_examples() {
+    let player = Player { level: 3, active: true };
+    
+    // Implicit copying for primitive fields
+    let level = player.level;    // automatically copies u64
+    let active = player.active;  // automatically copies bool
+    
+    // Works with nested primitive fields
+    let match = Match { player: Player { level: 5, active: true }, round: 1 };
+    let nested_level = match.player.level;  // copies nested u64
+    let round_num = match.round;            // copies u64
+}
+```
+
+**What gets implicit copying:**
+- SUCCESS: Primitive types: `u8`, `u16`, `u32`, `u64`, `u128`, `u256`, `bool`, `address`
+- ERROR: Complex types: structs, vectors, references
+- ERROR: Types without `copy` ability
+
+**Chaining field access:**
+```move
+// Multiple levels of nesting work automatically
+let deep_value = game.tournament.match.player.level;
+```
+
+### Explicit Copying Requirements
+
+For **complex types** (structs, vectors), Move requires explicit syntax to make copying operations visible and intentional:
+
+```move
+fun explicit_copying_examples() {
+    let player = Player { level: 3, active: true };
+    let team = Team { player };
+    
+    // SUCCESS: Explicit copy syntax required for structs
+    let player_copy: Player = *&team.player;
+    
+    // ERROR: This would fail - implicit copying not allowed
+    // let player_copy2: Player = team.player;
+    
+    // SUCCESS: For vectors, also need explicit copying
+    let scores = vector[100, 200, 300];
+    let scores_copy = *&scores;  // explicit copy required
+}
+```
+
+**Why explicit copying is required:**
+- **Performance awareness**: Copying large structs/vectors can be expensive
+- **Intentional design**: Forces developers to think about copy costs
+- **Code clarity**: Makes copying operations visible to code reviewers
+- **Memory safety**: Prevents accidental expensive operations
+
+**Alternatives to copying:**
+- Use references (`&`) for read-only access
+- Use mutable references (`&mut`) for modifications
+- Restructure code to avoid unnecessary copies
+
+### Modifying Fields
+
+Field modification uses dot notation and requires mutable access to the containing struct:
+
+```move
+fun field_modification_examples() {
+    let mut player = Player { level: 3, active: true };
+    
+    // Direct field modification
+    player.level = 42;
+    player.active = !player.active;
+    
+    // Nested field modification
+    let mut team = Team { player };
+    team.player.level = 52;  // modify nested field
+    
+    // Replace entire nested struct
+    team.player = Player { level: 100, active: true };
+    
+    // Modification through mutable reference
+    let player_ref = &mut team.player;
+    player_ref.level = player_ref.level + 10;
+}
+```
+
+**Field modification rules:**
+- Struct must be declared with `mut` for modifications
+- Can modify fields at any nesting level
+- Can replace entire field values
+- Works through mutable references (`&mut`)
+
+**Common modification patterns:**
+```move
+// Increment/update patterns
+player.level += 1;
+player.active = check_player_status();
+
+// Conditional updates
+if (player.level < 10) {
+    player.level = player.level * 2;
+};
+```
+
+## Module Privacy and Access Control
+
+Move enforces strict **module-level encapsulation** for struct operations, ensuring data integrity and controlled access:
+
+**Private operations (module-only):**
+- **Creating structs**: Only the defining module can construct struct values
+- **Destructuring structs**: Only the defining module can pattern match and extract fields
+- **Field access**: Only the defining module can directly read/write fields
+
+**Public operations (cross-module):**
+- **Type usage**: Other modules can use the struct type in function signatures
+- **Value passing**: Struct values can be passed between modules
+- **Reference creation**: Can create references to structs from other modules
+
+```move
+module 0x2::bank {
+    struct Account { balance: u64 }  // private fields
+    
+    // Public constructor
+    public fun create_account(initial_balance: u64): Account {
+        Account { balance: initial_balance }  // SUCCESS: allowed in defining module
+    }
+    
+    // Public accessor
+    public fun get_balance(account: &Account): u64 {
+        account.balance  // SUCCESS: field access allowed in defining module
+    }
+}
+
+module 0x2::user {
+    use 0x2::bank;
+    
+    fun use_account() {
+        let account = bank::create_account(100);  // SUCCESS: use public constructor
+        let balance = bank::get_balance(&account); // SUCCESS: use public accessor
+        
+        // ERROR: These would fail:
+        // let Account { balance } = account;  // can't destructure
+        // let direct_balance = account.balance;  // can't access fields
+    }
+}
+```
+
+### Cross-Module Usage Patterns
+
+While struct internals are private, the **type itself** is public and can be used across modules:
+
+```move
+// game.move
+module 0x2::game {
+    struct Player has drop { level: u64 }
+
+    public fun new_player(): Player {
+        Player { level: 1 }
+    }
+}
+```
+
+```move
+// tournament.move
+module 0x2::tournament {
+    use 0x2::game;
+
+    struct Roster has drop {
+        player: game::Player
+    }
+
+    fun f1(player: game::Player) {
+        let level = player.level;
+        //          ^ error! cannot access fields of `player` here
+    }
+
+    fun f2() {
+        let roster = Roster { player: game::new_player() };
+    }
+}
+```
+
+Note that structs do not have visibility modifiers (e.g., `public` or `private`).
+
+## Resource Ownership Model
+
+Move's **ownership system** ensures safe handling of valuable digital assets through strict compile-time checks:
+
+**Default struct behavior (resources):**
+- **Cannot be copied**: Prevents accidental duplication of valuable assets
+- **Cannot be dropped**: Prevents accidental loss or destruction
+- **Must be consumed**: All values must be explicitly handled
+
+This model is perfect for representing digital assets like tokens, NFTs, or account balances where duplication or loss would be catastrophic.
+
+```move
+module 0x2::inventory {
+    struct Item { rarity: u64 }
+
+    public fun copying_resource() {
+        let item = Item { rarity: 100 };
+        let item_copy = copy item; // error! 'copy'-ing requires the 'copy' ability
+        let item_ref = &item;
+        let another_copy = *item_ref // error! dereference requires the 'copy' ability
+    }
+
+    public fun destroying_resource1() {
+        let item = Item { rarity: 100 };
+
+        // error! when the function returns, item still contains a value.
+        // This destruction requires the 'drop' ability
+    }
+
+    public fun destroying_resource2(i: &mut Item) {
+        *i = Item { rarity: 100 } // error!
+                            // destroying the old value via a write requires the 'drop' ability
+    }
+}
+```
+
+### Manual Resource Destruction
+
+To fix the second example (`fun destroying_resource1`), you would need to manually "unpack" the resource:
+
+```move
+module 0x2::inventory {
+    struct Item { rarity: u64 }
+
+    public fun destroying_resource1_fixed() {
+        let item = Item { rarity: 100 };
+        let Item { rarity: _ } = item;
+    }
+}
+```
+
+Recall that you are only able to deconstruct a resource within the module in which it is defined. This can be leveraged to enforce certain invariants in a system, for example, conservation of money.
+
+### Adding Copy and Drop Abilities
+
+If on the other hand, your struct does not represent something valuable, you can add the abilities `copy` and `drop` to get a struct value that might feel more familiar from other programming languages:
+
+```move
+module 0x2::collectible {
+    struct Card has copy, drop { power: u64 }
+
+    public fun run() {
+        let card = Card { power: 100 };
+        let card_copy = copy card;
+        // ^ this code copies card, whereas `let x = card` or
+        // `let x = move card` both move card
+
+        let power = card.power;            // power = 100
+        let power_copy = card_copy.power;  // power_copy = 100
+
+        // both card and card_copy are implicitly discarded when the function returns
+    }
+}
+```
+
+## Storing Resources in Global Storage
+
+Only structs with the `key` ability can be saved directly in persistent global storage. All values stored within those `key` structs must have the `store` ability. See the ability and global storage chapters for more detail.
+
+## Examples
+
+Here are two short examples of how you might use structs to represent valuable data (in the case of Coin) or more classical data (in the case of Point and Circle).
+
+### Example 1: Token
+
+```move
+module 0x2::token {
+    // We do not want the Token to be copied because that would be duplicating this "asset",
+    // so we do not give the struct the 'copy' ability.
+    // Similarly, we do not want programmers to destroy tokens, so we do not give the struct the
+    // 'drop' ability.
+    // However, we *want* users of the modules to be able to store this token in persistent global
+    // storage, so we grant the struct the 'store' ability. This struct will only be inside of
+    // other resources inside of global storage, so we do not give the struct the 'key' ability.
+    struct Token has store {
+        amount: u64,
+    }
+
+    public fun create(amount: u64): Token {
+        // You would want to gate this function with some form of access control to prevent
+        // anyone using this module from creating an infinite amount of tokens.
+        Token { amount }
+    }
+
+    public fun extract(token: &mut Token, amount: u64): Token {
+        assert!(token.amount >= amount, 1000);
+        token.amount = token.amount - amount;
+        Token { amount }
+    }
+
+    public fun combine(token: &mut Token, other: Token) {
+        let Token { amount } = other;
+        token.amount = token.amount + amount;
+    }
+
+    public fun divide(token: Token, amount: u64): (Token, Token) {
+        let other = extract(&mut token, amount);
+        (token, other)
+    }
+
+    public fun join(token1: Token, token2: Token): Token {
+        combine(&mut token1, token2);
+        token1
+    }
+
+    public fun burn_empty(token: Token) {
+        let Token { amount } = token;
+        assert!(amount == 0, 1001);
+    }
+}
+```
+
+### Example 2: Coordinates
+
+```move
+module 0x2::location {
+    struct Position has copy, drop, store {
+        latitude: u64,
+        longitude: u64,
+    }
+
+    public fun create(latitude: u64, longitude: u64): Position {
+        Position {
+            latitude, longitude
+        }
+    }
+
+    public fun get_latitude(pos: &Position): u64 {
+        pos.latitude
+    }
+
+    public fun get_longitude(pos: &Position): u64 {
+        pos.longitude
+    }
+
+    fun abs_difference(a: u64, b: u64): u64 {
+        if (a < b) {
+            b - a
+        }
+        else {
+            a - b
+        }
+    }
+
+    public fun distance_squared(pos1: &Position, pos2: &Position): u64 {
+        let lat_diff = abs_difference(pos1.latitude, pos2.latitude);
+        let lon_diff = abs_difference(pos1.longitude, pos2.longitude);
+        lat_diff*lat_diff + lon_diff*lon_diff
+    }
+}
+```
+
+```move
+module 0x2::region {
+    use 0x2::location::{Self, Position};
+
+    struct Area has copy, drop, store {
+        center: Position,
+        range: u64,
+    }
+
+    public fun create(center: Position, range: u64): Area {
+        Area { center, range }
+    }
+
+    public fun overlaps(area1: &Area, area2: &Area): bool {
+        let distance = location::distance_squared(&area1.center, &area2.center);
+        let r1 = area1.range;
+        let r2 = area2.range;
+        distance*distance <= r1*r1 + 2*r1*r2 + r2*r2
+    }
+}
+```
+
+## Summary
+
+Structs are user-defined data types that enable safe resource modeling in Move:
+
+- **Definition**: Custom data structures with typed fields, defined within modules
+- **Resources**: Linear values that cannot be copied or dropped by default - perfect for valuable assets
+- **Abilities**: Control struct behavior with `copy`, `drop`, `store`, and `key` abilities
+- **Privacy**: Struct operations are module-private; public APIs required for external access
+- **Patterns**: Use appropriate abilities for your use case (value types vs resources vs global storage)
+
+Structs provide the foundation for safe, ownership-based programming in Move.
+```
