@@ -16,23 +16,38 @@ Follow the steps below:
 
 3. Next, download the `genesis.blob`, `waypoint.txt`, `genesis_waypoint.txt` files for the network your PFN will connect to:
 
-   - Run this command to download the genesis blob (for testnet):
-     ```shellscript filename="Terminal"
-     curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/genesis.blob
-     ```
+   - Run this command to download the genesis blob:
+    - for testnet:
+       ```shellscript filename="Terminal"
+       curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/genesis.blob
+       ```
+    - for mainnet:
+       ```shellscript filename="Terminal"
+       curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/genesis.blob
+       ```
 
-   - Run this command to download the waypoint file (for testnet):
-     ```shellscript filename="Terminal"
-     curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/waypoint.txt
-     ```
+   - Run this command to download the waypoint file:
+    - for testnet:
+       ```shellscript filename="Terminal"
+       curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/waypoint.txt
+       ```
+    - for mainnet:
+       ```shellscript filename="Terminal"
+       curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/waypoint.txt
+       ```
 
-  - Run this command to download the genesis_waypoint file (for testnet):
+  - Run this command to download the genesis_waypoint file:
+    for testnet:
      ```shellscript filename="Terminal"
      curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/genesis_waypoint.txt
      ```
+    for mainnet:
+     ```shellscript filename="Terminal"
+     curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/genesis_waypoint.txt
+     ```
    <Callout type="warning">
-   **Don't want to connect to testnet?**<br />
-   To connect to other networks (e.g., `devnet` and `mainnet`), you can find the genesis, waypoint and genesis_waypoint here ➜ https://github.com/movementlabsxyz/movement-networks.
+   **Genesis files repository**<br />
+   To connect to different networks (e.g., `testnet`, `devnet` and `mainnet`), you can find the genesis, waypoint and genesis_waypoint here ➜ https://github.com/movementlabsxyz/movement-networks.
    Be sure to download the `genesis.blob`, `waypoint.txt` and `genesis_waypoint.txt` for those networks.
    </Callout>
 
@@ -62,7 +77,20 @@ Follow the steps below:
       base:
         data_dir: "</path/to/my/homedir/my-full-node/data>"
       ```
-   4. Specify the upstream peer for your PFN. The upstream peer is the node from which your PFN will synchronize blockchain data. In this example, `9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F` is the upstream peer_id. You can also configure this to point to your own PFN if preferred. For example:
+   4. Specify the upstream peer for your PFN. The upstream peer is the node from which your PFN will synchronize blockchain data. It is defined by the peer id and the network DNS_. 
+      - mainnet: for mainnet the entry point is `9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F` and the DNS: `consensus.mainnet.movementnetwork.xyz` which gives:
+      ```
+      full_node_networks:
+        - network_id: "public"
+          discovery_method: "none"
+          listen_address: "/ip4/0.0.0.0/tcp/6182"
+          seeds:
+            9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F:
+              addresses:
+              - "/dns/consensus.mainnet.movementnetwork.xyz/tcp/6182/noise-ik/9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F/handshake/0"
+              role: "Upstream"
+      ```
+      - testnet: for testnet the entry point is `9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F` and the DNS: `consensus.testnet.movementnetwork.xyz` which gives:
       ```
       full_node_networks:
         - network_id: "public"
@@ -73,7 +101,9 @@ Follow the steps below:
               addresses:
               - "/dns/consensus.testnet.movementnetwork.xyz/tcp/6182/noise-ik/9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F/handshake/0"
               role: "Upstream"
-      ``` 
+      ```
+
+      - You can also configure this to point to your own PFN if preferred by adjusting the peer id and DNS.
 
 6. Start your local public fullnode by running the below command:
 
