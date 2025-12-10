@@ -381,4 +381,13 @@ fun controlled_recursion<T>(depth: u64) {
 
 ## Summary
 
-Generics enable writing reusable, type-safe code that works across multiple data types. They support constraints for safe operations, phantom parameters for type-level programming, and have zero runtime cost. Generics are essential for building robust Move libraries and applications that maintain type safety while maximizing code reuse.
+Generics enable writing reusable, type-safe code that works across multiple data types:
+
+- **Code reuse**: Write once, use with multiple types while maintaining type safety
+- **Type parameters**: Functions and structs accept placeholders for concrete types
+- **Constraints**: Specify required abilities for safe operations on unknown types
+- **Phantom parameters**: Enable type-level programming without affecting abilities
+- **Unused parameters**: Create type distinctions without runtime overhead
+- **Type inference**: Compiler automatically determines types in most cases
+- **Zero runtime cost**: All generic resolution happens at compile time
+- **Essential for libraries**: Critical for building robust, reusable Move components
