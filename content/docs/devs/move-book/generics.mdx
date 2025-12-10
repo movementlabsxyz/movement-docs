@@ -1,0 +1,384 @@
+---
+title: Generics
+description: Learn about generics in Move, which enable code reuse across different types.
+---
+
+# Generics
+
+Generics enable defining functions and structs that work with multiple data types while maintaining type safety. This feature, also known as **parametric polymorphism**, allows you to write reusable code that operates on any type satisfying specified constraints.
+
+**Key benefits:**
+- **Code reuse**: Write once, use with multiple types
+- **Type safety**: Compile-time type checking prevents runtime errors
+- **Library development**: Essential for building flexible, reusable components
+
+Generics are extensively used in Move's standard library (like `vector<T>`) and are crucial for building type-safe, reusable smart contract components.
+
+## Type Parameters
+
+Both functions and structs can accept type parameters enclosed in angle brackets `<...>`. These parameters act as placeholders for concrete types that will be specified later.
+
+### Generic Functions
+
+Type parameters are placed after the function name and before the parameter list:
+
+```move
+module 0x42::utils {
+    // Generic identity function - works with any type
+    fun id<T>(x: T): T {
+        x
+    }
+    
+    // Generic swap function
+    fun swap<T>(x: T, y: T): (T, T) {
+        (y, x)
+    }
+}
+```
+
+### Generic Structs
+
+Type parameters follow the struct name and can be used in field definitions:
+
+```move
+module 0x42::containers {
+    struct Box<T> has copy, drop { 
+        value: T 
+    }
+    
+    struct Pair<T1, T2> has copy, drop {
+        first: T1,
+        second: T2,
+    }
+}
+```
+
+## Using Generics
+
+### Function Calls
+
+You can explicitly specify type arguments or let Move's type inference determine them:
+
+```move
+fun example() {
+    // Explicit type specification
+    let x = id<bool>(true);
+    
+    // Type inference (preferred when possible)
+    let y = id(42u64);  // T inferred as u64
+}
+```
+
+### Struct Construction
+
+Similar to functions, type arguments can be explicit or inferred:
+
+```move
+fun create_containers() {
+    // Explicit types
+    let box = Box<u64> { value: 100 };
+    
+    // Type inference
+    let pair = Pair { first: true, second: 42 };  // Pair<bool, u64>
+}
+```
+
+## Type Inference
+
+Move's compiler automatically infers types in most cases, reducing verbosity while maintaining safety:
+
+```move
+fun inference_examples() {
+    let numbers = vector[1, 2, 3];  // vector<u64> inferred
+    vector::push_back(&mut numbers, 4);  // T inferred from usage
+}
+```
+
+**When manual annotation is required:**
+- Functions with type parameters only in return positions
+- Ambiguous contexts where multiple types are possible
+
+## Phantom Type Parameters
+
+Phantom type parameters solve a critical problem with ability derivation in generic structs. When a struct has generic parameters, it can only have abilities that **all** its type parameters possess - even if those parameters aren't actually used in the struct fields.
+
+### The Problem
+
+Consider this currency system without phantom parameters:
+
+```move
+module 0x42::currency {
+    struct Currency1 {}  // No abilities
+    struct Currency2 {}  // No abilities
+    
+    // This struct wants 'store' ability
+    struct Coin<Currency> has store {
+        value: u64
+    }
+}
+```
+
+**Issue**: Even though `Currency1` and `Currency2` are never used in `Coin`'s fields, the struct `Coin<Currency1>` **cannot** have the `store` ability because `Currency1` lacks it. This prevents storing coins in global storage!
+
+### The Solution: Phantom Parameters
+
+Phantom parameters are excluded from ability derivation, solving this problem:
+
+```move
+module 0x42::currency {
+    struct Currency1 {}  // Still no abilities needed
+    struct Currency2 {}
+    
+    // phantom means Currency doesn't affect abilities
+    struct Coin<phantom Currency> has store {
+        value: u64
+    }
+    
+    public fun mint<Currency>(amount: u64): Coin<Currency> {
+        Coin { value: amount }  // Now Coin<Currency1> has 'store'!
+    }
+}
+```
+
+### Declaration Rules
+
+Phantom parameters can only appear in "phantom positions":
+
+```move
+// Valid: T1 not used at all
+struct S1<phantom T1, T2> { f: u64 }
+
+// Valid: T1 only used as phantom argument
+struct S2<phantom T1, T2> { f: S1<T1, T2> }
+
+// Invalid: T used in non-phantom position
+struct S3<phantom T> { f: T }
+
+// Invalid: T used as argument to non-phantom parameter
+struct S4<phantom T> { f: vector<T> }
+```
+
+**Key benefits:**
+- **Ability independence**: Phantom parameters don't affect struct abilities
+- **Type safety**: Different phantom arguments create distinct types
+- **Zero runtime cost**: No storage or computation overhead
+
+## Constraints
+
+By default, generic type parameters have **no abilities**, making the type system very conservative. Constraints allow you to specify what abilities unknown types must have, enabling safe operations that would otherwise be forbidden.
+
+### Why Constraints Are Needed
+
+Without constraints, generic functions are severely limited:
+
+```move
+fun unsafe_consume<T>(x: T) {
+    // error! x does not have 'drop'
+}
+
+fun unsafe_double<T>(x: T) {
+    (copy x, x)
+    // error! x does not have 'copy'
+}
+```
+
+### Declaring Constraints
+
+Constraints specify required abilities using the `:` syntax:
+
+```move
+// Single constraint
+fun consume<T: drop>(x: T) {
+    // valid!
+    // x will be dropped automatically
+}
+
+// Multiple constraints
+fun double<T: copy>(x: T) {
+    (copy x, x) // valid!
+}
+
+// All four abilities
+T: copy + drop + store + key
+```
+
+### Constraint Verification
+
+Constraints are checked at **call sites**, not definitions:
+
+```move
+struct R {}
+
+fun foo() {
+    let r = R {};
+    consume<R>(r);
+    //      ^ error! R does not have 'drop'
+}
+
+fun foo(): (R, R) {
+    let r = R {};
+    double<R>(r)
+    //     ^ error! R does not have 'copy'
+}
+```
+
+### Practical Examples
+
+```move
+module 0x42::safe_operations {
+    // Safe resource cleanup
+    fun cleanup<T: drop>(items: vector<T>) {
+        // All items automatically dropped
+    }
+    
+    // Safe value duplication
+    fun backup<T: copy>(original: T): (T, T) {
+        (copy original, original)
+    }
+    
+    // Safe global storage
+    struct Container<T: store> has key {
+        contents: T
+    }
+}
+```
+
+## Unused Type Parameters
+
+Move allows type parameters that don't appear in struct fields, enabling powerful **type-level programming**. These "unused" parameters provide compile-time type distinctions without runtime overhead.
+
+### Type-Level Distinctions
+
+Unused parameters create different types that are structurally identical but logically distinct:
+
+```move
+module 0x42::currency_system {
+    // Currency specifier types (empty structs)
+    struct USD {}
+    struct EUR {}
+    struct BTC {}
+    
+    // Generic coin - Currency parameter is "unused"
+    struct Coin<Currency> has store {
+        value: u64  // Currency doesn't appear here!
+    }
+    
+    // Each currency creates a distinct type
+    public fun mint_usd(value: u64): Coin<USD> {
+        Coin { value }
+    }
+    
+    public fun mint_eur(value: u64): Coin<EUR> {
+        Coin { value }
+    }
+    
+    // Type safety: can't mix currencies!
+    public fun exchange_usd_to_eur(usd: Coin<USD>): Coin<EUR> {
+        let Coin { value } = usd;
+        Coin<EUR> { value: value * 85 / 100 }  // 85% exchange rate
+    }
+}
+```
+
+### Benefits of Unused Parameters
+
+**Type Safety**: Prevents mixing incompatible values:
+```move
+fun example() {
+    let dollars = mint_usd(100);
+    let euros = mint_eur(85);
+    
+    // Compile error: type mismatch!
+    // exchange_usd_to_eur(euros);  // EUR ≠ USD
+    
+    // Correct usage
+    let converted = exchange_usd_to_eur(dollars);
+}
+```
+
+**Generic Programming**: Write code that works with any currency:
+```move
+// Generic function works with any currency
+public fun get_value<Currency>(coin: &Coin<Currency>): u64 {
+    coin.value
+}
+
+// Specific function for USD only
+public fun get_usd_value(coin: &Coin<USD>): u64 {
+    coin.value
+}
+```
+
+### Real-World Applications
+
+```move
+module 0x42::access_control {
+    // Permission types
+    struct AdminRole {}
+    struct UserRole {}
+    struct GuestRole {}
+    
+    // Capability with role-based access
+    struct Capability<Role> has store {
+        permissions: u64
+    }
+    
+    // Only admins can create admin capabilities
+    public fun create_admin_cap(): Capability<AdminRole> {
+        Capability { permissions: 0xFF }
+    }
+    
+    // Role-specific operations
+    public fun admin_only<T>(_cap: &Capability<AdminRole>, data: T): T {
+        data  // Only callable with admin capability
+    }
+}
+```
+
+**Key advantages:**
+- **Zero runtime cost**: No extra storage or computation
+- **Compile-time safety**: Type errors caught early
+- **Clear intent**: Types express domain concepts
+- **Flexible design**: Easy to extend with new "categories"
+
+## Limitations
+
+### Recursive Restrictions
+
+Move prevents certain recursive patterns to ensure type system soundness:
+
+```move
+// Direct recursion not allowed
+struct Node<T> {
+    value: T,
+    next: Node<T>  // ERROR: recursive struct
+}
+
+// Infinite type generation not allowed
+fun recursive_types<T>() {
+    recursive_types<vector<T>>();  // ERROR: infinite types
+}
+```
+
+### Type-Level Recursion
+
+The compiler conservatively prevents patterns that could generate infinite types, even if they would terminate at runtime:
+
+```move
+fun controlled_recursion<T>(depth: u64) {
+    if (depth > 0) {
+        controlled_recursion<vector<T>>(depth - 1);  // ERROR: still forbidden
+    }
+}
+```
+
+## Best Practices
+
+- Use descriptive type parameter names (`Currency` vs `T`)
+- Prefer type inference over explicit specification
+- Use phantom parameters for type-level distinctions
+- Apply minimal necessary constraints
+
+## Summary
+
+Generics enable writing reusable, type-safe code that works across multiple data types. They support constraints for safe operations, phantom parameters for type-level programming, and have zero runtime cost. Generics are essential for building robust Move libraries and applications that maintain type safety while maximizing code reuse.

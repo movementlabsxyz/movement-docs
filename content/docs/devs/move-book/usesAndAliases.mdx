@@ -1,0 +1,235 @@
+---
+title: Uses and Aliases
+description: Learn about import statements and aliases in Move for cleaner, more readable code.
+---
+
+# Uses and Aliases
+
+The `use` syntax creates aliases for modules and their members, making code more readable and reducing repetitive fully-qualified names. Aliases can be scoped to entire modules or specific expression blocks, providing flexible import management.
+
+**Key benefits:**
+- **Cleaner code**: Shorter, more readable function calls
+- **Namespace management**: Avoid naming conflicts with local aliases
+- **Selective imports**: Import only needed functions and types
+- **Flexible scoping**: Module-level or block-level alias control
+
+Uses and aliases are essential for organizing complex Move projects and creating maintainable code that clearly expresses dependencies and relationships between modules.
+
+## Basic Module Aliases
+
+### Simple Module Import
+
+**Import patterns:**
+- `use std::vector` - Import with original name
+- `use std::option as opt` - Import with custom alias
+- Aliases must follow Move naming conventions
+
+Import entire modules with optional custom names:
+
+```move
+module 0x42::defi_app {
+    use std::vector;
+    use std::option as opt;
+    
+    public fun create_portfolio(): vector<opt::Option<u64>> {
+        let mut portfolio = vector::empty();
+        vector::push_back(&mut portfolio, opt::some(100));
+        vector::push_back(&mut portfolio, opt::none());
+        portfolio
+    }
+}
+```
+
+### Member-Specific Imports
+
+**Member import syntax:**
+- `use module::{member1, member2}` - Multiple members
+- `use module::{member as alias}` - Member with custom name
+- `use module::{Self, member}` - Module and member together
+
+Import specific functions, structs, or constants:
+
+```move
+module 0x42::token_utils {
+    use std::vector::{push_back, pop_back, length};
+    use std::option::{Option, some, none};
+    
+    public fun process_batch(items: &mut vector<u64>): Option<u64> {
+        if (length(items) > 0) {
+            some(pop_back(items))
+        } else {
+            none()
+        }
+    }
+}
+```
+
+## Advanced Import Patterns
+
+### Self References and Multiple Aliases
+
+Combine module and member imports efficiently:
+
+```move
+module 0x42::math_utils {
+    use std::vector::{Self as vec, push_back, length as len};
+    
+    public fun calculate_average(numbers: vector<u64>): u64 {
+        let total = 0;
+        let count = len(&numbers);
+        
+        while (!vec::is_empty(&numbers)) {
+            total = total + vec::pop_back(&mut numbers);
+        }
+        
+        total / count
+    }
+}
+```
+
+**Self reference rules:**
+- `Self` refers to the module itself
+- Can be aliased like any other import
+- Useful for mixing module and member access patterns
+
+### Nested Imports
+
+Group related imports for better organization:
+
+```move
+module 0x42::trading_system {
+    use std::{
+        vector::{Self as vec, push_back},
+        option::{Option, some, none},
+        string::String
+    };
+    
+    public fun create_order(symbol: String, amount: u64): Option<vec::vector<u64>> {
+        if (amount > 0) {
+            let mut order = vec::empty();
+            push_back(&mut order, amount);
+            some(order)
+        } else {
+            none()
+        }
+    }
+}
+```
+
+## Scoping Rules
+
+### Module-Level Imports
+
+Imports at module level are available throughout the entire module:
+
+```move
+module 0x42::storage_manager {
+    use std::vector;
+    use std::option::Option;
+    
+    struct Storage has key {
+        data: vector<u64>
+    }
+    
+    public fun store_data(account: &signer, values: vector<u64>) {
+        move_to(account, Storage { data: values });
+    }
+    
+    public fun get_data(addr: address): Option<vector<u64>> {
+        if (exists<Storage>(addr)) {
+            std::option::some(borrow_global<Storage>(addr).data)
+        } else {
+            std::option::none()
+        }
+    }
+}
+```
+
+### Block-Level Imports
+
+Imports within expression blocks have limited scope:
+
+```move
+module 0x42::calculator {
+    public fun complex_calculation(x: u64, y: u64): u64 {
+        let result = {
+            use std::vector::{push_back, pop_back};
+            
+            let mut temp = std::vector::empty();
+            push_back(&mut temp, x * 2);
+            push_back(&mut temp, y * 3);
+            pop_back(&mut temp) + pop_back(&mut temp)
+        };
+        
+        // push_back not available here - would cause error
+        result
+    }
+}
+```
+
+**Block scoping rules:**
+- Imports must be first statements in blocks
+- Aliases expire at block end
+- Can shadow outer scope names
+- Useful for temporary, localized imports
+
+## Naming and Uniqueness Rules
+
+### Naming Conventions
+
+Aliases must follow standard Move naming rules:
+
+```move
+module 0x42::examples {
+    use std::vector::{
+        push_back as add_item,    // Valid function alias
+        length as get_size,       // Valid function alias  
+        // push_back as AddItem,  // ERROR: Functions use snake_case
+    };
+    
+    use std::option::{
+        Option as Opt,            // Valid struct alias
+        // Option as opt,         // ERROR: Structs use PascalCase
+    };
+}
+```
+
+### Uniqueness Requirements
+
+Aliases within the same scope must be unique:
+
+```move
+module 0x42::conflict_examples {
+    // This would cause errors:
+    // use std::vector::push_back as add;
+    // use std::option::some as add;  // Duplicate 'add'
+    
+    // This is valid:
+    use std::vector::push_back as vec_add;
+    use std::option::some as opt_add;
+    
+    public fun example() {
+        let mut v = std::vector::empty();
+        vec_add(&mut v, opt_add(42));
+    }
+}
+```
+
+## Best Practices
+
+- Place imports at the top of modules for clarity
+- Use descriptive aliases that clarify intent
+- Use module-level imports for frequent dependencies
+- Keep import scopes as narrow as practical
+
+## Summary
+
+The `use` syntax provides flexible import management for Move code:
+
+- **Module aliases**: Import entire modules with original or custom names
+- **Member imports**: Import specific functions, structs, or constants
+- **Flexible scoping**: Module-level or block-level alias control
+- **Self references**: Combine module and member imports efficiently
+- **Namespace management**: Avoid naming conflicts with local aliases
+- **Cleaner code**: Shorter, more readable function calls
+- **Naming conventions**: Aliases must follow Move naming rules
