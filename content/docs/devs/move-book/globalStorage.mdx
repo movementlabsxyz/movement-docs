@@ -1,0 +1,215 @@
+---
+title: Global Storage
+description: Learn about Move's global storage system for persistent data management.
+---
+
+# Global Storage
+
+Move programs operate on **persistent global storage** - a tree-structured data store that maintains state across transactions. Organized as a forest of trees rooted at account addresses.
+
+Global storage serves as Move's database, enabling smart contracts to maintain state, store user data, and coordinate between different program executions.
+
+## Storage Structure
+
+Global storage conceptually resembles this structure:
+
+```
+GlobalStorage {
+  resources: Map<(address, ResourceType), ResourceValue>
+  modules: Map<(address, ModuleName), ModuleBytecode>
+}
+```
+
+**Organization principles:**
+- Each **address** acts as a namespace for both resources and modules
+- **Resources** store data values with the `key` ability
+- **Modules** contain executable code and type definitions
+- **Uniqueness** constraint: one resource per type per address
+
+## Storage Operations
+
+Move provides five core operations for interacting with global storage:
+
+| Operation | Description | Aborts If |
+|-----------|-------------|-----------|
+| `move_to<T>(&signer, T)` | Publish resource under signer's address | Resource already exists |
+| `move_from<T>(address): T` | Remove and return resource | Resource doesn't exist |
+| `borrow_global_mut<T>(address): &mut T` | Get mutable reference | Resource doesn't exist |
+| `borrow_global<T>(address): &T` | Get immutable reference | Resource doesn't exist |
+| `exists<T>(address): bool` | Check resource existence | Never |
+
+**Access control:**
+- All operations require the resource type `T` to have the `key` ability
+- Type `T` must be declared in the current module (module privacy)
+- Operations use `address` or `&signer` to specify the storage location
+
+## Basic Usage Example
+
+Here's a simple counter module demonstrating storage operations:
+
+```move
+module 0x42::counter {
+    use std::signer;
+
+    struct Counter has key { 
+        value: u64 
+    }
+
+    public fun create(account: &signer, initial: u64) {
+        move_to(account, Counter { value: initial });
+    }
+
+    public fun increment(addr: address) acquires Counter {
+        let counter = borrow_global_mut<Counter>(addr);
+        counter.value = counter.value + 1;
+    }
+
+    public fun get_value(addr: address): u64 acquires Counter {
+        borrow_global<Counter>(addr).value
+    }
+
+    public fun destroy(account: &signer): u64 acquires Counter {
+        let Counter { value } = move_from<Counter>(signer::address_of(account));
+        value
+    }
+}
+```
+
+
+## The `acquires` Annotation
+
+Functions that access global storage must declare which resources they acquire:
+
+```move
+// Required when function directly accesses global storage
+public fun read_counter(addr: address): u64 acquires Counter {
+    borrow_global<Counter>(addr).value
+}
+
+// Required when calling functions that acquire resources (same module only)
+fun increment_twice(addr: address) acquires Counter {
+    increment(addr);  // increment() has acquires Counter
+    increment(addr);
+}
+```
+
+**Annotation rules:**
+
+Required for direct global storage access:
+```move
+fun get_value(addr: address): u64 acquires Counter {
+    borrow_global<Counter>(addr).value
+}
+```
+
+Required when calling functions with `acquires` (same module only):
+```move
+fun double_increment(addr: address) acquires Counter {
+    increment(addr); // increment() has acquires Counter
+}
+```
+
+Multiple resources and generic resources:
+```move
+fun multi_access(addr: address) acquires Counter, Profile {
+    // Multiple: acquires Counter, Profile
+}
+```
+
+## Storage Polymorphism
+
+Global storage operations work with generic types, enabling powerful design patterns:
+
+```move
+struct Container<T> has key { 
+    data: T 
+}
+
+// Store any type T in global storage
+fun store_data<T: store>(account: &signer, data: T) {
+    move_to<Container<T>>(account, Container { data });
+}
+
+// Retrieve specific type at runtime
+fun get_u64_data(addr: address): u64 acquires Container {
+    borrow_global<Container<u64>>(addr).data
+}
+```
+
+**Benefits of storage polymorphism:**
+- Write generic storage functions once
+- Type safety maintained at compile time
+- Enables flexible, reusable storage patterns
+
+## Reference Safety
+
+Move prevents dangling references through strict rules and the `acquires` annotation to ensure static reference safety.
+
+### No Returning Global References
+
+Functions cannot return references pointing to global storage:
+
+```move
+// Not allowed - prevents dangling references
+fun get_counter_ref(addr: address): &Counter {
+    borrow_global<Counter>(addr)  // ERROR!
+}
+
+// Allowed - return owned values or local references
+fun get_counter_value(addr: address): u64 acquires Counter {
+    borrow_global<Counter>(addr).value
+}
+```
+
+### Acquires Annotation Protection
+
+The `acquires` annotation prevents dangling references by tracking resource access:
+
+```move
+module 0x42::safety {
+    struct T has key { f: u64 }
+
+    fun borrow_then_remove_bad(a: address) acquires T {
+        let t_ref: &mut T = borrow_global_mut<T>(a);
+        let t = remove_t(a); // ERROR: type system prevents this
+        // t_ref would be dangling!
+    }
+
+    fun remove_t(a: address): T acquires T {
+        move_from<T>(a)
+    }
+}
+```
+
+### Reference Lifetime Rules
+
+Global references must be used within the same function scope:
+
+```move
+fun safe_usage(addr: address) acquires Counter {
+    let counter_ref = borrow_global_mut<Counter>(addr);
+    counter_ref.value = 100;  // Safe - same scope
+    
+    // Reference automatically expires at function end
+}
+```
+
+These restrictions ensure **static reference safety** - no dangling references, null dereferences, or memory safety violations at compile time.
+
+## Best Practices
+
+- Use descriptive struct names with the `key` ability
+- Leverage module privacy for access control
+- Use `exists<T>()` to check before accessing resources
+- Minimize storage operations for better performance
+
+## Summary
+
+Global storage provides Move's persistent data layer:
+
+- **Tree structure**: Organized as a forest rooted at account addresses
+- **Core operations**: Five operations (move_to, move_from, borrow_global, borrow_global_mut, exists)
+- **Reference safety**: Strict rules prevent dangling references and memory violations
+- **Acquires annotation**: Tracks resource access for safe operations
+- **Storage polymorphism**: Generic storage patterns with compile-time type safety
+- **State persistence**: Essential for maintaining data across transactions in Move applications

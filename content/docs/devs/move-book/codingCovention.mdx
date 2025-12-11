@@ -1,0 +1,229 @@
+---
+title: Coding Conventions
+description: Learn about Move coding conventions and best practices for consistent, readable code.
+---
+
+# Coding Conventions
+
+Move coding conventions promote consistency, readability, and maintainability across projects. These guidelines help teams collaborate effectively and make codebases easier to understand and maintain.
+
+**Key principles:**
+- **Consistency**: Uniform naming and formatting across all code
+- **Clarity**: Names should clearly express intent and purpose
+- **Maintainability**: Code should be easy to read and modify
+- **Community alignment**: Follow established Move ecosystem patterns
+
+While these are recommendations rather than strict requirements, following them helps create more professional and maintainable Move code that integrates well with the broader ecosystem.
+
+## Naming Conventions
+
+### Modules
+
+Use **lower_snake_case** for module names:
+
+```move
+module 0x42::fixed_point32 {
+    // Module implementation
+}
+
+module 0x42::token_registry {
+    // Module implementation
+}
+```
+
+**Guidelines:**
+- Use descriptive names that indicate the module's purpose
+- Prefer full words over abbreviations
+- Keep names concise but clear
+
+### Types and Structs
+
+Use **PascalCase** for custom types and structs:
+
+```move
+module 0x42::defi {
+    struct LiquidityPool has key {
+        token_a: u64,
+        token_b: u64,
+    }
+    
+    struct UserAccount has key {
+        balance: u64,
+        role_id: RoleId,
+    }
+    
+    struct RoleId has copy, drop {
+        value: u8
+    }
+}
+```
+
+**Guidelines:**
+- Start with uppercase letter
+- Use descriptive names that indicate the data's purpose
+- Native types (u64, bool, address) remain lowercase
+
+### Functions
+
+Use **lower_snake_case** for function names:
+
+```move
+module 0x42::utils {
+    public fun create_account(owner: &signer): Account {
+        // Function implementation
+    }
+    
+    public fun destroy_empty_container<T>(container: Container<T>) {
+        // Function implementation
+    }
+    
+    fun calculate_interest_rate(principal: u64, time: u64): u64 {
+        // Function implementation
+    }
+}
+```
+
+**Guidelines:**
+- Use verbs that describe what the function does
+- Be specific about the action performed
+- Avoid abbreviations unless they're widely understood
+
+### Constants
+
+Use different conventions based on the constant's purpose:
+
+```move
+module 0x42::errors {
+    // Error codes: E + PascalCase
+    const EInsufficientBalance: u64 = 1;
+    const EInvalidPermission: u64 = 2;
+    const EResourceNotFound: u64 = 3;
+    
+    // Non-error values: UPPER_SNAKE_CASE
+    const MAX_SUPPLY: u64 = 1_000_000;
+    const MIN_STAKE_AMOUNT: u64 = 100;
+    const DEFAULT_FEE_RATE: u64 = 25; // 0.25%
+}
+```
+
+**Guidelines:**
+- **Error codes**: Start with `E` followed by PascalCase description
+- **Configuration values**: Use UPPER_SNAKE_CASE
+- Include comments for non-obvious values
+
+### Generic Type Parameters
+
+Use descriptive names that indicate the parameter's role:
+
+```move
+module 0x42::containers {
+    struct Vault<Asset> has key {
+        contents: Asset
+    }
+    
+    struct Pair<TokenA, TokenB> has store {
+        first: TokenA,
+        second: TokenB,
+    }
+    
+    // Single generic can use T when context is clear
+    struct Box<T> has copy, drop {
+        value: T
+    }
+}
+```
+
+**Guidelines:**
+- Use descriptive names for domain-specific generics (`Asset`, `Currency`)
+- Use `T` only when the type is truly generic
+- For multiple generics, use meaningful names (`TokenA`, `TokenB`)
+
+## File Naming
+
+### Module Files
+
+File names should match the module name exactly:
+
+```
+// File: fixed_point32.move
+module 0x42::fixed_point32 { ... }
+
+// File: token_registry.move  
+module 0x42::token_registry { ... }
+```
+
+### Script Files
+
+Use **lower_snake_case** matching the main function:
+
+```
+// File: create_account.move
+script {
+    fun create_account(account: signer) { ... }
+}
+
+// File: transfer_tokens.move
+script {
+    fun transfer_tokens(from: signer, to: address, amount: u64) { ... }
+}
+```
+
+### Mixed Files
+
+For files containing multiple modules or scripts, use descriptive **lower_snake_case**:
+
+```
+// File: defi_utils.move - contains multiple related modules
+module 0x42::liquidity_pool { ... }
+module 0x42::swap_router { ... }
+module 0x42::price_oracle { ... }
+```
+
+## Code Organization
+
+### Module Structure
+
+Organize module contents in a consistent order:
+
+```move
+module 0x42::token {
+    // 1. Imports
+    use std::signer;
+    use std::vector;
+    
+    // 2. Friend declarations (if any)
+    friend 0x42::token_registry;
+    
+    // 3. Constants
+    const MAX_SUPPLY: u64 = 1_000_000;
+    const EInsufficientBalance: u64 = 1;
+    
+    // 4. Structs
+    struct Token has key {
+        supply: u64,
+        decimals: u8,
+    }
+    
+    // 5. Functions (public first, then private)
+    public fun create_token(creator: &signer): Token { ... }
+    
+    fun validate_amount(amount: u64): bool { ... }
+}
+```
+
+## Best Practices
+
+- Choose names that express intent clearly
+- Use consistent terminology throughout the project
+- Group related functionality together
+- Keep modules focused on a single responsibility
+
+## Summary
+
+Move coding conventions promote consistency and readability through:
+
+- **Naming patterns**: lower_snake_case for modules and functions, PascalCase for types, UPPER_SNAKE_CASE for constants
+- **Generic naming**: Use descriptive names for generics
+- **File organization**: File names should match module names
+- **Code structure**: Organize code with clear structure
+- **Benefits**: Creates professional, maintainable code that integrates well with the Move ecosystem

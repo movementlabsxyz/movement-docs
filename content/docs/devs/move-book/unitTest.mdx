@@ -1,0 +1,195 @@
+---
+title: Unit Tests
+description: Learn about unit testing in Move for reliable code validation and debugging.
+---
+
+# Unit Tests
+
+Unit testing in Move provides a robust framework for validating code correctness and catching bugs early in development. Move's testing system uses three key annotations to create comprehensive test suites that ensure your smart contracts behave as expected.
+
+**Key benefits:**
+- **Early bug detection**: Catch issues before deployment
+- **Code reliability**: Verify functions work under various conditions
+- **Regression prevention**: Ensure changes don't break existing functionality
+- **Documentation**: Tests serve as executable specifications
+
+Move's testing framework integrates seamlessly with the compiler and provides detailed feedback on test failures, making it an essential tool for professional Move development.
+
+## Test Annotations
+
+### Basic Test Functions
+
+Use `#[test]` to mark functions as executable unit tests:
+
+```move
+module 0x42::calculator {
+    public fun add(a: u64, b: u64): u64 {
+        a + b
+    }
+    
+    public fun divide(a: u64, b: u64): u64 {
+        assert!(b != 0, 1);
+        a / b
+    }
+    
+    #[test]
+    fun test_addition() {
+        assert!(add(2, 3) == 5, 0);
+        assert!(add(0, 100) == 100, 0);
+    }
+    
+    #[test]
+    fun test_division() {
+        assert!(divide(10, 2) == 5, 0);
+        assert!(divide(7, 3) == 2, 0);
+    }
+}
+```
+
+**Test function requirements:**
+- Must have `#[test]` annotation
+- Cannot take parameters (except with signer injection)
+- Can have any visibility level
+- Should use descriptive names starting with `test_`
+
+### Test-Only Code
+
+Use `#[test_only]` to include code exclusively for testing. This annotation excludes code from production bytecode:
+
+```move
+module 0x42::token {
+    struct Token has key {
+        balance: u64
+    }
+    
+    public fun transfer(from: &signer, to: address, amount: u64) {
+        // Transfer implementation
+    }
+    
+    #[test_only]
+    fun create_test_token(account: &signer, amount: u64) {
+        move_to(account, Token { balance: amount });
+    }
+    
+    #[test_only]
+    use std::debug;
+    
+    #[test(alice = @0x1)]
+    fun test_token_creation(alice: signer) {
+        create_test_token(&alice, 100);
+        assert!(exists<Token>(@0x1), 0);
+    }
+}
+```
+
+**Test-only scope:**
+- Functions, modules, structs, constants, and imports can be marked `#[test_only]`
+- Only available in test builds
+- Enables creating test utilities without bloating production code
+
+### Expected Failures
+
+Use `#[expected_failure]` to test error conditions:
+
+```move
+module 0x42::vault {
+    const EInsufficientBalance: u64 = 1;
+    
+    public fun withdraw(amount: u64, balance: u64) {
+        assert!(balance >= amount, EInsufficientBalance);
+    }
+    
+    #[test]
+    #[expected_failure(abort_code = EInsufficientBalance)]
+    fun test_insufficient_balance() {
+        withdraw(100, 50);  // Should abort with EInsufficientBalance
+    }
+    
+    #[test]
+    #[expected_failure]  // Any failure is acceptable
+    fun test_division_by_zero() {
+        let _result = 10 / 0;
+    }
+}
+```
+
+**Expected failure options:**
+- `#[expected_failure]`: Test should abort with any error
+- `#[expected_failure(abort_code = <code>)]`: Test should abort with specific code
+- `#[expected_failure(arithmetic_error, location = Self)]`: Arithmetic errors
+- `#[expected_failure(out_of_gas, location = Self)]`: Gas limit errors
+
+## Signer Injection
+
+Tests can receive signer parameters for testing account-specific functionality:
+
+```move
+module 0x42::account_manager {
+    struct Account has key {
+        balance: u64,
+        active: bool,
+    }
+    
+    public fun create_account(owner: &signer, initial_balance: u64) {
+        move_to(owner, Account {
+            balance: initial_balance,
+            active: true,
+        });
+    }
+    
+    #[test(user = @0x123)]
+    fun test_account_creation(user: signer) {
+        create_account(&user, 1000);
+        assert!(exists<Account>(@0x123), 0);
+    }
+    
+    #[test(alice = @0x1, bob = @0x2)]
+    fun test_multiple_accounts(alice: signer, bob: signer) {
+        create_account(&alice, 500);
+        create_account(&bob, 750);
+        
+        assert!(exists<Account>(@0x1), 0);
+        assert!(exists<Account>(@0x2), 0);
+    }
+}
+```
+
+**Signer injection syntax:**
+- `#[test(param_name = @address)]` for single signer
+- `#[test(alice = @0x1, bob = @0x2)]` for multiple signers
+- Parameter names must match function parameter names
+- Only `signer` type parameters are supported
+
+## Running Tests
+
+```bash
+# Run all tests in the package
+movement move test
+
+# Run tests matching a pattern
+movement move test --filter "account"
+```
+
+**Test results:**
+- **PASS**: Test completed successfully
+- **FAIL**: Test failed with error details
+- **TIMEOUT**: Test exceeded gas/instruction limits
+
+## Best Practices
+
+- Group related tests in the same module as the code being tested
+- Use descriptive test names that explain what is being verified
+- Test both success and failure cases with `#[expected_failure]`
+- Keep tests lightweight for fast execution
+
+## Summary
+
+Move's unit testing framework provides comprehensive testing capabilities:
+
+- **Test annotations**: `#[test]` for executable tests, `#[test_only]` for test helpers
+- **Error testing**: `#[expected_failure]` with optional specific abort codes
+- **Signer injection**: Automatic test account creation for testing functions requiring signers
+- **Test organization**: Tests can be in dedicated modules or alongside source code
+- **Bytecode exclusion**: Test code is excluded from production compilation
+- **Detailed reporting**: Clear failure messages with abort codes and locations
+- **CLI integration**: Run tests with `movement move test` command

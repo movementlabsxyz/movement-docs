@@ -1,0 +1,243 @@
+---
+title: Packages
+description: Learn about Move packages for code organization, dependency management, and project structure.
+---
+
+# Packages
+
+Move packages provide a structured system for organizing code, managing dependencies, and sharing reusable components across projects. The package system enables modular development with clear dependency relationships and parameterized addresses.
+
+**Key capabilities:**
+- **Code organization**: Structure modules and scripts in a standardized layout
+- **Dependency management**: Import and version external packages
+- **Address parameterization**: Configure named addresses for different environments
+- **Build artifacts**: Generate bytecode, documentation, and source maps
+- **Reusability**: Share packages across multiple projects
+
+Packages are fundamental to professional Move development, enabling teams to build maintainable, modular applications with clear separation of concerns.
+
+## Package Structure
+
+### Directory Layout
+
+A Move package follows a standardized directory structure:
+
+```
+my_defi_project/
+├── Move.toml          # Package manifest (required)
+├── sources/           # Move modules (required)
+│   ├── token.move
+│   └── pool.move
+├── tests/             # Unit tests (optional)
+│   └── token_tests.move
+├── scripts/           # Move scripts (optional)
+│   └── mint_script.move
+├── examples/          # Example code (optional)
+│   └── basic_usage.move
+└── doc_templates/     # Documentation templates (optional)
+```
+
+**Directory purposes:**
+- **sources/**: Contains the main Move modules and scripts
+- **tests/**: Test modules included only in test mode
+- **examples/**: Tutorial and development code (dev/test mode only)
+- **doc_templates/**: Templates for generated documentation
+
+## Package Manifest (Move.toml)
+
+### Basic Configuration
+
+The `Move.toml` file defines package metadata and dependencies:
+
+```toml
+[package]
+name = "hello_blockchain"
+version = "1.0.0"
+authors = []
+
+[addresses]
+hello_blockchain = "0xc48ec9d15e56d71e035333c7d1d7c3c80d66210a940f6583d63a63608a274ab1"
+
+[dev-addresses]
+
+[dependencies.AptosFramework]
+git = "https://github.com/movementlabsxyz/aptos-core.git"
+rev = "movement"
+subdir = "aptos-move/framework/aptos-framework"
+
+[dev-dependencies]
+```
+
+**Configuration sections:**
+- **[package]**: Basic metadata like name, version, and authors
+- **[addresses]**: Named address declarations and assignments
+- **[dependencies]**: External package dependencies
+- **[dev-dependencies]**: Development-only dependencies
+
+### Dependency Types
+
+```toml
+[dependencies.AptosFramework]
+git = "https://github.com/movementlabsxyz/aptos-core.git"
+rev = "movement"
+subdir = "aptos-move/framework/aptos-framework"
+
+# Local dependency
+[dependencies.Utils]
+local = "../shared-utils"
+
+[dev-dependencies.TestHelpers]
+local = "../test-utils"
+```
+
+**Dependency options:**
+- **git**: Remote Git repository with revision and subdirectory
+- **local**: Path to local package directory
+- **rev**: Specific commit or branch to use
+- **subdir**: Subdirectory within the repository
+
+## Named Addresses
+
+### Address Declaration
+
+Named addresses provide flexible address management across environments:
+
+```move
+// In Move.toml
+[addresses]
+protocol = "_"        # Unassigned - can be set by importing packages
+treasury = "0xTREAS"  # Fixed - always this specific address
+
+// In Move code
+module protocol::vault {
+    struct Treasury has key {
+        balance: u64
+    }
+    
+    public fun get_treasury_address(): address {
+        @treasury
+    }
+}
+```
+
+### Address Configuration
+
+Packages can configure addresses for different environments:
+
+```toml
+[addresses]
+hello_blockchain = "0xc48ec9d15e56d71e035333c7d1d7c3c80d66210a940f6583d63a63608a274ab1"
+protocol = "0x1234567890abcdef"
+
+[dev-addresses]
+protocol = "0xDEV123"
+treasury = "0xDEVTREAS"
+```
+
+**Address configuration:**
+- **[addresses]**: Production addresses used in normal builds
+- **[dev-addresses]**: Development addresses used with `--dev` flag
+- **Named addresses**: Can be overridden via CLI with `--named-addresses`
+
+## Build System
+
+### Compilation Process
+
+```bash
+# Compile the package
+movement move compile
+
+# Compile in development mode
+movement move compile --dev
+
+# Fetch dependencies only
+movement move compile --fetch-deps-only
+
+# Save metadata during compilation
+movement move compile --save-metadata
+```
+
+### Build Artifacts
+
+The build process generates organized artifacts:
+
+```
+build/
+├── BuildInfo.yaml
+├── bytecode_modules/
+│   ├── dependencies/
+│   │   └── MoveStdlib/
+│   │       └── *.mv
+│   └── *.mv
+├── source_maps/
+│   └── *.mvsm
+└── docs/
+    └── *.md
+```
+
+**Artifact types:**
+- **bytecode_modules/**: Compiled Move bytecode (.mv files)
+- **source_maps/**: Debug information (.mvsm files)
+- **docs/**: Generated documentation
+- **BuildInfo.yaml**: Build metadata and configuration
+
+### Compilation Features
+
+Movement's compilation system provides advanced features:
+
+- **Dependency management**: Automatic fetching and version resolution
+- **Optimization levels**: None, default, or extra optimization
+- **Bytecode versioning**: Specify target bytecode version
+- **Development mode**: Use dev-addresses and dev-dependencies with `--dev`
+- **Metadata generation**: Save compilation metadata for debugging
+- **Standard library overrides**: Choose between mainnet, testnet, or devnet versions
+
+## Package Development Workflow
+
+### Project Setup
+
+```bash
+# Create new package
+movement move init my_project
+cd my_project
+
+# Add dependencies to Move.toml
+# Implement modules in sources/
+# Add tests in tests/
+
+# Compile and test
+movement move compile
+movement move test
+```
+
+### Compilation Options
+
+```bash
+# Fetch dependencies only
+movement move compile --fetch-deps-only
+
+# Skip git dependency updates
+movement move compile --skip-fetch-latest-git-deps
+
+# Override standard library version
+movement move compile --override-std testnet
+
+# Set optimization level
+movement move compile --optimize default
+
+# Specify named addresses
+movement move compile --named-addresses protocol=0x123
+```
+
+## Best Practices
+
+- Use clear, descriptive package names
+- Organize related modules in the same package
+- Pin specific git revisions for production dependencies
+- Use dev-addresses for testing and development
+- Specify optimization levels appropriate for your use case
+- Use `--save-metadata` for debugging and analysis
+
+## Summary
+
+Move packages provide structured code organization with standardized directory layouts, dependency management through Move.toml manifests, and parameterized named addresses for flexible deployment. The build system generates bytecode, documentation, and source maps, while Move.lock ensures reproducible builds. Packages enable modular development, code reuse, and professional project management in the Move ecosystem.
