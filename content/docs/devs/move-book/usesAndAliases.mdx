@@ -92,29 +92,6 @@ module 0x42::math_utils {
 - Can be aliased like any other import
 - Useful for mixing module and member access patterns
 
-### Nested Imports
-
-Group related imports for better organization:
-
-```move
-module 0x42::trading_system {
-    use std::{
-        vector::{Self as vec, push_back},
-        option::{Option, some, none},
-        string::String
-    };
-    
-    public fun create_order(symbol: String, amount: u64): Option<vec::vector<u64>> {
-        if (amount > 0) {
-            let mut order = vec::empty();
-            push_back(&mut order, amount);
-            some(order)
-        } else {
-            none()
-        }
-    }
-}
-```
 
 ## Scoping Rules
 
@@ -211,6 +188,80 @@ module 0x42::conflict_examples {
     public fun example() {
         let mut v = std::vector::empty();
         vec_add(&mut v, opt_add(42));
+    }
+}
+```
+
+## Shadowing
+
+Use aliases inside of an expression block can shadow names (module members or aliases) from the outer scope. As with shadowing of locals, the shadowing ends at the end of the expression block:
+
+```move
+module 0x42::math_library {
+    use std::vector;
+    
+    public fun sum(numbers: vector<u64>): u64 {
+        vector::length(&numbers) // Uses std::vector::length
+    }
+    
+    public fun process_data(): u64 {
+        let result = {
+            use std::vector::length as size;
+            // 'length' is shadowed by 'size' alias in this block
+            
+            let data = vector::empty<u64>();
+            vector::push_back(&mut data, 10);
+            vector::push_back(&mut data, 20);
+            size(&data) // Returns 2
+        };
+        // 'length' shadow ends here
+        
+        result + vector::length(&vector::singleton(5)) // Uses original std::vector::length
+    }
+    
+    public fun nested_shadowing(): bool {
+        use std::vector::is_empty;
+        
+        let outer_result = {
+            use std::vector::is_empty as empty_check;
+            // 'is_empty' is shadowed by 'empty_check'
+            
+            let inner_result = {
+                use std::vector::length as is_empty;
+                // 'is_empty' is now shadowed by 'length' function!
+                
+                let v = vector::singleton(42);
+                is_empty(&v) == 1 // Actually calls length, returns true
+            };
+            
+            // 'is_empty' refers to 'empty_check' again
+            let v = vector::empty<u8>();
+            empty_check(&v) && inner_result
+        };
+        
+        // 'is_empty' refers to original function again
+        outer_result && is_empty(&vector::empty<u64>())
+    }
+}
+```
+
+**Key shadowing behaviors:**
+- **Block scope**: Aliases only shadow names within their expression block
+- **Nested shadowing**: Inner blocks can shadow aliases from outer blocks
+- **Name restoration**: Original names become available again when the block ends
+- **Any name can be shadowed**: Module members, previous aliases, or even unrelated functions
+
+## Unused Use or Alias
+
+An unused use will result in a warning when compiling:
+
+```move
+module 0x42::example {
+    use std::vector::{empty, push_back}; // WARNING!
+    //                       ^^^^^^^^^ Unused 'use' of alias 'push_back'. Consider removing it
+
+    fun example(): vector<u8> {
+        empty()
     }
 }
 ```
