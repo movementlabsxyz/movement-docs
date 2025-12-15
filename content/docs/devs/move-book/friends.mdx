@@ -1,0 +1,164 @@
+---
+title: Friends
+description: Learn about the friend system in Move for controlled access between modules.
+---
+
+# Friends
+
+The friend system allows modules to grant trusted access to specific other modules. Friend modules can call functions with `public(friend)` visibility, creating controlled inter-module relationships without exposing functionality publicly.
+
+This system enables building modular architectures where related modules can collaborate while maintaining encapsulation from external access.
+
+## Friend Declaration
+
+Modules declare friends using `friend` statements to grant access to `public(friend)` functions. Friend declarations can reference modules by their full name or through aliases.
+
+**Syntax:**
+```
+friend <module_address>::<module_name>;
+friend <module_alias>;
+```
+
+### Full Module Name Declaration
+
+Use the complete module path including address when declaring friends:
+
+```move
+module 0x42::core {
+    friend 0x42::utils;      // Grant friend access to utils module
+    friend 0x42::helpers;    // Grant friend access to helpers module
+    
+    public(friend) fun internal_operation(): u64 {
+        42
+    }
+}
+```
+
+### Module Alias Declaration
+
+Import modules with `use` statements, then reference them by alias in friend declarations:
+
+```move
+module 0x42::core {
+    use 0x42::utils;         // Import utils module
+    use 0x42::helpers as h;  // Import helpers with alias 'h'
+    
+    friend utils;            // Declare friend using module name
+    friend h;                // Declare friend using alias
+    
+    public(friend) fun internal_operation(): u64 {
+        42
+    }
+}
+```
+
+**Declaration rules:**
+- Friend declarations must be at module scope (not within functions)
+- Multiple friends can be declared to form a friend list
+- Recommended to place friend declarations near the top for readability
+
+## Usage Example
+
+Here's how friend modules interact:
+
+```move
+module 0x42::vault {
+    friend 0x42::admin;
+    
+    struct Vault has key, drop {
+        balance: u64
+    }
+    
+    // Only admin module can call this
+    public(friend) fun emergency_withdraw(vault: &mut Vault): u64 {
+        let amount = vault.balance;
+        vault.balance = 0;
+        amount
+    }
+    
+    // Public function - anyone can call
+    public fun get_balance(vault: &Vault): u64 {
+        vault.balance
+    }
+
+    public fun deposit(vault: &mut Vault, amount: u64) {
+        vault.balance += amount;
+    }
+
+    public(friend) fun create_vault(initial_amount: u64): Vault {
+        Vault { balance: initial_amount }
+    }
+}
+
+module 0x42::admin {
+    use 0x42::vault::{Self};
+    
+    public fun perform_emergency_withdrawal(): u64 {
+        let vault = vault::create_vault(20);
+        vault::emergency_withdraw(&mut vault)
+    }
+}
+```
+
+## Declaration Rules
+
+The friend system enforces several important constraints:
+
+### No Self-Declaration
+
+Modules cannot declare themselves as friends:
+
+```move
+module 0x42::example {
+    friend Self;  // ERROR: Cannot declare self as friend
+    friend 0x42::example;  // ERROR: Cannot declare self as friend
+}
+```
+
+### Same Address Requirement
+
+Friend modules must be within the same account address:
+
+```move
+module 0x42::core {
+    friend 0x43::external;  // ERROR: Different address
+}
+```
+
+### No Circular Dependencies
+
+Friend relationships cannot create dependency cycles:
+
+```move
+module 0x42::a {
+    use 0x42::c;
+    friend 0x42::b;  // a uses c, friends b
+}
+
+module 0x42::b {
+    friend 0x42::c;  // ERROR: Creates cycle (a->c, a friends b, b friends c)
+}
+```
+
+### No Duplicates
+
+Each module can only be declared as a friend once:
+
+```move
+module 0x42::core {
+    use 0x42::utils as u;
+    
+    friend 0x42::utils;
+    friend u;  // ERROR: Duplicate friend declaration
+}
+```
+
+## Summary
+
+The friend system provides controlled access between modules:
+
+- **Purpose**: Allows modules to grant selective access to `public(friend)` functions
+- **Access control**: Enables fine-grained control over which modules can call specific functions
+- **Declaration rules**: Must prevent self-declaration, circular dependencies, and duplicate declarations
+- **Same address requirement**: Friend modules must be within the same account address
+- **Use cases**: Ideal for creating trusted relationships between related modules in a package
