@@ -17,10 +17,19 @@ issue: https://github.com/aptos-labs/aptos-core/issues/1412
 If you prefer to use the official pre-built images, follow these steps:
 
 1. First, install [Docker](https://docs.docker.com/get-docker/).
-2. Next, run the following script to prepare your local configuration and data directory for mainnet. This will
+2. Next, run the following script to prepare your local configuration and data directory depending on the network you want to connect to. This will
    download the `fullnode.yaml` configuration file, the `genesis.blob` and `waypoint.txt` files for your PFN, and
    create a `data` directory to store the blockchain database:
-
+   - for mainnet
+```shellscript filename="Terminal"
+mkdir mainnet && cd mainnet
+mkdir data && \
+curl -O https://raw.githubusercontent.com/movementlabsxyz/aptos-core/movement/docker/compose/aptos-node/fullnode.yaml && \
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/waypoint.txt && \
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/genesis.blob
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/genesis_waypoint.txt
+```
+  - for testnet
 ```shellscript filename="Terminal"
 mkdir testnet && cd testnet
 mkdir data && \
@@ -30,12 +39,12 @@ curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main
 curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/genesis_waypoint.txt
 ```
 
-<Callout type="warning">
-**Don't want to connect to testnet?**<br />
-To connect to other networks (e.g., `devnet` and `mainnet`), you can find the genesis and waypoint here ➜ https://github.com/movementlabsxyz/movement-networks.
-Be sure to download the `genesis.blob` and `waypoint.txt` for those networks, instead of using the genesis
-and waypoint pointed to by the `curl` commands above.
-</Callout>
+ <Callout type="warning">
+ **Genesis files repository**<br />
+ To connect to different networks (e.g., `testnet`, `devnet` and `mainnet`), you can find the genesis, waypoint and genesis_waypoint here ➜ https://github.com/movementlabsxyz/movement-networks.
+ Be sure to download the `genesis.blob`, `waypoint.txt` and `genesis_waypoint.txt` for those networks.
+ </Callout>
+
 
 3. Next, update the `fullnode.yaml` configuration file that you downloaded above with the following content.
    This will ensure that this configuration is for a PFN and not for another node type (e.g., validator or VFN):
@@ -57,14 +66,24 @@ storage:
     enable_storage_sharding: false
 
 full_node_networks:
-  - network_id: "public"
-    discovery_method: "none"
-    listen_address: "/ip4/0.0.0.0/tcp/6182"
-    seeds:
-      9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F:
-        addresses:
-        - "/dns/consensus.testnet.movementnetwork.xyz/tcp/6182/noise-ik/9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F/handshake/0"
-        role: "Upstream"
+  -for mainnet
+    - network_id: "public"
+      discovery_method: "none"
+      listen_address: "/ip4/0.0.0.0/tcp/6182"
+      seeds:
+        9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F:
+          addresses:
+          - "/dns/consensus.mainnet.movementnetwork.xyz/tcp/6182/noise-ik/9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F/handshake/0"
+          role: "Upstream"
+  -for testnet
+    - network_id: "public"
+      discovery_method: "none"
+      listen_address: "/ip4/0.0.0.0/tcp/6182"
+      seeds:
+        9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F:
+          addresses:
+          - "/dns/consensus.testnet.movementnetwork.xyz/tcp/6182/noise-ik/9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F/handshake/0"
+          role: "Upstream"
 
 api:
   enabled: true
@@ -74,6 +93,10 @@ state_sync:
   state_sync_driver:
     bootstrapping_mode: DownloadLatestStates
     continuous_syncing_mode: ApplyTransactionOutputs
+    - for mainnet
+    start_epoch: 10774941
+    - for testnet
+    start_epoch: 2111769
 ```
 
 <Callout type="warning">
@@ -101,10 +124,11 @@ Note: you may need to prefix the docker command with `sudo` depending on your co
 <Callout type="info">
 **Docker tags**<br />
 The `latest` tag always refers to the latest official Docker image tag. You can find the latest hash for comparison at:
-https://github.com/movementlabsxyz/movement-networks/tree/main/testnet
+ - maintnet: https://github.com/movementlabsxyz/movement-networks/tree/main/mainnet
+ - testnet: https://github.com/movementlabsxyz/movement-networks/tree/main/testnet
 </Callout>
 
-You have now successfully configured and started running a PFN in the Aptos mainnet.
+You have now successfully configured and started running a PFN of Movement network.
 
 <Callout type="info">
 **Verify your PFN**
