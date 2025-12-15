@@ -52,9 +52,15 @@ Follow the steps below:
    </Callout>
 
 4. Next, run the command below to create a copy of the PFN configuration YAML template:
+  - for testnet:
    ```shellscript filename="Terminal"
-   cp config/src/config/test_data/public_full_node.yaml fullnode.yaml
+   cp config/src/config/test_data/public_full_node_testnet.yaml fullnode.yaml
    ```
+  - for mainnet:
+   ```shellscript filename="Terminal"
+   cp config/src/config/test_data/public_full_node_mainnet.yaml fullnode.yaml
+   ```
+
 
 5. Finally, edit the `fullnode.yaml` configuration file to ensure that your PFN: (i) contains the files you just downloaded; and (ii) saves the synchronized blockchain data to the location of your
    choice (on your local machine). To do this:
