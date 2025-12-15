@@ -2,6 +2,7 @@
     "title": "Build",
     "pages": ["index",
     "move-book",
+    "tokenStandard",
     "firstMoveContract",
     "movementcli",
     "networkEndpoints",

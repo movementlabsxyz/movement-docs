@@ -1,0 +1,324 @@
+---
+title: Token (Legacy)
+description: Learn about the legacy Token standard on Movement
+---
+
+# Token (Legacy Standard)
+
+The legacy Token standard is the original approach to creating NFTs, fungibles, and semi-fungibles on Movement Network. While it has been superseded by the modern Digital Asset (DA) standard, it remains supported for backwards compatibility and is documented here for reference.
+
+## Overview
+
+The legacy Token standard combines NFTs, fungibles, and semi-fungibles with customizable on-chain properties. It uses a property map system to store metadata and requires more manual creation and ID management compared to the modern DA standard.
+
+## Key Characteristics
+
+### Property Map System
+
+Tokens use a property map to store metadata:
+- **Key-Value Storage** — Flexible attribute system
+- **Type Support** — Strings, numbers, booleans, addresses
+- **Mutable Properties** — Can be updated after creation
+- **Custom Fields** — Add any properties needed
+
+### Manual ID Management
+
+Unlike DA, the legacy standard requires:
+- Explicit token ID generation
+- Manual collection tracking
+- Custom indexing logic
+- Developer-managed uniqueness
+
+### Opt-In Transfers
+
+Recipients must opt-in before receiving tokens:
+- Account must be initialized
+- Storage must be allocated
+- Manual setup required
+- Additional transaction needed
+
+## Token Types
+
+### Non-Fungible Tokens (NFTs)
+
+Unique tokens with:
+- Individual token IDs
+- Unique properties per token
+- Single ownership
+- Transferable ownership
+
+### Fungible Tokens
+
+Interchangeable tokens with:
+- Shared properties
+- Divisible amounts
+- Batch transfers
+- Supply tracking
+
+### Semi-Fungible Tokens
+
+Hybrid tokens with:
+- Limited editions
+- Shared base properties
+- Individual serial numbers
+- Partial fungibility
+
+## Structure
+
+### Collection
+
+A collection groups related tokens:
+```
+Collection {
+  - Name
+  - Description
+  - URI (metadata link)
+  - Maximum supply
+  - Mutability config
+}
+```
+
+### Token Data
+
+Defines token type within collection:
+```
+TokenData {
+  - Collection name
+  - Token name
+  - Description
+  - Maximum supply
+  - URI
+  - Royalty config
+  - Property map
+}
+```
+
+### Token Instance
+
+Individual token ownership:
+```
+Token {
+  - Token ID
+  - Owner address
+  - Amount (for fungible)
+  - Property version
+  - Properties
+}
+```
+
+## Operations
+
+### Creating a Collection
+
+1. Define collection metadata
+2. Set mutability settings
+3. Configure maximum supply
+4. Initialize collection on-chain
+
+### Minting Tokens
+
+1. Create token data
+2. Define properties
+3. Set supply limits
+4. Mint to recipient
+5. Update token registry
+
+### Transferring Tokens
+
+1. Verify ownership
+2. Check recipient opt-in
+3. Execute transfer
+4. Update balances
+5. Emit events
+
+### Updating Properties
+
+1. Check mutability settings
+2. Verify permissions
+3. Update property map
+4. Increment property version
+5. Log changes
+
+## Limitations
+
+### Compared to Digital Asset Standard
+
+| Aspect | Legacy Token | Digital Asset |
+|--------|--------------|---------------|
+| Transfer model | Opt-in required | Direct transfer |
+| Composability | Limited | Full support |
+| Metadata | Property map | Rich structured |
+| Creation complexity | Higher | Lower |
+| Extensibility | Limited | High |
+| Ecosystem support | Declining | Growing |
+
+### Technical Constraints
+
+- **Manual Setup** — More boilerplate code required
+- **Storage Overhead** — Less efficient storage patterns
+- **Limited Composability** — Cannot easily nest tokens
+- **Complex Transfers** — Multi-step process for recipients
+- **Rigid Structure** — Harder to extend functionality
+
+## Use Cases
+
+The legacy Token standard was used for:
+
+### Historical NFT Projects
+- Early NFT collections
+- Existing marketplaces
+- Legacy integrations
+- Established communities
+
+### Specific Requirements
+- Projects requiring property maps
+- Systems with existing integrations
+- Backwards compatibility needs
+- Migration-in-progress applications
+
+## Migration Path
+
+### Why Migrate to DA?
+
+**Benefits of moving to Digital Asset standard:**
+- Simpler user experience
+- Better composability
+- Richer metadata support
+- Future-proof design
+- Growing ecosystem support
+- Enhanced functionality
+
+### Migration Strategy
+
+#### Phase 1: Assessment
+1. **Inventory Tokens** — List all legacy tokens
+2. **Analyze Usage** — Understand current patterns
+3. **Identify Dependencies** — Find dependent contracts
+4. **Plan Timeline** — Set migration schedule
+
+#### Phase 2: Preparation
+1. **Design DA Structure** — Map legacy to DA model
+2. **Develop Migration Tools** — Build conversion utilities
+3. **Test Migration** — Verify on testnet
+4. **Prepare Documentation** — Update user guides
+
+#### Phase 3: Execution
+1. **Deploy DA Contracts** — Launch new standard
+2. **Enable Bridging** — Allow token conversion
+3. **Migrate Metadata** — Transfer token data
+4. **Update Integrations** — Modify dependent systems
+5. **Communicate** — Inform stakeholders
+
+#### Phase 4: Completion
+1. **Monitor Migration** — Track progress
+2. **Support Users** — Help with transition
+3. **Deprecate Legacy** — Phase out old standard
+4. **Archive Data** — Preserve historical records
+
+## Best Practices (Historical)
+
+For projects still using the legacy standard:
+
+### Security
+1. **Validate Inputs** — Check all parameters
+2. **Control Access** — Implement proper permissions
+3. **Audit Code** — Regular security reviews
+4. **Monitor Activity** — Track suspicious behavior
+
+### Efficiency
+1. **Optimize Storage** — Minimize property map size
+2. **Batch Operations** — Group transactions when possible
+3. **Cache Data** — Reduce on-chain queries
+4. **Index Efficiently** — Maintain off-chain indexes
+
+### User Experience
+1. **Clear Instructions** — Guide users through opt-in
+2. **Error Handling** — Provide helpful error messages
+3. **Status Updates** — Show transaction progress
+4. **Support Documentation** — Comprehensive guides
+
+## Deprecation Notice
+
+<Callout type="warning">
+The legacy Token standard is maintained for backwards compatibility only. **All new projects should use the Digital Asset (DA) standard** for better functionality, user experience, and ecosystem support.
+</Callout>
+
+### Timeline
+
+- **Current Status** — Supported but deprecated
+- **Recommendation** — Migrate to DA standard
+- **Future** — Reduced ecosystem support
+- **End of Life** — To be announced
+
+### Support
+
+While the legacy standard remains functional:
+- Documentation is maintained
+- Critical bugs are fixed
+- Security updates provided
+- Migration tools available
+
+However:
+- New features not added
+- Ecosystem integration declining
+- Wallet support may decrease
+- Marketplace support may phase out
+
+## Technical Reference
+
+### Property Types
+
+Supported property types in the property map:
+- `bool` — Boolean values
+- `u8`, `u64`, `u128` — Unsigned integers
+- `address` — Account addresses
+- `String` — Text strings
+- `vector<u8>` — Byte arrays
+
+### Mutability Config
+
+Controls what can be changed:
+- `description` — Token description
+- `uri` — Metadata URI
+- `royalty` — Royalty settings
+- `properties` — Property map
+- `maximum` — Maximum supply
+
+### Events
+
+Legacy token events:
+- `CreateCollectionEvent`
+- `CreateTokenDataEvent`
+- `MintTokenEvent`
+- `BurnTokenEvent`
+- `MutateTokenPropertyMapEvent`
+- `WithdrawEvent`
+- `DepositEvent`
+
+## Resources
+
+### Documentation
+- Legacy API reference
+- Migration guides
+- Code examples
+- Troubleshooting
+
+### Tools
+- Token explorers
+- Migration utilities
+- Testing frameworks
+- Monitoring dashboards
+
+### Community
+- Developer forums
+- Migration support channels
+- Best practices discussions
+- Case studies
+
+## Conclusion
+
+The legacy Token standard served as the foundation for NFTs and tokens on Movement Network. While it enabled many successful projects, the Digital Asset standard represents a significant improvement in functionality, user experience, and developer ergonomics.
+
+**For existing projects:** Plan your migration to DA to ensure long-term compatibility and access to new features.
+
+**For new projects:** Start with the Digital Asset standard from day one to build on the most modern, capable foundation.

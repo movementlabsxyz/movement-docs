@@ -1,0 +1,299 @@
+---
+title: Fungible Asset
+description: Learn about the Fungible Asset standard on Movement
+---
+
+# Fungible Asset (FA) Standard
+
+The Fungible Asset (FA) Standard is a full-featured way to represent fungible tokens on Movement Network. It's designed to replace the simple Coin system with richer, object-based fungible assets that support fractional ownership, automatic storage creation, and better control over token behavior.
+
+## Overview
+
+The FA standard provides a modern, type-safe, and efficient token logic framework that goes beyond basic fungible token functionality. It's built on the Move Object Model, offering developers more expressiveness and flexibility for diverse use cases — from currencies to in-game assets.
+
+## Key Features
+
+### Type-Safe Token Logic
+
+The FA standard ensures:
+- **Compile-time Safety** — Catch errors before deployment
+- **Strong Typing** — Prevent token mixing and confusion
+- **Guaranteed Correctness** — Mathematical operations are verified
+- **Resource Safety** — Tokens cannot be duplicated or destroyed improperly
+
+### Automatic Storage Creation
+
+Unlike legacy systems, FA automatically handles:
+- **Recipient Account Setup** — No manual opt-in required
+- **Storage Allocation** — Automatic balance tracking
+- **Initialization** — Seamless first-time receives
+- **Gas Optimization** — Efficient storage patterns
+
+### Enhanced Control
+
+Developers have fine-grained control over:
+- **Minting** — Create new tokens with custom rules
+- **Burning** — Destroy tokens permanently
+- **Transfers** — Implement custom transfer logic
+- **Permissions** — Role-based access control
+- **Freezing** — Temporarily lock tokens
+- **Pausing** — Emergency stop mechanisms
+
+## Design Principles
+
+### Efficiency
+
+- Optimized storage patterns
+- Minimal gas consumption
+- Batch operation support
+- Efficient balance queries
+
+### Flexibility
+
+- Customizable token behaviors
+- Extensible metadata
+- Plugin architecture
+- Upgradeable logic
+
+### Security
+
+- Built-in safety checks
+- Overflow protection
+- Access control primitives
+- Audit-friendly code structure
+
+## Why FA Replaces Coin
+
+The Fungible Asset standard improves upon the legacy Coin standard in several ways:
+
+### Richer Functionality
+
+| Feature | Coin | Fungible Asset |
+|---------|------|----------------|
+| Basic transfers | ✅ | ✅ |
+| Custom transfer logic | ❌ | ✅ |
+| Automatic storage | ❌ | ✅ |
+| Fractional ownership | Limited | ✅ |
+| Metadata support | Basic | Rich |
+| Extensibility | Limited | High |
+| Role-based permissions | ❌ | ✅ |
+
+### Better Developer Experience
+
+- **Simpler Integration** — Less boilerplate code
+- **Clear Patterns** — Well-defined best practices
+- **Better Tooling** — Enhanced development tools
+- **Comprehensive Docs** — Detailed guides and examples
+
+### Future-Proof Design
+
+- Built for ecosystem evolution
+- Supports upcoming features
+- Compatible with new standards
+- Designed for interoperability
+
+## Use Cases
+
+The Fungible Asset standard is ideal for:
+
+### Currencies and Payment Tokens
+- Stablecoins
+- Utility tokens
+- Governance tokens
+- Reward tokens
+
+### DeFi Applications
+- Liquidity pool tokens
+- Yield-bearing assets
+- Synthetic assets
+- Collateral tokens
+
+### Gaming Economies
+- In-game currencies
+- Resource tokens
+- Experience points
+- Crafting materials
+
+### Business Applications
+- Loyalty points
+- Credit systems
+- Vouchers and coupons
+- Internal currencies
+
+## Technical Architecture
+
+### Core Components
+
+#### Asset Metadata
+```
+- Name
+- Symbol
+- Decimals
+- Icon URI
+- Project URI
+```
+
+#### Supply Management
+- Total supply tracking
+- Maximum supply limits
+- Minting capabilities
+- Burning mechanisms
+
+#### Balance Tracking
+- Per-account balances
+- Efficient queries
+- Atomic updates
+- Event emissions
+
+### Operations
+
+#### Minting
+Create new tokens with:
+- Supply cap enforcement
+- Permission checks
+- Event logging
+- Metadata validation
+
+#### Transferring
+Move tokens between accounts:
+- Balance verification
+- Automatic storage creation
+- Custom transfer hooks
+- Transfer restrictions
+
+#### Burning
+Permanently remove tokens:
+- Supply reduction
+- Permission validation
+- Irreversible destruction
+- Burn event emission
+
+## Implementation Guide
+
+### Creating a Fungible Asset
+
+1. **Define Metadata** — Set name, symbol, decimals
+2. **Configure Supply** — Set max supply and minting rules
+3. **Set Permissions** — Define who can mint/burn
+4. **Deploy Contract** — Publish to Movement Network
+5. **Initialize** — Set up initial state
+6. **Test Thoroughly** — Verify all operations
+
+### Best Practices
+
+1. **Use Appropriate Decimals** — Match your use case (e.g., 6-8 for currencies)
+2. **Implement Access Controls** — Secure privileged operations
+3. **Emit Events** — Enable tracking and indexing
+4. **Document Behavior** — Clear documentation for users
+5. **Test Edge Cases** — Verify overflow, underflow, zero amounts
+6. **Consider Upgradeability** — Plan for future enhancements
+7. **Audit Security** — Professional review before mainnet
+
+### Integration Patterns
+
+#### Wallet Integration
+- Standard balance queries
+- Transfer interfaces
+- Approval mechanisms
+- Event subscriptions
+
+#### DApp Integration
+- Token discovery
+- Balance display
+- Transaction building
+- Status monitoring
+
+#### Exchange Integration
+- Deposit handling
+- Withdrawal processing
+- Balance reconciliation
+- Transaction confirmation
+
+## Migration from Coin
+
+If you're migrating from the legacy Coin standard:
+
+### Assessment Phase
+1. **Inventory Current Usage** — List all Coin implementations
+2. **Identify Dependencies** — Find contracts using your Coin
+3. **Plan Migration Path** — Determine migration strategy
+4. **Estimate Timeline** — Set realistic migration schedule
+
+### Migration Steps
+1. **Deploy FA Contract** — Create new FA version
+2. **Set Up Bridge** — Enable Coin ↔ FA conversion
+3. **Migrate Balances** — Transfer user balances
+4. **Update Integrations** — Modify dependent contracts
+5. **Test Thoroughly** — Verify all functionality
+6. **Communicate** — Inform users and partners
+7. **Monitor** — Track migration progress
+8. **Deprecate Coin** — Phase out old standard
+
+### Compatibility Considerations
+- Maintain parallel support during transition
+- Provide conversion utilities
+- Update documentation
+- Support user questions
+- Monitor for issues
+
+## Advanced Features
+
+### Custom Transfer Logic
+Implement rules like:
+- Whitelist/blacklist
+- Transfer limits
+- Time-based restrictions
+- Conditional transfers
+
+### Fractional Ownership
+Support for:
+- Partial token amounts
+- Precise decimal handling
+- Share-based systems
+- Proportional distributions
+
+### Metadata Extensions
+Add custom fields:
+- Social links
+- Legal information
+- Technical specs
+- Dynamic properties
+
+## Security Considerations
+
+### Common Vulnerabilities
+- Integer overflow/underflow
+- Reentrancy attacks
+- Access control bypass
+- Supply manipulation
+
+### Mitigation Strategies
+- Use safe math operations
+- Implement reentrancy guards
+- Strict permission checks
+- Supply cap enforcement
+- Regular audits
+
+## Performance Optimization
+
+### Gas Efficiency
+- Batch operations when possible
+- Optimize storage layout
+- Minimize state changes
+- Use efficient data structures
+
+### Scalability
+- Design for high throughput
+- Consider sharding strategies
+- Implement caching where appropriate
+- Monitor performance metrics
+
+## Ecosystem Integration
+
+The FA standard integrates with:
+- **Wallets** — All major Movement wallets
+- **DEXs** — Decentralized exchanges
+- **Bridges** — Cross-chain protocols
+- **Indexers** — Data indexing services
+- **Analytics** — Token tracking platforms
+- **Explorers** — Block explorers

@@ -1,0 +1,368 @@
+---
+title: Coin (Legacy)
+description: Learn about the legacy Coin standard on Movement
+---
+
+# Coin (Legacy Standard)
+
+The legacy Coin standard is a basic fungible token format used by the core chain and early applications on Movement Network. While functional, it has been superseded by the more powerful Fungible Asset (FA) standard, which offers richer functionality and better developer experience.
+
+## Overview
+
+The Coin standard provides a simple, straightforward way to create fungible tokens. It's implemented in the core Move modules and has been the foundation for many early tokens on Movement Network, including the native gas token.
+
+## Key Characteristics
+
+### Simplicity
+
+The Coin standard is designed for basic fungible token operations:
+- **Minimal Complexity** — Straightforward implementation
+- **Core Functionality** — Essential token operations only
+- **Easy to Understand** — Simple mental model
+- **Quick Deployment** — Fast to get started
+
+### Core Module Integration
+
+Coins are part of the core Move framework:
+- **Built-in Support** — Native to the platform
+- **Gas Token** — Used for network fees
+- **System Integration** — Deep platform integration
+- **Stable API** — Well-established interfaces
+
+### Basic Operations
+
+Standard coin operations include:
+- **Minting** — Create new coins
+- **Burning** — Destroy coins
+- **Transferring** — Move coins between accounts
+- **Balance Queries** — Check account balances
+
+## Structure
+
+### Coin Type
+
+Each coin is defined by a type parameter:
+```
+Coin<CoinType>
+```
+
+Where `CoinType` is a unique type identifying the coin.
+
+### Coin Info
+
+Metadata about the coin:
+```
+CoinInfo<CoinType> {
+  - Name
+  - Symbol
+  - Decimals
+  - Supply tracking
+}
+```
+
+### Coin Store
+
+Per-account storage:
+```
+CoinStore<CoinType> {
+  - Coin balance
+  - Frozen status
+  - Deposit events
+  - Withdraw events
+}
+```
+
+## Operations
+
+### Registering a Coin
+
+To create a new coin type:
+1. Define coin type struct
+2. Initialize coin info
+3. Set metadata (name, symbol, decimals)
+4. Configure supply tracking
+5. Set up minting capabilities
+
+### Minting Coins
+
+Creating new coins:
+1. Verify minting capability
+2. Check supply limits
+3. Create coin value
+4. Update total supply
+5. Emit mint event
+
+### Transferring Coins
+
+Moving coins between accounts:
+1. Withdraw from sender
+2. Verify recipient has coin store
+3. Deposit to recipient
+4. Update balances
+5. Emit transfer events
+
+### Burning Coins
+
+Destroying coins:
+1. Verify burn capability
+2. Withdraw coins
+3. Destroy coin value
+4. Update total supply
+5. Emit burn event
+
+## Limitations
+
+### Compared to Fungible Asset Standard
+
+| Feature | Coin | Fungible Asset |
+|---------|------|----------------|
+| Basic transfers | ✅ | ✅ |
+| Automatic storage | ❌ | ✅ |
+| Custom transfer logic | ❌ | ✅ |
+| Rich metadata | ❌ | ✅ |
+| Role-based permissions | Limited | ✅ |
+| Fractional ownership | Basic | Advanced |
+| Extensibility | Limited | High |
+| Event system | Basic | Rich |
+
+### Technical Constraints
+
+- **Manual Opt-In** — Recipients must register before receiving
+- **Limited Metadata** — Only basic name, symbol, decimals
+- **No Custom Logic** — Cannot add transfer restrictions
+- **Basic Permissions** — Simple capability model
+- **Storage Overhead** — Each user needs explicit coin store
+- **Limited Events** — Basic event emissions only
+
+### Developer Experience
+
+- **More Boilerplate** — Additional setup code required
+- **Manual Storage** — Explicit account initialization
+- **Limited Flexibility** — Hard to extend functionality
+- **Basic Tooling** — Fewer development tools
+- **Legacy Patterns** — Older design patterns
+
+## Use Cases
+
+The Coin standard is still used for:
+
+### System Tokens
+- **Gas Token** — Network transaction fees
+- **Core Tokens** — Platform-native assets
+- **System Rewards** — Validator rewards
+
+### Legacy Applications
+- **Existing DApps** — Apps built on Coin standard
+- **Established Tokens** — Long-running token projects
+- **Backwards Compatibility** — Systems requiring Coin interface
+
+### Simple Requirements
+- **Basic Tokens** — Projects with minimal requirements
+- **Learning Projects** — Educational implementations
+- **Prototypes** — Quick proof-of-concepts
+
+## Migration to Fungible Asset
+
+### Why Migrate?
+
+**Benefits of Fungible Asset standard:**
+- **Better UX** — No recipient opt-in required
+- **Richer Features** — Custom logic and metadata
+- **Future-Proof** — Active development and support
+- **Ecosystem Growth** — Increasing wallet/dapp support
+- **Advanced Capabilities** — Role-based access, extensions
+- **Better Tooling** — Modern development tools
+
+### Migration Process
+
+#### Assessment
+1. **Analyze Current Usage** — Understand Coin implementation
+2. **Identify Dependencies** — Find dependent contracts
+3. **Evaluate Impact** — Assess migration complexity
+4. **Plan Timeline** — Set realistic schedule
+
+#### Preparation
+1. **Design FA Structure** — Map Coin to FA model
+2. **Develop Contracts** — Implement FA version
+3. **Build Bridge** — Create Coin ↔ FA conversion
+4. **Test Thoroughly** — Verify on testnet
+
+#### Execution
+1. **Deploy FA Contract** — Launch new standard
+2. **Enable Conversion** — Allow users to migrate
+3. **Update Integrations** — Modify dependent systems
+4. **Migrate Liquidity** — Move DEX pools if applicable
+5. **Communicate** — Inform community
+
+#### Completion
+1. **Monitor Progress** — Track migration metrics
+2. **Support Users** — Help with transition
+3. **Maintain Bridge** — Keep conversion available
+4. **Phase Out Coin** — Gradually deprecate
+
+### Compatibility Strategies
+
+#### Dual Support
+Maintain both standards during transition:
+- Run Coin and FA in parallel
+- Provide conversion utilities
+- Update documentation
+- Support both interfaces
+
+#### Gradual Migration
+Phase the transition:
+- Start with new features in FA
+- Migrate high-value accounts first
+- Maintain Coin for legacy users
+- Eventually sunset Coin
+
+## Best Practices (Historical)
+
+For projects still using Coin standard:
+
+### Security
+1. **Protect Capabilities** — Secure mint/burn capabilities
+2. **Validate Amounts** — Check for overflows
+3. **Audit Regularly** — Review code for vulnerabilities
+4. **Monitor Supply** — Track total supply changes
+
+### Efficiency
+1. **Batch Transfers** — Group operations when possible
+2. **Optimize Storage** — Minimize coin store overhead
+3. **Cache Balances** — Reduce on-chain queries
+4. **Use Events** — Efficient off-chain indexing
+
+### User Experience
+1. **Auto-Register** — Help users set up coin stores
+2. **Clear Errors** — Provide helpful error messages
+3. **Show Status** — Display transaction progress
+4. **Guide Users** — Documentation and tutorials
+
+## Technical Reference
+
+### Core Functions
+
+#### Registration
+```move
+public fun register<CoinType>(account: &signer)
+```
+Register to receive a coin type.
+
+#### Transfer
+```move
+public fun transfer<CoinType>(
+    from: &signer,
+    to: address,
+    amount: u64
+)
+```
+Transfer coins between accounts.
+
+#### Balance
+```move
+public fun balance<CoinType>(owner: address): u64
+```
+Query account balance.
+
+#### Mint
+```move
+public fun mint<CoinType>(
+    amount: u64,
+    mint_cap: &MintCapability<CoinType>
+): Coin<CoinType>
+```
+Create new coins (requires capability).
+
+#### Burn
+```move
+public fun burn<CoinType>(
+    coin: Coin<CoinType>,
+    burn_cap: &BurnCapability<CoinType>
+)
+```
+Destroy coins (requires capability).
+
+### Events
+
+Standard coin events:
+- `RegisterEvent` — Account registers for coin
+- `DepositEvent` — Coins deposited to account
+- `WithdrawEvent` — Coins withdrawn from account
+
+### Capabilities
+
+Permission model:
+- `MintCapability<CoinType>` — Allows minting
+- `BurnCapability<CoinType>` — Allows burning
+- `FreezeCapability<CoinType>` — Allows freezing accounts
+
+## Deprecation Status
+
+<Callout type="warning">
+The Coin standard is maintained for backwards compatibility and system requirements. **New projects should use the Fungible Asset (FA) standard** for better functionality and future compatibility.
+</Callout>
+
+### Current Status
+
+- **System Use** — Still used for gas token
+- **Legacy Support** — Maintained for existing projects
+- **Limited Development** — No new features planned
+- **Migration Encouraged** — FA recommended for new work
+
+### Future Outlook
+
+- **Core Tokens** — Will continue using Coin
+- **New Projects** — Should use FA
+- **Existing Projects** — Encouraged to migrate
+- **Ecosystem** — Shifting to FA standard
+
+## Comparison with Other Standards
+
+### Coin vs Fungible Asset
+
+**Use Coin when:**
+- Building core system components
+- Maintaining legacy applications
+- Requiring simple fungible tokens
+- Working with existing Coin infrastructure
+
+**Use Fungible Asset when:**
+- Starting new projects
+- Needing custom transfer logic
+- Requiring rich metadata
+- Building for future compatibility
+
+### Coin vs Token (Legacy)
+
+**Coin** is for fungible tokens only.
+**Token** supports NFTs, fungibles, and semi-fungibles.
+
+Both are legacy standards superseded by FA and DA respectively.
+
+## Resources
+
+### Documentation
+- Core module reference
+- API documentation
+- Migration guides
+- Code examples
+
+### Tools
+- Coin explorers
+- Balance checkers
+- Transfer utilities
+- Migration tools
+
+### Community
+- Developer forums
+- Support channels
+- Migration discussions
+- Best practices
+
+## Conclusion
+
+The Coin standard served as the foundation for fungible tokens on Movement Network and continues to power the gas token and other core system components. However, for new applications, the Fungible Asset standard provides a more powerful, flexible, and future-proof solution.
+
+**For existing Coin projects:** Consider migrating to FA to access new features and ensure long-term ecosystem compatibility.
+
+**For new projects:** Start with the Fungible Asset standard to build on the most modern foundation with the best developer experience and richest feature set.

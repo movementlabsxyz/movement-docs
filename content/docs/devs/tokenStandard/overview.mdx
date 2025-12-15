@@ -1,0 +1,62 @@
+---
+title: Token Standard
+description: Learn about the token standard for Movement
+---
+
+# Token Standard
+
+The token standard is a standard to ensure consistency and compatibility across DApps, wallets, and RPC solutions across Movement Network.
+
+## What Are Standards?
+
+Standards are shared blueprints that define how important features — like tokens, wallets, and on-chain objects — should behave. They make sure contracts from different developers work together smoothly: assets look the same, interact predictably, and are supported by wallets and marketplaces.
+
+Movement Standards are shared interfaces and models that every smart contract and wallet on Movement should follow to ensure interoperability and consistency. They include:
+
+- **Move Standards** — Core object model for how data and resources are structured.
+- **Asset Standards** — Formal rules for tokens and NFTs (replacing older standards).
+- **Digital Asset (DA)** — Next-gen NFT standard.
+- **Fungible Asset (FA)** — New model for fungible (regular) tokens.
+- **Legacy Standards** — Older token/coin systems still in docs for reference.
+
+## Object Model
+
+Movement uses the **Move Object Model** to represent real-world things on chain. Instead of building bespoke contract layouts every time, developers use a stable object-based format. Objects encapsulate resources with strict rules about ownership, transfer, and mutation — minimizing bugs and improving composability.
+
+**Why it matters:** Move Objects are the foundation underpinning all asset standards — both fungible and non-fungible.
+
+## Current Standard
+
+The current standards represent the modern approach to token and asset management on Movement:
+
+### Digital Asset (DA) Standard
+
+This is the modern guideline for non-fungible and semi-fungible assets.
+
+**Highlights:**
+- Tokens are stored as Move Objects
+- NFTs live in collections and have rich metadata
+- You can transfer NFTs without the recipient opting in first
+- NFTs can own other NFTs — enabling nested and composable asset structures
+
+**When to use:** All new NFT projects should adopt DA for flexibility and ecosystem compatibility.
+
+### Fungible Asset (FA) Standard
+
+A full-featured way to represent fungible tokens.
+
+**Design Principles:**
+- Type-safe and efficient token logic
+- Automatic creation of recipient storage
+- Better control over minting, burning, transfers, and permissions
+
+**Why it replaces Coin:** FA is more expressive and flexible for diverse use cases — from currencies to in-game assets.
+
+## Legacy Standard
+
+Even though new standards are recommended, older ones continue to exist for backwards compatibility:
+
+- **Token** — Combines NFTs, fungibles, and semi-fungibles with customizable on-chain properties
+- **Coin** — A simple fungible token format used by the core chain and early applications
+
+These remain supported for compatibility while the ecosystem transitions to DA/FA.

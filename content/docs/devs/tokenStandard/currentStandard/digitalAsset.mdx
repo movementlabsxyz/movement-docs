@@ -1,0 +1,140 @@
+---
+title: Digital Asset
+description: Learn about the Digital Asset standard on Movement
+---
+
+# Digital Asset (DA) Standard
+
+The Digital Asset (DA) Standard is the modern guideline for non-fungible and semi-fungible assets on Movement Network. It represents a significant evolution in how NFTs and unique digital assets are created, managed, and transferred on-chain.
+
+## Overview
+
+The DA standard uses Move Objects to represent and customize unique assets (NFTs), supports direct transfers without opt-in, and allows NFTs to own other NFTs (composability). This design provides a more flexible and powerful framework compared to legacy token standards.
+
+## Key Features
+
+### Move Object-Based Storage
+
+Tokens are stored as Move Objects, which provides:
+- Strong ownership semantics
+- Built-in permission controls
+- Secure transfer mechanisms
+- Composable asset structures
+
+### Collections and Rich Metadata
+
+NFTs live in collections with comprehensive metadata support:
+- **Collection Management** — Group related NFTs together
+- **Rich Metadata** — Store detailed information about each asset
+- **Extensible Properties** — Add custom fields and attributes
+- **On-chain Verification** — Validate authenticity and provenance
+
+### Direct Transfers
+
+One of the major improvements in the DA standard is the ability to transfer NFTs without requiring the recipient to opt-in first. This simplifies the user experience and enables:
+- Airdrops without recipient preparation
+- Seamless marketplace transactions
+- Gift transfers
+- Automated distribution systems
+
+### Composability
+
+NFTs can own other NFTs, enabling powerful use cases:
+- **Nested Assets** — NFTs containing other NFTs (e.g., a character owning equipment)
+- **Bundle Transfers** — Move multiple assets together
+- **Hierarchical Ownership** — Create complex asset relationships
+- **Dynamic Collections** — Assets that evolve based on their contents
+
+## Advantages Over Legacy Standards
+
+### Simplified Creation
+
+The DA standard formalizes collections and token types, making it easier to:
+- Create new NFT collections
+- Manage token metadata
+- Implement custom transfer rules
+- Extend functionality
+
+### Better Transfer Rules
+
+Improved control over how assets move:
+- Customizable transfer logic
+- Royalty enforcement
+- Transfer restrictions
+- Conditional transfers
+
+### Enhanced Extensibility
+
+The object-based design allows for:
+- Adding new features without breaking existing contracts
+- Custom behaviors per collection
+- Plugin-style extensions
+- Future-proof architecture
+
+## Use Cases
+
+The Digital Asset standard is ideal for:
+
+- **NFT Marketplaces** — Trading unique digital items
+- **Gaming Assets** — In-game items, characters, and equipment
+- **Digital Collectibles** — Art, music, and media NFTs
+- **Identity Tokens** — Credentials and certificates
+- **Real-World Asset Tokenization** — Physical items represented on-chain
+- **Semi-Fungible Tokens** — Limited edition items with multiple copies
+
+## When to Use DA Standard
+
+**Use the Digital Asset standard for:**
+- All new NFT projects
+- Projects requiring composable assets
+- Applications needing flexible metadata
+- Systems with complex ownership structures
+
+**The DA standard is recommended over legacy Token standard for all new development** to ensure compatibility with the evolving Movement ecosystem and access to the latest features.
+
+## Technical Considerations
+
+### Storage Model
+
+Assets are stored as objects with:
+- Unique identifiers
+- Ownership tracking
+- Metadata references
+- Extension capabilities
+
+### Supply Models
+
+The standard supports:
+- **Fixed Supply** — Limited edition collections
+- **Unlimited Supply** — Open-ended minting
+- **Semi-Fungible** — Multiple copies of the same asset
+- **Dynamic Supply** — Minting and burning based on rules
+
+### Integration
+
+The DA standard integrates seamlessly with:
+- Movement wallets
+- NFT marketplaces
+- DApp interfaces
+- Indexing services
+- Analytics platforms
+
+## Best Practices
+
+1. **Design Collections Carefully** — Plan your collection structure before deployment
+2. **Use Rich Metadata** — Provide comprehensive information for each asset
+3. **Implement Proper Access Controls** — Secure minting and transfer functions
+4. **Consider Composability** — Design for potential nested ownership
+5. **Test Transfer Logic** — Verify all transfer scenarios work as expected
+6. **Plan for Extensions** — Build with future enhancements in mind
+
+## Migration from Legacy
+
+If you're migrating from the legacy Token standard:
+
+1. **Assess Current Structure** — Understand your existing token implementation
+2. **Map to DA Model** — Plan how your tokens translate to the DA standard
+3. **Update Metadata** — Enhance with DA's richer metadata capabilities
+4. **Test Thoroughly** — Verify all functionality in the new standard
+5. **Communicate Changes** — Inform users about the migration
+6. **Provide Tools** — Offer migration utilities if needed
