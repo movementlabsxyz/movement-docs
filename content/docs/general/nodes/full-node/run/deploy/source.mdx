@@ -117,11 +117,21 @@ Follow the steps below:
 cargo run -p aptos-node --release -- -f ./fullnode.yaml
 ```
 
+
 <Callout type="info">
 **Debugging?**<br />
 The command above will build a release binary for `aptos-node` at: `aptos-core/target/release/aptos-node`. The release
 binaries tend to be substantially faster than debug binaries but lack debugging information useful for development.
 To build a debug binary, omit the `--release` flag from the command above.
+</Callout>
+
+<Callout type="info">
+On linux to get all the necessary packages run the commands:
+
+```shellscript filename="Terminal"
+sudo apt update
+sudo apt install -y binutils build-essential lld pkg-config libdw-dev
+```
 </Callout>
 
 You have now successfully configured and started running a PFN in the Movement testnet.
