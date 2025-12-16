@@ -13,7 +13,7 @@ info:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
 servers:
-  - url: https://full.mainnet.movementinfra.xyz/v1
+  - url: https://mainnet.movementnetwork.xyz/v1
     description: Mainnet
   - url: https://full.testnet.movementinfra.xyz/v1
     description: Testnet

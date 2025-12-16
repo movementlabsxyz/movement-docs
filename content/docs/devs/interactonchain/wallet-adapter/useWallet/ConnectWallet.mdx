@@ -75,7 +75,7 @@ export function WalletProvider({ children }: WalletProviderProps) {
   // Movement Mainnet configuration
   const aptosConfig = new AptosConfig({
     network: Network.MAINNET,
-    fullnode: "https://full.mainnet.movementinfra.xyz/v1",
+    fullnode: "https://mainnet.movementnetwork.xyz/v1",
   });
   
   return (
@@ -168,7 +168,7 @@ export function WalletSelectionModal({ children }: { children: React.ReactNode }
           const networkInfo = {
             chainId: 126, // Movement Mainnet
             name: "custom" as const,
-            url: "https://full.mainnet.movementinfra.xyz/v1"
+            url: "https://mainnet.movementnetwork.xyz/v1"
           };
           
           const result = await selectedWallet.features['aptos:connect'].connect(false, networkInfo);
@@ -239,7 +239,7 @@ The send transaction component (`components/send-transaction.tsx`) handles Movem
 const MOVEMENT_CONFIGS = {
   mainnet: {
     chainId: 126,
-    fullnode: "https://full.mainnet.movementinfra.xyz/v1",
+    fullnode: "https://mainnet.movementnetwork.xyz/v1",
   },
   testnet: {
     chainId: 250,
@@ -275,7 +275,7 @@ if (response.signature?.data?.data) {
 - **Testnet**: 250 (Bardock)
 
 ### RPC Endpoints
-- **Mainnet**: `https://full.mainnet.movementinfra.xyz/v1`
+- **Mainnet**: `https://mainnet.movementnetwork.xyz/v1`
 - **Testnet**: `https://full.testnet.movementinfra.xyz/v1`
 
 ### Explorer
