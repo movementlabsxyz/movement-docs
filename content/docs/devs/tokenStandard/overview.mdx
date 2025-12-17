@@ -1,62 +1,79 @@
 ---
-title: Token Standard
-description: Learn about the token standard for Movement
+title: Token Standards
+description: Comprehensive guide to token standards on Movement
 ---
 
-# Token Standard
+## Overview
 
-The token standard is a standard to ensure consistency and compatibility across DApps, wallets, and RPC solutions across Movement Network.
+Standards define the behavior and structure of essential blockchain features, including tokens, wallets, and on-chain objects. They ensure seamless interoperability between contracts from different developers, enabling assets to maintain consistent appearance, predictable interactions, and universal support across wallets and marketplaces.
 
-## What Are Standards?
+Movement implements three primary standard categories:
 
-Standards are shared blueprints that define how important features — like tokens, wallets, and on-chain objects — should behave. They make sure contracts from different developers work together smoothly: assets look the same, interact predictably, and are supported by wallets and marketplaces.
+- **Move Standards** — Core object model defining data and resource structure
+- **Asset Standards** — Formal specifications for tokens and NFTs
+- **Legacy Standards** — Older token systems maintained for backward compatibility
 
-Movement Standards are shared interfaces and models that every smart contract and wallet on Movement should follow to ensure interoperability and consistency. They include:
+---
 
-- **Move Standards** — Core object model for how data and resources are structured.
-- **Asset Standards** — Formal rules for tokens and NFTs (replacing older standards).
-- **Digital Asset (DA)** — Next-gen NFT standard.
-- **Fungible Asset (FA)** — New model for fungible (regular) tokens.
-- **Legacy Standards** — Older token/coin systems still in docs for reference.
+## Move Object Model
 
-## Object Model
+Movement leverages the **Move Object Model** to represent real-world entities on-chain. Rather than creating custom contract layouts for each use case, developers utilize a standardized object-based format. These objects encapsulate resources with strict ownership, transfer, and mutation rules, significantly reducing bugs and enhancing composability.
 
-Movement uses the **Move Object Model** to represent real-world things on chain. Instead of building bespoke contract layouts every time, developers use a stable object-based format. Objects encapsulate resources with strict rules about ownership, transfer, and mutation — minimizing bugs and improving composability.
+**Key Benefits:**
+- Provides the foundation for all asset standards (fungible and non-fungible)
+- Enforces safety guarantees through type system constraints
+- Eliminates common vulnerabilities associated with ad-hoc implementations
 
-**Why it matters:** Move Objects are the foundation underpinning all asset standards — both fungible and non-fungible.
+---
 
-## Current Standard
+## Current Asset Standards
 
-The current standards represent the modern approach to token and asset management on Movement:
+The current standards represent the modern approach to token and asset management on Movement.
 
 ### Digital Asset (DA) Standard
 
-This is the modern guideline for non-fungible and semi-fungible assets.
+The Digital Asset standard is the recommended framework for non-fungible and semi-fungible assets.
 
-**Highlights:**
-- Tokens are stored as Move Objects
-- NFTs live in collections and have rich metadata
-- You can transfer NFTs without the recipient opting in first
-- NFTs can own other NFTs — enabling nested and composable asset structures
+**Core Features:**
+- Tokens implemented as Move Objects
+- NFTs organized within collections with comprehensive metadata support
+- Direct transfer capability without recipient opt-in requirements
+- Composable architecture allowing NFTs to own other NFTs
 
-**When to use:** All new NFT projects should adopt DA for flexibility and ecosystem compatibility.
+<Callout type="info">
+All new NFT projects should implement the DA standard to ensure maximum flexibility and ecosystem compatibility.
+</Callout>
 
 ### Fungible Asset (FA) Standard
 
-A full-featured way to represent fungible tokens.
+The Fungible Asset standard provides a comprehensive framework for representing fungible tokens.
 
 **Design Principles:**
-- Type-safe and efficient token logic
-- Automatic creation of recipient storage
-- Better control over minting, burning, transfers, and permissions
+- Type-safe token operations with compile-time guarantees
+- Automatic recipient storage initialization
+- Granular control over minting, burning, transfers, and permission management
+- Enhanced flexibility for diverse applications
 
-**Why it replaces Coin:** FA is more expressive and flexible for diverse use cases — from currencies to in-game assets.
+**Advantages Over Legacy Systems:** FA offers superior expressiveness and adaptability compared to the older Coin standard, making it suitable for use cases ranging from currencies to in-game assets.
 
-## Legacy Standard
+---
 
-Even though new standards are recommended, older ones continue to exist for backwards compatibility:
+## Legacy Standards
 
-- **Token** — Combines NFTs, fungibles, and semi-fungibles with customizable on-chain properties
-- **Coin** — A simple fungible token format used by the core chain and early applications
+While current standards are recommended for all new development, legacy standards remain supported to ensure backward compatibility with existing applications.
 
-These remain supported for compatibility while the ecosystem transitions to DA/FA.
+### Token (Legacy)
+
+The [Token](https://github.com/movementlabsxyz/aptos-core/blob/main/aptos-move/framework/aptos-token/sources/token.move) standard provides a versatile framework for managing multiple token types within a single implementation.
+
+- **Versatile multi-token support** - Handles NFTs, fungibles, and semi-fungibles in a single standard
+- **Customizable properties** - Offers flexible on-chain property configuration
+- **Backward compatible** - Remains functional for existing applications
+
+### Coin (Legacy)
+
+The [Coin](https://github.com/movementlabsxyz/aptos-core/blob/main/aptos-move/framework/aptos-framework/sources/coin.move) standard offers a straightforward approach to fungible token implementation with high performance and low gas overhead.
+
+- **Simple fungible implementation** - Straightforward token standard for fungible assets
+- **Superseded standard** - Replaced by the more capable Fungible Asset standard
+- **Continued support** - Still functional for existing deployments
