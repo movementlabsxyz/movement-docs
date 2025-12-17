@@ -1,6 +1,7 @@
 {
     "title": "Move Book",
     "pages": [
+        "package",
         "modules",
         "scripts",
         "variablesAssignmentAndScope",
@@ -19,7 +20,13 @@
         "functions",
         "structsAndResources",
         "typeAbilities",
-        "options"
+        "generics",
+        "options",
+        "globalStorage",
+        "usesAndAliases",
+        "friends",
+        "unitTest",
+        "codingCovention"
     ],
     "root": false,
     "defaultOpen": false

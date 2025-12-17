@@ -93,6 +93,10 @@ state_sync:
   state_sync_driver:
     bootstrapping_mode: DownloadLatestStates
     continuous_syncing_mode: ApplyTransactionOutputs
+    - for mainnet
+    start_epoch: 10774941
+    - for testnet
+    start_epoch: 2111769
 ```
 
 <Callout type="warning">
@@ -108,7 +112,7 @@ docker run --pull=always \
   -p 9101:9101 -p 6180:6180 \
   -v $(pwd):/opt/aptos -v $(pwd)/data:/opt/aptos/data \
   --workdir /opt/aptos \
-  --name=aptos-fullnode ghcr.io/movementlabsxyz/aptos-node:1f072d5 \
+  --name=aptos-fullnode ghcr.io/movementlabsxyz/aptos-node:f24a5bc \
   -f /opt/aptos/fullnode.yaml
 ```
 
