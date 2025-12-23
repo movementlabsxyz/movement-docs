@@ -1,0 +1,160 @@
+---
+id: staking
+title: Staking and Delegation
+description: "Understanding staking states, delegation pools, and reward distribution on M1"
+---
+
+This document explains how staking and delegation work on M1, including stake lifecycle states, delegation pools, reward distribution, and the synchronization mechanism.
+
+## Stake States (Lifecycle)
+
+Staked tokens progress through different states during their lifecycle:
+
+<StakeLifecycleDiagram />
+
+**State Descriptions**
+
+- **pending_active** — Just deposited; will become active next epoch
+- **active** — Earning staking rewards
+- **pending_inactive** — Delegator requested unlock; waiting for lockup to expire. Still earns rewards during the lockup duration!
+- **inactive** — Lockup expired; can be withdrawn
+
+**Key point:** `pending_inactive` still earns rewards until the lockup period ends.
+
+## Shares vs Tokens: How Delegation Pools Work
+
+When staking to a delegation pool, delegators receive **SHARES** rather than holding tokens directly. Shares represent proportional ownership of the pool's total token balance.
+
+**Key Definitions**
+
+- **SHARES** — Unit of ownership in the pool (delegator shares count stays constant)
+- **SHARE PRICE** — `total_tokens / total_shares` (increases as rewards accumulate)
+- **VALUE** — `shares × share_price` (a delegator's stake worth in TOKEN)
+
+**What Happens to a Delegator After Rewards**
+
+<SharesComparisonDiagram />
+
+- Delegator shares count stays constant (e.g., 100 shares → 100 shares)
+- But share PRICE increases (e.g., 1.00 → 1.05 TOKEN/SHARE)
+- So delegator VALUE increases (100 × 1.00 = 100 TOKEN → 100 × 1.05 = 105 TOKEN)
+
+See [The Gap](#the-gap) section for a detailed example showing how 5.5 tokens total rewards (5 tokens to user after 0.5 token commission) result in a share price increase from 1.0 to 1.05 TOKEN/SHARE.
+
+**Reward Distribution Process**
+
+When the pool earns staking rewards:
+
+1. **Commission deducted** — The operator's commission percentage is calculated from the gross rewards.
+2. **Remainder added to pool** — The net rewards (after commission) are added to `total_tokens` while `total_shares` remains constant, causing the share price to increase.
+3. **Operator mints new shares** — The operator uses their commission to buy shares at the new (post-appreciation) share price.
+
+This ordering ensures the operator cannot benefit from appreciation on rewards they didn't earn.
+
+**Benefits**
+
+- O(1) gas cost for reward distribution
+- Proportional allocation without per-account calculations
+- Reduced rounding errors
+
+## Architecture: StakePool and DelegationPool
+
+These are two separate structs stored at the same address (the resource account address):
+
+<DelegationPoolDiagram />
+
+### StakePool
+
+A separate struct holding actual tokens. Earns rewards from consensus. Can only have ONE owner (the delegation pool's resource account).
+
+**Fields:**
+
+| Field | What it contains | Earns rewards |
+|-------|------------------|---------------|
+| `active` | Stake participating in consensus | ✅ Yes |
+| `pending_active` | Added this epoch, active next epoch | ❌ No |
+| `pending_inactive` | Unlocked, waiting to be withdrawable | ✅ Yes |
+| `inactive` | Ready to withdraw | ❌ No |
+
+**Total stake** = `active` + `pending_active` + `pending_inactive` + `inactive`
+
+### DelegationPool
+
+The main struct that tracks ownership via shares. Contains `pool_u64::Pool` instances (generic share-tracking pools) that map delegator addresses to their share balances.
+
+**Shares Pools:**
+
+1. **active_shares** (`pool_u64::Pool`)
+   - Tracks: `StakePool.active` + `StakePool.pending_active`
+   - One pool for all active stake
+
+2. **inactive_shares** (`Table<ObservedLockupCycle, pool_u64::Pool>`)
+   - Tracks: `StakePool.pending_inactive` (until lockup expires)
+   - One pool per lockup cycle
+   - When lockup ends, `pending_inactive` → `inactive`
+
+**Why Two Types of Shares Pools?**
+
+- **Different lifecycles:** active can receive deposits; pending_inactive cannot
+- **Multiple lockup cycles:** each cycle has its own pending_inactive pool
+- **Divergent share prices:** slashing could affect one pool but not the other
+- **Withdrawal timing:** only pending_inactive becomes withdrawable after lockup
+
+**Why Two Structs?**
+
+A StakePool supports only one owner. The DelegationPool wraps it to allow multiple delegators, tracking each person's ownership via shares inside `pool_u64::Pool` instances.
+
+Think: StakePool = vault with cash. DelegationPool = ledger of who owns what percentage of that cash.
+
+## Synchronization and the Gap
+
+The delegation pool uses **lazy synchronization** — no automatic sync at epoch end.
+
+<LazySyncDiagram />
+
+**What Triggers Sync**
+
+- ✅ `add_stake()` — User adding stake
+- ✅ `unlock()` — User unlocking stake
+- ✅ `withdraw()` — User withdrawing
+- ✅ `synchronize_delegation_pool()` — Anyone can call (public)
+- ❌ Epoch ends — no automatic sync
+
+**At Epoch End**
+
+1. Rewards go to `StakePool.active` and `StakePool.pending_inactive`
+2. `DelegationPool` shares pools are not updated (stale)
+3. Commission is not calculated yet
+
+### The Gap
+
+The "gap" is the difference between:
+
+- **StakePool value:** actual tokens in `StakePool.active` (or `pending_inactive`)
+- **Shares pool value:** `active_shares.total_coins` (or `inactive_shares[cycle].total_coins`)
+
+This gap represents unsynchronized rewards waiting to be distributed to delegators (via share price increase) and operator (via commission).
+
+<GapDiagram />
+
+### Sync Process
+
+For each shares pool (`active_shares` and `pending_inactive_shares`):
+
+1. Calculate gap: `gap = stake_pool_value - pool.total_coins`
+2. Calculate commission: `commission = gap × commission_rate`
+3. Update shares pool: `pool_u64::update_total_coins(pool, stake_pool_value - commission)`
+   - This increases share price for delegators
+4. Operator buys shares: operator uses commission to buy shares at new price
+
+**Implications**
+
+- If no one interacts, rewards simply accumulate indefinitely in the StakePool
+- Commission is paid in one lump sum when sync finally happens
+- Operator loses compounding on commission if sync is delayed
+
+---
+
+## References
+
+For additional context, see the [Aptos Staking documentation](https://aptos.dev/network/blockchain/staking) and [Aptos Delegated Staking documentation](https://aptos.dev/network/blockchain/delegated-staking).
