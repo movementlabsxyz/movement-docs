@@ -10,23 +10,7 @@ This document explains how staking and delegation work on M1, including stake li
 
 Staked tokens progress through different states during their lifecycle:
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                                                                         │
-│   add_stake()         epoch ends           unlock()        lockup ends  │
-│       │                   │                   │                │        │
-│       ▼                   ▼                   ▼                ▼        │
-│  ┌──────────┐        ┌──────────┐        ┌──────────────┐   ┌────────┐  │
-│  │ pending  │───────▶│  active  │───────▶│   pending    │──▶│inactive│  │
-│  │  active  │        │          │        │   inactive   │   │        │  │
-│  └──────────┘        └──────────┘        └──────────────┘   └────────┘  │
-│                                                                  │      │
-│   Waiting to         Earning            Unlocking but           Ready   │
-│   join next          rewards            still in lockup        to       │
-│   epoch                                 (still earns!)        withdraw  │
-│                                                                         │
-└─────────────────────────────────────────────────────────────────────────┘
-```
+<StakeLifecycleDiagram />
 
 ### State Descriptions
 
@@ -37,108 +21,61 @@ Staked tokens progress through different states during their lifecycle:
 
 **Key point:** `pending_inactive` still earns rewards until the lockup period ends.
 
-## Stake Pool vs Delegation Pool
+## StakePool vs DelegationPool
 
-A delegation pool consists of two components:
+These are two separate structs stored at the same address:
 
-- **The staking pool** is used to manage rewards for the whole delegated stakes.
-- **The Delegation part** is used to distribute rewards between participants. It uses shares that identify the part of the whole pool each participant earns.
+- **StakePool** — Holds actual tokens (`active`, `inactive`, `pending_active`, `pending_inactive`)
+- **DelegationPool** — Tracks ownership via shares (`active_shares`, `inactive_shares` table)
 
-That's why rewards are distributed to the staking pool at each epoch and not directly to the delegated shares.
+Rewards are distributed to the StakePool at each epoch. To sync these rewards to the DelegationPool's share pools, call `synchronize_delegation_pool(pool_address)`. This function is automatically called during all delegation pool operations like `add_stake`, `unlock`, or `withdraw`.
 
-To see most recent delegation results, the entry function `synchronize_delegation_pool(pool_address)` must be called. This function is automatically called during all delegated pool operations like `add_stake`, `unlock`, or `withdraw`.
+<DelegationPoolDiagram />
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                        DELEGATION POOL                              │
-│   Tracks ownership via SHARES (who owns what percentage)            │
-│     • Delegator A: 1,000,000 shares (64.5%)                         │
-│     • Delegator B: 500,000 shares (32.3%)                           │
-│     • Operator: 50,000 shares (3.2%)                                │
-│                              │                                      │
-│                              │ owns                                 │
-│                              ▼                                      │
-│   ┌───────────────────────────────────────────────────────────────┐ │
-│   │                      STAKE POOL                               │ │
-│   │   Holds actual TOKENS and participates in consensus           │ │
-│   │     • active: 100,000 TOKEN                                   │ │
-│   │     • pending_inactive: 10,000 TOKEN                          │ │
-│   └───────────────────────────────────────────────────────────────┘ │
-└─────────────────────────────────────────────────────────────────────┘
-```
+**StakePool**
 
-### Stake Pool
+A separate struct holding actual tokens. Earns rewards from consensus. Can only have ONE owner (the delegation pool's resource account).
 
-The vault holding actual tokens. Earns rewards from consensus. Can only have ONE owner (the delegation pool's resource account).
+**DelegationPool**
 
-### Delegation Pool
+The main struct containing:
+- `active_shares`: a `pool_u64::Pool` tracking active stake ownership
+- `inactive_shares`: a table of `pool_u64::Pool` instances for pending_inactive stake
 
-The ledger tracking multiple participants via shares. Distributes rewards by increasing share price.
+**Why Two Structs?**
 
-### Why Two Layers?
-
-A stake pool supports only one owner. The delegation pool wraps it to allow multiple delegators, tracking each person's ownership via shares.
-
-Think: Stake pool = vault with cash. Delegation pool = ledger of who owns what percentage of that cash.
+A StakePool supports only one owner. The DelegationPool wraps it to allow multiple delegators, tracking each person's ownership via shares inside `pool_u64::Pool` instances.
+Think: StakePool = vault with cash. DelegationPool = ledger of who owns what percentage of that cash.
 
 ## Lazy Synchronization and Gap
 
-The delegation_pool uses **LAZY SYNCHRONIZATION** — NO automatic sync at epoch end!
+The delegation_pool uses lazy synchronization — no automatic sync at epoch end.
 
-```
-┌─────────────┐         ┌─────────────┐         ┌─────────────┐
-│   EPOCH N   │         │  EPOCH N+1  │         │  EPOCH N+2  │
-│             │         │             │         │             │
-│ stake_pool  │         │ stake_pool  │         │ stake_pool  │
-│ += rewards  │         │ += rewards  │         │ += rewards  │
-└──────┬──────┘         └──────┬──────┘         └──────┬──────┘
-       │                       │                       │
-       ▼                       ▼                       ▼
-┌─────────────┐         ┌─────────────┐         ┌─────────────┐
-│ share_pool  │         │ share_pool  │         │ share_pool  │
-│   (stale)   │         │   (stale)   │         │  ← SYNCED!  │
-│  no update  │         │  no update  │         │  gap → 0    │
-└─────────────┘         └─────────────┘         └─────────────┘
-                                                       ▲
-                                          user calls add_stake()
-```
+<LazySyncDiagram />
 
-### What Triggers Sync
+**What Triggers Sync**
 
 - ✅ `add_stake()` — User adding stake
 - ✅ `unlock()` — User unlocking stake
 - ✅ `withdraw()` — User withdrawing
 - ✅ `synchronize_delegation_pool()` — Anyone can call (public)
-- ❌ Epoch ends — NO automatic sync
+- ❌ Epoch ends — no automatic sync
 
-### At Epoch End
+**At Epoch End**
 
 1. Rewards go to `stake_pool.active` and `stake_pool.pending_inactive`
-2. `delegation_pool` share pools are NOT updated (stale)
-3. Commission is NOT calculated yet
+2. `delegation_pool` share pools are not updated (stale)
+3. Commission is not calculated yet
 
-### The Gap
+**The Gap**
 
-The difference between `stake_pool` and `share_pool` is the "gap" — unsynchronized rewards waiting to be distributed to delegators (via share price increase) and operator (via commission).
+The "gap" is the amount of tokens that have not yet been accounted for in the share price and the commission. It represents unsynchronized rewards waiting to be distributed to delegators (via share price increase) and operator (via commission).
 
-```
-   BEFORE SYNC                              AFTER SYNC
-┌────────────────┐                       ┌────────────────┐
-│  stake_pool    │                       │  stake_pool    │
-│    105,000     │ ─┐                    │    105,000     │
-└────────────────┘  │                    └────────────────┘
-                    │ gap = 5,000                ║
-                    │ (unsync'd rewards)         ║ gap ≈ 0
-┌────────────────┐  │                    ┌───────╨────────┐
-│  share_pool    │ ─┘                    │  share_pool    │
-│    100,000     │                       │ 104,500 + comm │
-└────────────────┘                       └────────────────┘
-                                          (share price ↑)
-```
+<GapDiagram />
 
-### Implications
+**Implications**
 
-- If no one interacts, rewards accumulate indefinitely
+- If no one interacts, rewards simply accumulate indefinitely in the StakePool
 - Commission is paid in one lump sum when sync finally happens
 - Operator loses compounding on commission if sync is delayed
 
@@ -155,20 +92,20 @@ The StakePool has 4 separate coin fields:
 
 **Total stake** = `active` + `pending_active` + `pending_inactive` + `inactive`
 
-## Two Share Pools: Active and Pending Inactive
+## Two Shares Pools: active_shares and inactive_shares
 
-The delegation_pool maintains TWO separate share pools that earn rewards:
+The DelegationPool contains TWO types of `pool_u64::Pool` instances that track shares:
 
-1. **ACTIVE SHARES POOL** (`active_shares`)
-   - Tracks: `stake_pool.active` + `stake_pool.pending_active`
+1. **active_shares** (`pool_u64::Pool`)
+   - Tracks: `StakePool.active` + `StakePool.pending_active`
    - Gap = `(active + pending_active) - active_shares.total_coins`
 
-2. **PENDING_INACTIVE SHARES POOL** (`inactive_shares` table)
-   - Tracks: `stake_pool.pending_inactive` (until lockup expires)
-   - Gap = `pending_inactive - pending_inactive_shares.total_coins`
+2. **inactive_shares** (`Table<ObservedLockupCycle, pool_u64::Pool>`)
+   - Tracks: `StakePool.pending_inactive` (until lockup expires)
+   - Gap = `pending_inactive - inactive_shares[cycle].total_coins`
    - One pool per lockup cycle; when lockup ends, `pending_inactive` → `inactive`
 
-### Why Two Pools?
+**Why Two Pools?**
 
 The duplication isn't redundant — it's necessary because:
 
@@ -179,12 +116,12 @@ The duplication isn't redundant — it's necessary because:
 
 A single pool would require complex per-position tracking (like NFTs).
 
-### When Sync Happens (for each pool)
+**When Sync Happens (for each pool_u64::Pool)**
 
-1. `gap = stake_pool_value - shares_pool.total_coins`
+1. `gap = stake_pool_value - pool.total_coins`
 2. `commission = gap × commission_rate`
 3. `net = gap - commission` → share price increases
-4. `pool_u64::update_total_coins(shares_pool, stake_pool_value - commission)`
+4. `pool_u64::update_total_coins(pool, stake_pool_value - commission)`
 5. Operator buys shares with commission
 
 After sync, both gaps should be ~0 (minus rounding).
@@ -193,30 +130,21 @@ After sync, both gaps should be ~0 (minus rounding).
 
 When staking to a delegation pool, delegators receive **SHARES** rather than holding tokens directly. Shares represent proportional ownership of the pool's total token balance. When a delegator deposits tokens, the pool mints shares at the current share price (`total_tokens / total_shares`); when withdrawing, shares are redeemed for tokens at the prevailing price.
 
-### Key Definitions
+**Key Definitions**
 
 - **SHARES** — Unit of ownership in the pool (delegator share count stays constant)
 - **SHARE PRICE** — `total_tokens / total_shares` (increases as rewards accumulate)
 - **VALUE** — `shares × share_price` (a delegator's stake worth in TOKEN)
 
-### What Happens to a Delegator After Rewards
+**What Happens to a Delegator After Rewards**
 
-```
-   BEFORE REWARDS                        AFTER REWARDS
-┌──────────────────┐                  ┌──────────────────┐
-│ Delegator A      │                  │ Delegator A      │
-│  100 shares      │                  │  100 shares      │  (same!)
-│  × 1.00 price    │                  │  × 1.05 price    │  (increased!)
-│  ─────────────   │                  │  ─────────────   │
-│  = 100 TOKEN     │                  │  = 105 TOKEN     │  (+5 TOKEN)
-└──────────────────┘                  └──────────────────┘
-```
+<SharesComparisonDiagram />
 
 - Delegator share count stays constant (e.g., 100 shares → 100 shares)
 - But share PRICE increases (e.g., 1.00 → 1.05 TOKEN/SHARE)
 - So delegator VALUE increases (100 × 1.00 = 100 TOKEN → 100 × 1.05 = 105 TOKEN)
 
-### Reward Distribution Process
+**Reward Distribution Process**
 
 When the pool earns staking rewards:
 
@@ -226,7 +154,7 @@ When the pool earns staking rewards:
 
 This ordering ensures the operator cannot benefit from appreciation on rewards they didn't earn. For delegators, share count stays fixed between stake operations, but VALUE (`shares × share price`) grows as net rewards accumulate.
 
-### Benefits
+**Benefits**
 
 This approach provides:
 
