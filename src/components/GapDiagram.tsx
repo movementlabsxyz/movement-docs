@@ -60,7 +60,7 @@ export function GapDiagram() {
               StakePool.active
             </text>
             <text x="180" y="73" textAnchor="middle" className="text-xs fill-gray-700">
-              105 tokens
+              105.5 tokens
             </text>
 
             {/* Arrow from stake_pool to share_pool */}
@@ -74,7 +74,7 @@ export function GapDiagram() {
               strokeDasharray="3,3"
             />
             <text x="190" y="105" textAnchor="start" className="text-xs fill-red-600 font-semibold">
-              gap = 5
+              gap = 5.5
             </text>
             <text x="190" y="120" textAnchor="start" className="text-xs fill-gray-600">
               (unsync'd rewards)
@@ -142,7 +142,7 @@ export function GapDiagram() {
               StakePool.active
             </text>
             <text x="490" y="73" textAnchor="middle" className="text-xs fill-gray-700">
-              105 tokens
+              105.5 tokens
             </text>
 
             {/* Arrow from stake_pool to share_pool */}
@@ -173,7 +173,7 @@ export function GapDiagram() {
               active_shares
             </text>
             <text x="490" y="176" textAnchor="middle" className="text-xs fill-gray-700">
-              104.5 tokens (.total_coins)
+              105 tokens (.total_coins)
             </text>
             <text x="490" y="194" textAnchor="middle" className="text-xs fill-gray-700">
               100 shares (.total_shares)
@@ -207,12 +207,12 @@ export function GapDiagram() {
               +0.5 tokens
             </text>
             <text x="490" y="286" textAnchor="middle" className="text-xs fill-gray-700">
-              +0.48 shares
+              +0.476 shares
             </text>
 
             {/* Price - after */}
             <text x="490" y="325" textAnchor="middle" className="text-sm font-semibold fill-green-600">
-              1.045 token/share
+              1.05 token/share
             </text>
           </g>
         </svg>
