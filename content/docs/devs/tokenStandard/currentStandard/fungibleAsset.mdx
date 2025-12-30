@@ -1,7 +1,820 @@
 ---
 title: Fungible Asset
-description: Learn about the Fungible Asset standard on Movement
+description: Learn about the Fungible Asset standard for creating and managing fungible tokens on Movement
 ---
 
 # Fungible Asset (FA) Standard
+
+The Movement Fungible Asset Standard provides a modern, type-safe framework for creating and managing fungible tokens on Movement. Built on the foundation of Move Objects, this standard offers enhanced security, composability, and customization capabilities that surpass traditional token implementations.
+
+<Callout type="info">
+The Fungible Asset standard is available in the Movement framework at `aptos_framework::fungible_asset` and represents the current standard for fungible token development.
+</Callout>
+
+## Overview
+
+Movement's Fungible Asset standard enables developers to:
+
+- **Create Sophisticated Tokens**: Build tokens with custom logic, automated behaviors, and advanced features
+- **Enhanced Security**: Leverage Move's type safety and object-based architecture for secure token operations
+- **Seamless Integration**: Automatic compatibility with Movement ecosystem applications and wallets
+- **Advanced Customization**: Implement custom transfer logic, fee mechanisms, and compliance features
+- **Efficient Storage**: Optimized on-chain storage using Move Objects architecture
+
+## Core Architecture
+
+### Object-Based Design
+
+The FA standard uses two primary Move Objects to represent fungible assets:
+
+```move
+module aptos_framework::fungible_asset {
+    /// Metadata object containing token information
+    struct Metadata has key, copy, drop {
+        name: String,
+        symbol: String,
+        decimals: u8,
+        icon_uri: String,
+        project_uri: String
+    }
+    
+    /// Store object holding token balances
+    struct FungibleStore has key {
+        metadata: Object<Metadata>,
+        balance: u64,
+        frozen: bool
+    }
+    
+    /// Ephemeral token representation for transfers
+    struct FungibleAsset {
+        metadata: Object<Metadata>,
+        amount: u64
+    }
+}
+```
+
+**Architecture Benefits:**
+- **Unified Standard**: Single framework for all fungible token types
+- **Composability**: Objects can be extended and customized via smart contracts
+- **Automatic Management**: Recipients automatically receive storage capabilities
+- **Gas Efficiency**: Optimized storage patterns reduce transaction costs
+
+### Movement Framework Structures
+
+The following tables describe the core structures in Movement's FA implementation.
+
+#### [`Metadata`]
+
+| Field         | Type   | Description                                    |
+| ------------- | ------ | ---------------------------------------------- |
+| `name`        | String | Full name of the fungible asset               |
+| `symbol`      | String | Short symbol (e.g., "MOVE", "USDT")          |
+| `decimals`    | u8     | Number of decimal places for display          |
+| `icon_uri`    | String | URI pointing to token icon image              |
+| `project_uri` | String | URI pointing to project website               |
+
+#### [`FungibleStore`]
+
+| Field      | Type              | Description                                    |
+| ---------- | ----------------- | ---------------------------------------------- |
+| `metadata` | `Object<Metadata>` | Reference to the token's metadata object      |
+| `balance`  | `u64`             | Current token balance in this store            |
+| `frozen`   | `bool`            | Whether transfers are frozen for this store    |
+
+#### [`FungibleAsset`]
+
+| Field      | Type              | Description                                    |
+| ---------- | ----------------- | ---------------------------------------------- |
+| `metadata` | `Object<Metadata>` | Reference to the token's metadata object      |
+| `amount`   | `u64`             | Amount of tokens in this asset instance       |
+
+## Creating Fungible Assets on Movement
+
+### Basic Token Creation
+
+Create a standard fungible asset with essential features:
+
+```move
+module movement_addr::movement_token {
+    use aptos_framework::fungible_asset::{Self, MintRef, TransferRef, BurnRef};
+    use aptos_framework::object::{Self, Object};
+    use aptos_framework::primary_fungible_store;
+    use std::string;
+    use std::option;
+    use std::signer;
+
+    /// Movement ecosystem token
+    struct MovementToken has key {}
+
+    /// Initialize a new Movement token
+    public entry fun create_movement_token(creator: &signer) {
+        // Create non-deletable object for token metadata
+        let constructor_ref = &object::create_named_object(
+            creator, 
+            b"MOVEMENT_TOKEN"
+        );
+
+        // Create the fungible asset with Movement branding
+        primary_fungible_store::create_primary_store_enabled_fungible_asset(
+            constructor_ref,
+            option::some(1000000000), // 1B max supply
+            string::utf8(b"Movement Token"),
+            string::utf8(b"MOVE"),
+            8, // 8 decimals
+            string::utf8(b"https://movement.xyz/assets/move-token.png"),
+            string::utf8(b"https://movement.xyz")
+        );
+
+        // Generate capability references
+        let mint_ref = fungible_asset::generate_mint_ref(constructor_ref);
+        let transfer_ref = fungible_asset::generate_transfer_ref(constructor_ref);
+        let burn_ref = fungible_asset::generate_burn_ref(constructor_ref);
+
+        // Store capabilities in a resource
+        move_to(creator, MovementTokenRefs {
+            mint_ref,
+            transfer_ref,
+            burn_ref,
+        });
+    }
+
+    /// Resource to store token capabilities
+    struct MovementTokenRefs has key {
+        mint_ref: MintRef,
+        transfer_ref: TransferRef,
+        burn_ref: BurnRef,
+    }
+}
+```
+
+### Advanced Token with Custom Features
+
+Create a token with advanced Movement-specific features:
+
+```move
+module movement_addr::advanced_movement_token {
+    use aptos_framework::fungible_asset::{Self, MintRef, TransferRef, BurnRef, FungibleAsset};
+    use aptos_framework::primary_fungible_store;
+    use aptos_framework::object::{Self, Object};
+    use aptos_framework::event;
+    use aptos_framework::timestamp;
+    use std::string;
+    use std::option;
+    use std::signer;
+
+    /// Advanced Movement DeFi token
+    struct MovementDeFiToken has key {}
+
+    /// Token configuration and state
+    struct TokenConfig has key {
+        mint_ref: MintRef,
+        transfer_ref: TransferRef,
+        burn_ref: BurnRef,
+        fee_rate: u64,           // Fee rate in basis points (100 = 1%)
+        fee_collector: address,   // Address that receives fees
+        total_fees_collected: u64,
+        launch_time: u64,
+    }
+
+    /// Fee collection event
+    #[event]
+    struct FeeCollected has drop, store {
+        amount: u64,
+        from_transfer: u64,
+        collector: address,
+    }
+
+    /// Create advanced Movement DeFi token
+    public entry fun create_advanced_token(
+        creator: &signer,
+        fee_rate: u64,
+        fee_collector: address
+    ) {
+        assert!(fee_rate <= 1000, 1); // Max 10% fee
+        
+        let constructor_ref = &object::create_named_object(
+            creator,
+            b"MOVEMENT_DEFI_TOKEN"
+        );
+
+        // Create fungible asset with Movement DeFi branding
+        primary_fungible_store::create_primary_store_enabled_fungible_asset(
+            constructor_ref,
+            option::none(), // Unlimited supply for DeFi use cases
+            string::utf8(b"Movement DeFi Token"),
+            string::utf8(b"MOVEFI"),
+            18, // High precision for DeFi
+            string::utf8(b"https://movement.xyz/assets/movefi-token.png"),
+            string::utf8(b"https://defi.movement.xyz")
+        );
+
+        // Generate capabilities
+        let mint_ref = fungible_asset::generate_mint_ref(constructor_ref);
+        let transfer_ref = fungible_asset::generate_transfer_ref(constructor_ref);
+        let burn_ref = fungible_asset::generate_burn_ref(constructor_ref);
+
+        // Store configuration
+        move_to(creator, TokenConfig {
+            mint_ref,
+            transfer_ref,
+            burn_ref,
+            fee_rate,
+            fee_collector,
+            total_fees_collected: 0,
+            launch_time: timestamp::now_seconds(),
+        });
+    }
+
+    /// Mint tokens with automatic fee collection
+    public entry fun mint_with_fee(
+        creator: &signer,
+        recipient: address,
+        amount: u64
+    ) acquires TokenConfig {
+        let config = borrow_global_mut<TokenConfig>(signer::address_of(creator));
+        
+        // Calculate fee
+        let fee_amount = (amount * config.fee_rate) / 10000;
+        let net_amount = amount - fee_amount;
+
+        // Mint tokens
+        let tokens = fungible_asset::mint(&config.mint_ref, amount);
+        
+        // Split for fee collection
+        if (fee_amount > 0) {
+            let fee_tokens = fungible_asset::extract(&mut tokens, fee_amount);
+            primary_fungible_store::deposit(config.fee_collector, fee_tokens);
+            
+            config.total_fees_collected = config.total_fees_collected + fee_amount;
+            
+            event::emit(FeeCollected {
+                amount: fee_amount,
+                from_transfer: amount,
+                collector: config.fee_collector,
+            });
+        }
+
+        // Deposit remaining tokens to recipient
+        primary_fungible_store::deposit(recipient, tokens);
+    }
+}
+```
+
+## Token Operations
+
+### For Token Creators
+
+#### Minting Tokens
+
+Create new token instances and distribute them:
+
+```move
+public entry fun mint_tokens(
+    creator: &signer,
+    recipient: address,
+    amount: u64
+) acquires MovementTokenRefs {
+    let refs = borrow_global<MovementTokenRefs>(signer::address_of(creator));
+    let tokens = fungible_asset::mint(&refs.mint_ref, amount);
+    primary_fungible_store::deposit(recipient, tokens);
+}
+```
+
+#### Batch Minting for Airdrops
+
+Efficiently distribute tokens to multiple recipients:
+
+```move
+public entry fun airdrop_tokens(
+    creator: &signer,
+    recipients: vector<address>,
+    amounts: vector<u64>
+) acquires MovementTokenRefs {
+    let refs = borrow_global<MovementTokenRefs>(signer::address_of(creator));
+    let len = vector::length(&recipients);
+    assert!(len == vector::length(&amounts), 1);
+
+    let i = 0;
+    while (i < len) {
+        let recipient = *vector::borrow(&recipients, i);
+        let amount = *vector::borrow(&amounts, i);
+        
+        let tokens = fungible_asset::mint(&refs.mint_ref, amount);
+        primary_fungible_store::deposit(recipient, tokens);
+        
+        i = i + 1;
+    };
+}
+```
+
+#### Freezing and Unfreezing Accounts
+
+Control token transfers for compliance:
+
+```move
+public entry fun freeze_account(
+    creator: &signer,
+    account: address,
+    metadata: Object<Metadata>
+) acquires MovementTokenRefs {
+    let refs = borrow_global<MovementTokenRefs>(signer::address_of(creator));
+    let store = primary_fungible_store::primary_store(account, metadata);
+    fungible_asset::set_frozen_flag(&refs.transfer_ref, store, true);
+}
+
+public entry fun unfreeze_account(
+    creator: &signer,
+    account: address,
+    metadata: Object<Metadata>
+) acquires MovementTokenRefs {
+    let refs = borrow_global<MovementTokenRefs>(signer::address_of(creator));
+    let store = primary_fungible_store::primary_store(account, metadata);
+    fungible_asset::set_frozen_flag(&refs.transfer_ref, store, false);
+}
+```
+
+### For Token Users
+
+#### Basic Transfer Operations
+
+Standard token transfers between accounts:
+
+```move
+public entry fun transfer_tokens(
+    sender: &signer,
+    metadata: Object<Metadata>,
+    recipient: address,
+    amount: u64
+) {
+    primary_fungible_store::transfer(sender, metadata, recipient, amount);
+}
+```
+
+#### Batch Transfers
+
+Efficiently send tokens to multiple recipients:
+
+```move
+public entry fun batch_transfer(
+    sender: &signer,
+    metadata: Object<Metadata>,
+    recipients: vector<address>,
+    amounts: vector<u64>
+) {
+    let len = vector::length(&recipients);
+    assert!(len == vector::length(&amounts), 1);
+
+    let i = 0;
+    while (i < len) {
+        let recipient = *vector::borrow(&recipients, i);
+        let amount = *vector::borrow(&amounts, i);
+        
+        primary_fungible_store::transfer(sender, metadata, recipient, amount);
+        i = i + 1;
+    };
+}
+```
+
+#### Conditional Transfers
+
+Transfer tokens with built-in conditions:
+
+```move
+public entry fun conditional_transfer(
+    sender: &signer,
+    metadata: Object<Metadata>,
+    recipient: address,
+    amount: u64,
+    min_balance_required: u64
+) {
+    // Check sender has sufficient balance beyond minimum
+    let sender_balance = primary_fungible_store::balance(
+        signer::address_of(sender), 
+        metadata
+    );
+    assert!(
+        sender_balance >= amount + min_balance_required, 
+        1
+    );
+
+    primary_fungible_store::transfer(sender, metadata, recipient, amount);
+}
+```
+
+## Movement-Specific Features
+
+### Ecosystem Integration
+
+#### Movement Validator Rewards Token
+
+Token designed for validator reward distribution:
+
+```move
+module movement_addr::validator_rewards {
+    use aptos_framework::fungible_asset::{Self, MintRef, BurnRef};
+    use aptos_framework::primary_fungible_store;
+    use aptos_framework::object;
+    use aptos_framework::timestamp;
+    use std::string;
+    use std::option;
+
+    struct ValidatorRewardToken has key {}
+
+    struct RewardConfig has key {
+        mint_ref: MintRef,
+        burn_ref: BurnRef,
+        epoch_rewards: u64,
+        last_distribution: u64,
+        total_distributed: u64,
+    }
+
+    /// Create validator reward token
+    public entry fun initialize_reward_token(admin: &signer) {
+        let constructor_ref = &object::create_named_object(
+            admin,
+            b"MOVEMENT_VALIDATOR_REWARDS"
+        );
+
+        primary_fungible_store::create_primary_store_enabled_fungible_asset(
+            constructor_ref,
+            option::none(), // Unlimited for ongoing rewards
+            string::utf8(b"Movement Validator Rewards"),
+            string::utf8(b"MVREWARD"),
+            8,
+            string::utf8(b"https://movement.xyz/assets/validator-reward.png"),
+            string::utf8(b"https://validators.movement.xyz")
+        );
+
+        let mint_ref = fungible_asset::generate_mint_ref(constructor_ref);
+        let burn_ref = fungible_asset::generate_burn_ref(constructor_ref);
+
+        move_to(admin, RewardConfig {
+            mint_ref,
+            burn_ref,
+            epoch_rewards: 1000000, // 1M tokens per epoch
+            last_distribution: timestamp::now_seconds(),
+            total_distributed: 0,
+        });
+    }
+
+    /// Distribute rewards to validators
+    public entry fun distribute_epoch_rewards(
+        admin: &signer,
+        validators: vector<address>,
+        performance_scores: vector<u64> // Out of 100
+    ) acquires RewardConfig {
+        let config = borrow_global_mut<RewardConfig>(signer::address_of(admin));
+        
+        // Calculate total performance for proportional distribution
+        let total_performance = 0;
+        let i = 0;
+        let len = vector::length(&performance_scores);
+        while (i < len) {
+            total_performance = total_performance + *vector::borrow(&performance_scores, i);
+            i = i + 1;
+        };
+
+        // Distribute rewards proportionally
+        i = 0;
+        while (i < len) {
+            let validator = *vector::borrow(&validators, i);
+            let score = *vector::borrow(&performance_scores, i);
+            let reward_amount = (config.epoch_rewards * score) / total_performance;
+
+            let reward_tokens = fungible_asset::mint(&config.mint_ref, reward_amount);
+            primary_fungible_store::deposit(validator, reward_tokens);
+            
+            i = i + 1;
+        };
+
+        config.last_distribution = timestamp::now_seconds();
+        config.total_distributed = config.total_distributed + config.epoch_rewards;
+    }
+}
+```
+
+### DeFi Integration Features
+
+#### Liquidity Pool Token
+
+Token with built-in liquidity pool mechanics:
+
+```move
+module movement_addr::liquidity_pool_token {
+    use aptos_framework::fungible_asset::{Self, MintRef, BurnRef, FungibleAsset};
+    use aptos_framework::primary_fungible_store;
+    use aptos_framework::object::{Self, Object};
+    use aptos_framework::event;
+    use std::string;
+    use std::option;
+
+    struct LiquidityPoolToken has key {}
+
+    struct PoolConfig has key {
+        mint_ref: MintRef,
+        burn_ref: BurnRef,
+        total_liquidity: u64,
+        fee_rate: u64, // Basis points
+        protocol_fee_share: u64, // Percentage of fees for protocol
+    }
+
+    #[event]
+    struct LiquidityAdded has drop, store {
+        provider: address,
+        amount: u64,
+        lp_tokens_minted: u64,
+    }
+
+    #[event]
+    struct LiquidityRemoved has drop, store {
+        provider: address,
+        lp_tokens_burned: u64,
+        amount_withdrawn: u64,
+    }
+
+    /// Add liquidity and mint LP tokens
+    public entry fun add_liquidity(
+        provider: &signer,
+        base_amount: u64,
+        quote_amount: u64
+    ) acquires PoolConfig {
+        let config = borrow_global_mut<PoolConfig>(@movement_addr);
+        
+        // Calculate LP tokens to mint based on pool ratio
+        let lp_tokens = if (config.total_liquidity == 0) {
+            // Initial liquidity provision
+            base_amount * quote_amount / 1000 // Geometric mean with scaling
+        } else {
+            // Proportional to existing liquidity
+            (base_amount * config.total_liquidity) / get_base_reserves()
+        };
+
+        // Mint LP tokens
+        let lp_token_fa = fungible_asset::mint(&config.mint_ref, lp_tokens);
+        primary_fungible_store::deposit(signer::address_of(provider), lp_token_fa);
+
+        config.total_liquidity = config.total_liquidity + lp_tokens;
+
+        event::emit(LiquidityAdded {
+            provider: signer::address_of(provider),
+            amount: base_amount + quote_amount,
+            lp_tokens_minted: lp_tokens,
+        });
+    }
+
+    /// Remove liquidity by burning LP tokens
+    public entry fun remove_liquidity(
+        provider: &signer,
+        lp_tokens: u64
+    ) acquires PoolConfig {
+        let config = borrow_global_mut<PoolConfig>(@movement_addr);
+        
+        // Calculate withdrawal amounts
+        let base_amount = (lp_tokens * get_base_reserves()) / config.total_liquidity;
+        let quote_amount = (lp_tokens * get_quote_reserves()) / config.total_liquidity;
+
+        // Burn LP tokens
+        let lp_token_fa = primary_fungible_store::withdraw(
+            provider, 
+            get_lp_token_metadata(), 
+            lp_tokens
+        );
+        fungible_asset::burn(&config.burn_ref, lp_token_fa);
+
+        config.total_liquidity = config.total_liquidity - lp_tokens;
+
+        // Transfer underlying assets back to provider
+        // (Implementation would handle actual asset transfers)
+
+        event::emit(LiquidityRemoved {
+            provider: signer::address_of(provider),
+            lp_tokens_burned: lp_tokens,
+            amount_withdrawn: base_amount + quote_amount,
+        });
+    }
+
+    // Helper functions (implementation details omitted for brevity)
+    fun get_base_reserves(): u64 { 1000000 } // Placeholder
+    fun get_quote_reserves(): u64 { 1000000 } // Placeholder
+    fun get_lp_token_metadata(): Object<fungible_asset::Metadata> { 
+        object::address_to_object(@movement_addr) 
+    }
+}
+```
+
+## Dispatchable Fungible Assets (Advanced)
+
+Movement supports Dispatchable Fungible Assets (DFA) that execute custom logic during transfers.
+
+### Custom Transfer Logic
+
+Implement tokens with automatic fee collection:
+
+```move
+module movement_addr::fee_collecting_token {
+    use aptos_framework::fungible_asset::{Self, FungibleAsset, TransferRef};
+    use aptos_framework::object::{Self, Object};
+    use aptos_framework::primary_fungible_store;
+    use aptos_framework::dispatchable_fungible_asset;
+    use aptos_framework::function_info;
+    use std::string;
+    use std::option;
+
+    /// Custom withdraw with fee collection
+    public fun withdraw<T: key>(
+        store: Object<T>,
+        amount: u64,
+        transfer_ref: &TransferRef,
+    ): FungibleAsset {
+        // Calculate fee (1% of transfer)
+        let fee_amount = amount / 100;
+        let net_amount = amount - fee_amount;
+
+        // Withdraw full amount
+        let fa = fungible_asset::withdraw_with_ref(transfer_ref, store, amount);
+        
+        // Extract fee portion
+        let fee_fa = fungible_asset::extract(&mut fa, fee_amount);
+        
+        // Deposit fee to protocol treasury
+        let treasury = get_treasury_address();
+        primary_fungible_store::deposit(treasury, fee_fa);
+
+        fa // Return net amount
+    }
+
+    /// Custom deposit with bonus rewards
+    public fun deposit<T: key>(
+        store: Object<T>,
+        fa: FungibleAsset,
+        transfer_ref: &TransferRef,
+    ) {
+        let amount = fungible_asset::amount(&fa);
+        
+        // Calculate bonus (0.1% of deposit)
+        let bonus_amount = amount / 1000;
+        
+        // Deposit original amount
+        fungible_asset::deposit_with_ref(transfer_ref, store, fa);
+        
+        // Mint and deposit bonus
+        if (bonus_amount > 0) {
+            let mint_ref = get_mint_ref();
+            let bonus_fa = fungible_asset::mint(mint_ref, bonus_amount);
+            fungible_asset::deposit_with_ref(transfer_ref, store, bonus_fa);
+        }
+    }
+
+    /// Register dispatch functions
+    public entry fun setup_dispatchable_token(creator: &signer) {
+        let constructor_ref = &object::create_named_object(
+            creator,
+            b"MOVEMENT_FEE_TOKEN"
+        );
+
+        // Create the fungible asset
+        primary_fungible_store::create_primary_store_enabled_fungible_asset(
+            constructor_ref,
+            option::some(10000000000), // 10B max supply
+            string::utf8(b"Movement Fee Token"),
+            string::utf8(b"MOVEFEE"),
+            8,
+            string::utf8(b"https://movement.xyz/assets/fee-token.png"),
+            string::utf8(b"https://movement.xyz")
+        );
+
+        // Create function info for dispatch
+        let withdraw_function = function_info::new_function_info(
+            creator,
+            string::utf8(b"fee_collecting_token"),
+            string::utf8(b"withdraw")
+        );
+
+        let deposit_function = function_info::new_function_info(
+            creator,
+            string::utf8(b"fee_collecting_token"),
+            string::utf8(b"deposit")
+        );
+
+        // Register dispatch functions
+        dispatchable_fungible_asset::register_dispatch_functions(
+            constructor_ref,
+            option::some(withdraw_function),
+            option::some(deposit_function),
+            option::none()
+        );
+    }
+
+    // Helper functions
+    fun get_treasury_address(): address { @movement_treasury }
+    fun get_mint_ref(): &fungible_asset::MintRef { 
+        // Implementation to retrieve stored mint ref
+        abort 0
+    }
+}
+```
+
+## Query Functions
+
+Comprehensive query interface for token information:
+
+```move
+// Token metadata queries
+public fun name<T: key>(metadata: Object<T>): String
+public fun symbol<T: key>(metadata: Object<T>): String  
+public fun decimals<T: key>(metadata: Object<T>): u8
+public fun icon_uri<T: key>(metadata: Object<T>): String
+public fun project_uri<T: key>(metadata: Object<T>): String
+
+// Supply information
+public fun supply<T: key>(metadata: Object<T>): Option<u128>
+public fun maximum<T: key>(metadata: Object<T>): Option<u128>
+
+// Balance queries
+public fun balance<T: key>(store: Object<T>): u64
+public fun primary_store_balance<T: key>(account: address, metadata: Object<T>): u64
+
+// Store status
+public fun is_frozen<T: key>(store: Object<T>): bool
+public fun store_exists(store: address): bool
+```
+
+## Events and Monitoring
+
+Movement's FA standard emits comprehensive events for tracking:
+
+```move
+// Core transfer events
+#[event]
+struct Deposit has drop, store {
+    store: address,
+    amount: u64,
+}
+
+#[event]
+struct Withdraw has drop, store {
+    store: address,
+    amount: u64,
+}
+
+#[event]
+struct Frozen has drop, store {
+    store: address,
+    frozen: bool,
+}
+
+// Creation and management events
+#[event]
+struct Creation has drop, store {
+    metadata: address,
+    name: String,
+    symbol: String,
+    decimals: u8,
+    maximum_supply: Option<u128>,
+}
+```
+
+## Best Practices for Movement
+
+### Security Considerations
+
+- **Capability Management**: Store and protect mint/burn/transfer refs appropriately
+- **Access Control**: Implement proper permission checks for administrative functions
+- **Supply Limits**: Set reasonable maximum supply limits to prevent inflation attacks
+- **Freeze Functionality**: Use freezing capabilities responsibly for compliance, not censorship
+
+### Performance Optimization
+
+- **Batch Operations**: Use batch functions for multiple token operations
+- **Primary Stores**: Prefer primary fungible stores for standard use cases
+- **Event Efficiency**: Emit events judiciously to balance transparency and gas costs
+- **Storage Patterns**: Use efficient data structures for token metadata and configurations
+
+### Movement Ecosystem Integration
+
+- **Validator Integration**: Design tokens that work seamlessly with Movement's consensus mechanism
+- **DeFi Compatibility**: Ensure tokens integrate well with Movement's DeFi protocols
+- **Cross-Chain Features**: Consider bridging capabilities for multi-chain applications
+- **Governance Integration**: Build tokens that can participate in Movement's governance systems
+
+### User Experience
+
+- **Clear Metadata**: Provide comprehensive and accurate token information
+- **Intuitive Symbols**: Use clear, recognizable token symbols
+- **Proper Decimals**: Choose appropriate decimal precision for your use case
+- **Error Handling**: Provide clear error messages for failed operations
+
+## Migration from Legacy Standards
+
+For projects migrating from the legacy Coin standard or other token implementations:
+
+1. **Assessment**: Evaluate current token functionality and user base
+2. **Planning**: Design migration strategy to minimize user disruption  
+3. **Testing**: Thoroughly test on Movement testnet before mainnet deployment
+4. **Communication**: Provide clear guidance to users during transition
+5. **Support**: Maintain legacy compatibility during transition period
+
+<Callout type="info">
+Movement Labs provides comprehensive migration tools and support for projects transitioning to the Fungible Asset standard. The FA standard represents the future of token development on Movement and offers significant advantages over legacy approaches.
+</Callout>
 

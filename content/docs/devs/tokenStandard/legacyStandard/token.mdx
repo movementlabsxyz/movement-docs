@@ -1,6 +1,631 @@
 ---
 title: Token (Legacy)
-description: Learn about the legacy Token standard on Movement
+description: Learn about the legacy Token standard for multi-token development on Movement
 ---
 
 # Token (Legacy Standard)
+
+The [Token standard](https://github.com/movementlabsxyz/aptos-core/blob/main/aptos-move/framework/aptos-token/sources/token.move) provides a comprehensive framework for creating and managing collections of tokens on Movement. This standard supports fungible tokens (FTs), non-fungible tokens (NFTs), and semi-fungible tokens (SFTs) within a unified system, enabling creators to build complex token ecosystems with rich metadata and customizable properties.
+
+<Callout type="info">
+The Token standard is available in the Movement framework at `aptos_token::token`.
+</Callout>
+
+<Callout type="warning">
+This is the legacy token standard. For new projects on Movement, consider using the updated [Digital Asset Standard](/docs/devs/tokenStandard/digitalAsset/) for NFTs or [Fungible Asset Standard](/docs/devs/tokenStandard/fungibleAsset/) for fungible tokens, which offer enhanced features and better composability.
+</Callout>
+
+## Overview
+
+Movement's Token standard enables developers to:
+
+- **Create Multi-Token Collections**: Support FTs, NFTs, and SFTs within a single collection framework
+- **Rich Metadata Management**: Comprehensive on-chain and off-chain metadata with customizable properties
+- **Flexible Mutability Controls**: Granular control over which token and collection properties can be modified
+- **Advanced Token Operations**: Built-in support for minting, burning, transferring, and property mutations
+- **Creator Economics**: Integrated royalty system for sustainable creator revenue streams
+
+## Core Architecture
+
+### Multi-Token Framework
+
+The Token standard uses a hierarchical structure to organize tokens:
+
+```move
+module aptos_token::token {
+    /// Core token structure supporting all token types
+    struct Token has store {
+        id: TokenId,
+        amount: u64,
+        token_properties: PropertyMap,
+    }
+    
+    /// Global unique identifier for tokens
+    struct TokenId has store, copy, drop {
+        token_data_id: TokenDataId,
+        property_version: u64,
+    }
+    
+    /// Identifier for shared token data
+    struct TokenDataId has copy, drop, store {
+        creator: address,
+        collection: String,
+        name: String,
+    }
+}
+```
+
+**Key Benefits:**
+- **Unified Standard**: Single framework handles all token types (FT, NFT, SFT)
+- **Efficient Storage**: Shared token data reduces on-chain storage requirements
+- **Version Control**: Property versioning enables token evolution and customization
+- **Creator Control**: Comprehensive mutability and capability management
+
+### Collection Structure
+
+Collections organize related tokens under a common framework:
+
+```move
+module aptos_token::token {
+    /// Collection metadata and configuration
+    struct CollectionData has store {
+        description: String,
+        name: String,
+        uri: String,
+        supply: u64,
+        maximum: u64,
+        mutability_config: CollectionMutabilityConfig,
+    }
+    
+    /// Controls which collection fields can be modified
+    struct CollectionMutabilityConfig has copy, store, drop {
+        description: bool,
+        uri: bool,
+        maximum: bool,
+    }
+}
+```
+
+### Token Data and Metadata
+
+Shared token information is stored in `TokenData`:
+
+```move
+module aptos_token::token {
+    /// Shared data for tokens with the same TokenDataId
+    struct TokenData has store {
+        maximum: u64,
+        largest_property_version: u64,
+        supply: u64,
+        uri: String,
+        royalty: Royalty,
+        name: String,
+        description: String,
+        default_properties: PropertyMap,
+        mutability_config: TokenMutabilityConfig,
+    }
+    
+    /// Royalty configuration for creator economics
+    struct Royalty has copy, drop, store {
+        royalty_points_numerator: u64,
+        royalty_points_denominator: u64,
+        payee_address: address,
+    }
+}
+```
+
+## Movement Framework Structures
+
+The following tables describe the core structures in Movement's token implementation.
+
+### [`Token`]
+
+| Field              | Type           | Description                                           |
+| ------------------ | -------------- | ----------------------------------------------------- |
+| `id`               | TokenId        | Unique identifier for this specific token instance   |
+| `amount`           | u64            | Quantity of tokens (1 for NFTs, >1 for FTs/SFTs)    |
+| `token_properties` | PropertyMap    | Instance-specific properties for this token          |
+
+### [`TokenId`]
+
+| Field              | Type           | Description                                           |
+| ------------------ | -------------- | ----------------------------------------------------- |
+| `token_data_id`    | TokenDataId    | Reference to shared token data                        |
+| `property_version` | u64            | Version number for token property mutations           |
+
+### [`TokenDataId`]
+
+| Field        | Type    | Description                                    |
+| ------------ | ------- | ---------------------------------------------- |
+| `creator`    | address | Address of the token creator                   |
+| `collection` | String  | Name of the collection this token belongs to   |
+| `name`       | String  | Unique name of the token within the collection |
+
+### [`CollectionData`]
+
+| Field               | Type                        | Description                                      |
+| ------------------- | --------------------------- | ------------------------------------------------ |
+| `description`       | String                      | Collection description                           |
+| `name`              | String                      | Unique collection name under creator             |
+| `uri`               | String                      | URI pointing to collection metadata              |
+| `supply`            | u64                         | Current number of token types in collection      |
+| `maximum`           | u64                         | Maximum token types allowed (0 = unlimited)     |
+| `mutability_config` | CollectionMutabilityConfig  | Controls which fields can be modified           |
+
+### [`TokenData`]
+
+| Field                      | Type                    | Description                                           |
+| -------------------------- | ----------------------- | ----------------------------------------------------- |
+| `maximum`                  | u64                     | Maximum supply for this token type (0 = unlimited)   |
+| `largest_property_version` | u64                     | Highest property version used                         |
+| `supply`                   | u64                     | Current circulating supply                            |
+| `uri`                      | String                  | URI pointing to token metadata                        |
+| `royalty`                  | Royalty                 | Royalty configuration for secondary sales             |
+| `name`                     | String                  | Token name (unique within collection)                 |
+| `description`              | String                  | Token description                                     |
+| `default_properties`       | PropertyMap             | Default properties for new token instances            |
+| `mutability_config`        | TokenMutabilityConfig   | Controls which fields can be modified                 |
+
+## Token Operations
+
+Movement's token standard provides comprehensive functionality for creators and users.
+
+### For Collection Creators
+
+#### Create a Collection
+
+Establish a new collection to organize related tokens:
+
+```move
+public fun create_collection(
+    creator: &signer,
+    name: String,
+    description: String,
+    uri: String,
+    maximum: u64,
+    mutate_setting: vector<bool>
+) acquires Collections
+```
+
+**Example: Creating a Movement NFT Collection**
+```move
+public entry fun create_movement_nft_collection(creator: &signer) {
+    let mutate_setting = vector<bool>[
+        true,  // description mutable
+        true,  // uri mutable  
+        false  // maximum immutable
+    ];
+    
+    token::create_collection(
+        creator,
+        string::utf8(b"Movement Pioneers"),
+        string::utf8(b"Exclusive NFT collection for Movement ecosystem pioneers"),
+        string::utf8(b"https://movement.xyz/metadata/pioneers"),
+        1000, // Maximum 1000 NFTs
+        mutate_setting
+    );
+}
+```
+
+#### Create Token Data
+
+Define the template for tokens within a collection:
+
+```move
+public fun create_tokendata(
+    account: &signer,
+    collection: String,
+    name: String,
+    description: String,
+    maximum: u64,
+    uri: String,
+    royalty_payee_address: address,
+    royalty_points_denominator: u64,
+    royalty_points_numerator: u64,
+    token_mutate_config: TokenMutabilityConfig,
+    property_keys: vector<String>,
+    property_values: vector<vector<u8>>,
+    property_types: vector<String>
+): TokenDataId acquires Collections
+```
+
+**Example: Creating an NFT with Properties**
+```move
+public fun create_pioneer_nft(
+    creator: &signer,
+    pioneer_id: u64,
+    rarity: String,
+    special_ability: String
+): TokenDataId {
+    let property_keys = vector<String>[
+        string::utf8(b"pioneer_id"),
+        string::utf8(b"rarity"),
+        string::utf8(b"special_ability"),
+        string::utf8(b"TOKEN_BURNABLE_BY_CREATOR")
+    ];
+    
+    let property_values = vector<vector<u8>>[
+        bcs::to_bytes<u64>(&pioneer_id),
+        bcs::to_bytes<String>(&rarity),
+        bcs::to_bytes<String>(&special_ability),
+        bcs::to_bytes<bool>(&true)
+    ];
+    
+    let property_types = vector<String>[
+        string::utf8(b"u64"),
+        string::utf8(b"0x1::string::String"),
+        string::utf8(b"0x1::string::String"),
+        string::utf8(b"bool")
+    ];
+    
+    let mutate_config = token::create_token_mutability_config(
+        &vector<bool>[false, true, true, true, true] // Only maximum immutable
+    );
+    
+    token::create_tokendata(
+        creator,
+        string::utf8(b"Movement Pioneers"),
+        string::utf8(b"Pioneer #") + to_string(pioneer_id),
+        string::utf8(b"A unique Movement ecosystem pioneer NFT"),
+        1, // NFT - maximum supply of 1
+        string::utf8(b"https://movement.xyz/metadata/pioneer/") + to_string(pioneer_id),
+        signer::address_of(creator),
+        100, // 10% royalty (10/100)
+        10,
+        mutate_config,
+        property_keys,
+        property_values,
+        property_types
+    )
+}
+```
+
+#### Mint Tokens
+
+Create token instances from token data:
+
+```move
+public fun mint_token(
+    account: &signer,
+    token_data_id: TokenDataId,
+    amount: u64,
+): TokenId acquires Collections, TokenStore
+```
+
+**Example: Minting and Distributing NFTs**
+```move
+public fun mint_and_distribute_pioneer(
+    creator: &signer,
+    recipient: address,
+    token_data_id: TokenDataId
+) {
+    // Mint the NFT
+    let token_id = token::mint_token(creator, token_data_id, 1);
+    
+    // Transfer to recipient if they've opted in
+    if (token::is_opt_in_direct_transfer(recipient)) {
+        let token = token::withdraw_token(creator, token_id, 1);
+        token::direct_deposit(recipient, token);
+    }
+}
+```
+
+#### Token Property Management
+
+Update token properties for customization and evolution:
+
+```move
+public fun mutate_token_properties(
+    account: &signer,
+    token_owner: address,
+    creator: address,
+    collection_name: String,
+    token_name: String,
+    token_property_version: u64,
+    amount: u64,
+    keys: vector<String>,
+    values: vector<vector<u8>>,
+    types: vector<String>,
+) acquires Collections, TokenStore
+```
+
+**Example: Upgrading Token Properties**
+```move
+public fun upgrade_pioneer_abilities(
+    creator: &signer,
+    token_owner: address,
+    token_id: TokenId,
+    new_special_ability: String,
+    power_level: u64
+) {
+    let keys = vector<String>[
+        string::utf8(b"special_ability"),
+        string::utf8(b"power_level"),
+        string::utf8(b"last_upgraded")
+    ];
+    
+    let values = vector<vector<u8>>[
+        bcs::to_bytes<String>(&new_special_ability),
+        bcs::to_bytes<u64>(&power_level),
+        bcs::to_bytes<u64>(&timestamp::now_seconds())
+    ];
+    
+    let types = vector<String>[
+        string::utf8(b"0x1::string::String"),
+        string::utf8(b"u64"),
+        string::utf8(b"u64")
+    ];
+    
+    token::mutate_token_properties(
+        creator,
+        token_owner,
+        token_id.token_data_id.creator,
+        token_id.token_data_id.collection,
+        token_id.token_data_id.name,
+        token_id.property_version,
+        1,
+        keys,
+        values,
+        types
+    );
+}
+```
+
+### For Token Users
+
+#### Opt-in for Direct Transfer
+
+Enable direct token transfers to your account:
+
+```move
+public entry fun opt_in_direct_transfer(account: &signer, opt_in: bool) acquires TokenStore
+```
+
+**Example:**
+```move
+public entry fun enable_token_transfers(user: &signer) {
+    token::opt_in_direct_transfer(user, true);
+}
+```
+
+#### Transfer Tokens
+
+Send tokens between accounts:
+
+```move
+public entry fun transfer_with_opt_in(
+    from: &signer,
+    creator: address,
+    collection_name: String,
+    token_name: String,
+    token_property_version: u64,
+    to: address,
+    amount: u64,
+) acquires TokenStore
+```
+
+**Example: Trading NFTs**
+```move
+public entry fun trade_pioneer_nft(
+    seller: &signer,
+    buyer_address: address,
+    creator: address,
+    pioneer_id: u64
+) {
+    let collection_name = string::utf8(b"Movement Pioneers");
+    let token_name = string::utf8(b"Pioneer #") + to_string(pioneer_id);
+    
+    token::transfer_with_opt_in(
+        seller,
+        creator,
+        collection_name,
+        token_name,
+        0, // Original property version
+        buyer_address,
+        1  // Transfer 1 NFT
+    );
+}
+```
+
+#### Burn Tokens
+
+Destroy tokens permanently (if allowed):
+
+```move
+public entry fun burn(
+    owner: &signer,
+    creators_address: address,
+    collection: String,
+    name: String,
+    property_version: u64,
+    amount: u64
+) acquires Collections, TokenStore
+```
+
+## Movement-Specific Features
+
+### Enhanced Property System
+
+Movement's token standard includes an advanced property system:
+
+```move
+// Custom property types supported
+struct PropertyMap has store, drop, copy {
+    map: SimpleMap<String, PropertyValue>
+}
+
+// Flexible property values
+struct PropertyValue has store, drop, copy {
+    value: vector<u8>,
+    type: String,
+}
+```
+
+**Benefits:**
+- **Type Safety**: Strongly typed property values with runtime validation
+- **Extensibility**: Support for custom property types and complex data structures
+- **Versioning**: Property mutations create new versions for NFT evolution
+- **Gas Efficiency**: Optimized storage and access patterns
+
+### Creator Economics
+
+Built-in royalty system for sustainable creator revenue:
+
+```move
+struct Royalty has copy, drop, store {
+    royalty_points_numerator: u64,
+    royalty_points_denominator: u64,
+    payee_address: address,
+}
+```
+
+**Features:**
+- **Flexible Rates**: Configurable royalty percentages
+- **Multi-Recipient**: Support for shared royalty distribution
+- **Marketplace Integration**: Standard interface for marketplace compliance
+- **Immutable Options**: Lock royalty settings for creator guarantees
+
+### Advanced Token Types
+
+#### Semi-Fungible Tokens (SFTs)
+
+Tokens that can have multiple copies but unique properties:
+
+```move
+// Create SFT with limited supply
+public fun create_game_item_sft(
+    creator: &signer,
+    item_name: String,
+    max_supply: u64,
+    base_stats: vector<u64>
+): TokenDataId {
+    // Implementation for game items that can have multiple copies
+    // but maintain unique properties per instance
+}
+```
+
+#### Dynamic NFTs
+
+NFTs with mutable properties that evolve over time:
+
+```move
+// NFT that can level up and gain new abilities
+public fun level_up_character(
+    owner: &signer,
+    character_token_id: TokenId,
+    new_level: u64,
+    new_abilities: vector<String>
+) {
+    // Update character properties based on game progression
+}
+```
+
+### Collection Management
+
+#### Batch Operations
+
+Efficient batch processing for large collections:
+
+```move
+public fun batch_mint_tokens(
+    creator: &signer,
+    token_data_ids: vector<TokenDataId>,
+    amounts: vector<u64>,
+    recipients: vector<address>
+) {
+    // Batch mint multiple tokens efficiently
+}
+```
+
+#### Collection Analytics
+
+Built-in analytics for collection performance:
+
+```move
+public fun get_collection_stats(
+    creator: address,
+    collection_name: String
+): (u64, u64, u64) {
+    // Returns (current_supply, maximum, total_minted)
+}
+```
+
+## Query Functions
+
+Comprehensive query interface for token information:
+
+```move
+// Token ownership and balance
+public fun balance_of(owner: address, token_id: TokenId): u64
+public fun get_token_amount(token: &Token): u64
+
+// Token metadata
+public fun get_token_id(token: &Token): &TokenId
+public fun get_property_map(owner: address, token_id: TokenId): PropertyMap
+
+// Collection information
+public fun get_collection_supply(creator: address, collection_name: String): u64
+public fun get_collection_maximum(creator: address, collection_name: String): u64
+
+// Token data queries
+public fun get_tokendata_maximum(token_data_id: TokenDataId): u64
+public fun get_tokendata_supply(token_data_id: TokenDataId): u64
+public fun get_tokendata_uri(creator: address, token_data_id: TokenDataId): String
+```
+
+## Events and Monitoring
+
+Comprehensive event system for tracking token activities:
+
+```move
+// Token lifecycle events
+struct CreateTokenDataEvent has drop, store { /* ... */ }
+struct MintTokenEvent has drop, store { /* ... */ }
+struct BurnTokenEvent has drop, store { /* ... */ }
+
+// Transfer events
+struct DepositEvent has drop, store { /* ... */ }
+struct WithdrawEvent has drop, store { /* ... */ }
+
+// Property mutation events
+struct MutateTokenPropertyMapEvent has drop, store { /* ... */ }
+```
+
+## Migration Considerations
+
+### From Token to Digital Asset Standard
+
+For projects planning to migrate from the legacy Token standard:
+
+1. **Assessment**: Evaluate current token usage and identify migration requirements
+2. **Mapping**: Map existing token properties to Digital Asset equivalents
+3. **Testing**: Thoroughly test migration scripts on Movement testnet
+4. **Gradual Migration**: Implement phased migration to minimize disruption
+5. **User Communication**: Provide clear guidance for users during transition
+
+<Callout type="info">
+Movement Labs provides migration tools and documentation for projects transitioning from legacy standards. The Token standard will continue to be supported for existing projects while new development is encouraged to use modern standards.
+</Callout>
+
+## Best Practices
+
+### Security Considerations
+
+- **Property Validation**: Always validate property types and values before mutations
+- **Access Control**: Use proper capability checks for sensitive operations
+- **Burn Protection**: Implement appropriate burn flags to prevent accidental token destruction
+- **Royalty Validation**: Ensure royalty percentages are within acceptable ranges
+
+### Performance Optimization
+
+- **Batch Operations**: Use batch functions for multiple token operations
+- **Property Efficiency**: Minimize property map size for gas optimization
+- **Event Optimization**: Emit events judiciously to balance transparency and cost
+- **Storage Patterns**: Use efficient data structures for large collections
+
+### User Experience
+
+- **Clear Metadata**: Provide comprehensive and accurate token metadata
+- **Property Documentation**: Document custom properties for better user understanding
+- **Transfer Flows**: Implement user-friendly transfer and approval mechanisms
+- **Error Handling**: Provide clear error messages for failed operations
