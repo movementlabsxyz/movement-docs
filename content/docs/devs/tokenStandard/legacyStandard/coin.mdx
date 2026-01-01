@@ -15,16 +15,6 @@ The Coin standard is available in the Movement framework at `0x1::coin`.
 This is the legacy coin standard. For new projects on Movement, consider using the updated [Fungible Asset Standard](/devs/tokenStandard/currentStandard/fungibleAsset/) which offers enhanced features and better composability.
 </Callout>
 
-## Overview
-
-Movement's Coin standard enables developers to:
-
-- **Create Type-Safe Tokens**: Each coin type is distinct at compile time, preventing accidental mixing
-- **Leverage Shared Infrastructure**: Reuse proven code patterns across different token implementations
-- **Integrate with Movement Ecosystem**: Native compatibility with Movement's DeFi protocols and wallets
-- **Scale Efficiently**: Built-in support for high-throughput operations and parallel execution
-- **Maintain Security**: Capability-based access control for critical operations
-
 ## Core Architecture
 
 ### Reusable Token Framework
@@ -120,7 +110,7 @@ Token creators have privileged access to manage their tokens through capabilitie
 
 #### Initialize a New Token
 
-Create and register a new token type on Movement:
+The `initialize` function creates and registers a new token type on Movement. This function must be called from the account that deployed the token module and can only be executed once per token type. It returns three capability tokens (`BurnCapability`, `FreezeCapability`, `MintCapability`) that grant privileged access to token management operations and must be stored securely.
 
 ```move
 module 0x1::coin {
@@ -163,13 +153,13 @@ public fun initialize_movement_usd(creator: &signer) {
 **Requirements:**
 - Must be called from the account that deployed the token module
 - Token name ≤ 32 characters
-- Token symbol ≤ 32 characters
-- Decimals ≤ 32 (typically 6-18 for most tokens)
+- Token symbol ≤ 10 characters
+- Decimals is typically between 6 and 18 for most tokens
 - Can only be initialized once per token type
 
 #### Mint New Tokens
 
-Create new tokens and add them to circulation:
+Minting creates new token instances and adds them to the total supply. The `MintCapability` is required to mint tokens, ensuring only authorized accounts can increase circulation. The minted tokens are returned as a `Coin` struct that must then be deposited to a recipient's account.
 
 ```move
 module 0x1::coin {
@@ -205,7 +195,7 @@ public fun airdrop_musd(
 
 #### Burn Tokens
 
-Remove tokens from circulation permanently:
+Burning permanently removes tokens from circulation, reducing the total supply. The `BurnCapability` is required for this operation. Two variants exist: `burn` destroys tokens from a `Coin` struct, while `burn_from` removes tokens directly from a user's `CoinStore` (commonly used for transaction fees).
 
 ```move
 module 0x1::coin {
@@ -234,7 +224,7 @@ The `burn` function destroys tokens from a `Coin` struct, while `burn_from` remo
 
 #### Freeze/Unfreeze Accounts
 
-Control token transfers for compliance or security:
+The freeze functionality allows token creators to restrict deposits and withdrawals for specific accounts. This is useful for compliance requirements, security incidents, or implementing controlled token releases. The `FreezeCapability` is required to freeze or unfreeze accounts.
 
 ```move
 module 0x1::coin {
@@ -260,7 +250,7 @@ Regular users can interact with tokens through standard operations.
 
 #### Register for Token
 
-Prepare account to receive a specific token type:
+Before an account can receive a specific token type, it must register for that token by creating a `CoinStore` resource. This is a one-time operation per token type and is required because the legacy coin standard requires explicit opt-in for token receipt.
 
 ```move
 module 0x1::coin {
@@ -280,7 +270,7 @@ public entry fun register_for_musd(user: &signer) {
 
 #### Transfer Tokens
 
-Send tokens between accounts on Movement:
+The `transfer` function moves tokens from one account to another in a single atomic operation. It handles both the withdrawal from the sender and deposit to the recipient, emitting events for both operations. The recipient must have already registered for the token type.
 
 ```move
 module 0x1::coin {
@@ -298,9 +288,9 @@ module 0x1::coin {
 This operation emits both `WithdrawEvent` and `DepositEvent` for complete transaction tracking on Movement.
 </Callout>
 
-#### Advanced Token Operations
+#### Merge Token Amounts
 
-Movement provides additional utilities for token manipulation:
+The `merge` function combines two `Coin` instances into one by adding the source coin's value to the destination coin. The source coin is consumed in the process. This is useful when aggregating tokens from multiple sources before a single deposit or transfer.
 
 ```move
 // Merge two token amounts
@@ -308,19 +298,37 @@ public fun merge<CoinType>(
     dst_coin: &mut Coin<CoinType>,
     source_coin: Coin<CoinType>,
 )
+```
 
+#### Extract Token Amounts
+
+The `extract` function splits a `Coin` by removing a specified amount and returning it as a new `Coin` instance. The original coin's value is reduced accordingly. This is useful for partial transfers or when you need to separate tokens for different purposes.
+
+```move
 // Extract specific amount from tokens
 public fun extract<CoinType>(
     coin: &mut Coin<CoinType>,
     amount: u64,
 ): Coin<CoinType>
+```
 
+#### Withdraw Tokens
+
+The `withdraw` function removes tokens from the caller's `CoinStore` and returns them as a `Coin` struct. This is the first step in a manual transfer process and emits a `WithdrawEvent`. The caller must have sufficient balance and the account must not be frozen.
+
+```move
 // Withdraw tokens from account
 public fun withdraw<CoinType>(
     account: &signer,
     amount: u64,
 ): Coin<CoinType>
+```
 
+#### Deposit Tokens
+
+The `deposit` function adds tokens from a `Coin` struct to an account's `CoinStore`. This is typically used after minting or withdrawing tokens. The recipient account must have registered for the token type and must not be frozen. A `DepositEvent` is emitted upon successful deposit.
+
+```move
 // Deposit tokens to account
 public fun deposit<CoinType>(
     account_addr: address,
@@ -328,39 +336,43 @@ public fun deposit<CoinType>(
 )
 ```
 
-## Movement-Specific Features
+## Additional Functions
 
-### High-Performance Execution
+Movement provides enhanced tooling for coin development, organized into query and utility functions.
 
-Movement's coin standard is optimized for high-throughput scenarios:
+### Query Functions
 
-- **Parallel Execution**: Multiple token operations can execute simultaneously
-- **Optimized Storage**: Efficient on-chain data structures minimize gas costs
-- **Batch Operations**: Support for processing multiple transfers in single transactions
-
-### Cross-Chain Compatibility
-
-Tokens created with Movement's coin standard can:
-
-- **Bridge to Ethereum**: Native support for cross-chain token transfers
-- **Integrate with Movement DeFi**: Seamless compatibility with DEXs, lending protocols, and yield farms
-- **Support Multiple Standards**: Interoperate with both legacy coins and modern fungible assets
-
-### Developer Tools
-
-Movement provides enhanced tooling for coin development:
+Query functions allow you to retrieve token information without modifying state. These are essential for building user interfaces, validating balances before transfers, and monitoring token supply.
 
 ```move
-// Query functions for token information
+// Get account balance for a specific token type
 public fun balance<CoinType>(owner: address): u64
-public fun supply<CoinType>(): Option<u128>
-public fun name<CoinType>(): string::String
-public fun symbol<CoinType>(): string::String
-public fun decimals<CoinType>(): u8
 
-// Utility functions
+// Get total supply of tokens in circulation
+public fun supply<CoinType>(): Option<u128>
+
+// Get token name
+public fun name<CoinType>(): string::String
+
+// Get token symbol
+public fun symbol<CoinType>(): string::String
+
+// Get token decimal precision
+public fun decimals<CoinType>(): u8
+```
+
+### Utility Functions
+
+Utility functions help verify account states and token properties. These are useful for validation checks before performing operations and for building conditional logic in smart contracts.
+
+```move
+// Check if account is registered for a token type
 public fun is_account_registered<CoinType>(account: address): bool
+
+// Check if account's coin store is frozen
 public fun is_coin_store_frozen<CoinType>(account: address): bool
+
+// Get value from a Coin struct
 public fun value<CoinType>(coin: &Coin<CoinType>): u64
 ```
 
@@ -380,37 +392,27 @@ struct WithdrawEvent has drop, store {
 }
 ```
 
-## Migration Path
+## Summary
 
-For projects using the legacy coin standard on Movement:
+The Movement Coin (Legacy) standard provides a comprehensive framework for creating and managing fungible tokens on the Movement blockchain. This documentation covers:
 
-1. **Assessment**: Evaluate current token usage and requirements
-2. **Planning**: Design migration strategy to Fungible Asset Standard
-3. **Testing**: Thoroughly test new implementation on Movement testnet
-4. **Deployment**: Execute migration with minimal user disruption
-5. **Monitoring**: Track performance improvements and user adoption
+**Core Architecture:**
+- **Type-safe token framework** using Move's phantom types for distinct coin types
+- **Account storage system** with `CoinStore` resources for secure token management
+- **Token metadata** stored in `CoinInfo` structures for comprehensive token information
 
-<Callout type="info">
-Movement Labs provides migration tools and support for projects transitioning from the legacy coin standard. Contact the Movement developer relations team for assistance.
-</Callout>
+**Token Operations:**
+- **Creator functions**: Initialize, mint, burn, and freeze/unfreeze capabilities
+- **User functions**: Register, transfer, merge, extract, withdraw, and deposit operations
+- **Query and utility functions**: Balance checking, supply monitoring, and account state verification
 
-## Best Practices for Movement
+**Key Features:**
+- **Security**: Capability-based access control for privileged operations
+- **Efficiency**: Optimized for high-throughput and parallel execution
+- **Composability**: Seamless integration with Movement's DeFi ecosystem
+- **Event tracking**: Comprehensive deposit and withdrawal event emission
 
-### Security Considerations
-- **Capability Management**: Store mint/burn/freeze capabilities in secure, access-controlled modules
-- **Supply Monitoring**: Enable supply tracking for transparency and auditing
-- **Event Logging**: Implement comprehensive event emission for all token operations
-- **Testing**: Use Movement's testing framework for thorough validation
+**Migration Notice:**
+While this legacy standard remains functional, new projects should consider the updated [Fungible Asset Standard](/devs/tokenStandard/currentStandard/fungibleAsset/) for enhanced features and better composability.
 
-### Performance Optimization
-- **Batch Operations**: Group multiple token operations when possible
-- **Parallel Execution**: Design token logic to support Movement's parallel execution model
-- **Storage Efficiency**: Minimize on-chain storage requirements
-- **Gas Optimization**: Use Movement's gas estimation tools for cost-effective operations
-
-### Ecosystem Integration
-- **Standard Compliance**: Follow Movement's token standards for maximum compatibility
-- **DeFi Integration**: Design tokens for seamless DeFi protocol integration
-- **Cross-Chain Support**: Consider bridge compatibility from the design phase
-- **User Experience**: Implement user-friendly interfaces for token interactions
-
+This standard enables developers to create secure, efficient, and interoperable fungible tokens that integrate seamlessly with the broader Movement ecosystem.

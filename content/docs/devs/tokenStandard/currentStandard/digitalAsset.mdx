@@ -73,21 +73,21 @@ Collections organize related NFTs under a unified framework:
 
 #### Tokens
 
-Individual NFTs within collections:
+Tokens represent individual NFTs within a collection. Each token is a Move Object that contains metadata and maintains a reference to its parent collection. Tokens can be extended with custom resources to add application-specific functionality such as game attributes, DeFi properties, or any other custom data.
 
 | Field           | Type              | Description                                        |
 | --------------- | ----------------- | -------------------------------------------------- |
-| `collection`    | `Object<Collection>` | Reference to parent collection                    |
+| `collection`    | `Object<Collection>` | Reference to the parent collection object       |
 | `description`   | String            | Token description (max 2048 characters)          |
-| `name`          | String            | Unique token name within collection               |
-| `uri`           | String            | URI pointing to token metadata (max 512 chars)   |
-| `mutation_setting` | MutationSetting | Controls which fields can be modified           |
+| `name`          | String            | Unique token name within the collection           |
+| `uri`           | String            | URI pointing to off-chain token metadata (max 512 chars) |
+| `mutation_setting` | MutationSetting | Configuration controlling which fields can be modified after creation |
 
 ## Creating Collections on Movement
 
 ### Fixed Supply Collections
 
-Create collections with a predetermined maximum supply:
+Fixed supply collections have a predetermined maximum number of tokens that can be minted. This is ideal for limited edition NFT drops, exclusive membership tokens, or any collection where scarcity is important. Use `collection::create_fixed_collection` to create a collection with a hard cap on supply.
 
 ```move
 module movement_addr::movement_nft_collection {
@@ -120,9 +120,13 @@ module movement_addr::movement_nft_collection {
 }
 ```
 
+<Callout type="warning">
+A Collection's maximum supply cannot be changed after creation.
+</Callout>
+
 ### Unlimited Supply Collections
 
-Create collections without supply restrictions:
+Unlimited supply collections have no cap on the number of tokens that can be minted. This is suitable for ongoing NFT series, reward tokens, or collections that need to grow over time. Use `collection::create_unlimited_collection` to create an open-ended collection.
 
 ```move
 module movement_addr::movement_art_collection {
@@ -152,105 +156,67 @@ module movement_addr::movement_art_collection {
 
 ### Advanced Collection with Custom Features
 
-Create collections with Movement-specific functionality:
+Since Collections are Move Objects, they can be customized through permission tokens called Refs. These Refs grant the ability to modify specific aspects of the Object after creation. In addition to standard Object Refs, Collections support a specialized MutatorRef that can be obtained by calling `collection::generate_mutator_ref`:
 
 ```move
 module movement_addr::advanced_movement_collection {
     use aptos_token_objects::collection::{Self, MutatorRef};
     use aptos_token_objects::royalty;
-    use aptos_framework::object::{Self, Object};
-    use aptos_framework::timestamp;
-    use aptos_framework::event;
+    use aptos_framework::object;
     use std::string;
     use std::option;
     use std::signer;
-    use std::vector;
 
-    /// Advanced Movement collection with custom features
-    struct MovementAdvancedCollection has key {
+    /// Collection with custom mutability
+    struct CustomCollection has key {
         mutator_ref: MutatorRef,
-        launch_time: u64,
-        mint_phases: vector<MintPhase>,
-        total_minted: u64,
     }
 
-    /// Mint phase configuration
-    struct MintPhase has store, drop {
-        name: String,
-        start_time: u64,
-        end_time: u64,
-        max_mints: u64,
-        price: u64,
-        whitelist_only: bool,
-    }
-
-    #[event]
-    struct CollectionPhaseStarted has drop, store {
-        collection: address,
-        phase_name: String,
-        start_time: u64,
-    }
-
-    /// Create advanced collection with phased minting
-    public entry fun create_advanced_collection(
-        creator: &signer,
-        phases: vector<MintPhase>
-    ) {
-        let royalty_config = royalty::create(7, 100, signer::address_of(creator));
+    /// Create collection with mutator ref for future updates
+    public entry fun create_custom_collection(creator: &signer) {
+        let royalty_config = royalty::create(5, 100, signer::address_of(creator));
         
         let constructor_ref = &collection::create_unlimited_collection(
             creator,
-            string::utf8(b"Premium Movement NFT collection with advanced features including phased minting, whitelist access, and dynamic pricing"),
-            string::utf8(b"Movement Premium Collection"),
+            string::utf8(b"Movement collection with mutable metadata"),
+            string::utf8(b"Movement Custom Collection"),
             option::some(royalty_config),
-            string::utf8(b"https://premium.movement.xyz/metadata")
+            string::utf8(b"https://movement.xyz/metadata")
         );
 
-        // Generate mutator ref for collection updates
+        // Generate mutator ref for later modifications
         let mutator_ref = collection::generate_mutator_ref(constructor_ref);
         let collection_signer = &object::generate_signer(constructor_ref);
 
-        // Store advanced collection data
-        move_to(collection_signer, MovementAdvancedCollection {
+        // Store mutator ref for future use
+        move_to(collection_signer, CustomCollection {
             mutator_ref,
-            launch_time: timestamp::now_seconds(),
-            mint_phases: phases,
-            total_minted: 0,
         });
     }
 
-    /// Update collection for new mint phase
-    public entry fun start_mint_phase(
+    /// Update collection description using stored mutator ref
+    public entry fun update_description(
         creator: &signer,
-        collection: `Object<collection::Collection>`,
-        phase_index: u64
-    ) acquires MovementAdvancedCollection {
+        collection: object::Object<collection::Collection>,
+        new_description: string::String
+    ) acquires CustomCollection {
         let collection_addr = object::object_address(&collection);
-        let advanced_collection = borrow_global_mut<MovementAdvancedCollection>(collection_addr);
+        let custom_collection = borrow_global<CustomCollection>(collection_addr);
         
-        assert!(phase_index < vector::length(&advanced_collection.mint_phases), 1);
-        let phase = vector::borrow(&advanced_collection.mint_phases, phase_index);
-        
-        // Update collection URI for the new phase
-        collection::set_uri(
-            &advanced_collection.mutator_ref,
-            string::utf8(b"https://premium.movement.xyz/phase/metadata")
-        );
-
-        event::emit(CollectionPhaseStarted {
-            collection: collection_addr,
-            phase_name: phase.name,
-            start_time: timestamp::now_seconds(),
-        });
+        collection::set_description(&custom_collection.mutator_ref, new_description);
     }
 }
 ```
+
+<Callout type="info">
+Refs must be generated at creation time of an Object. The ConstructorRef used to generate other Refs expires as soon as the transaction to create the Object is finished.
+</Callout>
 
 ## Creating Tokens (NFTs)
 
 ### Named Tokens
 
-Create tokens with deterministic addresses:
+Named tokens have deterministic addresses derived from the creator address, collection name, and token name. This makes them predictable and easy to reference without needing to store the token address. Named tokens are ideal when you need to look up tokens by their identifying information rather than storing addresses. Use `token::create_named_token` to create tokens with deterministic addressing.
 
 ```move
 module movement_addr::movement_character_nft {
@@ -290,9 +256,15 @@ module movement_addr::movement_character_nft {
 }
 ```
 
+<Callout type="info">
+You can derive the address for named tokens by:
+- Concatenating the creator address, collection name and token name
+- Doing a sha256 hash of that new string
+</Callout>
+
 ### Unnamed Tokens with Custom Properties
 
-Create flexible tokens with custom attributes:
+Unnamed tokens receive unique, non-deterministic addresses at creation time. They offer more flexibility for dynamic minting scenarios where predictable addresses aren't required. Unnamed tokens are commonly used with custom properties stored as additional resources on the token object, enabling rich functionality like equipment stats, character progression, or any application-specific data.
 
 ```move
 module movement_addr::movement_equipment_nft {
@@ -410,181 +382,11 @@ module movement_addr::movement_equipment_nft {
 }
 ```
 
-## Movement-Specific Features
-
-### Gaming Integration
-
-#### Character Progression System
-
-NFTs that evolve based on gameplay:
-
-```move
-module movement_addr::character_progression {
-    use aptos_token_objects::token::{Self, MutatorRef};
-    use aptos_framework::object::{Self, Object};
-    use aptos_framework::event;
-    use std::string::{Self, String};
-    use std::signer;
-    use std::vector;
-
-    /// Character with progression mechanics
-    struct MovementCharacter has key {
-        mutator_ref: MutatorRef,
-        level: u64,
-        experience: u64,
-        class: String,
-        achievements: vector<String>,
-        last_battle: u64,
-    }
-
-    #[event]
-    struct CharacterLevelUp has drop, store {
-        character: address,
-        old_level: u64,
-        new_level: u64,
-        new_abilities: vector<String>,
-    }
-
-    /// Gain experience and potentially level up
-    public entry fun gain_experience(
-        player: &signer,
-        character: `Object<token::Token>`,
-        exp_gained: u64
-    ) acquires MovementCharacter {
-        let character_addr = object::object_address(&character);
-        assert!(object::is_owner(character, signer::address_of(player)), 1);
-        
-        let char_data = borrow_global_mut<MovementCharacter>(character_addr);
-        char_data.experience = char_data.experience + exp_gained;
-        
-        // Check for level up (1000 exp per level)
-        let new_level = char_data.experience / 1000 + 1;
-        if (new_level > char_data.level) {
-            let old_level = char_data.level;
-            char_data.level = new_level;
-            
-            // Update character metadata
-            let new_name = string::utf8(b"Movement Warrior (Level 5)");
-            
-            token::set_name(&char_data.mutator_ref, new_name);
-            
-            // Unlock new abilities
-            let new_abilities = get_abilities_for_level(new_level);
-            
-            event::emit(CharacterLevelUp {
-                character: character_addr,
-                old_level,
-                new_level,
-                new_abilities,
-            });
-        }
-    }
-
-    // Helper functions
-    fun u64_to_string(value: u64): String { string::utf8(b"placeholder") }
-    fun get_abilities_for_level(level: u64): vector<String> { vector::empty() }
-}
-```
-
-### DeFi Integration
-
-#### Yield-Bearing NFTs
-
-NFTs that generate rewards over time:
-
-```move
-module movement_addr::yield_bearing_nft {
-    use aptos_token_objects::token::{Self, MutatorRef};
-    use aptos_framework::fungible_asset::{Self, FungibleAsset};
-    use aptos_framework::primary_fungible_store;
-    use aptos_framework::object::{Self, Object};
-    use aptos_framework::timestamp;
-    use aptos_framework::event;
-    use std::string;
-    use std::signer;
-
-    /// Yield-bearing NFT that generates Movement tokens
-    struct YieldNFT has key {
-        mutator_ref: MutatorRef,
-        yield_rate: u64,        // Tokens per second
-        last_claim: u64,        // Timestamp of last claim
-        total_earned: u64,      // Total tokens earned
-        boost_multiplier: u64,  // Yield boost (100 = 1x, 200 = 2x)
-    }
-
-    #[event]
-    struct YieldClaimed has drop, store {
-        nft: address,
-        owner: address,
-        amount: u64,
-        total_earned: u64,
-    }
-
-    /// Claim accumulated yield from NFT
-    public entry fun claim_yield(
-        owner: &signer,
-        nft: `Object<token::Token>`,
-        reward_token_metadata: `Object<fungible_asset::Metadata>`
-    ) acquires YieldNFT {
-        let nft_addr = object::object_address(&nft);
-        assert!(object::is_owner(nft, signer::address_of(owner)), 1);
-        
-        let yield_nft = borrow_global_mut<YieldNFT>(nft_addr);
-        let current_time = timestamp::now_seconds();
-        let time_elapsed = current_time - yield_nft.last_claim;
-        
-        // Calculate yield with boost
-        let base_yield = time_elapsed * yield_nft.yield_rate;
-        let boosted_yield = (base_yield * yield_nft.boost_multiplier) / 100;
-        
-        if (boosted_yield > 0) {
-            // Mint reward tokens (assuming we have mint capability)
-            let reward_tokens = mint_reward_tokens(boosted_yield);
-            primary_fungible_store::deposit(signer::address_of(owner), reward_tokens);
-            
-            yield_nft.last_claim = current_time;
-            yield_nft.total_earned = yield_nft.total_earned + boosted_yield;
-            
-            event::emit(YieldClaimed {
-                nft: nft_addr,
-                owner: signer::address_of(owner),
-                amount: boosted_yield,
-                total_earned: yield_nft.total_earned,
-            });
-        }
-    }
-
-    /// Apply yield boost to NFT
-    public entry fun apply_yield_boost(
-        owner: &signer,
-        nft: `Object<token::Token>`,
-        boost_percentage: u64
-    ) acquires YieldNFT {
-        let nft_addr = object::object_address(&nft);
-        assert!(object::is_owner(nft, signer::address_of(owner)), 1);
-        
-        let yield_nft = borrow_global_mut<YieldNFT>(nft_addr);
-        yield_nft.boost_multiplier = 100 + boost_percentage;
-        
-        // Update NFT metadata to reflect boost
-        let boost_text = string::utf8(b" (25% Yield Boost)");
-        // Update description with boost info
-    }
-
-    // Helper functions
-    fun mint_reward_tokens(amount: u64): FungibleAsset {
-        // Implementation would mint actual reward tokens
-        abort 0
-    }
-    fun u64_to_string(value: u64): string::String { string::utf8(b"placeholder") }
-}
-```
-
 ## Token Operations
 
 ### Transfer Operations
 
-Direct NFT transfers without opt-in requirements:
+The Digital Asset standard enables direct NFT transfers without requiring recipient opt-in, simplifying the user experience. Transfers are performed using the `object::transfer` function, which moves ownership of the NFT object to the specified recipient address.
 
 ```move
 public entry fun transfer_nft(
@@ -598,7 +400,7 @@ public entry fun transfer_nft(
 
 ### Batch Operations
 
-Efficiently transfer multiple NFTs:
+For applications that need to transfer multiple NFTs in a single transaction, batch operations provide gas efficiency and atomic execution. The following pattern iterates through a list of NFTs and recipients to perform multiple transfers.
 
 ```move
 public entry fun batch_transfer_nfts(
@@ -621,7 +423,7 @@ public entry fun batch_transfer_nfts(
 
 ### Burning Tokens
 
-Permanently destroy NFTs:
+Burning permanently destroys an NFT, removing it from circulation. To burn a token, you must have stored a `BurnRef` during token creation. The burn operation is irreversible and should be used carefully. Common use cases include redemption mechanics, upgrade systems that consume tokens, or cleanup of expired assets.
 
 ```move
 module movement_addr::nft_burning {
@@ -744,7 +546,7 @@ module movement_addr::movement_token {
 
 ## Query Functions
 
-Comprehensive query interface for digital assets:
+The Digital Asset standard provides a comprehensive query interface for retrieving information about collections, tokens, and ownership. These functions enable applications to read NFT metadata, verify ownership, and build rich user interfaces.
 
 ```move
 // Collection queries
@@ -798,47 +600,31 @@ struct Burn has drop, store {
 }
 ```
 
-## Best Practices for Movement
+## Summary
 
-### Security Considerations
+The Movement Digital Asset (DA) Standard provides a modern, object-based framework for creating and managing NFTs on the Movement blockchain. This documentation covers:
 
-- **Ref Management**: Store and protect mutator/burn refs securely
-- **Access Control**: Implement proper ownership checks for sensitive operations
-- **Metadata Validation**: Validate URI and description lengths
-- **Custom Logic**: Audit custom resources and functionality thoroughly
+**Core Architecture:**
+- **Object-based design** using Move Objects for true NFT ownership and enhanced composability
+- **Collection system** for organizing related NFTs with configurable mutation settings
+- **Flexible token creation** supporting both named and unnamed tokens with custom properties
 
-### Performance Optimization
+**Key Features:**
+- **Direct transfers** without recipient opt-in requirements
+- **Enhanced composability** allowing NFTs to own other NFTs and complex structures
+- **Extensible design** through custom resources and smart contract integration
+- **Gaming integration** with character progression, equipment systems, and dynamic properties
+- **DeFi integration** including yield-bearing NFTs and reward mechanisms
 
-- **Batch Operations**: Use batch functions for multiple NFT operations
-- **Event Efficiency**: Emit events judiciously to balance transparency and cost
-- **Storage Patterns**: Use efficient data structures for NFT metadata
-- **Object Lifecycle**: Plan object creation and deletion carefully
+**Token Operations:**
+- **Collection creation** with fixed or unlimited supply options
+- **Advanced minting** with custom properties, refs management, and batch operations
+- **Token management** including transfers, burning, and metadata updates
+- **Query functions** for comprehensive asset information retrieval
 
-### Movement Ecosystem Integration
+**Important Considerations:**
+- Collection maximum supply cannot be changed after creation
+- Refs must be generated at object creation time before the constructor expires
+- Named token addresses can be derived deterministically using creator, collection, and token names
 
-- **Gaming Compatibility**: Design NFTs that integrate with Movement's gaming protocols
-- **DeFi Integration**: Consider yield-bearing and utility NFT mechanisms
-- **Cross-Chain Features**: Plan for bridging capabilities across Movement's ecosystem
-- **Governance Participation**: Enable NFTs to participate in Movement governance
-
-### User Experience
-
-- **Clear Metadata**: Provide comprehensive and accurate NFT information
-- **Intuitive Naming**: Use clear, descriptive names for collections and tokens
-- **Rich Properties**: Leverage custom properties for enhanced functionality
-- **Error Handling**: Provide clear error messages for failed operations
-
-## Migration from Legacy Standards
-
-For projects migrating from the legacy Token standard:
-
-1. **Assessment**: Evaluate current NFT functionality and metadata structure
-2. **Mapping**: Map existing token properties to Digital Asset equivalents  
-3. **Testing**: Thoroughly test migration scripts on Movement testnet
-4. **Gradual Migration**: Implement phased migration to minimize user disruption
-5. **User Communication**: Provide clear guidance during the transition
-
-<Callout type="info">
-Movement Labs provides comprehensive migration tools and support for projects transitioning to the Digital Asset standard. The DA standard represents the future of NFT development on Movement and offers significant advantages over legacy implementations.
-</Callout>
-
+This standard represents the current best practice for NFT development on Movement, offering significant advantages over legacy implementations through enhanced composability, direct transfers, and seamless ecosystem integration.

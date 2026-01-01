@@ -15,16 +15,6 @@ The Token standard is available in the Movement framework at `aptos_token::token
 This is the legacy token standard. For new projects on Movement, consider using the updated [Digital Asset Standard](/devs/tokenStandard/currentStandard/digitalAsset) for NFTs or [Fungible Asset Standard](/devs/tokenStandard/currentStandard/fungibleAsset) for fungible tokens, which offer enhanced features and better composability.
 </Callout>
 
-## Overview
-
-Movement's Token standard enables developers to:
-
-- **Create Multi-Token Collections**: Support FTs, NFTs, and SFTs within a single collection framework
-- **Rich Metadata Management**: Comprehensive on-chain and off-chain metadata with customizable properties
-- **Flexible Mutability Controls**: Granular control over which token and collection properties can be modified
-- **Advanced Token Operations**: Built-in support for minting, burning, transferring, and property mutations
-- **Creator Economics**: Integrated royalty system for sustainable creator revenue streams
-
 ## Core Architecture
 
 ### Multi-Token Framework
@@ -174,7 +164,7 @@ Movement's token standard provides comprehensive functionality for creators and 
 
 #### Create a Collection
 
-Establish a new collection to organize related tokens:
+Collections serve as containers for organizing related tokens under a common framework. Before creating any tokens, you must first create a collection. The `mutate_setting` parameter controls which collection properties (description, URI, maximum) can be modified after creation.
 
 ```move
 public fun create_collection(
@@ -209,7 +199,7 @@ public entry fun create_movement_nft_collection(creator: &signer) {
 
 #### Create Token Data
 
-Define the template for tokens within a collection:
+Token data defines the template for tokens within a collection, including metadata, royalty configuration, and default properties. Each token data entry represents a unique token type that can have multiple instances (for FTs/SFTs) or a single instance (for NFTs). Properties are stored as key-value pairs with explicit type information.
 
 ```move
 public fun create_tokendata(
@@ -282,7 +272,7 @@ public fun create_pioneer_nft(
 
 #### Mint Tokens
 
-Create token instances from token data:
+Minting creates actual token instances from previously defined token data. The amount parameter determines how many tokens to create (1 for NFTs, more for FTs/SFTs). Minted tokens are initially held by the creator and can then be transferred to recipients.
 
 ```move
 public fun mint_token(
@@ -312,7 +302,7 @@ public fun mint_and_distribute_pioneer(
 
 #### Token Property Management
 
-Update token properties for customization and evolution:
+The legacy token standard supports mutable properties, allowing tokens to evolve over time. Property mutations create new property versions, enabling features like character leveling, equipment upgrades, or dynamic NFT attributes. Only properties marked as mutable during token data creation can be modified.
 
 ```move
 public fun mutate_token_properties(
@@ -375,7 +365,7 @@ public fun upgrade_pioneer_abilities(
 
 #### Opt-in for Direct Transfer
 
-Enable direct token transfers to your account:
+Unlike the newer Digital Asset standard, the legacy token standard requires recipients to explicitly opt-in before they can receive direct token transfers. This provides security against unwanted token spam but adds friction to the transfer process.
 
 ```move
 public entry fun opt_in_direct_transfer(account: &signer, opt_in: bool) acquires TokenStore
@@ -390,7 +380,7 @@ public entry fun enable_token_transfers(user: &signer) {
 
 #### Transfer Tokens
 
-Send tokens between accounts:
+The `transfer_with_opt_in` function transfers tokens between accounts when the recipient has enabled direct transfers. The function requires specifying the full token identification (creator, collection, name, property version) to uniquely identify the token being transferred.
 
 ```move
 public entry fun transfer_with_opt_in(
@@ -429,7 +419,7 @@ public entry fun trade_pioneer_nft(
 
 #### Burn Tokens
 
-Destroy tokens permanently (if allowed):
+Burning permanently destroys tokens, removing them from circulation. Tokens can only be burned if the `TOKEN_BURNABLE_BY_CREATOR` or `TOKEN_BURNABLE_BY_OWNER` properties were set during token data creation. This is useful for redemption mechanics, upgrade systems, or cleaning up unwanted tokens.
 
 ```move
 public entry fun burn(
@@ -446,7 +436,7 @@ public entry fun burn(
 
 ### Enhanced Property System
 
-Movement's token standard includes an advanced property system:
+The legacy token standard includes a flexible property system that stores arbitrary key-value pairs with type information. Properties can be set during token creation and optionally mutated later, enabling dynamic NFTs and evolving game assets.
 
 ```move
 // Custom property types supported
@@ -469,7 +459,7 @@ struct PropertyValue has store, drop, copy {
 
 ### Creator Economics
 
-Built-in royalty system for sustainable creator revenue:
+The legacy token standard includes a built-in royalty system that defines creator fees for secondary sales. Royalties are configured during token data creation and are expressed as a fraction (numerator/denominator) to support precise percentage calculations.
 
 ```move
 struct Royalty has copy, drop, store {
@@ -489,7 +479,7 @@ struct Royalty has copy, drop, store {
 
 #### Semi-Fungible Tokens (SFTs)
 
-Tokens that can have multiple copies but unique properties:
+Semi-fungible tokens combine properties of both fungible and non-fungible tokens. They can have multiple identical copies (like FTs) but also support unique per-instance properties (like NFTs). This is ideal for game items, event tickets, or any asset that needs both quantity and uniqueness.
 
 ```move
 // Create SFT with limited supply
@@ -506,7 +496,7 @@ public fun create_game_item_sft(
 
 #### Dynamic NFTs
 
-NFTs with mutable properties that evolve over time:
+Dynamic NFTs leverage the property mutation system to create tokens that evolve based on external events, user actions, or time. Property mutations create new versions, preserving the history of changes while updating the token's current state.
 
 ```move
 // NFT that can level up and gain new abilities
@@ -524,7 +514,7 @@ public fun level_up_character(
 
 #### Batch Operations
 
-Efficient batch processing for large collections:
+Batch operations enable efficient processing of multiple tokens in a single transaction, reducing gas costs and ensuring atomic execution. This is essential for large-scale minting events, airdrops, or collection-wide updates.
 
 ```move
 public fun batch_mint_tokens(
@@ -539,7 +529,7 @@ public fun batch_mint_tokens(
 
 #### Collection Analytics
 
-Built-in analytics for collection performance:
+Query functions provide insights into collection performance, including current supply, maximum capacity, and minting history. These are useful for building dashboards, enforcing supply limits, and monitoring collection growth.
 
 ```move
 public fun get_collection_stats(
@@ -552,7 +542,7 @@ public fun get_collection_stats(
 
 ## Query Functions
 
-Comprehensive query interface for token information:
+The legacy token standard provides a comprehensive query interface for retrieving token ownership, balances, metadata, and collection information. These functions are essential for building user interfaces, validating ownership, and integrating with marketplaces.
 
 ```move
 // Token ownership and balance
@@ -575,7 +565,7 @@ public fun get_tokendata_uri(creator: address, token_data_id: TokenDataId): Stri
 
 ## Events and Monitoring
 
-Comprehensive event system for tracking token activities:
+The legacy token standard emits comprehensive events for tracking the complete token lifecycle. These events enable indexers, analytics platforms, and user interfaces to track token creation, transfers, burns, and property mutations in real-time.
 
 ```move
 // Token lifecycle events
@@ -591,41 +581,31 @@ struct WithdrawEvent has drop, store { /* ... */ }
 struct MutateTokenPropertyMapEvent has drop, store { /* ... */ }
 ```
 
-## Migration Considerations
-
-### From Token to Digital Asset Standard
-
-For projects planning to migrate from the legacy Token standard:
-
-1. **Assessment**: Evaluate current token usage and identify migration requirements
-2. **Mapping**: Map existing token properties to Digital Asset equivalents
-3. **Testing**: Thoroughly test migration scripts on Movement testnet
-4. **Gradual Migration**: Implement phased migration to minimize disruption
-5. **User Communication**: Provide clear guidance for users during transition
-
 <Callout type="info">
 Movement Labs provides migration tools and documentation for projects transitioning from legacy standards. The Token standard will continue to be supported for existing projects while new development is encouraged to use modern standards.
 </Callout>
 
-## Best Practices
+## Summary
 
-### Security Considerations
+The Movement Token (Legacy) standard provides a comprehensive multi-token framework supporting fungible tokens (FTs), non-fungible tokens (NFTs), and semi-fungible tokens (SFTs) within a unified system. This documentation covers:
 
-- **Property Validation**: Always validate property types and values before mutations
-- **Access Control**: Use proper capability checks for sensitive operations
-- **Burn Protection**: Implement appropriate burn flags to prevent accidental token destruction
-- **Royalty Validation**: Ensure royalty percentages are within acceptable ranges
+**Core Architecture:**
+- **Multi-token framework** with hierarchical token organization using `Token`, `TokenId`, and `TokenDataId` structures
+- **Collection system** for organizing related tokens with configurable mutability settings
+- **Rich metadata support** through `TokenData` and property maps with versioning capabilities
 
-### Performance Optimization
+**Token Operations:**
+- **Creator functions**: Collection creation, token data definition, minting, and property management
+- **User functions**: Opt-in transfers, token trading, and burning capabilities
+- **Advanced features**: Semi-fungible tokens, dynamic NFTs, and batch operations
 
-- **Batch Operations**: Use batch functions for multiple token operations
-- **Property Efficiency**: Minimize property map size for gas optimization
-- **Event Optimization**: Emit events judiciously to balance transparency and cost
-- **Storage Patterns**: Use efficient data structures for large collections
+**Key Features:**
+- **Unified standard**: Single framework handles all token types with shared infrastructure
+- **Creator economics**: Built-in royalty system for sustainable revenue streams
+- **Property system**: Advanced property management with type safety and versioning
+- **Event tracking**: Comprehensive event emission for token lifecycle monitoring
 
-### User Experience
+**Migration Notice:**
+While this legacy standard remains functional, new projects should consider the updated [Digital Asset Standard](/devs/tokenStandard/currentStandard/digitalAsset) for NFTs or [Fungible Asset Standard](/devs/tokenStandard/currentStandard/fungibleAsset) for fungible tokens.
 
-- **Clear Metadata**: Provide comprehensive and accurate token metadata
-- **Property Documentation**: Document custom properties for better user understanding
-- **Transfer Flows**: Implement user-friendly transfer and approval mechanisms
-- **Error Handling**: Provide clear error messages for failed operations
+This standard enables developers to create sophisticated token ecosystems with rich metadata, flexible controls, and seamless integration with the Movement blockchain infrastructure.
