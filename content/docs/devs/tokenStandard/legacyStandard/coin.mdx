@@ -394,25 +394,9 @@ struct WithdrawEvent has drop, store {
 
 ## Summary
 
-The Movement Coin (Legacy) standard provides a comprehensive framework for creating and managing fungible tokens on the Movement blockchain. This documentation covers:
-
-**Core Architecture:**
-- **Type-safe token framework** using Move's phantom types for distinct coin types
-- **Account storage system** with `CoinStore` resources for secure token management
-- **Token metadata** stored in `CoinInfo` structures for comprehensive token information
-
-**Token Operations:**
-- **Creator functions**: Initialize, mint, burn, and freeze/unfreeze capabilities
-- **User functions**: Register, transfer, merge, extract, withdraw, and deposit operations
-- **Query and utility functions**: Balance checking, supply monitoring, and account state verification
-
-**Key Features:**
-- **Security**: Capability-based access control for privileged operations
-- **Efficiency**: Optimized for high-throughput and parallel execution
-- **Composability**: Seamless integration with Movement's DeFi ecosystem
-- **Event tracking**: Comprehensive deposit and withdrawal event emission
-
-**Migration Notice:**
-While this legacy standard remains functional, new projects should consider the updated [Fungible Asset Standard](/devs/tokenStandard/currentStandard/fungibleAsset/) for enhanced features and better composability.
-
-This standard enables developers to create secure, efficient, and interoperable fungible tokens that integrate seamlessly with the broader Movement ecosystem.
+- **Legacy framework** using Move's phantom types for type-safe, distinct coin types
+- **Capability-based access** through `MintCapability`, `BurnCapability`, and `FreezeCapability`
+- **Manual registration** required for users before receiving tokens via `CoinStore` resources
+- **Event tracking** with comprehensive deposit and withdraw event emission
+- **Proven stability** for existing projects with full ecosystem compatibility
+- **Migration recommended** to [Fungible Asset Standard](/devs/tokenStandard/currentStandard/fungibleAsset/) for new projects

@@ -574,28 +574,10 @@ struct Creation has drop, store {
 
 ## Summary
 
-The Movement Fungible Asset (FA) Standard provides a modern, object-based framework for creating and managing fungible tokens on the Movement blockchain. This documentation covers:
-
-**Core Architecture:**
-- **Object-based design** using `Metadata`, `FungibleStore`, and `FungibleAsset` structures for secure token management
-- **Automatic store management** where recipients don't need to manually create storage
-- **Capability-based access control** through `MintRef`, `TransferRef`, and `BurnRef` for privileged operations
-
-**Token Creation:**
-- **Basic token creation** with `primary_fungible_store::create_primary_store_enabled_fungible_asset`
-- **Advanced tokens** with custom logic, fee collection, and protocol integration
-- **Dispatchable tokens** with custom withdraw and deposit logic
-
-**Token Operations:**
-- **Creator functions**: Minting, batch airdrops, freezing/unfreezing accounts
-- **User functions**: Transfers, batch transfers, conditional transfers
-- **Query functions**: Balance checking, supply monitoring, and store status verification
-
-**Important Considerations:**
-- Capability refs must be stored securely and protected from unauthorized access
-- Primary fungible stores are automatically created for recipients
-- Maximum supply limits should be set appropriately to prevent inflation
-- Freeze functionality should be used responsibly for compliance purposes
-
-This standard represents the current best practice for fungible token development on Movement, offering significant advantages over legacy implementations through enhanced security, automatic store management, and seamless ecosystem integration.
+- **Modern framework** built on Move Objects with automatic store management for recipients
+- **Capability-based access** through `MintRef`, `TransferRef`, and `BurnRef` for secure operations
+- **Advanced features** including dispatchable tokens with custom transfer logic
+- **Batch operations** for efficient airdrops and multi-recipient transfers
+- **Enhanced security** with protected capability refs and automatic storage creation
+- **Recommended standard** for new fungible token projects, replacing legacy Coin
 

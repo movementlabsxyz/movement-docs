@@ -602,29 +602,9 @@ struct Burn has drop, store {
 
 ## Summary
 
-The Movement Digital Asset (DA) Standard provides a modern, object-based framework for creating and managing NFTs on the Movement blockchain. This documentation covers:
-
-**Core Architecture:**
-- **Object-based design** using Move Objects for true NFT ownership and enhanced composability
-- **Collection system** for organizing related NFTs with configurable mutation settings
-- **Flexible token creation** supporting both named and unnamed tokens with custom properties
-
-**Key Features:**
-- **Direct transfers** without recipient opt-in requirements
-- **Enhanced composability** allowing NFTs to own other NFTs and complex structures
-- **Extensible design** through custom resources and smart contract integration
-- **Gaming integration** with character progression, equipment systems, and dynamic properties
-- **DeFi integration** including yield-bearing NFTs and reward mechanisms
-
-**Token Operations:**
-- **Collection creation** with fixed or unlimited supply options
-- **Advanced minting** with custom properties, refs management, and batch operations
-- **Token management** including transfers, burning, and metadata updates
-- **Query functions** for comprehensive asset information retrieval
-
-**Important Considerations:**
-- Collection maximum supply cannot be changed after creation
-- Refs must be generated at object creation time before the constructor expires
-- Named token addresses can be derived deterministically using creator, collection, and token names
-
-This standard represents the current best practice for NFT development on Movement, offering significant advantages over legacy implementations through enhanced composability, direct transfers, and seamless ecosystem integration.
+- **Modern NFT framework** built on Move Objects for true ownership and enhanced composability
+- **Direct transfers** without recipient opt-in requirements for seamless user experience
+- **Flexible addressing** with named tokens (deterministic) and unnamed tokens (custom properties)
+- **Collection management** with fixed or unlimited supply (unchangeable after creation)
+- **Extensible design** allowing NFTs to own other NFTs and custom resource integration
+- **Recommended standard** for new NFT projects, replacing legacy Token standard

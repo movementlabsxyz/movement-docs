@@ -587,25 +587,9 @@ Movement Labs provides migration tools and documentation for projects transition
 
 ## Summary
 
-The Movement Token (Legacy) standard provides a comprehensive multi-token framework supporting fungible tokens (FTs), non-fungible tokens (NFTs), and semi-fungible tokens (SFTs) within a unified system. This documentation covers:
-
-**Core Architecture:**
-- **Multi-token framework** with hierarchical token organization using `Token`, `TokenId`, and `TokenDataId` structures
-- **Collection system** for organizing related tokens with configurable mutability settings
-- **Rich metadata support** through `TokenData` and property maps with versioning capabilities
-
-**Token Operations:**
-- **Creator functions**: Collection creation, token data definition, minting, and property management
-- **User functions**: Opt-in transfers, token trading, and burning capabilities
-- **Advanced features**: Semi-fungible tokens, dynamic NFTs, and batch operations
-
-**Key Features:**
-- **Unified standard**: Single framework handles all token types with shared infrastructure
-- **Creator economics**: Built-in royalty system for sustainable revenue streams
-- **Property system**: Advanced property management with type safety and versioning
-- **Event tracking**: Comprehensive event emission for token lifecycle monitoring
-
-**Migration Notice:**
-While this legacy standard remains functional, new projects should consider the updated [Digital Asset Standard](/devs/tokenStandard/currentStandard/digitalAsset) for NFTs or [Fungible Asset Standard](/devs/tokenStandard/currentStandard/fungibleAsset) for fungible tokens.
-
-This standard enables developers to create sophisticated token ecosystems with rich metadata, flexible controls, and seamless integration with the Movement blockchain infrastructure.
+- **Unified framework** supporting FTs, NFTs, and SFTs through hierarchical structures
+- **Collection-based organization** with built-in royalty systems for creator economics
+- **Mutable properties** with versioning support for dynamic NFTs and evolving assets
+- **Opt-in transfers** requiring recipient approval for enhanced security
+- **Flexible burning** when configured during token creation for redemption mechanics
+- **Migration recommended** to [Digital Asset Standard](/devs/tokenStandard/currentStandard/digitalAsset) (NFTs) or [Fungible Asset Standard](/devs/tokenStandard/currentStandard/fungibleAsset) (FTs)
