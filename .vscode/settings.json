@@ -1,3 +1,4 @@
 {
-    "spellright.userDictionary": "${workspaceFolder}/.vscode/spellright.dict"
+    "spellright.userDictionary": "${workspaceFolder}/.vscode/spellright.dict",
+    "spellright.language": ["en"]
   }
