@@ -1,0 +1,113 @@
+---
+title: "Requirements"
+description: "Hardware, network, storage, and port requirements for running a production-grade archival fullnode on the Movement blockchain."
+sidebar:
+  label: "Requirements"
+---
+
+To ensure that your archival fullnode operates smoothly, it should meet the requirements specified in this document.
+
+## Hardware requirements
+
+<Callout type="warning">
+**Minimum hardware requirements**
+
+Failing to meet the minimum hardware requirements means that your archival node will experience degradation under load and general instability in production environments. Archival nodes have higher requirements than standard PFNs due to the complete blockchain history they maintain.
+</Callout>
+
+For running a production-grade archival node, we recommend:
+
+| Resource | Minimum | Recommended |
+|----------|---------|-------------|
+| Storage | 1TB NVMe SSD | 2TB+ NVMe SSD |
+| Memory | 16GB RAM | 32GB RAM |
+| CPU | 8 cores | 16 cores |
+| Network | 100 Mbps | 1 Gbps |
+
+<Callout type="info">
+**Storage growth**
+
+Archival nodes store the complete blockchain history and will continue to grow over time. As of January 2026:
+- Mainnet: ~700GB
+- Testnet: ~260GB
+
+Plan for storage expansion as the blockchain grows.
+</Callout>
+
+## Network requirements and ports
+
+When running an archival node, you need to open network ports to allow other nodes (peers) to connect. The public network is used for PFNs to connect to other PFNs and VFNs.
+
+### Port settings
+
+The recommendations below assume default port settings. If you have changed the default port settings in your configuration file, adjust accordingly.
+
+<Callout type="warning">
+**Exposing ports**
+
+Unless explicitly required, we recommend that you do not expose any other ports while operating an archival node. Exposing additional ports can increase the attack surface of your node.
+</Callout>
+
+#### Running an archival node:
+
+Assuming default ports are used, configure the following:
+
+- Open the following TCP ports:
+  - `6182` – **Public network**: Open this port publicly to enable other PFNs to connect to your node.
+- Close the following TCP ports:
+  - `9101` – **Inspection service**: Close this port to prevent unauthorized metric inspection.
+  - `9102` – **Admin service**: Close this port to prevent unauthorized admin service interaction.
+  - `80/8080` - **REST API**: Close this port to prevent unauthorized REST API access.
+
+<Callout type="warning">
+**Exposing services**
+
+The inspection service port (`9101`), admin service port (`9102`) and the REST API port (`80` or `8080`) are useful for your internal network (e.g., application development and debugging). However, the inspection service port and the admin service port should never be exposed publicly. If you expose the REST API endpoint publicly, deploy additional authentication or rate-limiting to prevent abuse.
+</Callout>
+
+## Storage requirements
+
+Archival nodes store the entire history of the blockchain, so the database size will continue to grow unbounded. Unlike standard PFNs that prune old data, archival nodes maintain complete ledger history from genesis.
+
+Current storage estimates:
+- **Mainnet**: ~700GB (and growing)
+- **Testnet**: ~260GB (and growing)
+
+We recommend using NVMe SSDs for optimal performance due to the high I/O requirements of archival nodes.
+
+## Software requirements
+
+You will need one of the following:
+- **Docker** (recommended for most users)
+- **Rust toolchain** (for building from source)
+
+Additionally, to bootstrap your archival node from Movement Labs' public backups, you will need:
+- **restic** backup tool ([installation instructions](https://restic.net/))
+
+## Bootstrapping from backups
+
+Movement Labs provides public backups of archival node data that are updated hourly. This is the fastest way to bootstrap an archival node rather than syncing from genesis.
+
+Download and use the restore script from the Movement Networks repository:
+
+```shellscript filename="Terminal"
+# Download the restore script
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/l1_restore.sh
+chmod +x l1_restore.sh
+
+# Restore mainnet data
+./l1_restore.sh mainnet ./data
+
+# Or restore testnet data
+./l1_restore.sh testnet ./data
+```
+
+The script handles all the restic configuration for anonymous access to the public S3 backup buckets.
+
+<Callout type="info">
+**Backup schedule**
+
+- **Frequency**: Hourly snapshots
+- **Retention**: 14 days of snapshots
+- **Format**: restic backup repositories
+</Callout>

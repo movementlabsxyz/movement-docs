@@ -1,0 +1,174 @@
+---
+title: "Using Docker"
+description: "Deploy an archival fullnode using Docker containers with data restoration from Movement Labs backups."
+sidebar:
+  label: "Docker"
+---
+
+This guide describes how to deploy an archival fullnode using Docker.
+
+<Callout type="warning">
+**Supported only on x86-64 CPUs**
+
+Running aptos-core via Docker is currently only supported on x86-64 CPUs. If you have an Apple M1/M2 (ARM64) Mac, use the [source code approach](/general/nodes/archival-node/run/deploy/source) instead.
+</Callout>
+
+## Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) installed
+- [restic](https://restic.net/) installed for data restoration
+- Sufficient storage (mainnet ~700GB, testnet ~260GB)
+
+## Step 1: Create Working Directory
+
+```shellscript filename="Terminal"
+# For mainnet
+mkdir -p mainnet-archival && cd mainnet-archival
+
+# For testnet
+mkdir -p testnet-archival && cd testnet-archival
+```
+
+## Step 2: Download Configuration Files
+
+Download the archival fullnode configuration and genesis files:
+
+### For Mainnet
+
+```shellscript filename="Terminal"
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/configs/archival-fullnode.yaml
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/genesis.blob
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/waypoint.txt
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/genesis_waypoint.txt
+```
+
+### For Testnet
+
+```shellscript filename="Terminal"
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/configs/archival-fullnode.yaml
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/genesis.blob
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/waypoint.txt
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/genesis_waypoint.txt
+```
+
+## Step 3: Restore Data from Backup
+
+Restore blockchain data from Movement Labs' public backups using the restore script:
+
+```shellscript filename="Terminal"
+# Download the restore script
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/l1_restore.sh
+chmod +x l1_restore.sh
+
+# Restore data (use 'mainnet' or 'testnet')
+./l1_restore.sh mainnet ./data
+
+# Move data to the correct location for Docker
+mv data/opt/data/aptos/* data/
+rm -rf data/opt
+```
+
+<Callout type="warning">
+**Restore Time**
+
+Restoring from backup can take several hours depending on your network speed. Mainnet data is approximately 700GB and testnet is approximately 260GB.
+</Callout>
+
+## Step 4: Run the Archival Node
+
+Start the archival node using Docker:
+
+```shellscript filename="Terminal"
+docker run --pull=always \
+  --rm -p 8080:8080 \
+  -p 9101:9101 -p 6180:6180 \
+  -v $(pwd):/opt/aptos \
+  -v $(pwd)/data:/opt/aptos/data \
+  --workdir /opt/aptos \
+  --name=aptos-archival-node \
+  ghcr.io/movementlabsxyz/aptos-node:f24a5bc \
+  -f /opt/aptos/archival-fullnode.yaml
+```
+
+<Callout type="info">
+**Running in Background**
+
+To run the node in the background, add the `-d` flag:
+
+```shellscript filename="Terminal"
+docker run --pull=always -d \
+  --rm -p 8080:8080 \
+  -p 9101:9101 -p 6180:6180 \
+  -v $(pwd):/opt/aptos \
+  -v $(pwd)/data:/opt/aptos/data \
+  --workdir /opt/aptos \
+  --name=aptos-archival-node \
+  ghcr.io/movementlabsxyz/aptos-node:f24a5bc \
+  -f /opt/aptos/archival-fullnode.yaml
+```
+
+View logs with: `docker logs -f aptos-archival-node`
+</Callout>
+
+## Step 5: Verify the Node
+
+Verify that your archival node is running correctly:
+
+```shellscript filename="Terminal"
+# Check the node is responding
+curl http://localhost:8080/v1
+
+# Check the ledger version
+curl -s http://localhost:8080/v1 | jq '.ledger_version'
+
+# Verify historical data access (query genesis transaction)
+curl http://localhost:8080/v1/transactions/by_version/1
+
+# Check oldest available ledger version (should be 0 for archival)
+curl -s http://localhost:8080/v1 | jq '.oldest_ledger_version'
+```
+
+<Callout type="info">
+**Sync Time**
+
+After restoring from backup, your archival node will need to sync the remaining transactions from the backup point to the current chain head. This typically takes a few hours depending on how recent the backup is.
+</Callout>
+
+## Managing the Node
+
+### View Logs
+
+```shellscript filename="Terminal"
+docker logs -f aptos-archival-node
+```
+
+### Stop the Node
+
+```shellscript filename="Terminal"
+docker stop aptos-archival-node
+```
+
+### Restart the Node
+
+```shellscript filename="Terminal"
+docker start aptos-archival-node
+```
+
+## Ports
+
+| Port | Purpose |
+|------|---------|
+| 8080 | REST API |
+| 9101 | Metrics (Prometheus) |
+| 6180 | Internal use |
+| 6182 | P2P networking (not exposed by default) |
+
+<Callout type="warning">
+**Don't want to allow inbound P2P connections?**
+
+The default configuration doesn't expose port 6182. If you want to allow other PFNs to connect to yours, add `-p 6182:6182` to the docker command.
+</Callout>
+
+## Next Steps
+
+- [Verify your archival node](/general/nodes/archival-node/run/verify)

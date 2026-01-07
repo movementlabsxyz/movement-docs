@@ -2,6 +2,7 @@
   "title": "Nodes",
   "pages": [
     "index",
-    "full-node"
+    "full-node",
+    "archival-node"
   ]
 }
