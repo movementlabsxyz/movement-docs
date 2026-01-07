@@ -1,0 +1,76 @@
+---
+title: "Overview"
+description: "Deploy and operate an archival fullnode to maintain complete historical blockchain data from genesis, enabling historical queries and full transaction history access."
+sidebar:
+  label: "Overview"
+---
+
+An **archival fullnode** maintains complete blockchain history from genesis by disabling ledger pruning. Unlike standard public fullnodes (PFNs) that sync from a recent state and prune old data, archival nodes preserve the full transaction history.
+
+## When to Use an Archival Node
+
+An archival node is required if you need to:
+
+- Query historical blockchain state from any point in time
+- Access complete transaction history from genesis
+- Run indexers that require full historical data
+- Provide historical data services to other applications
+
+<Callout type="info">
+**Standard vs Archival Nodes**
+
+| Feature | Standard PFN | Archival Node |
+|---------|-------------|---------------|
+| Recent state queries | Yes | Yes |
+| Historical state queries | Limited | Full history |
+| Storage requirements | ~50-100GB | 700GB+ (mainnet) |
+| Initial sync time | Faster | Requires data restore |
+| Ledger pruning | Enabled | Disabled |
+</Callout>
+
+## Key Configuration Difference
+
+The only configuration difference between a standard PFN and an archival node is the `storage_pruner_config` setting:
+
+```yaml
+storage:
+  storage_pruner_config:
+    ledger_pruner_config:
+      enable: false  # Disable pruning for archival nodes
+```
+
+This setting prevents the node from pruning old ledger data, ensuring complete history is maintained.
+
+## Bootstrapping with Existing Data
+
+Because archival nodes maintain complete history, syncing from genesis would take an extremely long time. Movement Labs provides public backups that you can use to bootstrap your archival node with existing data.
+
+The backups are:
+- Updated hourly
+- Maintained for 14 days of snapshots
+- Available for both mainnet and testnet
+
+See the [deployment guides](/general/nodes/archival-node/run/deploy) for instructions on restoring from backups.
+
+## Hardware Requirements
+
+| Resource | Minimum | Recommended |
+|----------|---------|-------------|
+| Storage | 1TB SSD | 2TB+ NVMe SSD |
+| Memory | 16GB RAM | 32GB RAM |
+| CPU | 8 cores | 16 cores |
+| Network | 100 Mbps | 1 Gbps |
+
+<Callout type="warning">
+**Storage Growth**
+
+Archival nodes continuously grow as they store all blockchain data. Plan for storage expansion over time. As of January 2026:
+- Mainnet: ~700GB
+- Testnet: ~260GB
+</Callout>
+
+## Next Steps
+
+- [Run an Archival Node](/general/nodes/archival-node/run) - Overview of running archival nodes
+- [Deploy with Docker](/general/nodes/archival-node/run/deploy/docker) - Deploy using Docker containers
+- [Deploy from Source](/general/nodes/archival-node/run/deploy/source) - Build and deploy from source code

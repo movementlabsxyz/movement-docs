@@ -1,13 +1,45 @@
 ---
-title: "Movement Network Nodes"
-description: "Learn about validator nodes, validator fullnodes, and public fullnodes that power the Movement network"
+title: "Nodes"
+description: "Learn about the different types of nodes in the Movement Network and how to deploy and operate them."
 sidebar:
-label: "Nodes Overview"
+  label: "Nodes"
 ---
 
-The Movement network consists of three node types: validator nodes, validator fullnodes (VFNs), and public fullnodes (PFNs). To
-participate in consensus, you are required to run a validator node and stake the minimum amount of coins. VFNs and PFNs
-are not required to participate in consensus, but they are necessary to distribute blockchain data and enable ecosystem services,
-e.g., indexing, querying, and RESTful API services (see [Movement APIs](/api)). VFNs can only be run by validator operators,
-while PFNs can be run by anyone. You can learn more about the different types of nodes in the [L1 Architecture](/general/l1/architecture) section.
+The Movement Network consists of various node types that serve different purposes. This section covers how to deploy and operate nodes for different use cases.
 
+## Node Types
+
+### Full Node (PFN)
+
+A **public fullnode (PFN)** synchronizes with the Movement blockchain and maintains recent state. Full nodes are suitable for:
+
+- Running applications that need blockchain data
+- Submitting transactions
+- Querying recent state and transactions
+
+[Learn more about Full Nodes](/general/nodes/full-node)
+
+### Archival Node
+
+An **archival fullnode** maintains complete blockchain history from genesis by disabling ledger pruning. Archival nodes are required for:
+
+- Historical state queries from any point in time
+- Running indexers that need full transaction history
+- Providing historical data services
+
+[Learn more about Archival Nodes](/general/nodes/archival-node)
+
+## Comparison
+
+| Feature | Full Node | Archival Node |
+|---------|-----------|---------------|
+| Recent state queries | Yes | Yes |
+| Historical state queries | Limited | Full history |
+| Storage requirements | ~50-100GB | 700GB+ (mainnet) |
+| Initial sync time | Fast (state sync) | Requires backup restore |
+| Use case | Applications, transactions | Indexers, historical queries |
+
+## Additional Resources
+
+- [Movement L1 Node Types](/general/l1/nodes) - Learn about validator and VFN nodes
+- [Genesis Files](https://github.com/movementlabsxyz/movement-networks) - Download genesis and configuration files
