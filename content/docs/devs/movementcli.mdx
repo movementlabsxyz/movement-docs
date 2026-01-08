@@ -19,54 +19,28 @@ curl https://sh.rustup.rs -sSf | sh
 
 ## Quick Install Movement Precompiled Binaries
 
-<Callout type="info">
-
-As Movement transitions to supporting Move 2, we are temporarily supporting separate CLIs for Movement mainnet and testnet.
-
-</Callout>
-
-### Mainnet
-
 For ARM64 processors (newer Macs, for example M-series chips):
 
 ```bash tab="MacOS ARM64"
-curl -LO https://github.com/movementlabsxyz/homebrew-movement-cli/releases/download/bypass-homebrew/movement-macos-arm64.tar.gz && mkdir -p temp_extract && tar -xzf movement-macos-arm64.tar.gz -C temp_extract && chmod +x temp_extract/movement && sudo mv temp_extract/movement /usr/local/bin/movement && rm -rf temp_extract
+curl -LO https://github.com/movementlabsxyz/homebrew-movement-cli/releases/download/bypass-homebrew/movement-cli-l1-macos-arm64.tar.gz && mkdir -p temp_extract && tar -xzf movement-cli-l1-macos-arm64.tar.gz -C temp_extract && chmod +x temp_extract/movement && sudo mv temp_extract/movement /usr/local/bin/movement && rm -rf temp_extract
 ```
 
 For Macs running x86_64 processors (e.g. Intel chips):
 
 ```bash tab="MacOS Intel (x86_64)"
-curl -LO https://github.com/movementlabsxyz/homebrew-movement-cli/releases/download/bypass-homebrew/movement-macos-x86_64.gz && mkdir -p temp_extract && tar -xzf movement-macos-arm64.tar.gz -C temp_extract && chmod +x temp_extract/movement && sudo mv temp_extract/movement /usr/local/bin/movement && rm -rf temp_extract
+curl -LO https://github.com/movementlabsxyz/homebrew-movement-cli/releases/download/bypass-homebrew/movement-cli-l1-macos-x86_64.tar.gz && mkdir -p temp_extract && tar -xzf movement-cli-l1-macos-x86_64.tar.gz -C temp_extract && chmod +x temp_extract/movement && sudo mv temp_extract/movement /usr/local/bin/movement && rm -rf temp_extract
 ```
 
-In about under 10 seconds, your install should be done. You can verify by running:
+For Linux x86_64:
+
+```bash tab="Linux x86_64"
+curl -LO https://github.com/movementlabsxyz/homebrew-movement-cli/releases/download/bypass-homebrew/movement-cli-l1-linux-x86_64.tar.gz && mkdir -p temp_extract && tar -xzf movement-cli-l1-linux-x86_64.tar.gz -C temp_extract && chmod +x temp_extract/movement && sudo mv temp_extract/movement /usr/local/bin/movement && rm -rf temp_extract
+```
+
+Verify installation:
 
 ```bash
 movement --version
-```
-
-It should return `movement 7.4.0`.
-
-### Testnet
-
-Same instructions as mainnet but use the commands below for Move 2 support.
-
-For ARM64 processors (newer Macs, for example M-series chips):
-
-```bash tab="MacOS ARM64"
-curl -LO https://github.com/movementlabsxyz/homebrew-movement-cli/releases/download/bypass-homebrew/movement-move2-testnet-macos-arm64.tar.gz && mkdir -p temp_extract && tar -xzf movement-move2-testnet-macos-arm64.tar.gz -C temp_extract && chmod +x temp_extract/movement && sudo mv temp_extract/movement /usr/local/bin/movement && rm -rf temp_extract
-```
-
-For Macs running x86_64 processors (e.g. Intel chips):
-
-```bash tab="MacOS Intel (x86_64)"
-curl -LO https://github.com/movementlabsxyz/homebrew-movement-cli/releases/download/bypass-homebrew/movement-move2-testnet-macos-x86_64.tar.gz && mkdir -p temp_extract && tar -xzf movement-move2-testnet-macos-x86_64.tar.gz -C temp_extract && chmod +x temp_extract/movement && sudo mv temp_extract/movement /usr/local/bin/movement && rm -rf temp_extract
-```
-
-For Linux x86_64
-
-```bash tab="Linux x86_64"
-curl -LO https://github.com/movementlabsxyz/homebrew-movement-cli/releases/download/bypass-homebrew/movement-move2-testnet-linux-x86_64.tar.gz && mkdir -p temp_extract && tar -xzf movement-move2-testnet-linux-x86_64.tar.gz -C temp_extract && chmod +x temp_extract/movement && sudo mv temp_extract/movement /usr/local/bin/movement && rm -rf temp_extract
 ```
 
 ### Windows
