@@ -195,3 +195,123 @@ html:not(.dark) .movement-card:hover .movement-icon {
   display: none !important;
 } */
 
+
+/* Print Styles - Ensure all content prints correctly */
+@media print {
+  /* Set page margins */
+  @page {
+    margin: 0.75in;
+  }
+
+  /* Hide navigation, sidebar, and UI elements */
+  nav,
+  aside,
+  header,
+  footer,
+  [data-sidebar],
+  [data-toc],
+  .fd-sidebar,
+  .fd-toc,
+  .fd-nav,
+  .fd-header,
+  .fd-footer {
+    display: none !important;
+  }
+
+  /* Reset body and main containers */
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+    background: white !important;
+  }
+
+  /* Make main content full width */
+  main,
+  article,
+  .fd-page,
+  [data-page] {
+    position: static !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+    transform: none !important;
+    display: block !important;
+  }
+
+  /* Ensure content body is full width and visible */
+  [data-docs-body],
+  .fd-docs-body,
+  .prose {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* Ensure all text elements are visible and don't clip */
+  p,
+  li,
+  div,
+  span,
+  section,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    overflow: visible !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    max-width: 100% !important;
+    position: static !important;
+    page-break-inside: avoid;
+  }
+
+  /* Code blocks */
+  pre,
+  code {
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    overflow: visible !important;
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  /* Tables */
+  table {
+    width: 100% !important;
+    max-width: 100% !important;
+    table-layout: auto !important;
+    page-break-inside: avoid;
+  }
+
+  /* Images */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+    page-break-inside: avoid;
+  }
+
+  /* Remove background effects */
+  .docs-bg::before {
+    display: none !important;
+  }
+
+  /* Ensure text is black for printing */
+  * {
+    color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
