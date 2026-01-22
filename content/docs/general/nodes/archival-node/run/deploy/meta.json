@@ -1,0 +1,8 @@
+{
+  "title": "Deploy an Archival Node",
+  "pages": [
+    "index",
+    "source",
+    "docker"
+  ]
+}

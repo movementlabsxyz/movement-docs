@@ -1,0 +1,252 @@
+---
+title: "Using Source Code"
+description: "Deploy an archival fullnode by building from aptos-core source code with complete configuration and data restoration."
+sidebar:
+  label: "Source Code"
+---
+
+This guide describes how to deploy an archival fullnode by building from the Movement Labs `aptos-core` source code.
+
+## Prerequisites
+
+- [Rust toolchain](https://rustup.rs/) installed
+- [restic](https://restic.net/) installed for data restoration
+- Sufficient storage (mainnet ~700GB, testnet ~260GB)
+- Build dependencies installed
+
+### Install Build Dependencies (Linux)
+
+```shellscript filename="Terminal"
+sudo apt update
+sudo apt install -y binutils build-essential lld pkg-config libdw-dev
+```
+
+## Step 1: Clone and Build
+
+```shellscript filename="Terminal"
+# Clone the Movement aptos-core repository
+git clone https://github.com/movementlabsxyz/aptos-core.git
+cd aptos-core
+
+# Check out the l1-migration branch
+git checkout --track origin/l1-migration
+
+# Build the release binary (this will take some time)
+cargo build -p aptos-node --release
+```
+
+<Callout type="info">
+**Build Time**
+
+The initial build can take 15-30 minutes depending on your hardware. Subsequent builds are faster due to caching.
+</Callout>
+
+## Step 2: Download Configuration Files
+
+Download the archival fullnode configuration and genesis files:
+
+### For Mainnet
+
+```shellscript filename="Terminal"
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/configs/archival-fullnode.yaml
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/genesis.blob
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/waypoint.txt
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/genesis_waypoint.txt
+```
+
+### For Testnet
+
+```shellscript filename="Terminal"
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/configs/archival-fullnode.yaml
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/genesis.blob
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/waypoint.txt
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/genesis_waypoint.txt
+```
+
+## Step 3: Update Configuration Paths
+
+Edit the `archival-fullnode.yaml` to use local paths:
+
+```yaml filename="archival-fullnode.yaml"
+base:
+  role: "full_node"
+  data_dir: "./data"  # Local data directory
+  waypoint:
+    from_file: "./waypoint.txt"
+
+execution:
+  genesis_file_location: "./genesis.blob"
+  genesis_waypoint:
+    from_file: "./genesis_waypoint.txt"
+
+storage:
+  rocksdb_configs:
+    enable_storage_sharding: false
+  # ARCHIVAL NODE: Disable ledger pruning
+  storage_pruner_config:
+    ledger_pruner_config:
+      enable: false
+
+full_node_networks:
+  # ... (keep network configuration as-is)
+
+api:
+  enabled: true
+  address: 0.0.0.0:8080
+
+state_sync:
+  state_sync_driver:
+    bootstrapping_mode: DownloadLatestStates
+    continuous_syncing_mode: ApplyTransactionOutputs
+```
+
+## Step 4: Restore Data from Backup
+
+Restore blockchain data from Movement Labs' public backups using the restore script:
+
+```shellscript filename="Terminal"
+# Download the restore script
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/l1_restore.sh
+chmod +x l1_restore.sh
+
+# Restore data (use 'mainnet' or 'testnet')
+./l1_restore.sh mainnet ./data
+
+# Or for testnet:
+# ./l1_restore.sh testnet ./data
+
+# Move data to the correct location
+mv data/opt/data/aptos/* data/
+rm -rf data/opt
+```
+
+<Callout type="warning">
+**Restore Time**
+
+Restoring from backup can take several hours depending on your network speed. Mainnet data is approximately 700GB and testnet is approximately 260GB.
+</Callout>
+
+## Step 5: Run the Archival Node
+
+Start the archival node:
+
+```shellscript filename="Terminal"
+# Using the release binary
+./target/release/aptos-node -f ./archival-fullnode.yaml
+
+# Or using cargo run
+cargo run -p aptos-node --release -- -f ./archival-fullnode.yaml
+```
+
+<Callout type="info">
+**Running in Background**
+
+To run as a background service, consider using systemd or a process manager like `pm2` or `supervisord`.
+
+Example using nohup:
+```shellscript filename="Terminal"
+nohup ./target/release/aptos-node -f ./archival-fullnode.yaml > node.log 2>&1 &
+```
+</Callout>
+
+## Step 6: Verify the Node
+
+Verify that your archival node is running correctly:
+
+```shellscript filename="Terminal"
+# Check the node is responding
+curl http://localhost:8080/v1
+
+# Check the ledger version
+curl -s http://localhost:8080/v1 | jq '.ledger_version'
+
+# Verify historical data access (query genesis transaction)
+curl http://localhost:8080/v1/transactions/by_version/1
+
+# Check oldest available ledger version (should be 0 for archival)
+curl -s http://localhost:8080/v1 | jq '.oldest_ledger_version'
+```
+
+<Callout type="info">
+**Sync Time**
+
+After restoring from backup, your archival node will need to sync the remaining transactions from the backup point to the current chain head. This typically takes a few hours depending on how recent the backup is.
+</Callout>
+
+## Running as a Systemd Service
+
+Create a systemd service file for automatic startup:
+
+```ini filename="/etc/systemd/system/movement-archival.service"
+[Unit]
+Description=Movement Archival Node
+After=network.target
+
+[Service]
+Type=simple
+User=movement
+WorkingDirectory=/home/movement/aptos-core
+ExecStart=/home/movement/aptos-core/target/release/aptos-node -f /home/movement/aptos-core/archival-fullnode.yaml
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable and start the service:
+
+```shellscript filename="Terminal"
+sudo systemctl daemon-reload
+sudo systemctl enable movement-archival
+sudo systemctl start movement-archival
+
+# Check status
+sudo systemctl status movement-archival
+
+# View logs
+sudo journalctl -u movement-archival -f
+```
+
+## Updating the Node
+
+To update to a newer version:
+
+```shellscript filename="Terminal"
+# Stop the node
+sudo systemctl stop movement-archival  # or kill the process
+
+# Pull latest changes
+cd aptos-core
+git pull origin l1-migration
+
+# Rebuild
+cargo build -p aptos-node --release
+
+# Restart
+sudo systemctl start movement-archival
+```
+
+## Troubleshooting
+
+### Build fails
+
+1. Ensure all build dependencies are installed
+2. Check Rust version: `rustc --version`
+3. Try cleaning and rebuilding: `cargo clean && cargo build -p aptos-node --release`
+
+### Node won't start
+
+1. Check configuration file syntax
+2. Verify all paths in the config are correct
+3. Ensure data directory exists and has correct permissions
+
+### Node is not syncing
+
+1. Check logs for connection errors
+2. Verify network connectivity to upstream peers
+3. Ensure port 6182 is open for outbound connections
+
+## Next Steps
+
+- [Verify your archival node](/general/nodes/archival-node/run/verify)

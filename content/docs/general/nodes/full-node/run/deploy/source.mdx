@@ -5,137 +5,233 @@ sidebar:
   label: "Source Code"
 ---
 
-To deploy a PFN using the `aptos-core` source code maintained by movement labs
-Follow the steps below:
+This guide describes how to deploy a PFN using the `aptos-core` source code maintained by Movement Labs.
 
-1. Clone the movement  `aptos-core` repo : `git clone https://github.com/movementlabsxyz/aptos-core.git`.
+## Prerequisites
 
-1. Go in `aptos-core` directory: `cd aptos-core`.
+- [Rust toolchain](https://rustup.rs/) installed
+- Sufficient storage space (~50-100GB)
+- Build dependencies installed
 
-2. Check out the `l1-mgiration` branch using `git checkout --track origin/l1-migration`
-
-3. Next, download the `genesis.blob`, `waypoint.txt`, `genesis_waypoint.txt` files for the network your PFN will connect to:
-
-   - Run this command to download the genesis blob:
-    - for testnet:
-       ```shellscript filename="Terminal"
-       curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/genesis.blob
-       ```
-    - for mainnet:
-       ```shellscript filename="Terminal"
-       curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/genesis.blob
-       ```
-
-   - Run this command to download the waypoint file:
-    - for testnet:
-       ```shellscript filename="Terminal"
-       curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/waypoint.txt
-       ```
-    - for mainnet:
-       ```shellscript filename="Terminal"
-       curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/waypoint.txt
-       ```
-
-  - Run this command to download the genesis_waypoint file:
-    for testnet:
-     ```shellscript filename="Terminal"
-     curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/genesis_waypoint.txt
-     ```
-    for mainnet:
-     ```shellscript filename="Terminal"
-     curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/genesis_waypoint.txt
-     ```
-   <Callout type="warning">
-   **Genesis files repository**<br />
-   To connect to different networks (e.g., `testnet`, `devnet` and `mainnet`), you can find the genesis, waypoint and genesis_waypoint here ➜ https://github.com/movementlabsxyz/movement-networks.
-   Be sure to download the `genesis.blob`, `waypoint.txt` and `genesis_waypoint.txt` for those networks.
-   </Callout>
-
-4. Next, run the command below to create a copy of the PFN configuration YAML template:
-  - for testnet:
-   ```shellscript filename="Terminal"
-   cp config/src/config/test_data/public_full_node_testnet.yaml fullnode.yaml
-   ```
-  - for mainnet:
-   ```shellscript filename="Terminal"
-   cp config/src/config/test_data/public_full_node_mainnet.yaml fullnode.yaml
-   ```
-
-
-5. Finally, edit the `fullnode.yaml` configuration file to ensure that your PFN: (i) contains the files you just downloaded; and (ii) saves the synchronized blockchain data to the location of your
-   choice (on your local machine). To do this:
-
-   1. Specify the correct path to the `genesis.blob` and `genesis_waypoint.txt` file you just downloaded by editing `execution.genesis_file_location` in the `fullnode.yaml` configuration. By default, it points to `genesis.blob` in the current working directory.
-      ```yaml filename="fullnode.yaml"
-      execution:
-        genesis_file_location: ./genesis.blob # update to your path
-        genesis_waypoint: 
-          from_file: ./genesis_waypoint.txt
-      ```
-   2. Specify the correct path to the `waypoint.txt` file you just downloaded by editing `base.waypoint.from_file` in the `fullnode.yaml` configuration. By default, it points to `waypoint.txt` in the current working directory. For example:
-      ```yaml filename="fullnode.yaml"
-      base:
-        waypoint:
-          from_file: "./waypoint.txt"
-
-   3. Specify the directory on your local machine that you want to store the blockchain database by editing the `base.data_dir` in the `fullnode.yaml` configuration. For example, you can create a directory `my-full-node/data` in your home directory and specify it as:
-      ```yaml filename="fullnode.yaml"
-      base:
-        data_dir: "</path/to/my/homedir/my-full-node/data>"
-      ```
-   4. Specify the upstream peer for your PFN. The upstream peer is the node from which your PFN will synchronize blockchain data. It is defined by the peer id and the network DNS_. 
-      - mainnet: for mainnet the entry point is `9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F` and the DNS: `consensus.mainnet.movementnetwork.xyz` which gives:
-      ```
-      full_node_networks:
-        - network_id: "public"
-          discovery_method: "none"
-          listen_address: "/ip4/0.0.0.0/tcp/6182"
-          seeds:
-            9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F:
-              addresses:
-              - "/dns/consensus.mainnet.movementnetwork.xyz/tcp/6182/noise-ik/9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F/handshake/0"
-              role: "Upstream"
-      ```
-      - testnet: for testnet the entry point is `9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F` and the DNS: `consensus.testnet.movementnetwork.xyz` which gives:
-      ```
-      full_node_networks:
-        - network_id: "public"
-          discovery_method: "none"
-          listen_address: "/ip4/0.0.0.0/tcp/6182"
-          seeds:
-            9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F:
-              addresses:
-              - "/dns/consensus.testnet.movementnetwork.xyz/tcp/6182/noise-ik/9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F/handshake/0"
-              role: "Upstream"
-      ```
-
-      - You can also configure this to point to your own PFN if preferred by adjusting the peer id and DNS.
-
-6. Start your local public fullnode by running the below command:
-
-```shellscript filename="Terminal"
-cargo run -p aptos-node --release -- -f ./fullnode.yaml
-```
-
-<Callout type="info">
-**Debugging?**<br />
-The command above will build a release binary for `aptos-node` at: `aptos-core/target/release/aptos-node`. The release
-binaries tend to be substantially faster than debug binaries but lack debugging information useful for development.
-To build a debug binary, omit the `--release` flag from the command above.
-</Callout>
-
-<Callout type="info">
-On linux to get all the necessary packages run the commands:
+### Install Build Dependencies (Linux)
 
 ```shellscript filename="Terminal"
 sudo apt update
 sudo apt install -y binutils build-essential lld pkg-config libdw-dev
 ```
-</Callout>
 
-You have now successfully configured and started running a PFN in the Movement testnet.
+## Step 1: Clone and Build
+
+```shellscript filename="Terminal"
+# Clone the Movement aptos-core repository
+git clone https://github.com/movementlabsxyz/aptos-core.git
+cd aptos-core
+
+# Check out the l1-migration branch
+git checkout --track origin/l1-migration
+
+# Build the release binary
+cargo build -p aptos-node --release
+```
 
 <Callout type="info">
-**Verify your PFN**<br />
-If you want to verify that your PFN is running correctly, you can follow the instructions in the [Verify a PFN](/general/nodes/full-node/run/verify) guide.
+**Build Time**
+
+The initial build can take 15-30 minutes depending on your hardware. The release binary will be at `target/release/aptos-node`.
 </Callout>
+
+## Step 2: Download Configuration Files
+
+Download the fullnode configuration and genesis files for your network:
+
+### For Mainnet
+
+```shellscript filename="Terminal"
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/configs/fullnode.yaml
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/genesis.blob
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/waypoint.txt
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/genesis_waypoint.txt
+```
+
+### For Testnet
+
+```shellscript filename="Terminal"
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/configs/fullnode.yaml
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/genesis.blob
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/waypoint.txt
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/genesis_waypoint.txt
+```
+
+<Callout type="info">
+**Genesis files repository**
+
+All configuration and genesis files are maintained at https://github.com/movementlabsxyz/movement-networks
+</Callout>
+
+## Step 3: Update Configuration Paths
+
+Edit the `fullnode.yaml` to use local paths:
+
+```yaml filename="fullnode.yaml"
+base:
+  role: "full_node"
+  data_dir: "./data"  # Local data directory
+  waypoint:
+    from_file: "./waypoint.txt"
+
+execution:
+  genesis_file_location: "./genesis.blob"
+  genesis_waypoint:
+    from_file: "./genesis_waypoint.txt"
+```
+
+Create the data directory:
+
+```shellscript filename="Terminal"
+mkdir -p data
+```
+
+## Step 4: Run the Fullnode
+
+Start the fullnode:
+
+```shellscript filename="Terminal"
+# Using the release binary
+./target/release/aptos-node -f ./fullnode.yaml
+
+# Or using cargo run
+cargo run -p aptos-node --release -- -f ./fullnode.yaml
+```
+
+<Callout type="info">
+**Debug vs Release**
+
+The release binary is substantially faster than debug builds but lacks debugging information. To build a debug binary for development, omit the `--release` flag.
+</Callout>
+
+## Step 5: Verify the Node
+
+Check that your node is running:
+
+```shellscript filename="Terminal"
+curl http://localhost:8080/v1
+```
+
+You should see a JSON response with the node's status including `chain_id`, `epoch`, and `ledger_version`.
+
+## Running as a Background Service
+
+To run the node as a systemd service:
+
+```ini filename="/etc/systemd/system/movement-fullnode.service"
+[Unit]
+Description=Movement Full Node
+After=network.target
+
+[Service]
+Type=simple
+User=movement
+WorkingDirectory=/home/movement/aptos-core
+ExecStart=/home/movement/aptos-core/target/release/aptos-node -f /home/movement/aptos-core/fullnode.yaml
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable and start the service:
+
+```shellscript filename="Terminal"
+sudo systemctl daemon-reload
+sudo systemctl enable movement-fullnode
+sudo systemctl start movement-fullnode
+
+# Check status
+sudo systemctl status movement-fullnode
+
+# View logs
+sudo journalctl -u movement-fullnode -f
+```
+
+## Configuration Details
+
+The downloaded `fullnode.yaml` contains the following key settings:
+
+```yaml
+base:
+  role: "full_node"
+  data_dir: "/opt/aptos/data"
+  waypoint:
+    from_file: "/opt/aptos/waypoint.txt"
+
+execution:
+  genesis_file_location: "/opt/aptos/genesis.blob"
+  genesis_waypoint:
+    from_file: "/opt/aptos/genesis_waypoint.txt"
+
+storage:
+  rocksdb_configs:
+    enable_storage_sharding: false
+
+full_node_networks:
+  - network_id: "public"
+    discovery_method: "none"
+    listen_address: "/ip4/0.0.0.0/tcp/6182"
+    seeds:
+      # Network-specific seed node
+      ...
+
+api:
+  enabled: true
+  address: 0.0.0.0:8080
+
+state_sync:
+  state_sync_driver:
+    bootstrapping_mode: DownloadLatestStates
+    continuous_syncing_mode: ApplyTransactionOutputs
+```
+
+## Updating the Node
+
+To update to a newer version:
+
+```shellscript filename="Terminal"
+# Stop the node
+sudo systemctl stop movement-fullnode  # or kill the process
+
+# Pull latest changes
+cd aptos-core
+git pull origin l1-migration
+
+# Rebuild
+cargo build -p aptos-node --release
+
+# Restart
+sudo systemctl start movement-fullnode
+```
+
+## Troubleshooting
+
+### Build fails
+
+1. Ensure all build dependencies are installed
+2. Check Rust version: `rustc --version`
+3. Try cleaning and rebuilding: `cargo clean && cargo build -p aptos-node --release`
+
+### Node won't start
+
+1. Check configuration file syntax
+2. Verify all paths in the config are correct
+3. Ensure data directory exists and has correct permissions
+
+### Node is not syncing
+
+1. Check logs for connection errors
+2. Verify network connectivity to upstream peers
+3. Ensure port 6182 is open for outbound connections
+
+## Next Steps
+
+- [Verify your PFN](/general/nodes/full-node/run/verify) - Check that your node is running correctly
+- [Archival Node](/general/nodes/archival-node) - If you need complete historical data
