@@ -1,0 +1,234 @@
+---
+title: Variables, Assignment and Scope
+description: Learn about variables, assignment, and scope in Move, which are fundamental concepts for storing and manipulating data.
+---
+
+# Variables, Assignment and Scope
+
+Variables in Move store data that your program can use and manipulate. This chapter covers how to declare variables, assign values to them, and understand their scope.
+
+## Variable Declaration
+
+Variables are declared using the `let` keyword:
+
+```move
+let x = 10;
+let y = 20;
+```
+
+By default, variables are **mutable** - their value can be changed after being declared.
+
+```move
+let count = 0;
+count = 5; // This is valid as variables are mutable by default
+```
+
+## Type Annotations
+
+Move can usually infer the type of your variables, but you can explicitly specify types when needed:
+
+```move
+let age: u8 = 25;
+let price: u64 = 1000;
+let score: u32 = 0;
+```
+
+## Assignment and Mutation
+
+Variables can be reassigned as they are mutable by default:
+
+```move
+let balance = 100;
+balance = 150;
+balance = balance + 50; // balance is now 200
+```
+
+## Variable Shadowing
+
+You can declare a new variable with the same name as a previous variable. This is called **shadowing**:
+
+```move
+let x = 10;
+let x = 20; // This shadows the previous x
+let x = x + 5; // x is now 25
+```
+
+Shadowed variables can even have different types:
+
+```move
+let value = 42;      // u64 (inferred)
+let value = 100u8;   // u8 (explicit)
+```
+
+## Variable Naming Rules
+
+Variable names must follow these rules:
+- Start with a letter (`a-z`) or underscore (`_`)
+- Can contain letters, numbers, and underscores
+- Cannot start with uppercase letters
+
+```move
+// Valid names
+let age = 25;
+let _temp = 10;
+let user_count = 0;
+let value2 = 100;
+
+// Invalid names
+// let Age = 25;     // ERROR: starts with uppercase
+// let 2value = 100; // ERROR: starts with number
+```
+
+## Delayed Assignment
+
+You can declare a variable without immediately assigning a value, but you must assign it before use:
+
+```move
+let result;
+
+if (condition) {
+    result = 10;
+} else {
+    result = 20;
+}
+// result can now be used
+```
+
+## Using Variables Before Assignment
+
+Move enforces that variables must be assigned a value before they can be used. This prevents common programming errors and ensures memory safety:
+
+```move
+let x;
+// let y = x + 10; // ERROR: use of unassigned local `x`
+
+x = 5;
+let y = x + 10; // OK: x has been assigned
+```
+
+The Move compiler performs **definite assignment analysis** to ensure all code paths assign a value before use:
+
+```move
+let result;
+
+if (some_condition) {
+    result = 100;
+} else {
+
+};
+// ERROR: use of possibly unassigned local `result`
+```
+
+To fix this, ensure all code paths assign the variable:
+
+```move
+let result;
+
+if (some_condition) {
+    result = 100;
+} else {
+    result = 200;
+};
+// OK: result is assigned in all paths
+```
+
+### Partial Assignment in Complex Control Flow
+
+The compiler tracks assignment across complex control structures:
+
+```move
+let value;
+
+if (condition1) {
+    if (condition2) {
+        value = 10;
+    } else {
+        value = 20;
+    }
+} else {
+    value = 30;
+}
+// OK: all paths assign value
+```
+
+## Scope
+
+Variables are only accessible within the **scope** where they are declared. Scopes are defined by curly braces `{}`:
+
+```move
+let x = 10;
+{
+    let y = 20;
+    let z = x + y; // x is accessible here
+} // y and z are no longer accessible
+// x is still accessible here
+```
+
+### Nested Scopes
+
+Variables from outer scopes can be used in inner scopes:
+
+```move
+let outer = 100;
+{
+    let inner = 50;
+    let sum = outer + inner; // Both variables accessible
+    {
+        let result = sum + outer; // All variables accessible
+    }
+}
+```
+
+### Scope and Mutation
+
+Variables can be mutated in any scope where they're accessible:
+
+```move
+let counter = 0;
+{
+    counter = counter + 1; // Mutation survives the scope
+}
+// counter is now 1
+```
+
+## Multiple Variable Declaration
+
+You can declare multiple variables at once using tuples:
+
+```move
+let (x, y) = (10, 20);
+let (a, b, c) = (1, 2, 3);
+```
+
+This is useful for functions that return multiple values:
+
+```move
+fun get_coordinates(): (u64, u64) {
+    (100, 200)
+}
+
+let (x_pos, y_pos) = get_coordinates();
+```
+## Expression Blocks
+
+Expression blocks are sequences of statements enclosed in curly braces. The value of the last expression becomes the block's value:
+
+```move
+let result = {
+    let a = 10;
+    let b = 20;
+    a + b  // This value (30) is returned from the block
+};
+```
+
+## Summary
+
+Variables in Move provide a way to store and manipulate data in your programs. Key points to remember:
+
+- Variables are **mutable by default**
+- Variables have **scope** - they're only accessible within their declaration block
+- **Shadowing** allows redeclaring variables with the same name
+- **Type annotations** can be explicit or inferred by the compiler
+- Variables must be **assigned before use**
+
+Understanding these concepts will help you write clear and safe Move code. In the next chapters, we'll explore specific data types like integers, booleans, addresses, and vectors.

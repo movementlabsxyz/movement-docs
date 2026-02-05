@@ -14,9 +14,9 @@
     "fumadocs-openapi": "^9.1.8",
     "fumadocs-ui": "15.6.1",
     "lucide-react": "^0.525.0",
-    "next": "15.3.4",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "next": "15.3.8",
+    "react": "^19.1.2",
+    "react-dom": "^19.1.2",
     "remark": "^15.0.1",
     "remark-gfm": "^4.0.1",
     "remark-mdx": "^3.1.0",
@@ -29,10 +29,10 @@
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "eslint": "^8",
-    "eslint-config-next": "15.3.4",
+    "eslint-config-next": "15.3.6",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.11",
     "typescript": "^5.8.3"
   },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  "packageManager": "yarn@1.22.22"
 }

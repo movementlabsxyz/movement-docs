@@ -1,0 +1,231 @@
+---
+title: Assertion and Abortion
+description: Learn about assertion and abortion in Move, which are used to control program flow.
+---
+
+# Assertion and Abortion
+
+`return` and `abort` are two control flow constructs that end execution: one for the current function and one for the entire transaction. While `return` exits the current function, `abort` halts execution and reverts all changes made to global state by the current transaction.
+
+## Abort
+
+`abort` is an expression that takes one argument: an abort code of type `u64`. For example:
+
+```move
+abort 42
+```
+
+The `abort` expression halts execution of the current function and reverts all changes made to global state by the current transaction. There is no mechanism for "catching" or otherwise handling an abort.
+
+### Transaction Semantics
+
+In Move, transactions are all-or-nothing, meaning any changes to global storage are made all at once only if the transaction succeeds. Because of this transactional commitment of changes, after an abort there is no need to worry about backing out changes. While this approach is lacking in flexibility, it is incredibly simple and predictable.
+
+Similar to `return`, `abort` is useful for exiting control flow when some condition cannot be met.
+
+### Basic Usage Example
+
+In this example, the function will withdraw funds from an account, but will abort early if there are insufficient funds:
+
+```move
+fun withdraw_funds(balance: &mut u64, amount: u64): u64 {
+    if (*balance < amount) abort 42;
+
+    *balance = *balance - amount;
+    amount
+}
+
+#[test]
+public fun test_withdraw_funds() {
+    let balance = 100u64;
+
+    let safe_withdrawn = withdraw_funds(&mut balance, 50u64); // This will not abort
+
+    let withdrawn = withdraw_funds(&mut balance, 225u64); // This will abort
+}
+```
+
+### Complex Control Flow Example
+
+This is even more useful deep inside a control-flow construct. For example, this function validates that all ages in a list are within legal limits and aborts otherwise:
+
+```move
+use std::vector;
+
+fun validate_ages(ages: &vector<u8>, max_age: u8) {
+    let i = 0;
+    let n = vector::length(ages);
+    while (i < n) {
+        let age = *vector::borrow(ages, i);
+        if (age > max_age) abort 42;
+        i = i + 1;
+    }
+}
+```
+
+## Assert
+
+`assert` is a builtin, macro-like operation provided by the Move compiler. It takes two arguments: a condition of type `bool` and a code of type `u64`:
+
+```move
+assert!(condition: bool, code: u64)
+```
+
+Since the operation is a macro, it must be invoked with the `!`. This is to convey that the arguments to `assert` are call-by-expression. In other words, `assert` is not a normal function and does not exist at the bytecode level. It is replaced inside the compiler with:
+
+```move
+if (condition) () else abort code
+```
+
+### Assert vs Abort
+
+`assert` is more commonly used than just `abort` by itself. The abort examples above can be rewritten using `assert`:
+
+```move
+fun withdraw_funds(balance: &mut u64, amount: u64): u64 {
+    assert!(*balance >= amount, 42); // Now uses 'assert'
+
+    *balance = *balance - amount;
+    amount
+}
+```
+
+And:
+
+```move
+use std::vector;
+
+fun validate_ages(ages: &vector<u8>, max_age: u8) {
+    let i = 0;
+    let n = vector::length(ages);
+    while (i < n) {
+        let age = *vector::borrow(ages, i);
+        assert!(age <= max_age, 42); // Now uses 'assert'
+        i = i + 1;
+    }
+}
+```
+
+### Lazy Evaluation
+
+Note that because the operation is replaced with an if-else, the argument for the code is not always evaluated. For example:
+
+```move
+assert!(true, 1 / 0)
+```
+
+Will not result in an arithmetic error, it is equivalent to:
+
+```move
+if (true) () else (1 / 0)
+```
+
+So the arithmetic expression is never evaluated!
+
+## Abort Codes in the Move VM
+
+When using `abort`, it is important to understand how the `u64` code will be used by the VM.
+
+Normally, after successful execution, the Move VM produces a change-set for the changes made to global storage (added/removed resources, updates to existing resources, etc).
+
+If an abort is reached, the VM will instead indicate an error. Included in that error will be two pieces of information:
+- The module that produced the abort (address and name)
+- The abort code
+
+### Example Error Information
+
+```move
+module 0x2::bank {
+    public fun transfer_funds() {
+        abort 42
+    }
+}
+```
+
+```move
+script {
+    fun failed_transfer() {
+        0x2::bank::transfer_funds()
+    }
+}
+```
+
+If a transaction, such as the script `failed_transfer` above, calls `0x2::bank::transfer_funds`, the VM would produce an error that indicated the module `0x2::bank` and the code `42`.
+
+## Using Constants for Error Codes
+
+This can be useful for having multiple aborts being grouped together inside a module. It's a best practice to use constants to define error codes:
+
+```move
+module 0x42::account {
+    const INSUFFICIENT_BALANCE: u64 = 0;
+    const INVALID_AMOUNT: u64 = 1;
+    const ACCOUNT_FROZEN: u64 = 2;
+
+    struct Account has key {
+        balance: u64,
+        is_frozen: bool,
+    }
+
+    public fun transfer(from: &mut Account, to: &mut Account, amount: u64) {
+        assert!(!from.is_frozen, ACCOUNT_FROZEN);
+        assert!(!to.is_frozen, ACCOUNT_FROZEN);
+        assert!(amount > 0, INVALID_AMOUNT);
+        assert!(from.balance >= amount, INSUFFICIENT_BALANCE);
+
+        from.balance = from.balance - amount;
+        to.balance = to.balance + amount;
+    }
+
+    public fun withdraw(account: &mut Account, amount: u64): u64 {
+        assert!(!account.is_frozen, ACCOUNT_FROZEN);
+        assert!(amount > 0, INVALID_AMOUNT);
+        assert!(account.balance >= amount, INSUFFICIENT_BALANCE);
+
+        account.balance = account.balance - amount;
+        amount
+    }
+}
+```
+
+### Benefits of Using Constants
+
+Using constants for error codes provides several advantages:
+- **Readability**: Code is more self-documenting
+- **Maintainability**: Easy to update error codes in one place
+- **Consistency**: Prevents duplicate or conflicting error codes
+- **Documentation**: Constants can be documented with comments
+
+## Type Flexibility
+
+The `abort` expression can have any type since it breaks normal control flow and never needs to evaluate to an actual value:
+
+```move
+let account: address = abort 0;  // This will abort with error code 0
+
+// Useful in branching scenarios
+let account_status =
+    if (balance >= 1000) b"premium"
+    else if (balance > 0) b"active" 
+    else abort 42;  // Has type `vector<u8>`
+```
+
+## Best Practices
+
+- Use **named constants** for error codes
+- Prefer `assert!` over manual `if-abort` patterns  
+- Keep error codes **unique** within modules
+- **Document** error conditions clearly
+
+## Summary
+
+Move's `abort` and `assert!` provide robust error handling for transaction safety:
+
+- **`abort`** immediately halts execution and reverts all transaction changes
+- **`assert!`** offers cleaner syntax for conditional aborts
+- **Error codes** help identify specific failure points in the VM
+- **Constants** make error codes maintainable and self-documenting
+- All aborts are **transaction-level** - there's no partial failure recovery
+
+Use these constructs to enforce invariants and handle exceptional conditions while maintaining Move's transactional guarantees.
+

@@ -1,0 +1,162 @@
+---
+title: "Verify an Archival Node"
+description: "Verify that your archival fullnode is running correctly and can access historical blockchain data."
+sidebar:
+  label: "Verify"
+---
+
+After deploying your archival node, verify that it's running correctly and can access historical data.
+
+## Basic Health Check
+
+Check that the node is responding and syncing:
+
+```shellscript filename="Terminal"
+# Check node health
+curl http://localhost:8080/v1
+
+# Expected output includes:
+# - chain_id
+# - epoch
+# - ledger_version
+# - oldest_ledger_version
+# - ledger_timestamp_usec
+# - node_role
+# - oldest_block_height
+# - block_height
+# - git_hash
+```
+
+## Verify Sync Status
+
+Check the current ledger version and compare it to the network:
+
+```shellscript filename="Terminal"
+# Get your node's ledger version
+curl -s http://localhost:8080/v1 | jq '.ledger_version'
+
+# Compare with public endpoint
+# For mainnet:
+curl -s https://aptos.mainnet.movementnetwork.xyz/v1 | jq '.ledger_version'
+
+# For testnet:
+curl -s https://aptos.testnet.movementnetwork.xyz/v1 | jq '.ledger_version'
+```
+
+Your node's ledger version should be close to (or equal to) the public endpoint's version.
+
+## Verify Historical Data Access
+
+The key difference between an archival node and a standard PFN is the ability to query historical data. Verify this by querying early transactions:
+
+```shellscript filename="Terminal"
+# Query transaction at version 1 (genesis)
+curl http://localhost:8080/v1/transactions/by_version/1
+
+# Query an early block
+curl http://localhost:8080/v1/blocks/by_height/1
+
+# Query transactions from an early block
+curl http://localhost:8080/v1/transactions?start=1&limit=10
+```
+
+<Callout type="info">
+**Archival Verification**
+
+If these historical queries return data successfully, your archival node is correctly maintaining full history. A standard PFN would return errors for very old data that has been pruned.
+</Callout>
+
+## Check Oldest Ledger Version
+
+Verify that your node has data from the beginning:
+
+```shellscript filename="Terminal"
+curl -s http://localhost:8080/v1 | jq '.oldest_ledger_version'
+```
+
+For an archival node, `oldest_ledger_version` should be `"0"` or a very low number, indicating data from genesis is available.
+
+## Verify Pruning is Disabled
+
+Check the node logs to confirm pruning is disabled:
+
+```shellscript filename="Terminal"
+# For Docker
+docker logs aptos-archival-node 2>&1 | grep -i "pruner"
+
+# Look for messages indicating pruning is disabled
+```
+
+## Monitor Node Metrics
+
+The node exposes Prometheus metrics on port 9101:
+
+```shellscript filename="Terminal"
+# Check metrics endpoint
+curl http://localhost:9101/metrics
+
+# Key metrics to monitor:
+# - aptos_state_sync_version (current synced version)
+# - aptos_storage_ledger_version (ledger version in storage)
+# - aptos_storage_oldest_ledger_version (oldest available version)
+```
+
+## Common Issues
+
+### Node is behind the network
+
+If your node's ledger version is significantly behind:
+
+1. Check network connectivity to upstream peers
+2. Verify port 6182 is open for outbound connections
+3. Check available disk space
+4. Review logs for errors
+
+### Historical queries fail
+
+If queries for old data fail:
+
+1. Verify `storage_pruner_config.ledger_pruner_config.enable` is `false` in your config
+2. Ensure you restored from a complete archival backup
+3. Check that the restore completed successfully
+
+### High disk usage
+
+Archival nodes require significant storage:
+
+1. Monitor disk usage trends
+2. Plan for storage expansion
+3. Consider using NVMe SSDs for better performance
+
+## Troubleshooting
+
+### Check logs
+
+```shellscript filename="Terminal"
+# Docker
+docker logs aptos-archival-node --tail 100
+
+# Source build
+# Logs are typically written to stdout/stderr
+```
+
+### Restart the node
+
+```shellscript filename="Terminal"
+# Docker
+docker restart aptos-archival-node
+
+# Source build
+# Stop and restart the process
+```
+
+### Verify configuration
+
+Ensure your `archival-fullnode.yaml` has the correct settings:
+
+```yaml
+storage:
+  storage_pruner_config:
+    ledger_pruner_config:
+      enable: false  # Must be false for archival
+```

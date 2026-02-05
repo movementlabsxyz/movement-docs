@@ -214,7 +214,7 @@ This is a high level guide. It will not dive into all AWS infrastructure details
 
 ## Prerequisites
 
-- A running a Movement Full Node that serves Aptos gRPC. In this example https://full.mainnet.movementinfra.xyz/v1 and listens to indexer
+- A running a Movement Full Node that serves Aptos gRPC. In this example https://mainnet.movementnetwork.xyz/v1 and listens to indexer
 queries on port 30734.
 
 ### 1. Create EC2 instance

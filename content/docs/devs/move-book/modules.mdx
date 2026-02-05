@@ -1,0 +1,139 @@
+---
+title: Modules
+description: Learn about Move modules, which are the fundamental building blocks of on-chain logic and data storage.
+---
+
+# Modules
+
+Modules are the fundamental building blocks of on-chain logic. They act as libraries that define structs (data types) and functions (behaviors) that operate on those structs. 
+Structs describe the schema of Move’s global storage, determining how data is organized and stored on-chain, while module functions define the rules and permissions for creating, reading, and updating that data.
+
+## Key Characteristics of Modules:
+
+- **Encapsulation**: Modules group related structs and functions together
+- **Reusability**: Modules can be imported and used by other modules
+- **Security**: Modules enforce access control and data privacy
+- **Global Storage**: Modules define how data is stored on the blockchain
+
+## Syntax of Modules
+
+Modules are defined using the module keyword, followed by the address and identifier of the module. Modules can be declared using named addresses.
+Named addresses are declared at the source language level in Move syntax and replaced at the bytecode level with the actual address.
+
+```move
+module <address>::<identifier> {
+    (<use> | <friend> | <type> | <function> | <constant>)*
+}
+```
+
+**Module members include:**
+- **use**: Import declarations (`use <address>::<identifier>`)
+- **friend**: Friend module declarations (`friend <address>::<identifier>`)
+- **struct**: Type definitions (`struct <name> { ... }`)
+- **function**: Function definitions (`fun <name>(<parameters>) -> <return_type> { ... }`)
+- **const**: Constant declarations (`const <name>: <type> = <value>`)
+
+The module members can be defined at the source code level in this way:
+
+```move
+module test::MyModule {
+
+    // import
+    use std::debug::print;
+
+    // friend
+    friend 0x1::otherModule;
+
+    // a struct
+    struct Struct {}
+
+    // function
+    fun function(_: &Struct) { /* function body */ }
+
+    // a constant
+    const CONST: u8 = 0;
+}
+```
+
+## Example of Modules
+
+Let's create a simple module that defines a struct and a function to create an instance of that struct.
+
+```move
+module test::MyModule {
+
+    use std::debug::print;
+
+    struct MyStruct {
+        field: u64
+    }
+
+    fun create_my_struct(field: u64): MyStruct {
+        let my_struct = MyStruct { field }
+        print(&my_struct);
+        my_struct
+    }
+}
+```
+
+In this example, we define a module named `MyModule` using the named address `test`. The module contains:
+- A struct named `MyStruct` with a single field of type `u64`
+- A function named `create_my_struct` that takes a `u64` parameter and returns an instance of `MyStruct`
+
+> **Note:** During compilation, the named address `test` is replaced with a real address (like `0x1` in the example below).
+
+```move
+module 0x1::MyModule {
+
+    use std::debug::print;
+
+    struct MyStruct {
+        field: u64
+    }
+
+    fun create_my_struct(field: u64): MyStruct {
+        let my_struct = MyStruct { field }
+        print(&my_struct);
+        my_struct
+    }
+}
+```
+
+## Module Naming Conventions
+
+Module names must adhere to the following rules:
+
+- Must start with a letter (`a-z` or `A-Z`)
+- After the first character, can contain underscores (`_`), letters (`a-z`, `A-Z`), or digits (`0-9`)
+- Cannot be Move keywords (e.g., `move`, `public`, `fun`, etc.)
+
+## Module Addresses
+
+Modules are published at specific addresses on the blockchain. There are two ways to specify addresses:
+
+### Named Addresses
+Used during development for readability:
+```move
+module my_project::token {
+    // module content
+}
+```
+
+### Literal Addresses  
+The actual hexadecimal addresses used on-chain:
+```move
+module 0x1::token {
+    // module content
+}
+```
+
+<Callout type="info">
+Named addresses must be configured in your `Move.toml` file to map to actual addresses during compilation.
+</Callout>
+
+## Module Publication
+
+Once a module is published to an address:
+- All its public functions and structs become available to other modules
+- The module's bytecode is stored permanently on the blockchain
+- Gas fees are required for publication

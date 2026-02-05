@@ -1,0 +1,178 @@
+---
+title: Integer
+description: Learn about the integer types in Move, which are used for numeric calculations and data storage.
+---
+
+# Integer Types
+
+Move supports unsigned integers of various sizes, from 8-bit to 256-bit. These are the fundamental numeric types for calculations and data storage.
+
+## Integer Types
+
+Move provides six integer types:
+
+| Type | Size | Range |
+|------|------|-------|
+| `u8` | 8-bit | 0 to 2<sup>8</sup> - 1 |
+| `u16` | 16-bit | 0 to 2<sup>16</sup> - 1 |
+| `u32` | 32-bit | 0 to 2<sup>32</sup> - 1 |
+| `u64` | 64-bit | 0 to 2<sup>64</sup> - 1 |
+| `u128` | 128-bit | 0 to 2<sup>128</sup> - 1 |
+| `u256` | 256-bit | 0 to 2<sup>256</sup> - 1 |
+
+## Integer Literals
+
+You can write integer literals in several ways:
+
+### Decimal Literals
+```move
+let small = 42;        // Defaults to u64
+let tiny = 255u8;      // Explicit u8 type
+let big = 1000u128;    // Explicit u128 type
+```
+
+### Hexadecimal Literals
+```move
+let hex_value = 0xFF;      // 255 in decimal
+let hex_u32 = 0xDEADBEEFu32;
+```
+
+### Underscores for Readability
+```move
+let million = 1_000_000;
+let hex_readable = 0xAB_CD_EF_12u32;
+```
+
+## Type Inference
+
+The compiler tries to infer integer types from context:
+
+```move
+let x = 42;           // Inferred as u64 (default)
+let y: u8 = 42;       // Explicitly u8
+let z = 42u16;        // Explicitly u16 using suffix
+```
+## Arithmetic Operations
+
+All integer types support basic arithmetic operations. Both operands must be the same type:
+
+```move
+let a = 10u8;
+let b = 5u8;
+
+let sum = a + b;        // 15
+let difference = a - b; // 5
+let product = a * b;    // 50
+let quotient = a / b;   // 2
+let remainder = a % b;  // 0
+```
+
+### Safety Features
+
+Move prevents common arithmetic errors:
+- **Overflow**: Operations that exceed the type's maximum value will abort
+- **Underflow**: Subtracting to get below zero will abort
+- **Division by zero**: Will abort the program
+
+```move
+let max_u8 = 255u8;
+// let overflow = max_u8 + 1; // This would abort!
+
+let zero = 0u8;
+// let div_by_zero = 10 / zero; // This would abort!
+```
+
+## Comparison Operations
+
+Integers can be compared using standard operators:
+
+```move
+let x = 10;
+let y = 20;
+
+let less = x < y;           // true
+let greater = x > y;        // false
+let less_equal = x <= y;    // true
+let greater_equal = x >= y; // false
+let equal = x == y;         // false
+let not_equal = x != y;     // true
+```
+
+## Type Casting
+
+You can convert between integer types using the `as` operator:
+
+```move
+let small: u8 = 42;
+let medium: u16 = small as u16;  // u8 to u16
+let large: u64 = medium as u64;  // u16 to u64
+```
+
+### Safe Casting
+
+Casting to a larger type is always safe:
+
+```move
+let tiny: u8 = 255;
+let big: u64 = tiny as u64;  // Always works
+```
+
+### Unsafe Casting
+
+Casting to a smaller type can fail if the value is too large:
+
+```move
+let big: u64 = 1000;
+// let small: u8 = big as u8;  // Would abort! (1000 > 255)
+```
+
+### Preventing Overflow with Casting
+
+Cast to larger types before operations that might overflow:
+
+```move
+let a: u8 = 200;
+let b: u8 = 100;
+// let overflow = a + b;  // Would abort!
+
+// Safe approach:
+let safe_sum: u16 = (a as u16) + (b as u16);  // 300
+```
+
+## Practical Examples
+
+Here are common integer usage patterns:
+
+```move
+// Age validation
+fun is_adult(age: u8): bool {
+    age >= 18
+}
+
+// Price calculation
+fun calculate_total(price: u64, quantity: u32): u64 {
+    price * (quantity as u64)
+}
+
+// Range checking
+fun is_valid_percentage(value: u8): bool {
+    value <= 100
+}
+```
+
+## Ownership
+
+As with the other scalar values built-in to the language, integer values are implicitly copyable, meaning they can be copied without an explicit instruction such as `copy`.
+
+## Summary
+
+Integer types in Move are:
+- **Unsigned only** - no negative numbers
+- **Size-specific** - choose the right size for your data
+- **Safe by default** - operations abort on overflow/underflow
+- **Castable** - convert between sizes with `as`
+- **Copyable** - no explicit `copy` needed
+
+Choose the smallest type that fits your data to save storage space, but use larger types for calculations to avoid overflow.
+
+

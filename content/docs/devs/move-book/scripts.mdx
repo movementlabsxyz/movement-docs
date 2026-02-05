@@ -1,0 +1,106 @@
+---
+title: Scripts
+description: Learn about Move scripts, which are executable entry points for transactions that are not published to the blockchain.
+---
+
+# Scripts
+
+Scripts in Move are executable entry points similar to a `main` function in conventional programming languages.
+They serve as ephemeral code snippets that orchestrate interactions with published modules and facilitate updates to global storage.
+
+## Overview
+
+Scripts are **not published** to global storage, making them temporary execution units that primarily invoke functions from published modules.
+They provide a way to execute Move code without permanently storing it on the blockchain.
+
+## Script Structure
+
+A script follows a specific structural pattern that must be adhered to:
+
+```move
+script {
+    <use>*
+    <constants>*
+    fun <identifier><[type parameters: constraint]*>([identifier: type]*) <function_body>
+}
+```
+
+### Structure Requirements
+
+The script block must follow this exact order:
+
+1. **Use declarations** - All import statements must come first
+2. **Constants** - Any constant definitions follow the imports
+3. **Main function** - A single function declaration that serves as the entry point
+
+### Main Function Characteristics
+
+- Can have **any name** (doesn't need to be called `main`)
+- Must be the **only function** in the script block
+- Can accept **any number of arguments**
+- **Must not return a value**
+
+## Example
+
+Here's a complete example demonstrating all components of a valid script:
+
+```move
+script {
+    // Import
+    use std::debug::print;
+
+    // A constant
+    const CONST: u8 = 0;
+
+    // Main function (entry point)
+    fun main(value: u64) {
+        let result = value + (CONST as u64);
+        print(&result);
+    }
+}
+```
+
+## What's NOT ALLOWED in Scripts
+
+The following code demonstrates elements that are **forbidden** in scripts and would cause compilation errors:
+
+```move
+// This is INVALID in a script - for illustration only
+script {
+    // Imports are ALLOWED
+    use std::debug::print;
+
+    // Friend declarations are NOT ALLOWED
+    friend 0x1::otherModule;
+
+    // Struct definitions are NOT ALLOWED
+    public struct Struct {}
+
+    // Additional function definitions are NOT ALLOWED
+    fun function(_: &Struct) { /* function body */ }
+
+    // Constants are ALLOWED
+    const CONST: u8 = 0;
+
+    // Only ONE main function is ALLOWED
+    fun main() {
+        print(&CONST);
+    }
+}
+```
+
+## Limitations
+
+Scripts have intentionally limited capabilities to maintain security and clarity:
+
+- Cannot declare `friend` functions
+- Cannot define `struct` types
+- Cannot directly access global storage
+- Can only invoke functions from published modules
+
+## Use Cases
+
+Scripts are primarily used for:
+
+- **Transaction execution** - Orchestrating complex operations across multiple modules
+- **Testing and debugging** - Running temporary code without publishing

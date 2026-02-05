@@ -1,0 +1,176 @@
+---
+title: Conditional
+description: Learn about conditional in Move, which are used to control program flow.
+---
+
+# Conditional
+
+Conditionals are fundamental control flow constructs that allow programs to make decisions based on runtime values. An `if` expression specifies that some code should only be evaluated if a certain condition is true. 
+
+## Basic If Expression
+
+The simplest form of a conditional expression:
+
+```move
+if (temperature > 30) is_hot = true
+```
+
+The condition must be an expression of type `bool`. If the condition evaluates to `true`, the expression following the condition is executed.
+
+## If-Else Expression
+
+An `if` expression can optionally include an `else` clause to specify another expression to evaluate when the condition is false:
+
+```move
+if (speed <= 60) speed = speed + 5 else speed = 60
+```
+
+Either the "true" branch or the "false" branch will be evaluated, but not both. Either branch can be a single expression or an expression block.
+
+## Conditional Expressions with Values
+
+The conditional expressions may produce values so that the `if` expression has a result:
+
+```move
+let price = if (quantity < 10) quantity * 5 else quantity * 4;
+```
+
+This allows conditionals to be used in assignments and other expressions where a value is expected.
+
+## Type Compatibility
+
+The expressions in the true and false branches must have compatible types:
+
+```move
+// width and height must be u64 integers
+let larger_dimension: u64 = if (width > height) width else height;
+```
+
+### Type Errors
+
+Branches with incompatible types will result in compilation errors:
+
+```move
+// ERROR! branches different types
+let result = if (is_valid < 10) 10u8 else 100u64;
+
+// ERROR! branches different types, as default false-branch is () not u64
+if (score >= 10) score;
+```
+
+## Default Else Clause
+
+If the `else` clause is not specified, the false branch defaults to the unit value `()`. The following are equivalent:
+
+```move
+if (is_ready) start_process // implied default: else ()
+if (is_ready) start_process else ()
+```
+
+This means that when no `else` clause is provided, the `if` expression returns the unit type `()` when the condition is false.
+
+## Expression Blocks
+
+Commonly, `if` expressions are used in conjunction with expression blocks for more complex logic:
+
+```move
+let total_cost = if (items > 5) items * 8 else items * 10;
+
+if (total_cost < 50) {
+    shipping_fee = 5;
+    tax_rate = 8;
+} else if (total_cost >= 50 && total_cost < 100) {
+    shipping_fee = 0;
+    tax_rate = 10;
+}
+```
+
+## Nested Conditionals
+
+You can chain multiple conditions using `else if`:
+
+```move
+let shipping_method = if (weight <= 1) {
+    b"standard"
+} else if (weight <= 5) {
+    b"express"
+} else if (weight <= 20) {
+    b"freight"
+} else {
+    b"special_handling"
+};
+```
+
+## Practical Examples
+
+### Temperature Control
+
+
+
+```move
+fun adjust_temperature(current: u64, target: u64): u64 {
+    if (current < target) {
+        current + 2
+    } else if (current > target) {
+        current - 2
+    } else {
+        current
+    }
+}
+```
+
+## Complex Conditions
+
+Conditionals can use complex boolean expressions with logical operators:
+
+```move
+fun can_access_system(role: u8, is_active: bool, has_permission: bool): bool {
+    if (role >= 2 && is_active && has_permission) {
+        true
+    } else {
+        false
+    }
+}
+```
+
+## Performance Considerations
+
+Due to short-circuit evaluation in logical operators, structure conditions efficiently:
+
+```move
+// Efficient: check simple condition first
+if (is_online && complex_validation()) {
+    // process request
+}
+
+// Less efficient: complex check might run unnecessarily
+if (complex_validation() && is_online) {
+    // process request
+}
+```
+
+## Grammar
+
+The formal grammar for conditional expressions:
+
+```
+if-expression → if ( expression ) expression else-clause?
+else-clause → else expression
+```
+
+## Best Practices
+
+- **Use meaningful conditions** - Make boolean expressions clear and readable
+- **Consistent return types** - Ensure both branches return compatible types
+- **Avoid deep nesting** - Use `else if` chains instead of deeply nested conditionals
+- **Structure conditions efficiently** - Put simple checks before complex ones
+
+## Summary
+
+Move's conditional expressions provide:
+- **Decision making** based on boolean conditions
+- **Value production** through if-else expressions
+- **Type safety** with compile-time branch compatibility checks
+- **Flexible syntax** supporting both simple and complex logic
+
+Conditionals are essential for implementing business logic, validation, and control flow in Move programs.

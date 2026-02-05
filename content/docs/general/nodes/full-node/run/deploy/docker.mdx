@@ -5,42 +5,108 @@ sidebar:
   label: "Docker"
 ---
 
-This section describes how to configure and run your PFN using Docker. You can either use pre-built Docker images or build your own from source.
+This section describes how to configure and run your PFN using Docker.
 
 <Callout type="warning">
-**Supported only on x86-64 CPUs**<br />
-Running aptos-core via Docker is currently only supported on x86-64 CPUs. If you have an Apple M1/M2 (ARM64) Mac, use
-the aptos-core source code approach (above). If M1/M2 support is important to you, comment on this
-issue: https://github.com/aptos-labs/aptos-core/issues/1412
+**Supported only on x86-64 CPUs**
+
+Running aptos-core via Docker is currently only supported on x86-64 CPUs. If you have an Apple M1/M2 (ARM64) Mac, use the [source code approach](/general/nodes/full-node/run/deploy/source) instead.
 </Callout>
 
-If you prefer to use the official pre-built images, follow these steps:
+## Prerequisites
 
-1. First, install [Docker](https://docs.docker.com/get-docker/).
-2. Next, run the following script to prepare your local configuration and data directory for mainnet. This will
-   download the `fullnode.yaml` configuration file, the `genesis.blob` and `waypoint.txt` files for your PFN, and
-   create a `data` directory to store the blockchain database:
+- [Docker](https://docs.docker.com/get-docker/) installed
+- Sufficient storage space (~50-100GB)
+
+## Step 1: Download Configuration Files
+
+Download the fullnode configuration and genesis files for your network:
+
+### For Mainnet
 
 ```shellscript filename="Terminal"
-mkdir testnet && cd testnet
-mkdir data && \
-curl -O https://raw.githubusercontent.com/movementlabsxyz/aptos-core/movement/docker/compose/aptos-node/fullnode.yaml && \
-curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/waypoint.txt && \
+mkdir -p mainnet && cd mainnet
+mkdir -p data
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/configs/fullnode.yaml
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/genesis.blob
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/waypoint.txt
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/genesis_waypoint.txt
+```
+
+### For Testnet
+
+```shellscript filename="Terminal"
+mkdir -p testnet && cd testnet
+mkdir -p data
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/configs/fullnode.yaml
 curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/genesis.blob
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/waypoint.txt
 curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/genesis_waypoint.txt
 ```
 
-<Callout type="warning">
-**Don't want to connect to testnet?**<br />
-To connect to other networks (e.g., `devnet` and `mainnet`), you can find the genesis and waypoint here ➜ https://github.com/movementlabsxyz/movement-networks.
-Be sure to download the `genesis.blob` and `waypoint.txt` for those networks, instead of using the genesis
-and waypoint pointed to by the `curl` commands above.
+<Callout type="info">
+**Genesis files repository**
+
+All configuration and genesis files are maintained at https://github.com/movementlabsxyz/movement-networks
 </Callout>
 
-3. Next, update the `fullnode.yaml` configuration file that you downloaded above with the following content.
-   This will ensure that this configuration is for a PFN and not for another node type (e.g., validator or VFN):
+## Step 2: Run the Fullnode
 
-```yaml filename="fullnode.yaml"
+Start the fullnode using Docker:
+
+```shellscript filename="Terminal"
+docker run --pull=always \
+  --rm -p 8080:8080 \
+  -p 9101:9101 -p 6180:6180 \
+  -v $(pwd):/opt/aptos \
+  -v $(pwd)/data:/opt/aptos/data \
+  --workdir /opt/aptos \
+  --name=aptos-fullnode \
+  ghcr.io/movementlabsxyz/aptos-node:f24a5bc \
+  -f /opt/aptos/fullnode.yaml
+```
+
+<Callout type="info">
+**Running in Background**
+
+To run the node in the background, add the `-d` flag:
+
+```shellscript filename="Terminal"
+docker run --pull=always -d \
+  --rm -p 8080:8080 \
+  -p 9101:9101 -p 6180:6180 \
+  -v $(pwd):/opt/aptos \
+  -v $(pwd)/data:/opt/aptos/data \
+  --workdir /opt/aptos \
+  --name=aptos-fullnode \
+  ghcr.io/movementlabsxyz/aptos-node:f24a5bc \
+  -f /opt/aptos/fullnode.yaml
+```
+
+View logs with: `docker logs -f aptos-fullnode`
+</Callout>
+
+<Callout type="warning">
+**Sudo access**
+
+You may need to prefix the docker command with `sudo` depending on your configuration.
+</Callout>
+
+## Step 3: Verify the Node
+
+Check that your node is running:
+
+```shellscript filename="Terminal"
+curl http://localhost:8080/v1
+```
+
+You should see a JSON response with the node's status including `chain_id`, `epoch`, and `ledger_version`.
+
+## Configuration Details
+
+The downloaded `fullnode.yaml` contains the following configuration:
+
+```yaml
 base:
   role: "full_node"
   data_dir: "/opt/aptos/data"
@@ -61,14 +127,12 @@ full_node_networks:
     discovery_method: "none"
     listen_address: "/ip4/0.0.0.0/tcp/6182"
     seeds:
-      9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F:
-        addresses:
-        - "/dns/testnet.movementnetwork.xyz/tcp/6182/noise-ik/9967EBF40AC8C2CCB38709488952DA1826176584EA3067B63B1695362ECB3D1F/handshake/0"
-        role: "Upstream"
+      # Network-specific seed node configuration
+      ...
 
 api:
   enabled: true
-  address: 0.0.0.0:8080 
+  address: 0.0.0.0:8080
 
 state_sync:
   state_sync_driver:
@@ -77,36 +141,30 @@ state_sync:
 ```
 
 <Callout type="warning">
-**Don't want to allow inbound connections?** <br />
-Override the following if you do not want other PFNs connecting to yours: `listen_address: "/ip4/127.0.0.1/tcp/6182"`.
-</Callout>
+**Don't want to allow inbound connections?**
 
-4. Next, run the following `docker` command:
-
-```shellscript filename="Terminal"
-docker run --pull=always \
-  --rm -p 8080:8080 \
-  -p 9101:9101 -p 6180:6180 \
-  -v $(pwd):/opt/aptos -v $(pwd)/data:/opt/aptos/data \
-  --workdir /opt/aptos \
-  --name=aptos-fullnode ghcr.io/movementlabsxyz/aptos-node:1f072d5 \
-  -f /opt/aptos/fullnode.yaml
+Override the listen address in your config if you don't want other PFNs connecting to yours:
+```yaml
+listen_address: "/ip4/127.0.0.1/tcp/6182"
 ```
-
-<Callout type="warning">
-**Sudo access**<br />
-Note: you may need to prefix the docker command with `sudo` depending on your configuration.
 </Callout>
 
-<Callout type="info">
-**Docker tags**<br />
-The `latest` tag always refers to the latest official Docker image tag. You can find the latest hash for comparison at:
-https://github.com/movementlabsxyz/movement-networks/tree/main/testnet
-</Callout>
+## Ports
 
-You have now successfully configured and started running a PFN in the Aptos mainnet.
+| Port | Purpose |
+|------|---------|
+| 8080 | REST API |
+| 9101 | Metrics (Prometheus) |
+| 6180 | Internal use |
+| 6182 | P2P networking (not exposed by default) |
 
-<Callout type="info">
-**Verify your PFN**
-If you want to verify that your PFN is running correctly, you can follow the instructions in the [Verify a PFN](/network/nodes/full-node/verify-pfn) guide.
-</Callout>
+## Docker Tags
+
+The `latest` tag always refers to the latest official Docker image. You can find the current version at:
+- Mainnet: https://github.com/movementlabsxyz/movement-networks/tree/main/mainnet
+- Testnet: https://github.com/movementlabsxyz/movement-networks/tree/main/testnet
+
+## Next Steps
+
+- [Verify your PFN](/general/nodes/full-node/run/verify) - Check that your node is running correctly
+- [Archival Node](/general/nodes/archival-node) - If you need complete historical data

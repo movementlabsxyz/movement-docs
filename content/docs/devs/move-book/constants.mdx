@@ -1,0 +1,291 @@
+---
+title: Constants
+description: Learn about constants in Move, which are used to represent immutable named values that improve code readability and maintainability.
+---
+
+# Constants
+
+Constants in Move are immutable named values that are defined at the module or script level. They provide a way to give meaningful names to static values that are used throughout your code, improving readability and maintainability. Constants are evaluated at compile time and stored in the module's bytecode, with their values being copied each time they are used.
+
+## Declaration Syntax
+
+Constants are declared using the `const` keyword followed by a name, type annotation, and value:
+
+```move
+const <NAME>: <type> = <expression>;
+```
+
+### Naming Convention
+
+Constants must follow specific naming rules:
+- Must be in **SCREAMING_SNAKE_CASE** (all uppercase with underscores)
+- Must start with a letter `A-Z`
+- Can contain letters, digits, and underscores after the first character
+
+```move
+// Valid constant names
+const MAX_SUPPLY: u64 = 1000000;
+const DEFAULT_FEE_RATE: u8 = 5;
+const ADMIN_ADDRESS: address = @0x1;
+const ERROR_INSUFFICIENT_BALANCE: u64 = 1001;
+
+// Invalid constant names
+// const maxSupply: u64 = 1000000;     // Error: not SCREAMING_SNAKE_CASE
+// const 1ST_CONSTANT: u64 = 100;      // Error: starts with digit
+```
+
+## Supported Types
+
+Constants are limited to primitive types and `vector<u8>` (byte strings):
+
+```move
+// Primitive types
+const IS_ENABLED: bool = true;
+const SAMPLE_U8: u8 = 200;
+const SAMPLE_U16: u16 = 1000;
+const SAMPLE_U32: u32 = 1000000;
+const SAMPLE_U64: u64 = 1000000;
+const SAMPLE_U128: u128 = 1000000;
+const SAMPLE_U256: u256 = 1000000;
+
+// Address type
+const TREASURY_ADDRESS: address = @0xCAFE;
+const ZERO_ADDRESS: address = @0x0;
+
+// Vector<u8> (byte strings)
+const APP_NAME: vector<u8> = b"MyDApp";
+const VERSION: vector<u8> = b"1.0.0";
+const EMPTY_BYTES: vector<u8> = b"";
+```
+
+## Visibility and Scope
+
+Constants have **module-level visibility** only - they cannot be made public and are only accessible within the module where they are declared:
+
+```move
+module 0x1::my_module {
+    const PRIVATE_CONSTANT: u64 = 100;
+    
+    public fun get_constant(): u64 {
+        PRIVATE_CONSTANT  // Can access within same module
+    }
+}
+
+module 0x1::other_module {
+    use 0x1::my_module;
+    
+    public fun test() {
+        // let x = PRIVATE_CONSTANT;  // Error: not accessible
+        let x = my_module::get_constant();  // Must use public function
+    }
+}
+```
+
+## Constant Expressions
+
+Constants can be initialized with simple expressions involving literals and other constants:
+
+```move
+const BASE_RATE: u64 = 100;
+const MULTIPLIER: u64 = 2;
+const CALCULATED_RATE: u64 = BASE_RATE * MULTIPLIER;  // 200
+
+const IS_TESTNET: bool = true;
+const IS_MAINNET: bool = !IS_TESTNET;  // false
+
+// Mathematical expressions
+const SECONDS_PER_MINUTE: u64 = 60;
+const MINUTES_PER_HOUR: u64 = 60;
+const SECONDS_PER_HOUR: u64 = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;  // 3600
+
+// Address expressions
+const BASE_ADDRESS: address = @0x1;
+```
+
+## Practical Usage Patterns
+
+### Error Codes
+
+Constants are commonly used for error codes to make error handling more readable:
+
+```move
+module 0x1::token {
+    const ERROR_INSUFFICIENT_BALANCE: u64 = 1001;
+    const ERROR_INVALID_RECIPIENT: u64 = 1002;
+    const ERROR_TRANSFER_TO_SELF: u64 = 1003;
+    const ERROR_AMOUNT_TOO_LARGE: u64 = 1004;
+    
+    public fun transfer(from: address, to: address, amount: u64) {
+        assert!(from != to, ERROR_TRANSFER_TO_SELF);
+        assert!(amount > 0, ERROR_INVALID_AMOUNT);
+        // Transfer logic...
+    }
+}
+```
+
+### Configuration Values
+
+Use constants for configuration that shouldn't change during execution:
+
+```move
+module 0x1::defi_protocol {
+    const MAX_LOAN_TO_VALUE_RATIO: u8 = 80;  // 80%
+    const LIQUIDATION_THRESHOLD: u8 = 85;    // 85%
+    const MINIMUM_COLLATERAL: u64 = 1000;    // Minimum collateral amount
+    const FEE_DENOMINATOR: u64 = 10000;      // For percentage calculations
+    
+    public fun calculate_fee(amount: u64, fee_rate: u64): u64 {
+        (amount * fee_rate) / FEE_DENOMINATOR
+    }
+}
+```
+
+### Resource Limits
+
+Define limits and constraints as constants:
+
+```move
+module 0x1::nft_collection {
+    const MAX_SUPPLY: u64 = 10000;
+    const MAX_MINT_PER_TRANSACTION: u8 = 10;
+    const MINT_PRICE: u64 = 1000000;  // 0.01 MOVE in octas
+    
+    struct Collection has key {
+        total_minted: u64,
+    }
+    
+    public fun mint_nft(account: &signer, quantity: u8) {
+        assert!(quantity <= MAX_MINT_PER_TRANSACTION, ERROR_EXCEEDS_MINT_LIMIT);
+        // Minting logic...
+    }
+}
+```
+
+### String Constants
+
+Use byte vector constants for string-like data:
+
+```move
+module 0x1::metadata {
+    const COLLECTION_NAME: vector<u8> = b"Awesome NFT Collection";
+    const COLLECTION_DESCRIPTION: vector<u8> = b"A collection of unique digital assets";
+    const BASE_URI: vector<u8> = b"https://api.example.com/metadata/";
+    
+    public fun get_collection_name(): vector<u8> {
+        COLLECTION_NAME
+    }
+}
+```
+
+## Advanced Patterns
+
+### Bitflags and Permissions
+
+Use constants to define permission flags:
+
+```move
+module 0x1::permissions {
+    const PERMISSION_READ: u8 = 1;      // 0001
+    const PERMISSION_WRITE: u8 = 2;     // 0010
+    const PERMISSION_EXECUTE: u8 = 4;   // 0100
+    const PERMISSION_ADMIN: u8 = 8;     // 1000
+    
+    const PERMISSION_ALL: u8 = PERMISSION_READ | PERMISSION_WRITE | PERMISSION_EXECUTE | PERMISSION_ADMIN;
+    
+    public fun has_permission(user_permissions: u8, required: u8): bool {
+        (user_permissions & required) == required
+    }
+}
+```
+
+### Time Constants
+
+Define time-related constants for clarity:
+
+```move
+module 0x1::timelock {
+    const SECONDS_PER_DAY: u64 = 86400;
+    const LOCK_DURATION_DAYS: u64 = 7;
+    const LOCK_DURATION_SECONDS: u64 = LOCK_DURATION_DAYS * SECONDS_PER_DAY;
+    
+    public fun create_timelock(unlock_time: u64): u64 {
+        unlock_time + LOCK_DURATION_SECONDS
+    }
+}
+```
+
+## Best Practices
+
+### 1. Use Descriptive Names
+```move
+// Good
+const MAX_TRANSACTION_SIZE: u64 = 1024;
+const DEFAULT_SLIPPAGE_TOLERANCE: u8 = 50;  // 0.5%
+
+// Avoid
+const MAX_SIZE: u64 = 1024;
+const TOLERANCE: u8 = 50;
+```
+
+### 2. Group Related Constants
+```move
+module 0x1::trading {
+    // Fee constants
+    const TRADING_FEE_RATE: u64 = 30;        // 0.3%
+    const WITHDRAWAL_FEE_RATE: u64 = 10;     // 0.1%
+    const FEE_DENOMINATOR: u64 = 10000;
+    
+    // Limit constants
+    const MIN_TRADE_AMOUNT: u64 = 1000;
+    const MAX_TRADE_AMOUNT: u64 = 1000000000;
+    
+    // Time constants
+    const COOLDOWN_PERIOD: u64 = 3600;       // 1 hour
+}
+```
+
+### 3. Document Complex Constants
+```move
+module 0x1::math {
+    // Represents 1.0 in fixed-point arithmetic with 8 decimal places
+    const FIXED_POINT_SCALING: u64 = 100000000;
+    
+    // Maximum safe value to prevent overflow in multiplication
+    const MAX_SAFE_MULTIPLIER: u64 = 18446744073709551615 / FIXED_POINT_SCALING;
+}
+```
+
+## Ownership
+
+Constants have **copy semantics** - their values are copied each time they are used. This means:
+- No ownership transfer occurs when using constants
+- Constants can be used multiple times without restriction
+- The original constant value remains unchanged
+
+```move
+const SHARED_VALUE: u64 = 100;
+
+public fun example() {
+    let x = SHARED_VALUE;  // Value is copied
+    let y = SHARED_VALUE;  // Value is copied again
+    // Both x and y have independent copies of 100
+}
+```
+
+## Summary
+
+Constants in Move provide:
+- **Immutable named values** that improve code readability
+- **Compile-time evaluation** for better performance
+- **Module-level scope** for encapsulation
+- **Type safety** with explicit type annotations
+- **Copy semantics** for safe reuse
+
+Use constants for:
+- Error codes and status values
+- Configuration parameters
+- Mathematical constants
+- Resource limits and constraints
+- String-like data (as `vector<u8>`)
+
+Constants are essential for writing maintainable Move code by replacing magic numbers and strings with meaningful, self-documenting names.

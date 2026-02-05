@@ -1,0 +1,102 @@
+---
+title: "Deploy an Archival Node"
+description: "Choose how to deploy your archival fullnode - using Docker containers or building from source code."
+sidebar:
+  label: "Deploy"
+---
+
+This section covers the different methods to deploy an archival fullnode on the Movement Network.
+
+## Deployment Options
+
+Choose the deployment method that best fits your needs:
+
+| Method | Best For | Complexity |
+|--------|----------|------------|
+| [Docker](/general/nodes/archival-node/run/deploy/docker) | Quick setup, production use | Low |
+| [Source Code](/general/nodes/archival-node/run/deploy/source) | Customization, development | Medium |
+
+## Prerequisites
+
+Regardless of deployment method, you'll need:
+
+- **Storage**: 1TB+ SSD (2TB+ recommended for mainnet)
+- **Memory**: 16GB+ RAM
+- **CPU**: 8+ cores
+- **Network**: Reliable internet connection
+- **restic**: For restoring from backups ([installation](https://restic.net/))
+
+### Install restic
+
+restic is used to restore blockchain data from Movement Labs' public backups.
+
+```shellscript filename="Terminal"
+# Ubuntu/Debian
+sudo apt update && sudo apt install -y restic
+
+# macOS
+brew install restic
+
+# Or download directly
+curl -LO https://github.com/restic/restic/releases/download/v0.18.1/restic_0.18.1_linux_amd64.bz2
+bunzip2 restic_0.18.1_linux_amd64.bz2
+chmod +x restic_0.18.1_linux_amd64
+sudo mv restic_0.18.1_linux_amd64 /usr/local/bin/restic
+```
+
+## Restore Data from Backup
+
+Before starting your archival node, restore existing blockchain data from Movement Labs' public backups. This is the recommended approach as syncing from genesis would take an extremely long time.
+
+Download and run the restore script from the Movement Networks repository:
+
+```shellscript filename="Terminal"
+# Download the restore script
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/l1_restore.sh
+chmod +x l1_restore.sh
+
+# Restore mainnet data (~700GB)
+./l1_restore.sh mainnet ./data
+
+# Or restore testnet data (~260GB)
+./l1_restore.sh testnet ./data
+```
+
+<Callout type="warning">
+**Restore Time**
+
+Restoring from backup can take several hours depending on your network speed:
+- Mainnet: ~700GB
+- Testnet: ~260GB
+</Callout>
+
+## Configuration Files
+
+Download the archival fullnode configuration and genesis files:
+
+### For Mainnet
+
+```shellscript filename="Terminal"
+mkdir -p mainnet-archival && cd mainnet-archival
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/configs/archival-fullnode.yaml
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/genesis.blob
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/waypoint.txt
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/genesis_waypoint.txt
+```
+
+### For Testnet
+
+```shellscript filename="Terminal"
+mkdir -p testnet-archival && cd testnet-archival
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/configs/archival-fullnode.yaml
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/genesis.blob
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/waypoint.txt
+curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/genesis_waypoint.txt
+```
+
+## Next Steps
+
+After restoring data and downloading configuration files, proceed to deploy:
+
+- [Deploy with Docker](/general/nodes/archival-node/run/deploy/docker)
+- [Deploy from Source](/general/nodes/archival-node/run/deploy/source)
