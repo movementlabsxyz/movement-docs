@@ -2,6 +2,9 @@ import defaultMdxComponents from 'fumadocs-ui/mdx';
 import type { MDXComponents } from 'mdx/types';
 import { MovementCard } from '@/components/MovementCard';
 import { CustomAPIPage } from '@/components/CustomAPIPage';
+import { TokenDistributionChart } from '@/components/TokenDistributionChart';
+import { CumulativeVestingChart } from '@/components/CumulativeVestingChart';
+import { TokenomicsFlowDiagram } from '@/components/TokenomicsFlowDiagram';
 import { StakeLifecycleDiagram } from '@/components/StakeLifecycleDiagram';
 import { DelegationPoolDiagram } from '@/components/DelegationPoolDiagram';
 import { LazySyncDiagram } from '@/components/LazySyncDiagram';
@@ -14,6 +17,9 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     ...defaultMdxComponents,
     MovementCard,
     APIPage: CustomAPIPage,
+    TokenDistributionChart,
+    CumulativeVestingChart,
+    TokenomicsFlowDiagram,
     StakeLifecycleDiagram,
     DelegationPoolDiagram,
     LazySyncDiagram,
