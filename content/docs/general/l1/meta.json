@@ -1,5 +1,5 @@
 {
-  "title": "Movement L1",
+  "title": "M1 - Movement L1",
   "pages": [
     "index",
     "what-is-movement-l1",
@@ -8,6 +8,7 @@
     "node-level-architecture",
     "nodes",
     "staking",
-    "protocol-specification"
+    "protocol-specification",
+    "mica-whitepaper"
   ]
 }
