@@ -1,30 +1,36 @@
 ---
 title: TypeScript SDK
-description: Learn how to interact with Movement using the Aptos TypeScript SDK.
+description: Learn how to interact with Movement using the Movement TypeScript SDK.
 ---
 
-# Aptos TypeScript SDK
+# Movement TypeScript SDK
 
-On the Movement Network, you are building with Aptos Move; this allows you to leverage the Aptos TypeScript SDK to interact with the chain.
+<Callout type="info" className="py-6">
 
-The guide below will walk you through the process of setting up the SDK and interacting with the chain. If you would like to reference specific functions on the SDK refer to the [reference documentation](https://aptos-labs.github.io/aptos-ts-sdk/) for the version of the SDK you are using.
+This Movement TS SDK repo is forked from [github.com/aptos-labs](https://github.com/aptos-labs) prior to the date on which the Aptos Foundation implemented its Innovation-Enabling Source Code License in substitution for the prior Apache License, Version 2.0 governing this repository.
+
+Move Industries continues to maintain, develop, modify, and distribute this repository solely under the Apache License, Version 2.0, as existed at the time of the fork and without application of the license instituted by the Aptos Foundation.
+
+</Callout>
+
+The [Movement TypeScript SDK](https://github.com/MoveIndustries/ts-sdk) allows you to interact with the Movement Network. The guide below will walk you through the process of setting up the SDK and interacting with the chain.
 
 ## Installation
 
 ```bash tab="npm"
-npm install @aptos-labs/ts-sdk
+npm install @moveindustries/ts-sdk
 ```
 
 ```bash tab="pnpm"
-pnpm add @aptos-labs/ts-sdk
+pnpm add @moveindustries/ts-sdk
 ```
 
 ```bash tab="yarn"
-yarn add @aptos-labs/ts-sdk
+yarn add @moveindustries/ts-sdk
 ```
 
 ```bash tab="bun"
-bun add @aptos-labs/ts-sdk
+bun add @moveindustries/ts-sdk
 ```
 
 ## Imports
@@ -32,7 +38,7 @@ bun add @aptos-labs/ts-sdk
 To get started with the SDK, import the necessary components:
 
 ```javascript
-const { Account, Aptos, AptosConfig, Network, Ed25519PrivateKey } = require("@aptos-labs/ts-sdk");
+const { Account, Movement, MovementConfig, Network, Ed25519PrivateKey } = require("@moveindustries/ts-sdk");
 ```
 
 ## Configuration
@@ -40,14 +46,14 @@ const { Account, Aptos, AptosConfig, Network, Ed25519PrivateKey } = require("@ap
 Configure the SDK to connect to the Movement Bardock Testnet (Please refer to [Network Endpoints](/devs/networkEndpoints) for more endpoints):
 
 ```javascript
-const config = new AptosConfig({
+const config = new MovementConfig({
     network: Network.CUSTOM,
     fullnode: 'https://testnet.movementnetwork.xyz/v1',
     faucet: 'https://faucet.testnet.movementnetwork.xyz/',
 });
 
-// Initialize the Aptos client
-const aptos = new Aptos(config);
+// Initialize the Movement client
+const movement = new Movement(config);
 ```
 
 ## Interacting with the Chain
@@ -69,14 +75,14 @@ const viewPayload = {
     functionArguments: [accountAddress]
 };
 
-const result = await aptos.view({ payload: viewPayload });
+const result = await movement.view({ payload: viewPayload });
 ```
 
 ### Sending Transactions
 
 ```javascript
 // Build the transaction
-const transaction = await aptos.transaction.build.simple({
+const transaction = await movement.transaction.build.simple({
     sender: accountAddress,
     data: {
         function: "0x1::message::set_message",
@@ -85,19 +91,19 @@ const transaction = await aptos.transaction.build.simple({
 });
 
 // Sign the transaction
-const signature = aptos.transaction.sign({
+const signature = movement.transaction.sign({
     signer: account,
     transaction
 });
 
 // Submit the transaction
-const committedTxn = await aptos.transaction.submit.simple({
+const committedTxn = await movement.transaction.submit.simple({
     transaction,
     senderAuthenticator: signature,
 });
 
 // Wait for transaction completion
-const response = await aptos.waitForTransaction({
+const response = await movement.waitForTransaction({
     transactionHash: committedTxn.hash
 });
 ```
@@ -113,10 +119,10 @@ Remember to replace `YOUR_PRIVATE_KEY` with your actual private key and never sh
 The Code below is based on the [Your First Move Contract tutorial](/devs/firstMoveContract).
 
 ```javascript
-const { Account, Aptos, AptosConfig, Network, Ed25519PrivateKey } = require("@aptos-labs/ts-sdk");
+const { Account, Movement, MovementConfig, Network, Ed25519PrivateKey } = require("@moveindustries/ts-sdk");
 
 // Define the custom network configuration
-const config = new AptosConfig({
+const config = new MovementConfig({
     network: Network.CUSTOM,
     fullnode: 'https://testnet.bardock.movementnetwork.xyz/v1',
     faucet: 'https://faucet.testnet.bardock.movementnetwork.xyz/',
@@ -132,7 +138,7 @@ const MESSAGE = "gmove";
 
 const setMessage = async () => {
   // Setup the client
-  const aptos = new Aptos(config);
+  const movement = new Movement(config);
 
   // Create an account from the provided private key
   console.log("creating")
@@ -157,7 +163,7 @@ const setMessage = async () => {
     functionArguments: [accountAddress]
   }
    try {
-     const message = await aptos.view({ payload: viewPayload });
+     const message = await movement.view({ payload: viewPayload });
      console.log("Message:", message);
    } catch (error) {
      console.error("Error reading message:", error);
@@ -165,7 +171,7 @@ const setMessage = async () => {
 
   // Submit the transaction
   console.log("\n=== Submitting Transaction ===\n");
-  const transaction = await aptos.transaction.build.simple({
+  const transaction = await movement.transaction.build.simple({
     sender: accountAddress,
     data: {
       function: SET_MESSAGE_FUNCTION,
@@ -174,21 +180,21 @@ const setMessage = async () => {
   });
 
   // Sign the transaction
-  const signature = aptos.transaction.sign({ signer: account, transaction });
+  const signature = movement.transaction.sign({ signer: account, transaction });
 
   // Submit the transaction to chain
-  const committedTxn = await aptos.transaction.submit.simple({
+  const committedTxn = await movement.transaction.submit.simple({
     transaction,
     senderAuthenticator: signature,
   });
 
   console.log(`Submitted transaction: ${committedTxn.hash}`);
-  const response = await aptos.waitForTransaction({ transactionHash: committedTxn.hash });
+  const response = await movement.waitForTransaction({ transactionHash: committedTxn.hash });
   console.log({ response })
   // Read the message after it has been set
   console.log("\n=== Reading Message ===\n");
 
-  const newMessage = await aptos.view({ payload: viewPayload });
+  const newMessage = await movement.view({ payload: viewPayload });
 
   console.log("Message:", newMessage);
 };
