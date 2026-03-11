@@ -10,23 +10,23 @@ This React component implements a transaction signing and submission functionali
 ```typescript
 import React from 'react';
 import { useWallet } from '@aptos-labs/wallet-adapter-react';
-import { Aptos, AptosConfig, Network } from '@aptos-labs/ts-sdk';
+import { Movement, MovementConfig, Network } from '@moveindustries/ts-sdk';
 ```
 - `@aptos-labs/wallet-adapter-react`: Provides wallet connection functionality
-- `@aptos-labs/ts-sdk`: Aptos blockchain SDK for interaction with the network
+- `@moveindustries/ts-sdk`: Movement blockchain SDK for interaction with the network
 
 ## Configuration
 ```typescript
-const config = new AptosConfig({
+const config = new MovementConfig({
   network: Network.TESTNET,
   fullnode: 'https://testnet.movementnetwork.xyz/v1',
   faucet: 'https://faucet.testnet.movementnetwork.xyz/'
 })
-const aptos = new Aptos(config);
+const movement = new Movement(config);
 ```
-- Creates a new Aptos configuration instance
-- Connects to the Aptos mainnet network
-- Initializes the Aptos client with the configuration
+- Creates a new Movement configuration instance
+- Connects to the Movement testnet network
+- Initializes the Movement client with the configuration
 
 ## Component Breakdown
 
@@ -65,7 +65,7 @@ This function handles:
 
 ### 3️⃣ Transaction Confirmation
 ```typescript
-await aptos.waitForTransaction({ transactionHash: response.hash });
+await movement.waitForTransaction({ transactionHash: response.hash });
 ```
 - Waits for transaction confirmation on the blockchain
 - Includes error handling for failed transactions
@@ -95,7 +95,7 @@ function App() {
 ```
 
 ## Important Notes
-1. This component requires a connected Aptos wallet to function
+1. This component requires a connected wallet to function
 2. It's configured to work with Mainnet (production network)
 3. The current implementation sends 1 unit to the same address (self-transfer)
 4. Error handling is implemented for transaction confirmation
@@ -105,10 +105,10 @@ function App() {
 ```typescript title="src/components/signAndSubmitTx.tsx"
 import React from 'react';
 import { useWallet } from '@aptos-labs/wallet-adapter-react';
-import { Aptos, AptosConfig, Network } from '@aptos-labs/ts-sdk';
+import { Movement, MovementConfig, Network } from '@moveindustries/ts-sdk';
 
-const config = new AptosConfig({ network: Network.MAINNET });
-const aptos = new Aptos(config);
+const config = new MovementConfig({ network: Network.MAINNET });
+const movement = new Movement(config);
 
 const SignAndSubmit = () => {
   const { account, signAndSubmitTransaction } = useWallet();
@@ -126,7 +126,7 @@ const SignAndSubmit = () => {
     });
     // if you want to wait for transaction
     try {
-      await aptos.waitForTransaction({ transactionHash: response.hash });
+      await movement.waitForTransaction({ transactionHash: response.hash });
     } catch (error) {
       console.error(error);
     }

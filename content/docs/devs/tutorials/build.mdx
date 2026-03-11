@@ -220,13 +220,13 @@ import { WalletSelector } from "@aptos-labs/wallet-adapter-ant-design";
 import "@aptos-labs/wallet-adapter-ant-design/dist/index.css";
 import { useRef, useState, useEffect } from "react";
 import { useWallet, InputTransactionData } from '@aptos-labs/wallet-adapter-react';
-import { Aptos, AptosConfig, Network } from "@aptos-labs/ts-sdk";
+import { Movement, MovementConfig, Network } from "@moveindustries/ts-sdk";
 import { ONCHAIN_BIO } from "./constants";
 import './index.css';
 
 // with custom configuration
-const aptosConfig = new AptosConfig({ network: Network.CUSTOM });
-const aptos = new Aptos(aptosConfig);
+const movementConfig = new MovementConfig({ network: Network.CUSTOM });
+const movement = new Movement(movementConfig);
 
 function App() {
   const { signAndSubmitTransaction, account } = useWallet();
@@ -244,7 +244,7 @@ function App() {
     }
   
     try {
-      const bioResource = await aptos.getAccountResource(
+      const bioResource = await movement.getAccountResource(
         {
           accountAddress:account?.address,
           resourceType:`${ONCHAIN_BIO}::onchain_bio::Bio`
@@ -278,7 +278,7 @@ function App() {
         const response = await signAndSubmitTransaction(transaction);
         // wait for transaction
         console.log(`Success! View your transaction at https://explorer.movementlabs.xyz/txn/${response.hash}`)
-        await aptos.waitForTransaction({transactionHash:response.hash});
+        await movement.waitForTransaction({transactionHash:response.hash});
         fetchBio();
       } catch (error: any) {
         console.log("Error:", error)
