@@ -1,0 +1,285 @@
+---
+title: Movement Name Service
+description: Integrate the Movement Name Service (MNS) into your dApp for .move domain registration, resolution, and management.
+---
+
+# Movement Name Service
+
+<Callout type="warn">
+
+The Movement Name Service is currently live on **testnet only**. The URL and contract addresses will change when it launches on mainnet. The current testnet app is available at [movement-name-service-website-git-redesign-movement-labs.vercel.app](https://movement-name-service-website-git-redesign-movement-labs.vercel.app/?_vercel_share=GP3LKdhjq0HcG0RRzCDkm0ZoV7MjiW7J).
+
+</Callout>
+
+The Movement Name Service (MNS) allows users to register `.move` domain names as NFTs that serve as a universal identity across the Movement ecosystem. Each `.move` name resolves to a blockchain address and can be set as a primary name for reverse lookups.
+
+## SDK Integration
+
+MNS functionality is built into the [Movement TypeScript SDK](/devs/interactonchain/tsSdk). All name service methods are accessible through the `movement` client instance.
+
+### Installation
+
+```bash tab="npm"
+npm install @moveindustries/ts-sdk
+```
+
+```bash tab="pnpm"
+pnpm add @moveindustries/ts-sdk
+```
+
+### Setup
+
+```typescript
+import { Movement, MovementConfig, Network } from "@moveindustries/ts-sdk";
+
+const config = new MovementConfig({
+  network: Network.TESTNET,
+});
+const movement = new Movement(config);
+```
+
+## Domain Registration
+
+### Check Price and Availability
+
+```typescript
+const name = "mydomain";
+
+const price = await movement.getDomainPrice({ name, years: 1 });
+console.log(`Registration cost: ${Number(price) / 1e8} MOVE`);
+
+const available = await movement.canRegister({ name });
+console.log(`Available: ${available}`);
+```
+
+### Register a Domain
+
+```typescript
+const txn = await movement.registerName({
+  name: "mydomain.move",
+  sender: account,
+  expiration: { policy: "domain" },
+});
+```
+
+### Renew a Domain
+
+```typescript
+await movement.renewDomain({
+  name: "mydomain.move",
+  sender: account,
+  years: 1,
+});
+```
+
+## Name Resolution
+
+### Resolve Name to Address
+
+```typescript
+const address = await movement.getTargetAddress({ name: "mydomain.move" });
+console.log(`Address: ${address}`);
+```
+
+### Reverse Lookup (Address to Primary Name)
+
+```typescript
+const name = await movement.getPrimaryName({
+  address: "0x123...",
+});
+console.log(`Primary name: ${name}`);
+```
+
+### Get All Names for an Address
+
+```typescript
+const names = await movement.getAccountNames({
+  accountAddress: "0x123...",
+});
+console.log(names);
+```
+
+## Name Management
+
+### Set Target Address
+
+Configure which address a name resolves to:
+
+```typescript
+await movement.setTargetAddress({
+  sender: account,
+  name: "mydomain.move",
+  address: targetAddress,
+});
+```
+
+### Clear Target Address
+
+```typescript
+await movement.clearTargetAddress({
+  sender: account,
+  name: "mydomain.move",
+});
+```
+
+### Set Primary Name
+
+Designate a name as the primary identity for your account:
+
+```typescript
+await movement.setPrimaryName({
+  sender: account,
+  name: "mydomain.move",
+});
+```
+
+### Check Ownership
+
+```typescript
+const isOwner = await movement.isNameOwner({
+  name: "mydomain.move",
+  address: account.accountAddress,
+});
+```
+
+## Additional Methods
+
+| Method | Description |
+|--------|-------------|
+| `getName` | Fetch metadata for a specific name |
+| `getOwnerAddress` | Get the owner of a domain |
+| `getExpiration` | Get the expiration timestamp for a domain |
+| `getAccountDomains` | List all domains owned by an address |
+| `getTokenAddress` | Get the NFT token address for a domain |
+
+## Indexer Queries
+
+You can query MNS data directly using the Movement indexer GraphQL API. The testnet endpoint is:
+
+```
+https://indexer.testnet.movementnetwork.xyz/v1/graphql
+```
+
+You can explore and test queries interactively using the [GraphiQL explorer](https://cloud.hasura.io/public/graphiql?endpoint=https%3A%2F%2Findexer.testnet.movementnetwork.xyz%2Fv1%2Fgraphql).
+
+### Schema
+
+The `current_aptos_names` table contains all MNS name records with the following fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `domain` | String | The domain name (without suffix) |
+| `domain_with_suffix` | String | Full domain name (e.g. `mydomain.move`) |
+| `owner_address` | String | Address that owns the name NFT |
+| `registered_address` | String | Address the name resolves to |
+| `is_primary` | Boolean | Whether this is the primary name for the address |
+| `is_active` | Boolean | Whether the name is currently active |
+| `expiration_timestamp` | timestamp | When the domain registration expires |
+| `subdomain` | String | Subdomain portion if applicable |
+| `token_standard` | String | Token standard (v2) |
+| `last_transaction_version` | bigint | Last transaction that modified this record |
+
+### Lookup a Domain by Name
+
+```graphql
+{
+  current_aptos_names(
+    where: { domain: { _eq: "mydomain" }, is_active: { _eq: true } }
+  ) {
+    domain
+    domain_with_suffix
+    owner_address
+    registered_address
+    is_primary
+    expiration_timestamp
+  }
+}
+```
+
+### Get All Names Owned by an Address
+
+```graphql
+{
+  current_aptos_names(
+    where: {
+      owner_address: { _eq: "0x..." }
+      is_active: { _eq: true }
+    }
+  ) {
+    domain
+    domain_with_suffix
+    is_primary
+    registered_address
+    expiration_timestamp
+  }
+}
+```
+
+### Get Primary Name for an Address
+
+```graphql
+{
+  current_aptos_names(
+    where: {
+      registered_address: { _eq: "0x..." }
+      is_primary: { _eq: true }
+      is_active: { _eq: true }
+    }
+  ) {
+    domain
+    domain_with_suffix
+    owner_address
+  }
+}
+```
+
+### Count All Active Names
+
+```graphql
+{
+  current_aptos_names_aggregate(
+    where: { is_active: { _eq: true } }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+```
+
+### Using the Indexer in TypeScript
+
+```typescript
+const INDEXER_URL = "https://indexer.testnet.movementnetwork.xyz/v1/graphql";
+
+async function getNamesByOwner(ownerAddress: string) {
+  const query = `
+    query GetNamesByOwner($owner: String!) {
+      current_aptos_names(
+        where: {
+          owner_address: { _eq: $owner }
+          is_active: { _eq: true }
+        }
+      ) {
+        domain
+        domain_with_suffix
+        is_primary
+        registered_address
+        expiration_timestamp
+      }
+    }
+  `;
+
+  const response = await fetch(INDEXER_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      query,
+      variables: { owner: ownerAddress },
+    }),
+  });
+
+  const { data } = await response.json();
+  return data.current_aptos_names;
+}
+```
