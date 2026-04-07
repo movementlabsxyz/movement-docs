@@ -1,0 +1,998 @@
+---
+title: LST Developer Guide
+description: gMOVE Liquid Staking Token Integration Guide for Developers on Movement Network
+---
+
+# LST Developer Guide
+
+## Overview
+
+This guide helps developers integrate gMOVE into DeFi protocols, wallets, dashboards, and other applications on Movement Network.
+
+**What is gMOVE?**
+
+- Liquid staking token (LST) for Movement Network
+- Fungible Asset (FA) standard on Movement
+- Yield-bearing: value accrues through increasing exchange rate
+- Composable: can be used across DeFi protocols
+
+**Key properties**
+
+- **Exchange rate model:** 1 gMOVE = `exchange_rate` MOVE (monotonically increasing)
+- **Rebasing:** No. Balance stays constant, value increases via exchange rate.
+- **Standard:** Movement Fungible Asset (FA)
+- **Precision:** 8 decimals (same as MOVE)
+- **Exchange rate precision:** 10^9 (returned as `u128`, divide by `1_000_000_000` for decimal value)
+
+---
+
+## Contract Addresses
+
+### Mainnet
+
+- **Module Address:** `0xb52bac12e50458cd2b958b82b05e3a240834eefbfc4b1bc0729fd580c625f1ea`
+- **Resource Account:** `0xd77f9e4e2a5dc1c9e9c567a39ec49ac388997f137e75ba92e12d5de75981804c`
+- **gMOVE Metadata Object:** `0xba070099efd401e69ae924e31464541bb9c815b9a1866367f07499d9b3698b2c`
+- **Validator:** `0x830bfd0cd58b06dc938d409b6f3bc8ee97818ffcf9b32d714c068454afb644c7`
+
+### Testnet
+
+- **Module Address:** `0x9762cac6c378ff6110885449e80cf4c2890c19a725251b22412b1ac02100044d`
+- **Resource Account:** `0x1c5495399b3e83ec8965e67b4bfc64a327f012fd8d2cda16663ac3524efab43b`
+- **gMOVE Metadata Object:** *Check testnet deployment*
+
+**How to find the resource account**
+
+```bash
+# Call the view function (returns: resource_account_address, minimum_stake_amount, precision_multiplier, is_paused)
+movement move view \
+  --function-id <MODULE_ADDRESS>::liquid_staking::get_protocol_config
+```
+
+---
+
+## View Functions (Read-Only)
+
+All view functions are read-only and do not require authentication. They are gas-free when called via RPC.
+
+### 1. `get_exchange_rate()`
+
+Returns the current exchange rate of gMOVE to MOVE.
+
+**Signature**
+
+```move
+#[view]
+public fun get_exchange_rate(): u128
+```
+
+**Returns**
+
+- `u128`: Exchange rate with 10^9 precision
+
+**Conversion**
+
+```text
+actual_rate = returned_value / 1_000_000_000
+gMOVE_value_in_MOVE = gMOVE_amount * actual_rate
+```
+
+**Example**
+
+```bash
+# CLI
+movement move view \
+  --function-id <MODULE_ADDRESS>::liquid_staking::get_exchange_rate
+
+# Example return: 1050000000
+# Actual rate: 1050000000 / 1000000000 = 1.05
+# Meaning: 1 gMOVE = 1.05 MOVE
+```
+
+**Example in Move**
+
+```move
+use liquid_staking;
+
+public fun example() {
+    let rate = liquid_staking::get_exchange_rate(); // Returns: 1050000000
+    let gmove_amount = 100_00000000; // 100 gMOVE (8 decimals)
+
+    // Calculate MOVE value
+    let move_value = (gmove_amount as u128) * (rate as u128) / 1_000_000_000;
+    // move_value = 105_00000000 (105 MOVE)
+}
+```
+
+**Use cases**
+
+- Display gMOVE value in wallets
+- Pricing for DEX pools
+- Collateral valuation in lending protocols
+- Oracle feeds
+
+**Important**
+
+- Exchange rate is **monotonically increasing** (should never decrease)
+- A decreasing rate indicates validator slashing or a protocol issue
+- Rate updates when `harvest_and_compound()` is called
+
+---
+
+### 2. `get_total_supply()`
+
+Returns the total supply of gMOVE in circulation.
+
+**Signature**
+
+```move
+#[view]
+public fun get_total_supply(): u128
+```
+
+**Returns**
+
+- `u128`: Total gMOVE supply (8 decimals)
+
+**Example**
+
+```bash
+movement move view \
+  --function-id <MODULE_ADDRESS>::liquid_staking::get_total_supply
+
+# Example return: 1000000_00000000 (1,000,000 gMOVE)
+```
+
+**Use cases**
+
+- TVL calculation: `total_supply * exchange_rate`
+- Market cap tracking
+- Analytics dashboards
+
+---
+
+### 3. `get_total_value()`
+
+Returns the total value locked (TVL) in MOVE.
+
+**Signature**
+
+```move
+#[view]
+public fun get_total_value(): u128
+```
+
+**Returns**
+
+- `u128`: Total active stake in MOVE (8 decimals)
+
+**Example**
+
+```bash
+movement move view \
+  --function-id <MODULE_ADDRESS>::liquid_staking::get_total_value
+
+# Example return: 1100000_00000000 (1,100,000 MOVE)
+```
+
+**Relationship**
+
+```text
+exchange_rate = get_total_value() / get_total_supply()
+```
+
+---
+
+### 4. `get_protocol_statistics()`
+
+Returns comprehensive protocol statistics in a single call.
+
+**Signature**
+
+```move
+#[view]
+public fun get_protocol_statistics(): (u128, u128, u128, u64)
+```
+
+**Returns (in order)**
+
+1. `u128`: Total value (MOVE), 8 decimals
+2. `u128`: Total supply (gMOVE), 8 decimals
+3. `u128`: Exchange rate, 10^9 precision
+4. `u64`: Active validator count
+
+**Example**
+
+```bash
+movement move view \
+  --function-id <MODULE_ADDRESS>::liquid_staking::get_protocol_statistics
+
+# Example return:
+# [
+#   "5999913835",     // 59.99913835 MOVE
+#   "6000204652",     // 60.00204652 gMOVE
+#   "999951532",      // 0.999951532 exchange rate
+#   "1"               // 1 active validator
+# ]
+```
+
+**Use cases**
+
+- Dashboard displays
+- Single RPC call for complete state
+- Monitoring and alerting
+
+---
+
+### 5. `get_user_unstake_requests(address)`
+
+Returns all pending unstake requests for a specific address.
+
+**Signature**
+
+```move
+#[view]
+public fun get_user_unstake_requests(user: address): vector<UnstakeRequest>
+```
+
+**Parameters**
+
+- `user`: Address to query
+
+**Returns**
+
+- `vector<UnstakeRequest>`: List of pending unstake requests, each containing:
+    - `user`: Address of the unstaker
+    - `gmove_amount`: gMOVE burned
+    - `coin_amount`: Expected MOVE to receive
+    - `unlock_time`: Timestamp when claimable (seconds since epoch)
+    - `validator_unstakes`: Per-validator breakdown
+
+**Example**
+
+```bash
+movement move view \
+  --function-id <MODULE_ADDRESS>::liquid_staking::get_user_unstake_requests \
+  --args address:0x123...
+
+# Example return:
+# [{ "user": "0x123...", "gmove_amount": "3000000000", "coin_amount": "2999892291",
+#    "unlock_time": "1770771292", "validator_unstakes": [...] }]
+```
+
+**Additional view functions**
+
+- `get_user_unstake_request(user, request_id)` - Get a specific request
+- `check_can_claim(user, request_id)` - Check if a request is ready to claim
+
+**Use cases**
+
+- Wallet displays showing pending withdrawals
+- Countdown timers for unlock
+- Claiming flow UI
+
+---
+
+### 6. `get_protocol_config()`
+
+Returns the protocol configuration including the resource account address.
+
+**Signature**
+
+```move
+#[view]
+public fun get_protocol_config(): (address, u64, u128, bool)
+```
+
+**Returns (in order)**
+
+1. `address`: Resource account address
+2. `u64`: Minimum stake amount (octas)
+3. `u128`: Precision multiplier (10^9)
+4. `bool`: Whether the protocol is paused
+
+**Example**
+
+```bash
+movement move view \
+  --function-id <MODULE_ADDRESS>::liquid_staking::get_protocol_config
+
+# Example return:
+# [
+#   "0xd77f9e4e2a5dc1c9e9c567a39ec49ac388997f137e75ba92e12d5de75981804c",
+#   "1000100000",
+#   "1000000000",
+#   false
+# ]
+```
+
+**Use cases**
+
+- Block explorer integrations
+- Verifying delegation on validators
+- Checking protocol pause status
+- Advanced analytics
+
+---
+
+## Entry Functions (State-Changing)
+
+These functions modify blockchain state and require a transaction signature.
+
+### 1. `stake_and_mint(amount: u64)`
+
+Stake MOVE and receive gMOVE.
+
+**Signature**
+
+```move
+public entry fun stake_and_mint(account: &signer, amount: u64)
+```
+
+**Parameters**
+
+- `account`: Signer (user wallet)
+- `amount`: MOVE amount to stake (8 decimals)
+
+**Flow**
+
+1. Withdraws `amount` MOVE from user's primary store
+2. Delegates to validator via resource account
+3. Calculates gMOVE to mint based on exchange rate
+4. Mints gMOVE to user's primary store
+
+**Example**
+
+```bash
+# Stake 100 MOVE
+movement move run \
+  --function-id <MODULE_ADDRESS>::liquid_staking::stake_and_mint \
+  --args u64:10000000000
+```
+
+**Example in Move**
+
+```move
+use liquid_staking;
+
+public entry fun stake_for_user(user: &signer) {
+    let amount = 100_00000000; // 100 MOVE
+    liquid_staking::stake_and_mint(user, amount);
+}
+```
+
+**Important**
+
+- User must have at least `amount` MOVE in primary store
+- User must have migrated to fungible store (`coin::migrate_to_fungible_store`)
+- First depositor has 10 MOVE permanently locked (MINIMUM_LIQUIDITY protection)
+
+---
+
+### 2. `stake_and_mint_with_slippage(amount: u64, min_gmove_out: u64)`
+
+Stake MOVE with slippage protection.
+
+**Signature**
+
+```move
+public entry fun stake_and_mint_with_slippage(
+    account: &signer,
+    amount: u64,
+    min_gmove_out: u64
+)
+```
+
+**Parameters**
+
+- `account`: Signer
+- `amount`: MOVE amount to stake
+- `min_gmove_out`: Minimum gMOVE to receive (reverts if less)
+
+**Use cases**
+
+- Front-running protection
+- User specifies acceptable exchange rate range
+
+**Example**
+
+```bash
+# Stake 100 MOVE, expect at least 95 gMOVE (5% slippage tolerance)
+movement move run \
+  --function-id <MODULE_ADDRESS>::liquid_staking::stake_and_mint_with_slippage \
+  --args u64:10000000000 u64:9500000000
+```
+
+---
+
+### 3. `burn_and_unstake(amount: u64)`
+
+Burn gMOVE and initiate unstaking process.
+
+**Signature**
+
+```move
+public entry fun burn_and_unstake(account: &signer, amount: u64)
+```
+
+**Parameters**
+
+- `account`: Signer
+- `amount`: gMOVE amount to unstake (8 decimals)
+
+**Flow**
+
+1. Burns `amount` gMOVE from user
+2. Calculates MOVE value based on exchange rate
+3. Unlocks stake from validator (starts 14-day unbonding)
+4. Records pending unstake for user with a `request_id`
+
+**After 14 days**
+
+- User calls `claim_unlocked(request_id)` to receive MOVE
+
+**Example**
+
+```bash
+# Unstake 50 gMOVE
+movement move run \
+  --function-id <MODULE_ADDRESS>::liquid_staking::burn_and_unstake \
+  --args u64:5000000000
+```
+
+**Important**
+
+- User waits 14 days before claiming MOVE
+- gMOVE is burned immediately (stops earning rewards)
+- User can have multiple pending unstake requests (each with a unique `request_id`)
+
+---
+
+### 4. `burn_and_unstake_with_slippage(amount: u64, min_move_out: u64)`
+
+Unstake with slippage protection.
+
+**Signature**
+
+```move
+public entry fun burn_and_unstake_with_slippage(
+    account: &signer,
+    amount: u64,
+    min_move_out: u64
+)
+```
+
+**Parameters**
+
+- `account`: Signer
+- `amount`: gMOVE amount to unstake
+- `min_move_out`: Minimum MOVE to receive after 14 days (reverts if less)
+
+---
+
+### 5. `claim_unlocked(request_id: u64)`
+
+Claim MOVE after the unbonding period.
+
+**Signature**
+
+```move
+public entry fun claim_unlocked(account: &signer, request_id: u64)
+```
+
+**Parameters**
+
+- `account`: Signer
+- `request_id`: The ID of the unstake request to claim
+
+**Flow**
+
+1. Checks if unbonding period has passed
+2. Withdraws MOVE from validator delegation
+3. Transfers MOVE to user's primary store
+4. Removes the unstake request
+
+**Example**
+
+```bash
+movement move run \
+  --function-id <MODULE_ADDRESS>::liquid_staking::claim_unlocked \
+  --args u64:0
+```
+
+**Errors**
+
+- `EUNLOCK_NOT_READY`: Unbonding period hasn't passed yet
+- `EREQUEST_NOT_FOUND`: No unstake request with this ID
+- `EINVALID_REQUEST`: Request doesn't belong to the caller
+
+---
+
+### 6. `harvest_and_compound()`
+
+Anyone can call this to compound staking rewards and update the exchange rate. No signer required.
+
+**Signature**
+
+```move
+public entry fun harvest_and_compound()
+```
+
+**Flow**
+
+1. Withdraws accumulated rewards from validator
+2. Restakes rewards back into validator
+3. Exchange rate increases for all gMOVE holders
+
+**Example**
+
+```bash
+movement move run \
+  --function-id <MODULE_ADDRESS>::liquid_staking::harvest_and_compound
+```
+
+**Use cases**
+
+- Protocol keepers call this periodically
+- Users can call to update exchange rate before large operations
+- Bots can call when it is economically beneficial
+
+---
+
+## Integration Patterns
+
+### Pattern 1: Wallet Integration
+
+**Display gMOVE balance and value**
+
+```tsx
+// Pseudocode
+async function getGMoveInfo(userAddress: string) {
+  // Get user's gMOVE balance (from FA primary store)
+  const gmoveBalance = await getBalance(userAddress, GMOVE_METADATA);
+
+  // Get current exchange rate
+  const rate = await view({
+    function: `${MODULE_ADDRESS}::liquid_staking::get_exchange_rate`,
+    type_arguments: [],
+    arguments: []
+  });
+
+  // Calculate MOVE value
+  const exchangeRate = rate[0] / 1_000_000_000;
+  const moveValue = gmoveBalance * exchangeRate;
+
+  return {
+    gmoveBalance,
+    moveValue,
+    exchangeRate
+  };
+}
+```
+
+**Show pending unstakes**
+
+```tsx
+async function getPendingUnstake(userAddress: string) {
+  const requests = await view({
+    function: `${MODULE_ADDRESS}::liquid_staking::get_user_unstake_requests`,
+    type_arguments: [],
+    arguments: [userAddress]
+  });
+
+  return requests.map(req => {
+    const now = Date.now() / 1000;
+    const isReady = req.unlock_time <= now;
+    const timeRemaining = isReady ? 0 : req.unlock_time - now;
+    return {
+      amount: req.coin_amount / 100_000_000,
+      unlockTime: req.unlock_time,
+      isReady,
+      daysRemaining: timeRemaining / 86400
+    };
+  });
+}
+```
+
+---
+
+### Pattern 2: DEX Integration
+
+**Price oracle for gMOVE/MOVE pool**
+
+```move
+// In your DEX contract
+use liquid_staking;
+
+public fun get_gmove_fair_value(): u64 {
+    // Get exchange rate from gMOVE protocol
+    let rate = liquid_staking::get_exchange_rate();
+    // This is the fair value: 1 gMOVE = `rate` MOVE
+    rate
+}
+
+public fun check_pool_health(pool_price: u64, max_deviation_bps: u64): bool {
+    let fair_value = get_gmove_fair_value();
+    let deviation = if (pool_price > fair_value) {
+        ((pool_price - fair_value) as u128) * 10000 / (fair_value as u128)
+    } else {
+        ((fair_value - pool_price) as u128) * 10000 / (fair_value as u128)
+    };
+
+    (deviation as u64) <= max_deviation_bps
+}
+```
+
+**Arbitrage detection**
+
+```tsx
+async function checkArbitrageOpportunity() {
+  // Get fair value from protocol
+  const rateRaw = await getExchangeRate();
+  const fairValue = rateRaw / 1_000_000_000;
+
+  // Get DEX price
+  const dexPrice = await getDexPrice('gMOVE', 'MOVE');
+
+  // Calculate deviation
+  const deviation = (dexPrice - fairValue) / fairValue;
+
+  if (Math.abs(deviation) > 0.01) { // 1% deviation
+    return {
+      hasOpportunity: true,
+      fairValue,
+      dexPrice,
+      deviation,
+      action: deviation > 0 ? 'SELL_GMOVE' : 'BUY_GMOVE'
+    };
+  }
+
+  return { hasOpportunity: false };
+}
+```
+
+---
+
+### Pattern 3: Lending Protocol Integration
+
+**Use gMOVE as collateral**
+
+```move
+use liquid_staking;
+use fungible_asset::{Self, FungibleAsset};
+
+// Calculate borrowing power
+public fun get_borrow_power(gmove_collateral: u64, ltv_bps: u64): u64 {
+    let exchange_rate = liquid_staking::get_exchange_rate();
+
+    // Convert gMOVE to MOVE value
+    let move_value = (gmove_collateral as u128) * (exchange_rate as u128)
+                     / 1_000_000_000;
+
+    // Apply LTV (e.g., 75% = 7500 bps)
+    let borrow_power = move_value * (ltv_bps as u128) / 10000;
+
+    (borrow_power as u64)
+}
+
+// Check if position is healthy
+public fun is_position_healthy(
+    gmove_collateral: u64,
+    debt: u64,
+    liquidation_threshold_bps: u64
+): bool {
+    let exchange_rate = liquid_staking::get_exchange_rate();
+    let collateral_value = (gmove_collateral as u128) * (exchange_rate as u128)
+                           / 1_000_000_000;
+
+    let max_debt = collateral_value * (liquidation_threshold_bps as u128) / 10000;
+
+    (debt as u128) <= max_debt
+}
+```
+
+---
+
+### Pattern 4: Dashboard / Analytics
+
+**Track protocol metrics**
+
+```tsx
+async function getProtocolMetrics() {
+  const [totalValue, totalSupply, exchangeRate, validatorCount] = await view({
+    function: `${MODULE_ADDRESS}::liquid_staking::get_protocol_statistics`,
+    type_arguments: [],
+    arguments: []
+  });
+
+  return {
+    tvl: totalValue / 100_000_000, // MOVE
+    supply: totalSupply / 100_000_000, // gMOVE
+    exchangeRate: exchangeRate / 1_000_000_000,
+    validatorCount,
+    avgStakePerValidator: (totalValue / validatorCount) / 100_000_000
+  };
+}
+```
+
+**Track exchange rate history**
+
+```tsx
+// Poll exchange rate periodically and store
+async function trackExchangeRate() {
+  const rate = await getExchangeRate();
+  const timestamp = Date.now();
+
+  // Store in database
+  await db.insert({
+    timestamp,
+    exchangeRate: rate / 1_000_000_000,
+    block: await getCurrentBlock()
+  });
+
+  // Calculate APY based on historical data
+  const rateOneYearAgo = await db.getRateAt(timestamp - 365*24*60*60*1000);
+  const apy = ((rate / rateOneYearAgo) - 1) * 100;
+
+  return { currentRate: rate, estimatedAPY: apy };
+}
+```
+
+---
+
+## Error Codes
+
+Understanding error codes for better error handling:
+
+| Error Code | Constant | Meaning | How to Fix |
+| --- | --- | --- | --- |
+| `2` | `EALREADY_INITIALIZED` | Protocol already initialized | N/A (admin only) |
+| `3` | `EZERO_AMOUNT` | Amount is zero | Require amount > 0 |
+| `4` | `EINSUFFICIENT_BALANCE` | User does not have enough MOVE/gMOVE | Check balance before transaction |
+| `5` | `ENO_EXCHANGE_RATE` | Exchange rate unavailable | Ensure protocol has stake |
+| `7` | `EINVALID_POOL` | Delegation pool does not exist | Contact admin |
+| `8` | `EPAUSED` | Protocol is paused | Wait for unpause |
+| `9` | `EMIN_STAKE_NOT_MET` | Below minimum stake (10.001 MOVE) | Increase stake amount |
+| `10` | `EINVALID_VALIDATOR_SET` | Invalid validator configuration | Contact admin |
+| `11` | `ESLIPPAGE_EXCEEDED` | Output less than min specified | Adjust slippage tolerance |
+| `12` | `EUNLOCK_NOT_READY` | Unbonding period not finished | Wait until unlock time |
+| `13` | `EINVALID_REQUEST` | Request does not belong to caller | Use correct account |
+| `14` | `EREQUEST_NOT_FOUND` | No pending unstake to claim | Check request ID |
+| `15` | `EUNAUTHORIZED` | Caller is not `@liquid_staking` admin | Only module deployer can call admin functions |
+| `16` | `ETOO_MANY_VALIDATORS` | Cannot add more validators | N/A (20 validator limit) |
+| `17` | `EVALIDATOR_HAS_STAKE` | Validator still has stake | Wait for stake to be fully withdrawn |
+| `18` | `EEXCHANGE_RATE_OVERFLOW` | Exchange rate calculation overflow | Contact admin |
+| `19` | `EVALIDATOR_NOT_INACTIVE` | Validator not in inactive list | Only applies to cleanup/admin unstake |
+| `20` | `EINVALID_MOVE_METADATA` | MOVE FA metadata not found | Ensure FA migration completed |
+| `21` | `EDUPLICATE_VALIDATOR` | Validator already in active or inactive list | Validator already tracked |
+| `22` | `EQUEUE_NOT_INITIALIZED` | UnstakeQueue not initialized | Wait for protocol initialization |
+
+**Example error handling**
+
+```tsx
+try {
+  await stake(amount);
+} catch (error) {
+  if (error.includes('EINSUFFICIENT_BALANCE')) {
+    showError('Insufficient MOVE balance');
+  } else if (error.includes('EPAUSED')) {
+    showError('Protocol is temporarily paused');
+  } else if (error.includes('ESLIPPAGE_EXCEEDED')) {
+    showError('Price moved unfavorably. Please try again.');
+  }
+}
+```
+
+---
+
+## Best Practices
+
+### 1. Always use view functions for read operations
+
+- View functions are free (no gas)
+- Call via RPC, not via transactions
+- Cache results appropriately (exchange rate changes infrequently)
+
+### 2. Use slippage protection for user-facing operations
+
+- Prefer `stake_and_mint_with_slippage()` over `stake_and_mint()`
+- Prefer `burn_and_unstake_with_slippage()` over `burn_and_unstake()`
+- Recommend 0.5% to 1% slippage tolerance for users
+
+### 3. Monitor exchange rate
+
+- Should only increase (monotonically)
+- Set up alerts for unexpected behavior
+- Any decrease indicates slashing or critical issue
+
+### 4. Handle precision correctly
+
+- gMOVE: 8 decimals (same as MOVE)
+- Exchange rate: 10^9 precision
+- Always use `u128` for intermediate calculations to avoid overflow
+
+```move
+// WRONG - can overflow
+let value = gmove_amount * exchange_rate / 1_000_000_000;
+
+// CORRECT - use u128
+let value = ((gmove_amount as u128) * (exchange_rate as u128)
+             / 1_000_000_000) as u64;
+```
+
+### 5. Educate users about the 14-day unbonding period
+
+- Make the 14-day wait **very clear** in UI
+- Offer DEX instant exit as an alternative
+- Show a countdown timer for pending unstakes
+
+### 6. Batch view calls
+
+- Use `get_protocol_statistics()` instead of multiple individual calls
+- Reduces RPC load and improves performance
+
+### 7. Respect epoch voting power limits
+
+- Large deposits may be rate-limited by validator epoch capacity
+- Break large deposits into smaller chunks if needed
+- Communicate this limitation to users staking large amounts
+
+---
+
+## Testing
+
+### Testnet testing checklist
+
+- [ ] Successfully call all view functions
+- [ ] Stake small amount (e.g., 11 MOVE)
+- [ ] Verify gMOVE balance increased correctly
+- [ ] Check exchange rate matches expected value
+- [ ] Unstake small amount
+- [ ] Wait for testnet unbonding (6 hours)
+- [ ] Claim unstaked MOVE successfully
+- [ ] Test slippage protection (both directions)
+- [ ] Verify error handling for edge cases
+- [ ] Test with multiple accounts
+- [ ] Monitor exchange rate over time
+
+### Example test script
+
+```bash
+#!/bin/bash
+
+MODULE_ADDR="0xb52bac12e50458cd2b958b82b05e3a240834eefbfc4b1bc0729fd580c625f1ea"
+
+echo "1. Get initial exchange rate"
+movement move view --function-id $MODULE_ADDR::liquid_staking::get_exchange_rate
+
+echo "2. Stake 11 MOVE"
+movement move run --function-id $MODULE_ADDR::liquid_staking::stake_and_mint \
+  --args u64:1100000000 --profile test --assume-yes
+
+echo "3. Check protocol stats"
+movement move view --function-id $MODULE_ADDR::liquid_staking::get_protocol_statistics
+
+echo "4. Unstake 5 gMOVE"
+movement move run --function-id $MODULE_ADDR::liquid_staking::burn_and_unstake \
+  --args u64:500000000 --profile test --assume-yes
+
+echo "5. Check pending unstake requests"
+movement move view --function-id $MODULE_ADDR::liquid_staking::get_user_unstake_requests \
+  --args address:0x... # your address
+
+echo "6. Wait 6 hours (testnet unbonding)..."
+echo "7. Then claim:"
+# movement move run --function-id $MODULE_ADDR::liquid_staking::claim_unlocked \
+#   --args u64:0 --profile test --assume-yes
+```
+
+---
+
+## Appendix: Complete ABI
+
+```move
+module liquid_staking {
+    // ========== View Functions ==========
+
+    #[view]
+    public fun get_exchange_rate(): u128
+
+    #[view]
+    public fun get_total_supply(): u128
+
+    #[view]
+    public fun get_total_value(): u128
+
+    #[view]
+    public fun get_protocol_statistics(): (u128, u128, u128, u64)
+
+    #[view]
+    public fun get_user_unstake_requests(user: address): vector<UnstakeRequest>
+
+    #[view]
+    public fun get_user_unstake_request(user: address, request_id: u64): UnstakeRequest
+
+    #[view]
+    public fun check_can_claim(user: address, request_id: u64): bool
+
+    #[view]
+    public fun get_protocol_config(): (address, u64, u128, bool)
+
+    #[view]
+    public fun get_active_validators(): vector<address>
+
+    #[view]
+    public fun get_validator_stakes(validator: address): (u64, u64, u64)
+
+    #[view]
+    public fun get_gmove_metadata(): Object<Metadata>
+
+    #[view]
+    public fun get_unbonding_duration(): u64
+
+    #[view]
+    public fun get_minimum_stake_amount(): u64
+
+    #[view]
+    public fun get_precision_multiplier(): u128
+
+    #[view]
+    public fun is_protocol_initialized(): bool
+
+    #[view]
+    public fun preview_stake(move_amount: u64): u128
+
+    #[view]
+    public fun preview_unstake(gmove_amount: u64): u128
+
+    // ========== Entry Functions ==========
+
+    public entry fun stake_and_mint(account: &signer, amount: u64)
+
+    public entry fun stake_and_mint_with_slippage(
+        account: &signer,
+        amount: u64,
+        min_gmove_out: u64
+    )
+
+    public entry fun burn_and_unstake(account: &signer, amount: u64)
+
+    public entry fun burn_and_unstake_with_slippage(
+        account: &signer,
+        amount: u64,
+        min_move_out: u64
+    )
+
+    public entry fun claim_unlocked(account: &signer, request_id: u64)
+
+    public entry fun harvest_and_compound()
+
+    // ========== Admin Functions (@liquid_staking only) ==========
+    // All admin functions require signer to be the module deployer address.
+    // Calling from any other address will abort with EUNAUTHORIZED (15).
+
+    public entry fun initialize(admin: &signer)
+
+    public entry fun initialize_testnet(admin: &signer)
+
+    public entry fun initialize_with_validators(admin: &signer, validators: vector<address>)
+
+    public entry fun add_validator(admin: &signer, validator: address)
+
+    public entry fun remove_validator(admin: &signer, validator: address)
+
+    public entry fun cleanup_inactive_validator(admin: &signer, validator: address)
+
+    public entry fun admin_unstake_from_inactive(admin: &signer, validator: address, amount: u64)
+
+    public entry fun pause(admin: &signer)
+
+    public entry fun unpause(admin: &signer)
+
+    public entry fun update_metadata(
+        admin: &signer,
+        icon_uri: string::String,
+        project_uri: string::String
+    )
+}
+```
