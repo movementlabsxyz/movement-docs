@@ -465,17 +465,10 @@
     "@emnapi/runtime" "^1.4.3"
     "@tybys/wasm-util" "^0.10.0"
 
-<<<<<<< HEAD
-"@next/env@15.3.6":
-  version "15.3.6"
-  resolved "https://registry.yarnpkg.com/@next/env/-/env-15.3.6.tgz#30d4be8f9a68b59cfcd3bc6d8ca8434bc02a3e6b"
-  integrity sha512-/cK+QPcfRbDZxmI/uckT4lu9pHCfRIPBLqy88MhE+7Vg5hKrEYc333Ae76dn/cw2FBP2bR/GoK/4DU+U7by/Nw==
-=======
 "@next/env@15.3.8":
   version "15.3.8"
   resolved "https://registry.yarnpkg.com/@next/env/-/env-15.3.8.tgz#02326c38d315d72f2ab8b2bcc9a5c81ec5482873"
   integrity sha512-SAfHg0g91MQVMPioeFeDjE+8UPF3j3BvHjs8ZKJAUz1BG7eMPvfCKOAgNWJ6s1MLNeP6O2InKQRTNblxPWuq+Q==
->>>>>>> main
 
 "@next/eslint-plugin-next@15.3.6":
   version "15.3.6"
