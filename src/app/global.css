@@ -2,192 +2,188 @@
 @import 'fumadocs-ui/css/neutral.css';
 @import 'fumadocs-ui/css/preset.css';
 
-/* Theme Configuration */
+/* =====================================================================
+ * Brand tokens + Fumadocs theme overrides.
+ * The site keeps Fumadocs' `neutral` preset (imported above); the rules
+ * below redefine only the `--color-fd-*` values that differ from the
+ * Figma rebrand palette, plus a small set of brand tokens. Theme-aware:
+ * `:root` is light, `.dark` is dark.
+ * ===================================================================== */
 :root {
-  /* Custom Colors */
-  --color-primary-50: #fefce8;
-  --color-primary-100: #fef9c3;
-  --color-primary-200: #fef08a;
-  --color-primary-300: #fde047;
-  --color-primary-400: #facc15;
-  --color-primary-500: #eab308;
-  --color-primary-600: #ca8a04;
-  --color-primary-700: #a16207;
-  --color-primary-800: #854d0e;
-  --color-primary-900: #713f12;
-  
-  --color-secondary-50: #f8fafc;
-  --color-secondary-100: #f1f5f9;
-  --color-secondary-200: #e2e8f0;
-  --color-secondary-300: #cbd5e1;
-  --color-secondary-400: #94a3b8;
-  --color-secondary-500: #64748b;
-  --color-secondary-600: #475569;
-  --color-secondary-700: #334155;
-  --color-secondary-800: #1e293b;
-  --color-secondary-900: #0f172a;
-  
-  /* Movement Brand Colors */
-  --color-movement-yellow: #FFDA34;
-  --color-movement-black: #111111;
-  
-  /* Custom Spacing */
-  --spacing-18: 4.5rem;
-  --spacing-88: 22rem;
-  
-  /* Custom Border Radius */
-  --radius-xl: 0.75rem;
-  --radius-2xl: 1rem;
+  /* Brand */
+  --brand-cyan: #15EDEB;     /* banner, hover accents */
+  --brand-link: #12A098;     /* in-content links (light) */
+  --banner-via: #7FE0D6;     /* banner gradient mid-stop */
+  --banner-to:  #FFFFFF;     /* banner gradient end-stop */
+  --card-border: #EAEAEA;    /* MovementCard border */
+
+  /* Fumadocs theme — light */
+  --color-fd-background: #FFFFFF;
+  --color-fd-card: #FFFFFF;
+  --color-fd-border: #EAEAEA;
+  --color-fd-muted: #FAFAFA;
+  --color-fd-muted-foreground: #6B6B6B;
+  --color-fd-accent: rgba(10, 10, 10, 0.06);
 }
 
-/* Movement Card Styles - Updated to match provided design */
-.cardContainer {
-  --ifm-link-color: #FFFFFF;
-  --ifm-link-hover-color: #000000;
-  --ifm-link-hover-decoration: none;
-  box-shadow: 0 1.5px 3px 0 rgb(0 0 0 / 15%);
-  border: 1px solid var(--ifm-color-emphasis-200, #ffe666);
-  transition: all 0.2s ease;
-  transition-property: border, box-shadow, background;
-  margin: 0;
-  width: 100%;
-  background: #111;
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 2rem;
-}
-.cardContainer:hover {
-  background: #FFDA34;
-  border-color: #FFDA34;
-}
-.movementIcon {
-  color: #FFDA34;
-  width: 48px;
-  height: 48px;
-  flex-shrink: 0;
-  transition: color 0.2s ease;
-}
-.cardContainer:hover .movementIcon {
-  color: #000000;
-}
-.cardTitle {
-  color: #FFFFFF;
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-  transition: color 0.2s ease;
-}
-.cardDescription {
-  color: #FFFFFF;
-  opacity: 0.8;
-  font-size: 1.1rem;
-  transition: color 0.2s ease;
-}
-.cardContainer:hover .cardTitle,
-.cardContainer:hover .cardDescription {
-  color: #000000;
-  opacity: 1;
-}
-.cardsContainer {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1rem;
-  padding: 0;
-  margin: 2rem 0;
+.dark {
+  --brand-link: #15EDEB;     /* cyan reads on the near-black page */
+  --banner-via: #63CFBD;
+  --banner-to:  var(--color-fd-background); /* fade to page bg, not grey
+                                               — so light body text below
+                                               the banner reads cleanly */
+  --card-border: rgba(177, 177, 177, 0.30);
+
+  /* Fumadocs theme — dark. Re-declare here even when the value matches
+   * Fumadocs' own dark default: my `:root` light overrides above sit
+   * LATER in source order than Fumadocs' `.dark`, so without explicit
+   * re-declarations my light values would win the cascade for `html.dark`
+   * (both selectors have specificity 0,1,0). The most user-visible
+   * symptom was `--color-fd-background` rendering as #FFFFFF in dark mode,
+   * making the body white behind light text. */
+  --color-fd-background: #121212;
+  --color-fd-foreground: #EBEBEB;
+  --color-fd-card: #1D1D1D;
+  --color-fd-border: rgba(102, 102, 102, 0.20);
+  --color-fd-muted: #212121;
+  --color-fd-muted-foreground: #B3B3B3; /* solid — semi-transparency would
+                                          pick up the cyan banner tint
+                                          wherever muted text overlaps it */
+  --color-fd-accent: rgba(250, 250, 250, 0.10);
 }
 
-/* Movement Card Styling */
+/* Sidebar fill — Fumadocs scopes a separate `--color-fd-muted` here. */
+#nd-sidebar { --color-fd-muted: #FAFAFA; }
+.dark #nd-sidebar { --color-fd-muted: #191919; }
+
+/* In-content prose. Fumadocs renders doc content in `.prose`.
+ * - `--tw-prose-links` → brand teal/cyan, the one accent outside the banner
+ *   (overriding the prose var, not `--color-fd-primary`, keeps the sidebar's
+ *   active item neutral, as in the Figma).
+ * - `--tw-prose-body` → SOLID foreground. The Tailwind Typography default
+ *   is `color-mix(... 90%, transparent)`, which lets the cyan banner bleed
+ *   through the first paragraphs (they overlap the 300px banner) and the
+ *   body text reads as muddy/faded. Solid colour fixes the legibility. */
+.prose {
+  --tw-prose-links: var(--brand-link);
+  --tw-prose-body: var(--color-fd-foreground);
+}
+
+/* MovementCard — the flat neutral card from the Figma rebrand. */
 .movement-card {
-  background: var(--color-movement-black);
-  color: white;
-  border-top: 1px solid var(--color-movement-yellow);
-  border-left: 1px solid;
-  border-right: 1px solid;
-  border-bottom: none;
-  border-image: linear-gradient(to bottom, var(--color-movement-yellow), transparent 90%) 1 100%;
-  border-image-slice: 1;
-  border-image-width: 2;
-  border-image-outset: 0;
-  border-image-repeat: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  padding: 1.75rem 2rem;
   border-radius: 12px;
-  transition: background 0.3s, color 0.3s;
+  background: var(--color-fd-card);
+  border: 1px solid var(--card-border);
+  color: var(--color-fd-card-foreground);
+  text-decoration: none;
+  transition: border-color 150ms ease;
 }
-
 .movement-card:hover {
-  background: var(--color-movement-yellow);
-  color: var(--color-movement-black);
-  border: none;
-  border-image: none;
+  border-color: var(--brand-cyan);
+}
+.movement-card__eyebrow {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-fd-muted-foreground);
+}
+.movement-card__title {
+  font-size: 1.75rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+html:not(.dark) .movement-card {
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.05), 0 4px 16px rgb(0 0 0 / 0.04);
 }
 
-.movement-card .movement-icon {
-  color: var(--color-movement-yellow) !important;
-  transition: color 0.3s ease !important;
+/* Top banner — the rebrand header image (cyan multi-ring glow on grey).
+ * Image is 1634×300 in `public/img/docs-header.png` — exactly the width of
+ * the content region (viewport minus the 286px sidebar) at a 1920 layout.
+ *
+ * Anchored to `#nd-docs-layout` (the <main> holding the page), which spans
+ * the FULL content width — from the sidebar's right edge to the viewport's
+ * right edge. The page itself (`#nd-page`) is `mx-auto` and capped at
+ * ~1200px, centred inside that main, so the banner reads full-bleed across
+ * the top while the title / body / cards stay within the centred container.
+ *
+ * Earlier this was anchored to `#nd-page`, which clipped the banner to that
+ * 1200px column — fine when the viewport was narrow enough that the column
+ * filled the width, but on wide screens it left the banner boxed with empty
+ * margins either side (the bug this replaces). The sidebar is a *sibling*
+ * of `#nd-docs-layout`, not a child, so the banner never bleeds over it.
+ *
+ * `isolation: isolate` keeps the negative z-index banner contained to this
+ * stacking context. The bottom edge fades to transparent (mask) so body
+ * prose reads on the page bg rather than the cyan — without it the light
+ * foreground text in dark mode washes out wherever it overlaps the banner. */
+#nd-docs-layout {
+  position: relative;
+  isolation: isolate;
 }
-
-.movement-card:hover .movement-icon {
-  color: var(--color-movement-black) !important;
-}
-
-.docs-bg::before {
+#nd-docs-layout::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 300px;
-  background-image: url('/img/subpage-bg.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  opacity: 0.45;
   z-index: -1;
   pointer-events: none;
-  width: 100vw;
+  background: url('/img/docs-header.png') center top / cover no-repeat;
+  mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
 }
 
-html:not(.dark) .docs-bg::before {
-  display: none;
+/* Breadcrumb / parent-section label sits within the banner zone (it's the
+ * only element above the page <h1>). Force black so it reads on the bright
+ * cyan top-of-banner — same treatment the title + description get above.
+ * `:has(+ h1)` targets the breadcrumb element via its h1 sibling without
+ * needing to know Fumadocs' internal class names. Include descendants:
+ * Fumadocs wraps each breadcrumb segment in a <span class="text-fd-primary">
+ * which would otherwise override the inherited color. */
+.docs-bg :has(+ h1),
+.docs-bg :has(+ h1) * {
+  color: #000;
 }
 
-html:not(.dark) .movement-card {
-  background: #fff;
-  color: #111;
-  border-top: 2px solid var(--color-movement-yellow);
-  border-left: 1px solid #f6e9b6;
-  border-right: 1px solid #f6e9b6;
-  border-bottom: none;
-  border-image: none;
+/* The right-hand TOC column (`#nd-toc`) is left transparent so the banner
+ * spans the full content width behind it — the title/description AND the
+ * TOC — a true full-bleed header, matching the index page (which has no
+ * TOC and so already reads full-width). We deliberately do NOT give it a
+ * solid page-bg: that occludes the banner's right ~310px and chops the
+ * header into a contained block (the prior behaviour we're replacing).
+ *
+ * Readability where the TOC overlaps the bright top of the banner is kept
+ * two ways: the banner already masks to transparent toward its lower edge
+ * (see `#nd-page::before`), and the TOC labels get a soft page-bg halo via
+ * `text-shadow` so the light-grey text stays legible over the cyan without
+ * an opaque rectangle. The halo colour is the page bg, so it resolves per
+ * theme (white in light mode, near-black in dark). */
+/* The TOC content floats on a frosted-glass card. The banner stays visible
+ * (softly blurred) behind it while the labels read crisply in both themes —
+ * cleaner than haloing the text (muddy in dark mode) or punching an opaque
+ * block (which clipped the banner). `#nd-toc` itself stays transparent; the
+ * card is the inner wrapper.
+ *
+ * That wrapper is `h-full` by default (a full-height sticky column), so the
+ * card would be a tall empty strip. Switch it to hug its content with a
+ * viewport-height cap — short TOCs shrink to fit, long ones still scroll
+ * internally via the list's own `overflow-auto`. */
+#nd-toc {
+  background: transparent;
+}
+#nd-toc > div {
+  height: fit-content;
+  max-height: calc(100dvh - 5rem);
+  padding: 0.875rem 1rem;
   border-radius: 12px;
-  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.06);
-  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
-}
-
-html:not(.dark) .movement-card .text-gray-300 {
-  color: #444 !important;
-  opacity: 1 !important;
-}
-
-html:not(.dark) .movement-card .text-2xl {
-  color: #111 !important;
-  font-weight: 700 !important;
-}
-
-html:not(.dark) .movement-card:hover {
-  background: var(--color-movement-yellow);
-  color: #111;
-  border: none;
-  border-image: none;
-}
-
-html:not(.dark) .movement-card .movement-icon {
-  color: var(--color-movement-yellow) !important;
-}
-
-html:not(.dark) .movement-card:hover .movement-icon {
-  color: #111 !important;
+  border: 1px solid var(--card-border);
+  background: color-mix(in srgb, var(--color-fd-background) 70%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
 }
 
 /* Hide color mode/theme toggle button */
@@ -303,8 +299,9 @@ html:not(.dark) .movement-card:hover .movement-icon {
     page-break-inside: avoid;
   }
 
-  /* Remove background effects */
-  .docs-bg::before {
+  /* Remove background effects (the full-bleed header banner) */
+  .docs-bg::before,
+  #nd-docs-layout::before {
     display: none !important;
   }
 

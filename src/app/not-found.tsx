@@ -9,7 +9,7 @@ export default function NotFound() {
         <div className="max-w-6xl w-full mx-auto px-6 py-12 text-center">
           {/* 404 Number */}
           <div className="mb-8">
-            <h1 className="text-8xl font-bold text-[#FFDA34] mb-4 font-mono">
+            <h1 className="text-8xl font-bold text-[var(--brand-cyan)] mb-4 font-mono">
               404
             </h1>
           </div>
@@ -29,14 +29,14 @@ export default function NotFound() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <Link 
                 href="/"
-                className="inline-flex items-center px-8 py-4 bg-[#FFDA34] text-black font-semibold rounded-xl hover:bg-[#FFE666] transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                className="inline-flex items-center px-8 py-4 bg-[var(--brand-cyan)] text-black font-semibold rounded-xl hover:bg-[#24F0E2] transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
               >
                 Go Home
               </Link>
               
               <Link 
                 href="/devs"
-                className="inline-flex items-center px-8 py-4 border-2 border-[#FFDA34] text-[#FFDA34] font-semibold rounded-xl hover:bg-[#FFDA34] hover:text-black transition-all duration-200 transform hover:scale-105"
+                className="inline-flex items-center px-8 py-4 border-2 border-[var(--card-border)] text-[var(--brand-link)] font-semibold rounded-xl hover:border-[var(--brand-cyan)] transition-all duration-200 transform hover:scale-105"
               >
                 Developer Docs
               </Link>
@@ -49,19 +49,19 @@ export default function NotFound() {
                 <div className="grid grid-cols-2 gap-12 max-w-5xl">
                   <Link 
                     href="/devs"
-                    className="group px-12 py-8 rounded-lg border border-gray-300 dark:border-gray-700 hover:border-[#FFDA34] transition-colors duration-200"
+                    className="group px-12 py-8 rounded-lg border border-gray-300 dark:border-gray-700 hover:border-[var(--brand-cyan)] transition-colors duration-200"
                   >
-                    <div className="text-[#FFDA34] group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200 text-2xl">
+                    <div className="text-[var(--brand-link)] group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200 text-2xl">
                       🚀
                     </div>
                     <p className="text-gray-900 dark:text-white text-base font-medium mt-3">Build</p>
                   </Link>
-                  
-                  <Link 
+
+                  <Link
                     href="/general"
-                    className="group px-12 py-8 rounded-lg border border-gray-300 dark:border-gray-700 hover:border-[#FFDA34] transition-colors duration-200"
+                    className="group px-12 py-8 rounded-lg border border-gray-300 dark:border-gray-700 hover:border-[var(--brand-cyan)] transition-colors duration-200"
                   >
-                    <div className="text-[#FFDA34] group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200 text-2xl">
+                    <div className="text-[var(--brand-link)] group-hover:text-gray-900 dark:group-hover:text-white transition-colors duration-200 text-2xl">
                       ℹ️
                     </div>
                     <p className="text-gray-900 dark:text-white text-base font-medium mt-3">Learn</p>
@@ -74,7 +74,7 @@ export default function NotFound() {
             <div className="mt-8 text-center">
               <p className="text-gray-600 dark:text-gray-500 text-sm">
                 Can't find what you're looking for? Check out our{' '}
-                <Link href="/devs/faq" className="text-[#FFDA34] hover:underline">
+                <Link href="/devs/faq" className="text-[var(--brand-link)] hover:underline">
                   FAQ
                 </Link>
                 {' '}or{' '}
@@ -82,7 +82,7 @@ export default function NotFound() {
                   href="https://forums.movementnetwork.xyz/" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-[#FFDA34] hover:underline"
+                  className="text-[var(--brand-link)] hover:underline"
                 >
                   community forum
                 </a>

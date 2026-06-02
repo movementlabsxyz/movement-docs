@@ -1,6 +1,9 @@
 import type { MetadataRoute } from 'next';
 import { apiSource, devsSource, generalSource } from '@/lib/source';
 
+// Pre-render at build time (required for `output: 'export'`).
+export const dynamic = 'force-static';
+
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ?? 'https://docs.movementnetwork.xyz';
 

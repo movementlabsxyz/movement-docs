@@ -36,10 +36,10 @@ export default async function Page(props: {
 
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
-      <DocsTitle>{page.data.title}</DocsTitle>
-      <DocsDescription>{page.data.description}</DocsDescription>
+      <DocsTitle className="text-black!">{page.data.title}</DocsTitle>
+      <DocsDescription className="text-black!">{page.data.description}</DocsDescription>
       {!isMainPage && (
-        <div className="flex flex-row gap-2 items-center border-b pt-2 pb-6">
+        <div className="docs-page-actions flex flex-row gap-2 items-center border-b pt-2 pb-6">
           <LLMCopyButton markdownUrl={`${page.url}.mdx`} />
           <ViewOptions
             markdownUrl={`${page.url}.mdx`}
@@ -60,7 +60,15 @@ export default async function Page(props: {
 }
 
 export async function generateStaticParams() {
-  return devsSource.generateParams();
+  // The Fumadocs sources share the whole `content/docs` tree, so
+  // `generateParams()` returns every page (with the section folder name
+  // as the first slug element). Keep only the `devs` section and strip
+  // that redundant prefix — otherwise URLs would be
+  // `/devs/devs/firstMoveContract`. The dynamic build masked this via
+  // `rewriteUrls` in the layout, but static export needs correct slugs.
+  return devsSource.generateParams()
+    .filter((p) => Array.isArray(p.slug) && p.slug[0] === 'devs')
+    .map((p) => ({ slug: p.slug.slice(1) }));
 }
 
 export async function generateMetadata(props: {
@@ -79,14 +87,6 @@ export async function generateMetadata(props: {
       description: page.data.description,
       url: `https://docs.movementnetwork.xyz/devs${slug.length > 1 ? '/' + slug.slice(1).join('/') : ''}`,
       siteName: 'Movement Docs',
-      images: [
-        {
-          url: '/img/movementlabs-social-card.png',
-          width: 1200,
-          height: 630,
-          alt: 'Movement Labs Documentation',
-        },
-      ],
       locale: 'en_US',
       type: 'website',
     },
@@ -94,7 +94,6 @@ export async function generateMetadata(props: {
       card: 'summary_large_image',
       title: page.data.title,
       description: page.data.description,
-      images: ['/img/movementlabs-social-card.png'],
     },
   };
 } 

@@ -3,6 +3,9 @@ import { getLLMText } from '@/lib/get-llm-text';
 import { devsSource, generalSource, apiSource } from '@/lib/source';
 import { notFound } from 'next/navigation';
 
+// Static-export compatible — pre-rendered for every slug emitted by
+// `generateStaticParams` below.
+export const dynamic = 'force-static';
 export const revalidate = false;
 
 export async function GET(

@@ -1,29 +1,24 @@
-import React from 'react';
-import { Card } from 'fumadocs-ui/components/card';
+import Link from 'next/link';
+import type { ReactNode } from 'react';
 
 interface MovementCardProps {
-  icon?: React.ReactNode;
-  title: React.ReactNode;
-  children?: React.ReactNode;
-  href?: string;
-  [key: string]: any;
+  /** Small eyebrow label above the title. */
+  title: ReactNode;
+  /** The card's main heading. */
+  children: ReactNode;
+  href: string;
 }
 
-export function MovementCard({ icon, title, children, ...props }: MovementCardProps) {
+export function MovementCard({ title, children, href }: MovementCardProps) {
+  const isExternal = /^https?:\/\//.test(href);
   return (
-    <Card
-      {...props}
-      title={title}
-      className={`movement-card group relative overflow-hidden px-8 py-6 ${props.className || ''}`}
+    <Link
+      href={href}
+      className="movement-card"
+      {...(isExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
     >
-      <div className="flex items-center gap-6">
-        <div className="flex-shrink-0 flex items-center h-16">
-          <span className="text-[2.5rem] block">{icon}</span>
-        </div>
-        <div>
-          <div className="text-lg text-gray-300">{children}</div>
-        </div>
-      </div>
-    </Card>
+      <span className="movement-card__eyebrow">{title}</span>
+      <span className="movement-card__title">{children}</span>
+    </Link>
   );
-} 
+}
