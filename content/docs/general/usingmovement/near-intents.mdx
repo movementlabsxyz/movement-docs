@@ -1,0 +1,32 @@
+---
+title: NEAR Intents
+description: Onboard to the Movement Network from other chains via NEAR Intents.
+---
+
+
+## Onboarding via NEAR Intents
+
+NEAR Intents is an intent-based, cross-chain settlement protocol. Instead of manually choosing a bridge and a swap, you declare the outcome you want — "I have token X on chain A, give me token Y on the Movement Network" — and a competitive network of solvers fulfills it in a single step.
+
+For onboarding to Movement, this means you can convert **USDT held on supported chains** into **USDC.x on the Movement Network** without bridging and swapping yourself.
+
+<Callout>
+
+NEAR Intents complements the canonical [Bridge](./bridge). The Bridge moves a specific asset between Ethereum and Movement, while NEAR Intents lets you arrive on Movement from a range of source chains and assets in one transaction.
+
+</Callout>
+
+## Where to swap
+
+You perform the swap in the [NEAR Intents app](https://near.com). It is powered by the 1Click API, which wraps NEAR Intents into a simple deposit-and-receive flow. You do not interact with solvers or the underlying protocol directly — 1Click coordinates quoting, deposit handling, intent submission, settlement tracking, and refunds.
+
+## How it works
+
+1. **Choose your assets.** Select your origin asset (USDT on a supported chain) and the destination asset (USDC.x on the Movement Network), and provide the Movement address that should receive the funds.
+2. **Get a quote.** 1Click returns a one-time deposit address on the origin chain along with the expected amount you will receive.
+3. **Deposit.** Send your USDT to the provided deposit address. The swap begins automatically once the deposit transaction is detected and confirmed on the origin chain.
+4. **Receive.** USDC.x is delivered to your Movement address.
+
+## Learn more
+
+- [NEAR Intents overview](https://docs.near-intents.org/)
