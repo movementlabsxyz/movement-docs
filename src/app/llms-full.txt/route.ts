@@ -1,7 +1,8 @@
 import { devsSource, generalSource, apiSource } from '@/lib/source';
 import { getLLMText } from '@/lib/get-llm-text';
 
-// cached forever
+// Static-export compatible — generated once at build time.
+export const dynamic = 'force-static';
 export const revalidate = false;
 
 export async function GET() {

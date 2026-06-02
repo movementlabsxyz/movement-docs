@@ -4,11 +4,13 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "build:static": "node scripts/build-static.mjs",
     "dev": "next dev --turbo",
     "start": "next start",
     "postinstall": "fumadocs-mdx"
   },
   "dependencies": {
+    "class-variance-authority": "^0.7.1",
     "fumadocs-core": "15.6.1",
     "fumadocs-mdx": "11.6.10",
     "fumadocs-openapi": "^9.1.8",
@@ -20,7 +22,8 @@
     "remark": "^15.0.1",
     "remark-gfm": "^4.0.1",
     "remark-mdx": "^3.1.0",
-    "shiki": "^3.9.2"
+    "shiki": "^3.9.2",
+    "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.11",
@@ -34,5 +37,5 @@
     "tailwindcss": "^4.1.11",
     "typescript": "^5.8.3"
   },
-  "packageManager": "yarn@1.22.22"
+  "packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319"
 }
