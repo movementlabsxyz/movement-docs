@@ -2,7 +2,8 @@
 
 import React from 'react';
 
-export function TokenomicsFlowDiagram() {
+export function TokenomicsFlowDiagram({ lang = 'en' }: { lang?: 'en' | 'ko' }) {
+  const isKo = lang === 'ko';
   return (
     <div className="my-8">
       <div className="bg-white rounded-lg border border-gray-200 p-4 overflow-x-auto">
@@ -23,7 +24,7 @@ export function TokenomicsFlowDiagram() {
 
           {/* Title */}
           <text x="325" y="30" textAnchor="middle" className="text-lg font-semibold fill-gray-900">
-            Fee and Staking reward flow
+            {isKo ? '수수료 및 스테이킹 보상 흐름' : 'Fee and Staking reward flow'}
           </text>
 
           {/* Box 1: Users/Transactions - Fees Collection */}
@@ -38,10 +39,10 @@ export function TokenomicsFlowDiagram() {
             strokeWidth="2"
           />
           <text x="120" y="105" textAnchor="middle" className="text-sm font-semibold fill-gray-900">
-            Users & Transactions
+            {isKo ? '사용자와 트랜잭션' : 'Users & Transactions'}
           </text>
           <text x="120" y="130" textAnchor="middle" className="text-xs fill-gray-700">
-            Pay transaction fees
+            {isKo ? '트랜잭션 수수료 지불' : 'Pay transaction fees'}
           </text>
 
           {/* Arrow from Users to Reward and Gas Pool */}
@@ -55,7 +56,7 @@ export function TokenomicsFlowDiagram() {
             markerEnd="url(#arrowhead)"
           />
           <text x="320" y="110" textAnchor="middle" className="text-xs fill-gray-600">
-            Fees
+            {isKo ? '수수료' : 'Fees'}
           </text>
 
           {/* Box: Reward and Gas Pool */}
@@ -73,10 +74,10 @@ export function TokenomicsFlowDiagram() {
             Reward-and-Gas-Pool
           </text>
           <text x="520" y="130" textAnchor="middle" className="text-xs fill-gray-700">
-            Fee collection & staking rewards
+            {isKo ? '수수료 수집 및 스테이킹 보상' : 'Fee collection & staking rewards'}
           </text>
           <text x="520" y="150" textAnchor="middle" className="text-xs fill-gray-700">
-            Governed by protocol
+            {isKo ? '프로토콜에 의해 관리됨' : 'Governed by protocol'}
           </text>
 
           {/* Arrow from Reward and Gas Pool to Stakers */}
@@ -90,7 +91,7 @@ export function TokenomicsFlowDiagram() {
             markerEnd="url(#arrowhead)"
           />
           <text x="550" y="205" textAnchor="middle" className="text-xs fill-gray-600">
-            Rewards
+            {isKo ? '보상' : 'Rewards'}
           </text>
 
           {/* Box 4: Stakers */}
@@ -105,10 +106,10 @@ export function TokenomicsFlowDiagram() {
             strokeWidth="2"
           />
           <text x="520" y="275" textAnchor="middle" className="text-sm font-semibold fill-gray-900">
-            Stakers
+            {isKo ? '스테이커' : 'Stakers'}
           </text>
           <text x="520" y="300" textAnchor="middle" className="text-xs fill-gray-700">
-            Receive staking rewards
+            {isKo ? '스테이킹 보상 수령' : 'Receive staking rewards'}
           </text>
 
           {/* Box 5: Staking Reward Treasury */}
@@ -123,10 +124,10 @@ export function TokenomicsFlowDiagram() {
             strokeWidth="2"
           />
           <text x="120" y="275" textAnchor="middle" className="text-sm font-semibold fill-gray-900">
-            Staking Reward Treasury
+            {isKo ? '스테이킹 보상 트레저리' : 'Staking Reward Treasury'}
           </text>
           <text x="120" y="300" textAnchor="middle" className="text-xs fill-gray-700">
-            Delegates stake
+            {isKo ? '지분 위임' : 'Delegates stake'}
           </text>
 
           {/* Arrow from Treasury to Reward and Gas Pool (entering left side) */}
@@ -146,7 +147,7 @@ export function TokenomicsFlowDiagram() {
             className="text-xs fill-gray-600"
             transform="rotate(-40.4 300 205)"
           >
-            regular refill
+            {isKo ? '정기 보충' : 'regular refill'}
           </text>
 
           {/* Arrow from Stakers back to Treasury (rewards loop) */}
@@ -161,7 +162,7 @@ export function TokenomicsFlowDiagram() {
             markerEnd="url(#arrowhead)"
           />
           <text x="320" y="305" textAnchor="middle" className="text-xs fill-gray-600">
-            Some rewards returned to treasury
+            {isKo ? '일부 보상은 트레저리로 반환됨' : 'Some rewards returned to treasury'}
           </text>
         </svg>
       </div>

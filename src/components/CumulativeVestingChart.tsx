@@ -32,7 +32,8 @@ const colors = {
   community: '#8B5CF6',
 };
 
-export function CumulativeVestingChart() {
+export function CumulativeVestingChart({ lang = 'en' }: { lang?: 'en' | 'ko' }) {
+  const isKo = lang === 'ko';
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const chartWidth = 600;
@@ -94,18 +95,20 @@ export function CumulativeVestingChart() {
     name: string;
     color: string;
   }> = [
-    { key: 'community', name: 'Community', color: colors.community },
-    { key: 'foundation', name: 'Foundation', color: colors.foundation },
-    { key: 'earlyContributors', name: 'Early Contributors', color: colors.earlyContributors },
-    { key: 'earlyBackers', name: 'Early Backers', color: colors.earlyBackers },
-    { key: 'ecosystem', name: 'Ecosystem', color: colors.ecosystem },
+    { key: 'community', name: isKo ? '커뮤니티' : 'Community', color: colors.community },
+    { key: 'foundation', name: isKo ? '재단' : 'Foundation', color: colors.foundation },
+    { key: 'earlyContributors', name: isKo ? '초기 기여자' : 'Early Contributors', color: colors.earlyContributors },
+    { key: 'earlyBackers', name: isKo ? '초기 후원자' : 'Early Backers', color: colors.earlyBackers },
+    { key: 'ecosystem', name: isKo ? '생태계' : 'Ecosystem', color: colors.ecosystem },
   ];
 
   return (
     <div className="my-8">
       <div className="mb-4">
         <p className="text-sm text-gray-600">
-          Cumulative circulating supply over time: stacked view showing the cumulative circulating supply by category from TGE (Nov 2024) through full vesting (Nov 2029). Real unlock schedules may vary from shown projection.
+          {isKo
+            ? '시간에 따른 누적 유통 공급량: TGE(2024년 11월)부터 전체 베스팅(2029년 11월)까지 카테고리별 누적 유통 공급량을 보여주는 누적 보기입니다. 실제 언락 일정은 표시된 예측과 다를 수 있습니다.'
+            : 'Cumulative circulating supply over time: stacked view showing the cumulative circulating supply by category from TGE (Nov 2024) through full vesting (Nov 2029). Real unlock schedules may vary from shown projection.'}
         </p>
       </div>
 
@@ -189,7 +192,7 @@ export function CumulativeVestingChart() {
                 textAnchor="middle"
                 className="text-xs fill-gray-600"
               >
-                {monthlyData[hoveredIndex].circSupplyPercent.toFixed(1)}% Circulating
+                {monthlyData[hoveredIndex].circSupplyPercent.toFixed(1)}% {isKo ? '유통' : 'Circulating'}
               </text>
               <text
                 x={xScale(hoveredIndex)}
@@ -197,7 +200,7 @@ export function CumulativeVestingChart() {
                 textAnchor="middle"
                 className="text-xs font-semibold fill-gray-900"
               >
-                Total: {monthlyData[hoveredIndex].total.toLocaleString()}M
+                {isKo ? '합계' : 'Total'}: {monthlyData[hoveredIndex].total.toLocaleString()}M
               </text>
               <text
                 x={xScale(hoveredIndex)}
@@ -205,7 +208,9 @@ export function CumulativeVestingChart() {
                 textAnchor="middle"
                 className="text-xs fill-gray-500"
               >
-                Period: {monthlyData[hoveredIndex].period} months
+                {isKo
+                  ? `기간: ${monthlyData[hoveredIndex].period}개월`
+                  : `Period: ${monthlyData[hoveredIndex].period} months`}
               </text>
             </>
           )}
