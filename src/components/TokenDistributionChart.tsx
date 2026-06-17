@@ -4,17 +4,18 @@ import React from 'react';
 
 interface TokenDistributionData {
   name: string;
+  nameKo: string;
   tokens: number; // in millions
   percentage: number;
   color: string;
 }
 
 const data: TokenDistributionData[] = [
-  { name: 'Ecosystem', tokens: 4000, percentage: 40.0, color: '#3B82F6' },
-  { name: 'Foundation', tokens: 1000, percentage: 10.0, color: '#EF4444' },
-  { name: 'Early Contributors', tokens: 1750, percentage: 17.5, color: '#F59E0B' },
-  { name: 'Early Backers', tokens: 2250, percentage: 22.5, color: '#10B981' },
-  { name: 'Community', tokens: 1000, percentage: 10.0, color: '#8B5CF6' },
+  { name: 'Ecosystem', nameKo: '생태계', tokens: 4000, percentage: 40.0, color: '#3B82F6' },
+  { name: 'Foundation', nameKo: '재단', tokens: 1000, percentage: 10.0, color: '#EF4444' },
+  { name: 'Early Contributors', nameKo: '초기 기여자', tokens: 1750, percentage: 17.5, color: '#F59E0B' },
+  { name: 'Early Backers', nameKo: '초기 후원자', tokens: 2250, percentage: 22.5, color: '#10B981' },
+  { name: 'Community', nameKo: '커뮤니티', tokens: 1000, percentage: 10.0, color: '#8B5CF6' },
 ];
 
 // Calculate pie chart path
@@ -43,7 +44,8 @@ function getPieSlicePath(
   `;
 }
 
-export function TokenDistributionChart() {
+export function TokenDistributionChart({ lang = 'en' }: { lang?: 'en' | 'ko' }) {
+  const isKo = lang === 'ko';
   const size = 320;
   const centerX = size / 2;
   const centerY = size / 2;
@@ -124,7 +126,7 @@ export function TokenDistributionChart() {
                   className="w-4 h-4 rounded flex-shrink-0"
                   style={{ backgroundColor: item.color }}
                 />
-                <span className="font-medium text-gray-900">{item.name}</span>
+                <span className="font-medium text-gray-900">{isKo ? item.nameKo : item.name}</span>
               </div>
               <div className="flex items-center gap-4 text-right flex-shrink-0">
                 <span className="text-gray-600 font-medium">
@@ -139,7 +141,7 @@ export function TokenDistributionChart() {
         </div>
         <div className="pt-3 border-t border-gray-200 mt-2">
           <div className="flex items-center justify-between text-sm">
-            <span className="font-semibold text-gray-900">Total</span>
+            <span className="font-semibold text-gray-900">{isKo ? '합계' : 'Total'}</span>
             <div className="flex items-center gap-4">
               <span className="text-gray-600 font-medium">10,000M</span>
               <span className="text-gray-900 font-semibold w-12">100.0%</span>
