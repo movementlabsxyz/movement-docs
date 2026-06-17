@@ -28,6 +28,8 @@ This guide helps developers integrate gMOVE into DeFi protocols, wallets, dashbo
 
 ## Contract Addresses
 
+Most integrations only need two of these: the **Module Address** (the published `liquid_staking` module, used in every call as `<MODULE_ADDRESS>::liquid_staking::...`) and the **gMOVE Metadata Object** (the Fungible Asset that *is* gMOVE — reference it for balances, transfers, and listing the token in wallets or DEXes). The **Resource Account** is the protocol-owned account that custodies delegated stake; it is mainly useful for block explorers and for verifying delegation on validators. The **Validator** is the validator that stake is delegated to.
+
 ### Mainnet
 
 - **Module Address:** `0xb52bac12e50458cd2b958b82b05e3a240834eefbfc4b1bc0729fd580c625f1ea`
@@ -38,8 +40,9 @@ This guide helps developers integrate gMOVE into DeFi protocols, wallets, dashbo
 ### Testnet
 
 - **Module Address:** `0x9762cac6c378ff6110885449e80cf4c2890c19a725251b22412b1ac02100044d`
-- **Resource Account:** `0x1c5495399b3e83ec8965e67b4bfc64a327f012fd8d2cda16663ac3524efab43b`
-- **gMOVE Metadata Object:** *Check testnet deployment*
+- **Resource Account:** `0x51a3b8280eb8caf4f8c5a64c55fbe36e7fc15e4ced6676da7fb78a70abe4f2dc`
+- **gMOVE Metadata Object:** `0x9e412e6fa4ac80ca446487d6c605b9f8d1d5aafb28200dff16dd47d02a09390d`
+- **Validator:** `0xa1ef53a76fe31c0844c7b87988a3e2b905287ec687a8e081d793597eb351ed5c`
 
 **How to find the resource account**
 
