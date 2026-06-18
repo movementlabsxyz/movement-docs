@@ -37,10 +37,10 @@ curl -s http://localhost:8080/v1 | jq '.ledger_version'
 
 # Compare with public endpoint
 # For mainnet:
-curl -s https://aptos.mainnet.movementnetwork.xyz/v1 | jq '.ledger_version'
+curl -s https://mainnet.movementnetwork.xyz/v1 | jq '.ledger_version'
 
 # For testnet:
-curl -s https://aptos.testnet.movementnetwork.xyz/v1 | jq '.ledger_version'
+curl -s https://testnet.movementnetwork.xyz/v1 | jq '.ledger_version'
 ```
 
 Your node's ledger version should be close to (or equal to) the public endpoint's version.
