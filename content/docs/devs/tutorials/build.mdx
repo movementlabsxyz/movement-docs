@@ -9,7 +9,9 @@ In this guide, we will learn how to build an end-to-end "onchain bio" dApp. We'l
 
 Make sure to have [Movement CLI](/devs/movementcli) installed.
 
+<Callout type="info">
 If you are using Aptos CLI - ensure that you are using version 3.5 or lower.
+</Callout>
 
 View an example of the finished dApp [here](https://github.com/movementlabsxyz/onchain-bio-dapp).
 
@@ -277,7 +279,7 @@ function App() {
         // sign and submit transaction to chain
         const response = await signAndSubmitTransaction(transaction);
         // wait for transaction
-        console.log(`Success! View your transaction at https://explorer.movementlabs.xyz/txn/${response.hash}`)
+        console.log(`Success! View your transaction at https://explorer.movementnetwork.xyz/txn/${response.hash}?network=bardock+testnet`)
         await movement.waitForTransaction({transactionHash:response.hash});
         fetchBio();
       } catch (error: any) {
