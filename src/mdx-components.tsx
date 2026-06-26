@@ -1,6 +1,7 @@
 import defaultMdxComponents from 'fumadocs-ui/mdx';
 import type { MDXComponents } from 'mdx/types';
 import { MovementCard } from '@/components/MovementCard';
+import { MotionLogo } from '@/components/MotionLogo';
 import { CustomAPIPage } from '@/components/CustomAPIPage';
 import { TokenDistributionChart } from '@/components/TokenDistributionChart';
 import { CumulativeVestingChart } from '@/components/CumulativeVestingChart';
@@ -16,6 +17,7 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
   return {
     ...defaultMdxComponents,
     MovementCard,
+    MotionLogo,
     APIPage: CustomAPIPage,
     TokenDistributionChart,
     CumulativeVestingChart,
