@@ -1,0 +1,448 @@
+---
+title: NEAR Intents SDK
+description: Move USDC or USDT from Ethereum, Polygon, or Tron onto Movement over NEAR Intents with a small TypeScript SDK.
+---
+
+# NEAR Intents SDK
+
+The [`@moveindustries/near-intents-sdk`](https://github.com/MoveIndustries/near-intents-sdk) is a thin TypeScript SDK for moving **USDC or USDT** from a supported origin chain onto **Movement** — landing as **USDCx** or **MOVE** — over [NEAR Intents](https://docs.near-intents.org). It wraps the official [1Click API](https://docs.near-intents.org/near-intents/integration/distribution-channels/1click-api) and pins the destination to Movement, so a transfer can't accidentally land on the wrong chain.
+
+It orchestrates the transfer — get a quote, build the deposit, track status — and **never signs, broadcasts, or holds keys**. Your own wallet signs the one on-chain step.
+
+**The flow in four steps:**
+
+1. **Quote** a route (origin chain + asset → Movement asset) and receive a one-time deposit address.
+2. **Build** the unsigned deposit transaction with `prepareDepositTx` — a plain token transfer to that address.
+3. **Sign & broadcast** it with your own wallet.
+4. **Track** execution status until it reaches a terminal state.
+
+<Callout type="info">
+
+The destination is always Movement. You choose the origin (Ethereum, Polygon, or Tron), the origin asset (USDC or USDT), and whether you receive USDCx or MOVE on Movement.
+
+</Callout>
+
+## Installation
+
+```bash tab="npm"
+npm install @moveindustries/near-intents-sdk
+```
+
+```bash tab="pnpm"
+pnpm add @moveindustries/near-intents-sdk
+```
+
+```bash tab="yarn"
+yarn add @moveindustries/near-intents-sdk
+```
+
+```bash tab="bun"
+bun add @moveindustries/near-intents-sdk
+```
+
+## Quick start
+
+The full end-to-end transfer of **1 USDC on Ethereum → USDCx on Movement**. It runs without any credentials.
+
+```ts
+import {
+  configure,
+  quoteDeposit,
+  prepareDepositTx,
+  submitDeposit,
+  getStatus,
+  isTerminal,
+} from "@moveindustries/near-intents-sdk";
+
+// configure() is optional — omit it entirely to run token-free (see Authentication).
+configure({ jwt: process.env.ONE_CLICK_JWT });
+
+// 1. Quote the route. Amounts are in the origin asset's smallest units.
+const res = await quoteDeposit({
+  originChain: "ethereum",     // "ethereum" | "polygon" | "tron"
+  originAsset: "usdc",         // "usdc" | "usdt"  (Tron is USDT-only)
+  destinationAsset: "usdcx",   // "usdcx" | "move"
+  amount: "1000000",           // 1.0 USDC (6 decimals)
+  recipient: "0xYourMovementAddress",
+  refundTo: "0xYourEthereumAddress",
+});
+
+const { depositAddress, amountOut, deadline } = res.quote;
+console.log(`Send to ${depositAddress}, you'll receive ~${amountOut} before ${deadline}`);
+
+// 2. Build the unsigned deposit transfer. Your wallet signs and broadcasts it.
+const depositTx = prepareDepositTx("ethereum", "usdc", res);
+
+// ...sign & broadcast `depositTx` with your wallet (see per-chain examples below)...
+const txHash = "0xYourDepositTxHash";
+
+// 3. (Optional) Hand 1Click the tx hash to speed up deposit detection.
+await submitDeposit(depositAddress!, txHash);
+
+// 4. Poll status until it settles.
+let status = (await getStatus(depositAddress!)).status;
+while (!isTerminal(status)) {
+  await new Promise((r) => setTimeout(r, 5000));
+  status = (await getStatus(depositAddress!)).status;
+}
+console.log("Final:", status); // "SUCCESS" | "REFUNDED" | "FAILED"
+```
+
+<Callout type="warn">
+
+Amounts are strings in the origin asset's **smallest units**, not decimals. USDC and USDT use 6 decimals, so `"1000000"` = 1.0 USDC and `"20000"` = 0.02 USDC.
+
+</Callout>
+
+## Authentication
+
+**A 1Click JWT is optional — the full transfer works without one.** Quoting, deposit-address binding, and status tracking all succeed unauthenticated.
+
+Pass a JWT for two reasons:
+
+- **Waive the protocol fee.** Without a token, NEAR auto-injects its `appFees` and takes a small cut of the swap.
+- **Attributed rate limits** instead of anonymous, IP-based ones.
+
+Obtain one at the [NEAR Intents Partners Portal](https://partners.near-intents.org) and pass it to `configure`:
+
+```ts
+configure({ jwt: process.env.ONE_CLICK_JWT });
+```
+
+You own the token. The SDK just attaches whatever JWT you pass to its requests — it doesn't create one for you, and it won't renew it when it expires. Getting a token from the Partners Portal and swapping in a fresh one before the old one lapses is on you.
+
+## Using it in the browser
+
+A JWT is a secret, so **never ship it to the client**. Put a thin server-side proxy in front of the 1Click API that injects the token, and point the SDK at that proxy with `baseUrl` (omit `jwt` — the proxy holds it):
+
+```ts
+// Client code — no secret here. Requests go to your proxy, which adds the JWT.
+configure({ baseUrl: "/api/1click" });
+```
+
+A minimal proxy (Next.js Route Handler shown) forwards a small allowlist of 1Click paths and adds the `Authorization` header server-side:
+
+```ts
+// app/api/1click/[...path]/route.ts
+import { NextRequest, NextResponse } from "next/server";
+
+const BASE = process.env.ONECLICK_BASE_URL ?? "https://1click.chaindefuser.com";
+const JWT = process.env.ONECLICK_JWT; // server-side only — never NEXT_PUBLIC_
+
+// Only the paths the SDK uses may be proxied.
+const ALLOWED = new Set(["v0/tokens", "v0/quote", "v0/status", "v0/deposit/submit"]);
+
+async function forward(method: "GET" | "POST", req: NextRequest, path: string[]) {
+  const joined = path.join("/");
+  if (!ALLOWED.has(joined)) {
+    return NextResponse.json({ error: "Path not allowed" }, { status: 400 });
+  }
+  const url = new URL(`${BASE}/${joined}`);
+  req.nextUrl.searchParams.forEach((v, k) => url.searchParams.set(k, v));
+  const res = await fetch(url.toString(), {
+    method,
+    headers: {
+      ...(JWT ? { Authorization: `Bearer ${JWT}` } : {}),
+      ...(method === "POST" ? { "Content-Type": "application/json" } : {}),
+    },
+    body: method === "POST" ? await req.text() : undefined,
+  });
+  const data = await res.json().catch(() => ({}));
+  return NextResponse.json(data, { status: res.status });
+}
+
+export async function GET(req: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
+  return forward("GET", req, (await params).path);
+}
+export async function POST(req: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
+  return forward("POST", req, (await params).path);
+}
+```
+
+<Callout type="info">
+
+Without `baseUrl`, the SDK calls the 1Click API directly — fine for server-side scripts and backends where the JWT stays private.
+
+</Callout>
+
+## The deposit transaction
+
+`prepareDepositTx(originChain, originAsset, quote)` returns an **unsigned** transfer of the quote's `amountIn` to its `depositAddress`. The shape depends on the origin chain family:
+
+```ts
+// EVM (Ethereum, Polygon)
+{ family: "evm", to: string, value: "0x0", data: string }
+
+// Tron
+{ family: "tron", contractAddress: string, function: "transfer(address,uint256)", parameter: [depositAddress, amountIn] }
+```
+
+The SDK already knows each chain's USDC/USDT contract, so you don't pass a token address — everything needed to sign is in the returned object. The per-chain examples below show how to hand it to a wallet.
+
+<Callout type="warn">
+
+The origin wallet needs the chain's **native gas token** to send the deposit (ETH on Ethereum, POL on Polygon, TRX on Tron) — the SDK moves the stablecoin, not gas.
+
+</Callout>
+
+## Complete examples
+
+Each example runs the full flow for one route. They share the `waitForSettlement` helper:
+
+```ts
+import { getStatus, isTerminal } from "@moveindustries/near-intents-sdk";
+
+async function waitForSettlement(depositAddress: string) {
+  for (;;) {
+    const { status } = await getStatus(depositAddress);
+    if (isTerminal(status)) return status; // SUCCESS | REFUNDED | FAILED
+    await new Promise((r) => setTimeout(r, 5000));
+  }
+}
+```
+
+### Ethereum → USDCx (server-side, viem)
+
+A backend script that signs with a private key and calls 1Click directly (JWT stays server-side, no proxy needed). The EVM deposit is a raw transaction built entirely from `prepareDepositTx`.
+
+```ts
+import { createWalletClient, http } from "viem";
+import { privateKeyToAccount } from "viem/accounts";
+import { mainnet } from "viem/chains";
+import { configure, quoteDeposit, prepareDepositTx, submitDeposit } from "@moveindustries/near-intents-sdk";
+
+configure({ jwt: process.env.ONE_CLICK_JWT }); // optional
+
+const account = privateKeyToAccount(process.env.PRIVATE_KEY as `0x${string}`);
+const wallet = createWalletClient({ account, chain: mainnet, transport: http() });
+
+const res = await quoteDeposit({
+  originChain: "ethereum",
+  originAsset: "usdc",
+  destinationAsset: "usdcx",
+  amount: "1000000", // 1.0 USDC
+  recipient: "0xYourMovementAddress",
+  refundTo: account.address,
+});
+const { depositAddress } = res.quote;
+
+// prepareDepositTx returns { family: "evm", to, value: "0x0", data } — send it as-is.
+const tx = prepareDepositTx("ethereum", "usdc", res);
+const txHash = await wallet.sendTransaction({
+  account,
+  chain: mainnet,
+  to: tx.to as `0x${string}`,
+  value: 0n,
+  data: tx.data as `0x${string}`,
+});
+
+await submitDeposit(depositAddress!, txHash); // optional speed-up
+console.log("Settled:", await waitForSettlement(depositAddress!));
+```
+
+### Polygon → MOVE (browser wallet, viem)
+
+A browser flow using an injected wallet (e.g. via wagmi's `useWalletClient`). Because the destination is **MOVE** (volatile), slippage is raised so the swap doesn't refund.
+
+```ts
+import { useWalletClient } from "wagmi";
+import { configure, quoteDeposit, prepareDepositTx, submitDeposit } from "@moveindustries/near-intents-sdk";
+
+configure({ baseUrl: "/api/1click" }); // browser → proxy holds the JWT
+
+async function bridgePolygonToMove(wallet: NonNullable<ReturnType<typeof useWalletClient>["data"]>) {
+  const res = await quoteDeposit({
+    originChain: "polygon",
+    originAsset: "usdc",
+    destinationAsset: "move",
+    amount: "5000000",        // 5.0 USDC
+    recipient: "0xYourMovementAddress",
+    refundTo: wallet.account.address,
+    slippageTolerance: 300,   // 3% — MOVE is volatile; the 1% default often refunds
+  });
+  const { depositAddress } = res.quote;
+
+  const tx = prepareDepositTx("polygon", "usdc", res);
+  const txHash = await wallet.sendTransaction({
+    to: tx.to as `0x${string}`,
+    value: 0n,
+    data: tx.data as `0x${string}`,
+  });
+
+  await submitDeposit(depositAddress!, txHash);
+  return waitForSettlement(depositAddress!);
+}
+```
+
+### Tron → USDCx (injected TronLink)
+
+Tron is USDT-only. The deposit is a TRC-20 transfer through the injected `window.tronWeb` provider (TronLink):
+
+```ts
+import { configure, quoteDeposit, prepareDepositTx, submitDeposit } from "@moveindustries/near-intents-sdk";
+
+configure({ baseUrl: "/api/1click" });
+
+async function bridgeTronToUsdcx(recipient: string, refundTo: string) {
+  const tronWeb = (window as any).tronWeb;
+  if (!tronWeb?.defaultAddress?.base58) throw new Error("Connect TronLink");
+
+  const res = await quoteDeposit({
+    originChain: "tron",
+    originAsset: "usdt",
+    destinationAsset: "usdcx",
+    amount: "1000000", // 1.0 USDT
+    recipient,
+    refundTo, // your Tron address, for refunds
+  });
+  const { depositAddress } = res.quote;
+
+  // prepareDepositTx returns { family: "tron", contractAddress, function, parameter: [to, amount] }
+  const tx = prepareDepositTx("tron", "usdt", res);
+  const contract = await tronWeb.contract().at(tx.contractAddress);
+  const txId: string = await contract.transfer(tx.parameter[0], tx.parameter[1]).send();
+
+  await submitDeposit(depositAddress!, txId);
+  return waitForSettlement(depositAddress!);
+}
+```
+
+### Tron → USDCx (TronWallet Adapter)
+
+If you'd rather not touch `window.tronWeb` directly, use the [TronWallet Adapter](https://github.com/tronprotocol/tronwallet-adapter) React hooks. You build the transaction with a standalone `TronWeb` instance, sign it with the adapter's `signTransaction`, then broadcast. This maps cleanly onto `prepareDepositTx`'s Tron output.
+
+```ts
+import { TronWeb } from "tronweb";
+import { useWallet } from "@tronweb3/tronwallet-adapter-react-hooks";
+import { configure, quoteDeposit, prepareDepositTx, submitDeposit } from "@moveindustries/near-intents-sdk";
+
+configure({ baseUrl: "/api/1click" });
+
+// A read-only client just for building + broadcasting; the adapter does the signing.
+const tronWeb = new TronWeb({ fullHost: "https://api.trongrid.io" });
+
+function BridgeButton({ recipient }: { recipient: string }) {
+  const { address, signTransaction, connected } = useWallet();
+
+  async function bridge() {
+    if (!connected || !address) throw new Error("Connect a Tron wallet");
+
+    const res = await quoteDeposit({
+      originChain: "tron",
+      originAsset: "usdt",
+      destinationAsset: "usdcx",
+      amount: "1000000", // 1.0 USDT
+      recipient,
+      refundTo: address,
+    });
+    const { depositAddress } = res.quote;
+
+    const tx = prepareDepositTx("tron", "usdt", res);
+
+    // Build the TRC-20 transfer from prepareDepositTx's contract + params.
+    const { transaction } = await tronWeb.transactionBuilder.triggerSmartContract(
+      tx.contractAddress,
+      tx.function, // "transfer(address,uint256)"
+      {},
+      [
+        { type: "address", value: tx.parameter[0] }, // deposit address
+        { type: "uint256", value: tx.parameter[1] }, // amountIn
+      ],
+      address,
+    );
+
+    const signed = await signTransaction(transaction);
+    const receipt = await tronWeb.trx.sendRawTransaction(signed);
+    const txId: string = receipt.txid;
+
+    await submitDeposit(depositAddress!, txId);
+    return waitForSettlement(depositAddress!);
+  }
+
+  return <button onClick={bridge}>Bridge USDT → USDCx</button>;
+}
+```
+
+<Callout type="info">
+
+The adapter needs its provider set up once near the root of your app — wrap it in `WalletProvider` from `@tronweb3/tronwallet-adapter-react-hooks` (and optionally `WalletModalProvider` from `@tronweb3/tronwallet-adapter-react-ui`). See the [adapter docs](https://developers.tron.network/docs/tronwallet-adapter) for setup.
+
+</Callout>
+
+## Listing supported tokens
+
+`listTokens` returns the live set of supported tokens, filtered to the SDK's routes and tagged with the route keys `quoteDeposit` expects — so you can feed a token straight into a quote without any lookup:
+
+```ts
+import { listTokens } from "@moveindustries/near-intents-sdk";
+
+const tokens = await listTokens();
+// each token carries: assetId, symbol, decimals, chain, contractAddress, price,
+// and its route keys — originChain, originAsset (sources) or destinationAsset (Movement)
+```
+
+## Dry-run quotes
+
+Pass `dry: true` to `quoteDeposit` to price a route without reserving a deposit address — useful for showing an estimate before the user commits. A dry quote has no `depositAddress`, so don't pass it to `prepareDepositTx`.
+
+```ts
+const preview = await quoteDeposit({
+  originChain: "ethereum",
+  originAsset: "usdc",
+  destinationAsset: "usdcx",
+  amount: "1000000",
+  recipient: "0xYourMovementAddress",
+  refundTo: "0xYourEthereumAddress",
+  dry: true,
+});
+console.log("You'd receive ~", preview.quote.amountOutFormatted ?? preview.quote.amountOut);
+```
+
+## Supported routes
+
+| Origin chain | Assets     | Movement destination |
+| ------------ | ---------- | -------------------- |
+| Ethereum     | USDC, USDT | USDCx or MOVE        |
+| Polygon      | USDC, USDT | USDCx or MOVE        |
+| Tron         | USDT       | USDCx or MOVE        |
+
+<Callout type="info">
+
+When your destination is **MOVE**, raise `slippageTolerance` — MOVE is volatile, and the default 1% is often missed, causing a refund instead of a completed swap. `300` (3%) is a reasonable starting point. For the ~1:1 USDCx route, the default is fine.
+
+</Callout>
+
+## API reference
+
+| Export                                          | Purpose                                                                                     |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `configure({ jwt?, baseUrl? })`                 | Optional. Set a 1Click JWT and/or point the SDK at a server-side proxy.                     |
+| `quoteDeposit(params)`                          | Quote a route; returns the quote with `depositAddress`, `amountIn`, `amountOut`, `deadline`. |
+| `prepareDepositTx(origin, originAsset, quote)`  | Build the **unsigned** deposit transfer (`EvmDepositTx` or `TronDepositTx`) for your wallet. |
+| `submitDeposit(depositAddress, txHash)`         | Optional. Hand 1Click the deposit tx hash to speed up detection.                            |
+| `getStatus(depositAddress)`                     | Read the transfer's current execution status once.                                          |
+| `isTerminal(status)`                            | `true` for `SUCCESS`, `REFUNDED`, or `FAILED`.                                              |
+| `listTokens()`                                  | Live, route-tagged list of supported tokens (`SupportedToken[]`).                           |
+| `MOVEMENT`, `ORIGINS`                            | Registry objects: destination and origin assets with their `assetId` / `decimals`.          |
+
+**Exported types:** `QuoteDepositParams`, `DepositTx`, `EvmDepositTx`, `TronDepositTx`, `SupportedToken`, `OriginKey`, `StableKey`, `DestKey`.
+
+### `quoteDeposit` parameters
+
+| Field                | Type                                | Notes                                                     |
+| -------------------- | ----------------------------------- | --------------------------------------------------------- |
+| `originChain`        | `"ethereum" \| "polygon" \| "tron"` | Source chain.                                             |
+| `originAsset`        | `"usdc" \| "usdt"`                  | Source asset. Tron is USDT-only.                          |
+| `destinationAsset`   | `"usdcx" \| "move"`                 | What you receive on Movement.                             |
+| `amount`             | `string`                            | Smallest units of the origin asset (USDC/USDT: 6 dp).     |
+| `recipient`          | `string`                            | Your Movement address.                                    |
+| `refundTo`           | `string`                            | Origin-chain address to refund if the swap can't settle.  |
+| `slippageTolerance?` | `number`                            | Basis points. Defaults to `100` (1%). Raise it for MOVE.  |
+| `deadline?`          | `string`                            | ISO timestamp. Defaults to 10 minutes from now.           |
+| `dry?`               | `boolean`                           | Price-only preview; no deposit address is reserved.       |
+
+## Learn more
+
+- [SDK repository & README](https://github.com/MoveIndustries/near-intents-sdk)
+- [NEAR Intents documentation](https://docs.near-intents.org)
+- [1Click API reference](https://docs.near-intents.org/near-intents/integration/distribution-channels/1click-api)
