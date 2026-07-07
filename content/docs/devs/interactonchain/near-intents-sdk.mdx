@@ -110,13 +110,13 @@ Obtain one at the [NEAR Intents Partners Portal](https://partners.near-intents.o
 configure({ jwt: process.env.ONE_CLICK_JWT });
 ```
 
-You own the token. The SDK just attaches whatever JWT you pass to its requests — it doesn't create one for you, and it won't renew it when it expires. Getting a token from the Partners Portal and swapping in a fresh one before the old one lapses is on you.
+The token is yours to manage. The SDK attaches the JWT you provide to its requests; it does not create or renew them. Obtain a token from the Partners Portal and replace it before it expires.
 
 ## Using it in the browser
 
-The SDK runs fine in the browser as-is — with no JWT it calls 1Click directly, and everything except the fee waiver still works. You only need a proxy if you want the JWT benefits (fee waiver, attributed rate limits) **and** you're running client-side, because a JWT is a secret and must **never** ship to the client.
+The SDK works in the browser without additional setup: with no JWT it calls 1Click directly, and every step except the fee waiver functions normally. A proxy is required only when combining JWT benefits (fee waiver, attributed rate limits) with client-side use, since a JWT is a secret and must **never** be exposed to the client.
 
-If that's you, stand up a thin server-side proxy that injects the token and point the SDK at it with `baseUrl` (omit `jwt` — the proxy holds it):
+To use a JWT from the browser, place a server-side proxy in front of 1Click to inject the token, and point the SDK at it with `baseUrl` (omit `jwt`; the proxy holds it):
 
 ```ts
 // Client code — no secret here. Requests go to your proxy, which adds the JWT.
@@ -169,7 +169,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ pat
 
 <Callout type="info">
 
-Server-side scripts and backends don't need any of this — with no `baseUrl`, the SDK calls 1Click directly and the JWT stays private.
+Server-side scripts and backends require no proxy — with no `baseUrl`, the SDK calls 1Click directly and the JWT stays private.
 
 </Callout>
 
@@ -288,7 +288,7 @@ async function bridgeTronToUsdcx(recipient: string, refundTo: string) {
 
 ### Tron → USDCx (TronWallet Adapter)
 
-If you'd rather not touch `window.tronWeb` directly, use the [TronWallet Adapter](https://github.com/tronprotocol/tronwallet-adapter) React hooks. You build the transaction with a standalone `TronWeb` instance, sign it with the adapter's `signTransaction`, then broadcast. This maps cleanly onto `prepareDepositTx`'s Tron output.
+To avoid using `window.tronWeb` directly, use the [TronWallet Adapter](https://github.com/tronprotocol/tronwallet-adapter) React hooks. You build the transaction with a standalone `TronWeb` instance, sign it with the adapter's `signTransaction`, then broadcast. This maps cleanly onto `prepareDepositTx`'s Tron output.
 
 ```ts
 import { TronWeb } from "tronweb";
