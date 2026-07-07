@@ -114,14 +114,19 @@ You own the token. The SDK just attaches whatever JWT you pass to its requests �
 
 ## Using it in the browser
 
-A JWT is a secret, so **never ship it to the client**. Put a thin server-side proxy in front of the 1Click API that injects the token, and point the SDK at that proxy with `baseUrl` (omit `jwt` — the proxy holds it):
+The SDK runs fine in the browser as-is — with no JWT it calls 1Click directly, and everything except the fee waiver still works. You only need a proxy if you want the JWT benefits (fee waiver, attributed rate limits) **and** you're running client-side, because a JWT is a secret and must **never** ship to the client.
+
+If that's you, stand up a thin server-side proxy that injects the token and point the SDK at it with `baseUrl` (omit `jwt` — the proxy holds it):
 
 ```ts
 // Client code — no secret here. Requests go to your proxy, which adds the JWT.
 configure({ baseUrl: "/api/1click" });
 ```
 
-A minimal proxy (Next.js Route Handler shown) forwards a small allowlist of 1Click paths and adds the `Authorization` header server-side:
+The proxy forwards the four paths the SDK uses (`v0/tokens`, `v0/quote`, `v0/status`, `v0/deposit/submit`) and adds the `Authorization` header server-side. A minimal Next.js Route Handler:
+
+<details>
+<summary>Example proxy — Next.js Route Handler</summary>
 
 ```ts
 // app/api/1click/[...path]/route.ts
@@ -160,9 +165,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ pat
 }
 ```
 
+</details>
+
 <Callout type="info">
 
-Without `baseUrl`, the SDK calls the 1Click API directly — fine for server-side scripts and backends where the JWT stays private.
+Server-side scripts and backends don't need any of this — with no `baseUrl`, the SDK calls 1Click directly and the JWT stays private.
 
 </Callout>
 
