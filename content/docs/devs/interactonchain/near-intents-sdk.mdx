@@ -65,6 +65,7 @@ const res = await quoteDeposit({
   amount: "1000000",           // 1.0 USDC (6 decimals)
   recipient: "0xYourMovementAddress",
   refundTo: "0xYourEthereumAddress",
+  minAmountOut: "995000",      // required floor, destination asset's smallest units; "0" opts out
 });
 
 const { depositAddress, amountOut, deadline } = res.quote;
@@ -201,33 +202,37 @@ async function waitForSettlement(depositAddress: string) {
 }
 ```
 
-### Ethereum → USDCx (server-side, viem)
+### EVM (Ethereum or Polygon, viem)
 
-A backend script that signs with a private key and calls 1Click directly (JWT stays server-side, no proxy needed). The EVM deposit is a raw transaction built entirely from `prepareDepositTx`.
+One flow covers both EVM origins — only `originChain` and the viem `chain` differ. Shown server-side with a private key (JWT stays server-side, no proxy needed); the inline notes mark what changes in the browser and when the destination is MOVE. The EVM deposit is a raw transaction built entirely from `prepareDepositTx`.
 
 ```ts
 import { createWalletClient, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { mainnet } from "viem/chains";
+import { mainnet } from "viem/chains"; // Polygon: import { polygon }
 import { configure, quoteDeposit, prepareDepositTx, submitDeposit } from "@moveindustries/near-intents-sdk";
 
+// Server-side, JWT stays private:
 configure({ jwt: process.env.ONE_CLICK_JWT }); // optional
+// In the browser instead: configure({ baseUrl: "/api/1click" }) — the proxy holds the JWT.
 
 const account = privateKeyToAccount(process.env.PRIVATE_KEY as `0x${string}`);
 const wallet = createWalletClient({ account, chain: mainnet, transport: http() });
 
 const res = await quoteDeposit({
-  originChain: "ethereum",
+  originChain: "ethereum",   // or "polygon"
   originAsset: "usdc",
-  destinationAsset: "usdcx",
-  amount: "1000000", // 1.0 USDC
+  destinationAsset: "usdcx", // for "move", also raise slippageTolerance below
+  amount: "1000000",         // 1.0 USDC
   recipient: "0xYourMovementAddress",
   refundTo: account.address,
+  minAmountOut: "995000",    // required floor, destination asset's smallest units; "0" opts out
+  // slippageTolerance: 300, // MOVE only: 3% — MOVE is volatile; the 1% default often refunds
 });
 const { depositAddress } = res.quote;
 
 // prepareDepositTx returns { family: "evm", to, value: "0x0", data } — send it as-is.
-const tx = prepareDepositTx("ethereum", "usdc", res);
+const tx = prepareDepositTx("ethereum", "usdc", res); // match originChain above
 const txHash = await wallet.sendTransaction({
   account,
   chain: mainnet,
@@ -238,40 +243,6 @@ const txHash = await wallet.sendTransaction({
 
 await submitDeposit(depositAddress!, txHash); // optional speed-up
 console.log("Settled:", await waitForSettlement(depositAddress!));
-```
-
-### Polygon → MOVE (browser wallet, viem)
-
-A browser flow using an injected wallet (e.g. via wagmi's `useWalletClient`). Because the destination is **MOVE** (volatile), slippage is raised so the swap doesn't refund.
-
-```ts
-import { useWalletClient } from "wagmi";
-import { configure, quoteDeposit, prepareDepositTx, submitDeposit } from "@moveindustries/near-intents-sdk";
-
-configure({ baseUrl: "/api/1click" }); // browser → proxy holds the JWT
-
-async function bridgePolygonToMove(wallet: NonNullable<ReturnType<typeof useWalletClient>["data"]>) {
-  const res = await quoteDeposit({
-    originChain: "polygon",
-    originAsset: "usdc",
-    destinationAsset: "move",
-    amount: "5000000",        // 5.0 USDC
-    recipient: "0xYourMovementAddress",
-    refundTo: wallet.account.address,
-    slippageTolerance: 300,   // 3% — MOVE is volatile; the 1% default often refunds
-  });
-  const { depositAddress } = res.quote;
-
-  const tx = prepareDepositTx("polygon", "usdc", res);
-  const txHash = await wallet.sendTransaction({
-    to: tx.to as `0x${string}`,
-    value: 0n,
-    data: tx.data as `0x${string}`,
-  });
-
-  await submitDeposit(depositAddress!, txHash);
-  return waitForSettlement(depositAddress!);
-}
 ```
 
 ### Tron → USDCx (injected TronLink)
@@ -294,6 +265,7 @@ async function bridgeTronToUsdcx(recipient: string, refundTo: string) {
     amount: "1000000", // 1.0 USDT
     recipient,
     refundTo, // your Tron address, for refunds
+    minAmountOut: "995000", // required floor, destination asset's smallest units; "0" opts out
   });
   const { depositAddress } = res.quote;
 
@@ -334,6 +306,7 @@ function BridgeButton({ recipient }: { recipient: string }) {
       amount: "1000000", // 1.0 USDT
       recipient,
       refundTo: address,
+      minAmountOut: "995000", // required floor, destination asset's smallest units; "0" opts out
     });
     const { depositAddress } = res.quote;
 
@@ -393,6 +366,7 @@ const preview = await quoteDeposit({
   amount: "1000000",
   recipient: "0xYourMovementAddress",
   refundTo: "0xYourEthereumAddress",
+  minAmountOut: "0", // required; "0" opts out — fine for a price-only preview
   dry: true,
 });
 console.log("You'd receive ~", preview.quote.amountOutFormatted ?? preview.quote.amountOut);
@@ -437,6 +411,7 @@ When your destination is **MOVE**, raise `slippageTolerance` — MOVE is volatil
 | `amount`             | `string`                            | Smallest units of the origin asset (USDC/USDT: 6 dp).     |
 | `recipient`          | `string`                            | Your Movement address.                                    |
 | `refundTo`           | `string`                            | Origin-chain address to refund if the swap can't settle.  |
+| `minAmountOut`       | `string`                            | Floor in the destination asset's smallest units; the quote is rejected below it. `"0"` opts out. |
 | `slippageTolerance?` | `number`                            | Basis points. Defaults to `100` (1%). Raise it for MOVE.  |
 | `deadline?`          | `string`                            | ISO timestamp. Defaults to 10 minutes from now.           |
 | `dry?`               | `boolean`                           | Price-only preview; no deposit address is reserved.       |
