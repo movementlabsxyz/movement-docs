@@ -6,26 +6,43 @@ description: Use a wallet to connect to the Movement Network.
 
 This guide will show you how to use blockchains on the movement network. Everything from setting up the wallet to connecting to the chain, getting testnet tokens from the faucet, and using the explorer will be covered in this guide.
 
-Let’s start by installing a wallet. We recommend using OKX Wallet, Razor, and Nightly, which work on Chrome, Brave, Opera, Edge, and other Chromium-based browsers.
+Let’s start by installing a wallet. We recommend [Motion](https://chromewebstore.google.com/detail/motion-wallet/lcicbbjcjidfcideckmacabjdfiiogfo), the official Movement wallet built by Move Industries. OKX Wallet and Nightly are also supported. All of these work on Chrome, Brave, Opera, Edge, and other Chromium-based browsers.
 
 Install the Chrome extensions here:
+- [Motion](https://chromewebstore.google.com/detail/motion-wallet/lcicbbjcjidfcideckmacabjdfiiogfo)
 - [OKX Wallet](https://chromewebstore.google.com/detail/okx-wallet/mcohilncbfahbmgdjkbpemcciiolgcge)
--  [Razor](https://chromewebstore.google.com/detail/razor-wallet/fdcnegogpncmfejlfnffnofpngdiejii)
 -  [Nightly](https://chromewebstore.google.com/detail/nightly/fiikommddbeccaoicoejoniammnalkfa)
-
-<Callout>
-
-Network endpoints and configuration documentation will be available soon.
-
-</Callout>
-
-Make sure to pin your wallet in the extension tab on the top right
-
-![](./imgs/image1.png)
 
 ## Wallet Setup
 
  Follow the instructions to set up the wallet. 
+
+ ### Motion Wallet
+
+Motion is the official self-custodial wallet for the Movement Network, built by Move Industries. Your keys are encrypted and stored locally on your device. It supports sending and receiving MOVE, swaps, bridging (Movement → Ethereum via LayerZero), Ledger hardware wallets, and dApp connections, with quick switching between Mainnet and Testnet.
+
+<MotionLogo />
+
+Learn more or download it at [motion.movementnetwork.xyz](https://motion.movementnetwork.xyz/).
+
+**Step 1: Install and Open Motion**
+
+1. Install the [Motion Wallet extension](https://chromewebstore.google.com/detail/motion-wallet/lcicbbjcjidfcideckmacabjdfiiogfo) from the Chrome Web Store and pin it to your toolbar.
+2. Open the extension to begin setup.
+
+**Step 2: Create or Import a Wallet**
+
+1. Choose **Create a new wallet** to generate a fresh seed phrase, or **Import** an existing wallet using a seed phrase or private key.
+2. Write down your recovery phrase and store it somewhere safe. Never share it with anyone.
+
+![](./imgs/motion1.png)
+
+**Step 3: Set a Password**
+
+1. Create a strong password to encrypt your wallet locally.
+2. Confirm the password to finish setup.
+
+![](./imgs/motion2.png)
 
  ### OKX Wallet
 
@@ -64,40 +81,6 @@ Make sure to pin your wallet in the extension tab on the top right
 
 ![](./imgs/okx5.png)
 ![](./imgs/okx7.png)  
-
-### Razor
-
-**Step 1: Welcome to Razor Wallet**
-
-1. Open the Razor Wallet application or extension.
-2. You will be greeted with the welcome screen.
-3. Read and agree to the Terms of Service by checking the box.
-4. Click on the “Start” button.
-
-![](./imgs/image2.png)
-
-**Step 2: Secret Recovery Phrase**
-
-1. The next screen will present you with your Secret Recovery Phrase. This is a critical step in setting up your wallet. Click on “Create a new wallet”![](./imgs/image3.png)
-2. Ensure you write down the 12-word phrase and store it securely. Do not share it with anyone.
-3. Click on “I have saved my secret phrase” after you have safely noted it down.
-
-![](./imgs/image4.png)
-
-**Step 3: Create a Password**
-
-1. You will now be prompted to create a password for your Razor wallet.
-2. Enter a strong password and confirm it by entering it again.
-3. Click on the “Proceed” button.
-
-![](./imgs/image5.png)
-
-**Step 4: Welcome to Razor Wallet Dashboard**
-
-1. After setting up your password, you will see the Razor Wallet dashboard upon clicking the extension.
-
-![](./imgs/image6.png)  
-![](./imgs/image7.png)
 
 ### Nightly
 
@@ -140,50 +123,6 @@ Make sure to pin your wallet in the extension tab on the top right
 
 ![](./imgs/image13.png)
 
-## Importing an Account
-
-If you have an account on Razor and would like to import it to Nightly, follow these steps:
-
-**Step 1: Retrieve Private Key from Razor Wallet**
-
-1. Open the Razor Wallet extension.
-2. Click on the settings icon to open the settings menu.
-
-![](./imgs/image14.png)  
-
-3. Select “Wallet” to manage your account.
-
-![](./imgs/image15.png)  
-
-4. Click on “View private key” to retrieve your private key.
-
-![](./imgs/image16.png)  
-
-5. Enter your Razor Wallet password to view the private key.
-
-![](./imgs/image17.png)  
-
-6. Copy the private key shown on the screen.
-
-![](./imgs/image18.png)  
-
-**Step 2: Import Private Key into Nightly Wallet**
-
-1. Open the Nightly Wallet extension.
-
-![](./imgs/image19.png)  
-
-2. Click on the hamburger menu icon to open the menu.
-
-![](./imgs/image20.png)  
-
-3. Select “Wallet” and click on “Import private key.”
-
-![](./imgs/image21.png)  
-
-4. Paste the private key you copied from the Razor Wallet.
-![](./imgs/image22.png)
-
 ## Connecting to the Movement Network
 
 Movement Network currently runs **Aptos Move** on both Mainnet and Testnet, powered by the [M1](/general/l1/what-is-movement-l1) blockchain. 
@@ -194,7 +133,7 @@ Movement Network currently runs **Aptos Move** on both Mainnet and Testnet, powe
 
 Our Mainnet and Testnet are running M1 - a native Layer 1 blockchain built specifically for the Move programming language. Learn more about [M1 architecture and capabilities](/general/l1/what-is-movement-l1).
 
-dApps deployed on the Movement Network will work with both Razor and Nightly wallets.
+dApps deployed on the Movement Network will work with Motion and Nightly wallets.
 
 Let's try using them on Movement's Faucet with Aptos Move.
 
@@ -207,7 +146,7 @@ Let's try using them on Movement's Faucet with Aptos Move.
 **Step 2: Connect Your Wallet**
 
 1. Click on the “Connect Wallet” button.
-2. Choose either Razor Wallet or Nightly Wallet from the list of available wallets.
+2. Choose Motion Wallet or Nightly Wallet from the list of available wallets.
 
 ![](./imgs/image24.png)
 

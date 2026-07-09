@@ -1,8 +1,0 @@
-{
-  "title": "Movement Sidechain",
-  "pages": ["index", "what-is-movement-sidechain", "architecture", "node-level-architecture", "whitepaper"],
-  "link": {
-    "type": "generated-index",
-    "description": "Learn about Movement Sidechain - a Move-based sidechain secured by the L1"
-  }
-}
