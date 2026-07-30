@@ -330,7 +330,7 @@ After setting up your validator node:
 
 1. **Set Up VFN**: Deploy a **[Validator Fullnode](/general/nodes/validator-fullnode)** for public access
 2. **Configure Monitoring**: Set up **[monitoring and alerting](/general/nodes/validator-node/monitoring)**
-3. **Join Community**: Connect with other validators on **[Discord](https://discord.gg/movementlabsxyz)**
+3. **Join Community**: Connect with other validators on **[Discord](https://discord.gg/movementxyz)**
 4. **Ongoing Operations**: Review **[validator operations guide](/general/nodes/validator-node/operations)**
 
 ## Support Resources
