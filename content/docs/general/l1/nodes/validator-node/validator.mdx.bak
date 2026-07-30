@@ -138,8 +138,8 @@ api:
 ### 4. Download Network Configuration
 ```bash
 # Download genesis and waypoint for target network
-wget https://github.com/movementlabsxyz/movement-networks/raw/main/mainnet/genesis.blob
-wget https://github.com/movementlabsxyz/movement-networks/raw/main/mainnet/waypoint.txt
+wget https://github.com/movement-network/movement-networks/raw/main/mainnet/genesis.blob
+wget https://github.com/movement-network/movement-networks/raw/main/mainnet/waypoint.txt
 
 # Verify checksums
 sha256sum genesis.blob waypoint.txt

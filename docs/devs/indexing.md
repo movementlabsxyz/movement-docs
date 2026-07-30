@@ -305,7 +305,7 @@ dpkg -i grpcurl_1.9.2_linux_amd64.deb
 ```bash
 HOME=/home/ssm-user
 cd "${HOME}"
-git clone https://github.com/movementlabsxyz/movement/
+git clone https://github.com/movement-network/movement/
 ```
 
 ### 3. Create required config directories and files
@@ -540,7 +540,7 @@ cd "${HOME}"/movement/docker/compose/movement-indexer
 cat << 'EOF' > .env
 services:
   movement-indexer:
-    image: ghcr.io/movementlabsxyz/movement-indexer:${CONTAINER_REV}
+    image: ghcr.io/movement-network/movement-indexer:${CONTAINER_REV}
     # entrypoint: '/bin/sh -c "tail -f /dev/null"'
     container_name: movement-indexer
     environment:

@@ -34,7 +34,7 @@ export const baseOptions: BaseLayoutProps = {
       label: 'GitHub Repository',
       icon: <Github />,
       text: 'GitHub',
-      url: 'https://github.com/movementlabsxyz/movement-docs',
+      url: 'https://github.com/movement-network/movement-docs',
     },
     {
       type: 'icon',

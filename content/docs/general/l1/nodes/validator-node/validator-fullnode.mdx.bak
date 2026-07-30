@@ -198,8 +198,8 @@ sudo apt install wireguard
 ### 5. Download Network Configuration
 ```bash
 # Download the same genesis as your validator
-wget https://github.com/movementlabsxyz/movement-networks/raw/main/mainnet/genesis.blob
-wget https://github.com/movementlabsxyz/movement-networks/raw/main/mainnet/waypoint.txt
+wget https://github.com/movement-network/movement-networks/raw/main/mainnet/genesis.blob
+wget https://github.com/movement-network/movement-networks/raw/main/mainnet/waypoint.txt
 
 # Verify integrity
 sha256sum genesis.blob waypoint.txt

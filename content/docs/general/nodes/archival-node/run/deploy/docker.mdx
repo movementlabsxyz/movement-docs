@@ -36,19 +36,19 @@ Download the archival fullnode configuration and genesis files:
 ### For Mainnet
 
 ```shellscript filename="Terminal"
-curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/configs/archival-fullnode.yaml
-curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/genesis.blob
-curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/waypoint.txt
-curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/genesis_waypoint.txt
+curl -O https://raw.githubusercontent.com/movement-network/movement-networks/main/mainnet/configs/archival-fullnode.yaml
+curl -O https://raw.githubusercontent.com/movement-network/movement-networks/main/mainnet/genesis.blob
+curl -O https://raw.githubusercontent.com/movement-network/movement-networks/main/mainnet/waypoint.txt
+curl -O https://raw.githubusercontent.com/movement-network/movement-networks/main/mainnet/genesis_waypoint.txt
 ```
 
 ### For Testnet
 
 ```shellscript filename="Terminal"
-curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/configs/archival-fullnode.yaml
-curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/genesis.blob
-curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/waypoint.txt
-curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/genesis_waypoint.txt
+curl -O https://raw.githubusercontent.com/movement-network/movement-networks/main/testnet/configs/archival-fullnode.yaml
+curl -O https://raw.githubusercontent.com/movement-network/movement-networks/main/testnet/genesis.blob
+curl -O https://raw.githubusercontent.com/movement-network/movement-networks/main/testnet/waypoint.txt
+curl -O https://raw.githubusercontent.com/movement-network/movement-networks/main/testnet/genesis_waypoint.txt
 ```
 
 ## Step 3: Restore Data from Backup
@@ -57,7 +57,7 @@ Restore blockchain data from Move Industries' public backups using the restore s
 
 ```shellscript filename="Terminal"
 # Download the restore script
-curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/l1_restore.sh
+curl -O https://raw.githubusercontent.com/movement-network/movement-networks/main/l1_restore.sh
 chmod +x l1_restore.sh
 
 # Restore data (use 'mainnet' or 'testnet')
@@ -86,7 +86,7 @@ docker run --pull=always \
   -v $(pwd)/data:/opt/aptos/data \
   --workdir /opt/aptos \
   --name=aptos-archival-node \
-  ghcr.io/movementlabsxyz/aptos-node:f24a5bc \
+  ghcr.io/movement-network/aptos-node:f24a5bc \
   -f /opt/aptos/archival-fullnode.yaml
 ```
 
@@ -103,7 +103,7 @@ docker run --pull=always -d \
   -v $(pwd)/data:/opt/aptos/data \
   --workdir /opt/aptos \
   --name=aptos-archival-node \
-  ghcr.io/movementlabsxyz/aptos-node:f24a5bc \
+  ghcr.io/movement-network/aptos-node:f24a5bc \
   -f /opt/aptos/archival-fullnode.yaml
 ```
 
