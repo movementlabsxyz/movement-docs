@@ -198,8 +198,8 @@ sudo apt install wireguard
 ### 5. Download Network Configuration
 ```bash
 # Download the same genesis as your validator
-wget https://github.com/movementlabsxyz/movement-networks/raw/main/mainnet/genesis.blob
-wget https://github.com/movementlabsxyz/movement-networks/raw/main/mainnet/waypoint.txt
+wget https://github.com/movement-network/movement-networks/raw/main/mainnet/genesis.blob
+wget https://github.com/movement-network/movement-networks/raw/main/mainnet/waypoint.txt
 
 # Verify integrity
 sha256sum genesis.blob waypoint.txt
@@ -504,4 +504,4 @@ VFNs work best as part of a complete validator setup:
 - **[VFN Troubleshooting](/general/nodes/validator-node/vfn-troubleshooting)** - VFN-specific issues
 - **[Performance Optimization](/general/nodes/validator-node/vfn-performance)** - VFN tuning guides  
 - **[API Documentation](/api/node)** - Complete API reference
-- **[Community Discord](https://discord.gg/movementlabsxyz)** - Get help from other operators
+- **[Community Discord](https://discord.gg/movementxyz)** - Get help from other operators

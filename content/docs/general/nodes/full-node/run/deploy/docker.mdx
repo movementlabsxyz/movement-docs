@@ -27,10 +27,10 @@ Download the fullnode configuration and genesis files for your network:
 ```shellscript filename="Terminal"
 mkdir -p mainnet && cd mainnet
 mkdir -p data
-curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/configs/fullnode.yaml
-curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/genesis.blob
-curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/waypoint.txt
-curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/mainnet/genesis_waypoint.txt
+curl -O https://raw.githubusercontent.com/movement-network/movement-networks/main/mainnet/configs/fullnode.yaml
+curl -O https://raw.githubusercontent.com/movement-network/movement-networks/main/mainnet/genesis.blob
+curl -O https://raw.githubusercontent.com/movement-network/movement-networks/main/mainnet/waypoint.txt
+curl -O https://raw.githubusercontent.com/movement-network/movement-networks/main/mainnet/genesis_waypoint.txt
 ```
 
 ### For Testnet
@@ -38,16 +38,16 @@ curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main
 ```shellscript filename="Terminal"
 mkdir -p testnet && cd testnet
 mkdir -p data
-curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/configs/fullnode.yaml
-curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/genesis.blob
-curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/waypoint.txt
-curl -O https://raw.githubusercontent.com/movementlabsxyz/movement-networks/main/testnet/genesis_waypoint.txt
+curl -O https://raw.githubusercontent.com/movement-network/movement-networks/main/testnet/configs/fullnode.yaml
+curl -O https://raw.githubusercontent.com/movement-network/movement-networks/main/testnet/genesis.blob
+curl -O https://raw.githubusercontent.com/movement-network/movement-networks/main/testnet/waypoint.txt
+curl -O https://raw.githubusercontent.com/movement-network/movement-networks/main/testnet/genesis_waypoint.txt
 ```
 
 <Callout type="info">
 **Genesis files repository**
 
-All configuration and genesis files are maintained at https://github.com/movementlabsxyz/movement-networks
+All configuration and genesis files are maintained at https://github.com/movement-network/movement-networks
 </Callout>
 
 ## Step 2: Run the Fullnode
@@ -62,7 +62,7 @@ docker run --pull=always \
   -v $(pwd)/data:/opt/aptos/data \
   --workdir /opt/aptos \
   --name=aptos-fullnode \
-  ghcr.io/movementlabsxyz/aptos-node:f24a5bc \
+  ghcr.io/movement-network/aptos-node:f24a5bc \
   -f /opt/aptos/fullnode.yaml
 ```
 
@@ -79,7 +79,7 @@ docker run --pull=always -d \
   -v $(pwd)/data:/opt/aptos/data \
   --workdir /opt/aptos \
   --name=aptos-fullnode \
-  ghcr.io/movementlabsxyz/aptos-node:f24a5bc \
+  ghcr.io/movement-network/aptos-node:f24a5bc \
   -f /opt/aptos/fullnode.yaml
 ```
 
@@ -161,8 +161,8 @@ listen_address: "/ip4/127.0.0.1/tcp/6182"
 ## Docker Tags
 
 The `latest` tag always refers to the latest official Docker image. You can find the current version at:
-- Mainnet: https://github.com/movementlabsxyz/movement-networks/tree/main/mainnet
-- Testnet: https://github.com/movementlabsxyz/movement-networks/tree/main/testnet
+- Mainnet: https://github.com/movement-network/movement-networks/tree/main/mainnet
+- Testnet: https://github.com/movement-network/movement-networks/tree/main/testnet
 
 ## Next Steps
 

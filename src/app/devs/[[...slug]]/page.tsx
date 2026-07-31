@@ -43,7 +43,7 @@ export default async function Page(props: {
           <LLMCopyButton markdownUrl={`${page.url}.mdx`} />
           <ViewOptions
             markdownUrl={`${page.url}.mdx`}
-            githubUrl={`https://github.com/movementlabsxyz/movement-docs/blob/main/content/docs/${page.path}`}
+            githubUrl={`https://github.com/movement-network/movement-docs/blob/main/content/docs/${page.path}`}
           />
         </div>
       )}
